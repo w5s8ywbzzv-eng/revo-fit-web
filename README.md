@@ -31,19 +31,28 @@ npm run dev
 | `/onboarding` | revo_fit_onboarding_black.html | 完了 |
 | `/goal-setup` | revo_fit_goal_setup_black.html | 完了 |
 | `/home` | revo_fit_home_black.html | 完了（空データ時のエンプティステート実装、ROADMAP §13） |
-| `/log` | revo_fit_log_black.html | 完了（からだ＝体重・体脂肪・筋肉量は Supabase `body_metrics` に読み書き。睡眠・食事・運動・水分・コンディションは操作できるが保存先未実装 — 下記参照） |
 
-残り38画面（nutrition, recipes, feed, ranking, medals, plans/billing/receipt, settings, legal, admin 8画面など）は未実装です。SCREENS.md の優先順（splash → onboarding → home → log → …）に沿って続けてください。
-
-### `/log` 画面の既知の制限
-
-- 「からだ」カテゴリだけが本物のデータ連携です（`body_metrics` テーブルに保存・直前の値を自動で読み込み）。
-- 睡眠・食事・運動・水分・コンディションは見た目も操作もフル実装済みですが、まだ専用の保存先テーブルがないため、「記録する」を押しても今のセッション内でチェック済み表示になるだけです。次にやること：`daily_logs` 相当のテーブルを設計して保存を繋ぐ。
-- 食事の「写真でかんたん」「書いて記録」ボタンは、実際の撮影・入力UIがまだ無いので「準備中」のトーストが出るだけです。
+残り39画面（log, nutrition, recipes, feed, ranking, medals, plans/billing/receipt, settings, legal, admin 8画面など）は未実装です。SCREENS.md の優先順（splash → onboarding → home → …）に沿って続けてください。
 
 ## ディレクトリ構成
 
 ```
 src/
   app/                 各画面（Next.js App Router）
-  components/          共有UI（Logo, HeaderControls, BottomNav,
+  components/          共有UI（Logo, HeaderControls, BottomNav, useToast）
+  lib/
+    theme/             ダーク/ライトテーマの Context
+    i18n/              14言語の辞書・Context（画面ごとにファイル分割）
+    supabase/          Supabase クライアント（未設定でも壊れない作り）
+supabase/
+  schema.sql           DB基盤（profiles/user_goals/body_metrics/daily_scores/subscriptions + RLS）
+public/
+  manifest.json, sw.js, icons/   PWA一式
+```
+
+## 設計上守っていること（revo_handoff/README.md より）
+
+- ブランドカラー：黒 `#16140F` × 金 `#E3C56A`。ライトテーマも全画面対応。
+- 新規ユーザーはゼロ状態（サンプル数値を出さない）— `home` 画面で実装済み。他の画面を実装する際も同じ方針を守ってください。
+- 医療・法務の免責注記は削除しない。
+- 価格・世界観（revo world は「?・構想中」で名前を伏せる等）は課金画面実装時に revo_handoff/README.md を再確認。
