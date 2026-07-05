@@ -2,11 +2,11 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/addhome/page": "app/addhome/page.js",
   "/goal-setup/page": "app/goal-setup/page.js",
+  "/home/page": "app/home/page.js",
+  "/log/page": "app/log/page.js",
   "/login/page": "app/login/page.js",
   "/onboarding/page": "app/onboarding/page.js",
-  "/signup/page": "app/signup/page.js",
   "/page": "app/page.js",
   "/welcome/page": "app/welcome/page.js",
-  "/log/page": "app/log/page.js",
-  "/home/page": "app/home/page.js"
+  "/signup/page": "app/signup/page.js"
 }
