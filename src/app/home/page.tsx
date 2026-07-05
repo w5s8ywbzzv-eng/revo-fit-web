@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { IconChevronRight, IconChevronDown, IconPlus } from "@tabler/icons-react";
 import { HeaderControls } from "@/components/HeaderControls";
 import { WordmarkSmall } from "@/components/Logo";
@@ -8,22 +10,42 @@ import { useToast } from "@/components/useToast";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { pick } from "@/lib/i18n/dictionary";
 import { homeDict, FACTORS, EMPTY_STATE_FALLBACK } from "@/lib/i18n/dictionaries/home";
+import { getSupabaseClient } from "@/lib/supabase/client";
 
-/**
- * Home screen ("revo_fit_home_black.html" in the mockups).
- *
- * IMPORTANT (roadmap §13 — empty state): the mockup hardcodes sample numbers
- * (score 78, sleep 82, etc.) for visual review purposes. A brand-new account
- * has none of that yet, so this page currently renders the zero/empty state
- * by design — wire `useHomeSummary()` (TODO below) up to Supabase and this
- * will start showing real numbers once a user has logged at least one day.
- */
-
-// TODO: replace with a real hook that reads today's score + factor breakdown
-// from Supabase once daily_logs / scores tables exist. Returning `null` here
-// is what makes this page render the correct empty state for new users.
 function useHomeSummary(): { score: number; factorScores: Record<string, number> } | null {
-  return null;
+  const [summary, setSummary] = useState<{ score: number; factorScores: Record<string, number> } | null>(null);
+
+  useEffect(() => {
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const today = new Date().toISOString().slice(0, 10);
+      const { data: log } = await supabase
+        .from("daily_logs")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("log_date", today)
+        .maybeSingle();
+
+      if (log) {
+        const sleepScore = Math.min(100, Math.round(((log.sleep_minutes ?? 0) / 480) * 80 + (log.sleep_quality ?? 0) * 10));
+        const foodScore = (log.diet_style !== null) ? 100 : 0;
+        const moveScore = Math.min(100, Math.round(((log.move_minutes ?? 0) / 240) * 100));
+        const recoverScore = Math.round((((log.bowel_state ?? 0) / 3) * 50 + ((log.mood ?? 0) / 2) * 50));
+
+        setSummary({
+          score: Math.round((sleepScore + foodScore + moveScore + recoverScore) / 4),
+          factorScores: { sleep: sleepScore, food: foodScore, move: moveScore, recover: recoverScore }
+        });
+      }
+    })();
+  }, []);
+
+  return summary;
 }
 
 export default function HomePage() {
@@ -32,13 +54,14 @@ export default function HomePage() {
   const empty = d.empty ?? EMPTY_STATE_FALLBACK;
   const { show, ToastView } = useToast();
   const summary = useHomeSummary();
+  const router = useRouter();
 
   const score = summary?.score ?? 0;
   const stateText = summary ? d.state : empty.state;
   const nextTtl = summary ? d.nextTtl : empty.nextTtl;
   const nextSub = summary ? d.nextSub : empty.nextSub;
 
-  const full = 628; // ring circumference at r=100
+  const full = 628;
   const offset = full - full * (score / 100);
 
   return (
@@ -125,7 +148,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <button className="rf-btn-primary" style={{ marginTop: 14 }} onClick={() => show(empty.recordHint + " — /log 🚧")}>
+        <button className="rf-btn-primary" style={{ marginTop: 14 }} onClick={() => router.push("/log")}>
           <IconPlus size={18} />
           <span>{d.record}</span>
         </button>
@@ -136,7 +159,14 @@ export default function HomePage() {
         </button>
       </div>
 
-      <BottomNav labels={d.nav} activeIndex={0} />
+      <BottomNav
+        labels={d.nav}
+        activeIndex={0}
+        onSelect={(i) => {
+          if (i === 3) router.push("/log");
+          else if (i !== 0) show(d.nav[i] + " 🚧");
+        }}
+      />
       {ToastView}
     </div>
   );
