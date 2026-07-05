@@ -1,0 +1,164 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&family=Outfit:wght@300;400&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; min-height:620px; display:flex; flex-direction:column; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">revo fit のオンボーディング。言語と国・地域をプルダウンで選ぶ。あとから設定でいつでも変更できる。明暗を切り替えられる</h2>
+
+  <!-- テーマ切替（右上） -->
+  <div style="display:flex; justify-content:flex-end; padding:16px 18px 0;">
+    <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+  </div>
+
+  <!-- ロゴ＋ようこそ -->
+  <div style="padding:30px 22px 0; display:flex; flex-direction:column; align-items:center;">
+    <svg viewBox="0 0 200 44" width="132" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="revo fit" style="margin:0 0 22px;">
+      <text x="100" y="34" text-anchor="middle" font-family="Jost,sans-serif" font-weight="200" font-size="40" letter-spacing="1" fill="#F0EBE2"><tspan id="logoRevo" fill="#F0EBE2">revo </tspan><tspan id="logoFit" fill="#E3C56A">fit</tspan></text>
+    </svg>
+    <p id="welcome" style="font-size:22px; font-weight:500; color:#F0EBE2; margin:0 0 8px;">ようこそ</p>
+    <p id="welcomeSub" style="font-size:12px; color:#8A7E68; margin:0; text-align:center; line-height:1.6;">言語と国・地域を選んでください。<br>あとから設定でいつでも変更できます。</p>
+  </div>
+
+  <!-- プルダウン2つ -->
+  <div style="flex:1; padding:34px 22px 0;">
+    <!-- 言語 -->
+    <p id="langLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px; letter-spacing:0.03em;">言語</p>
+    <button id="langSelect" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:14px 16px; cursor:pointer; margin:0 0 18px; transition:all 0.3s;">
+      <span style="display:flex; align-items:center; gap:10px;"><i class="ti ti-world" style="font-size:18px; color:#E3C56A;"></i><span id="langVal" style="font-size:14px; color:#F0EBE2;">日本語</span></span>
+      <i id="langChev" class="ti ti-chevron-down" style="font-size:18px; color:#6E6555;"></i>
+    </button>
+
+    <!-- 国・地域 -->
+    <p id="regionLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px; letter-spacing:0.03em;">国・地域</p>
+    <button id="regionSelect" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:14px 16px; cursor:pointer; transition:all 0.3s;">
+      <span style="display:flex; align-items:center; gap:10px;"><i class="ti ti-map-pin" style="font-size:18px; color:#E3C56A;"></i><span id="regionVal" style="font-size:14px; color:#8A7E68;">選択してください</span></span>
+      <i id="regionChev" class="ti ti-chevron-down" style="font-size:18px; color:#6E6555;"></i>
+    </button>
+  </div>
+
+  <!-- はじめる -->
+  <div style="padding:14px 22px 24px;">
+    <button id="startBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; opacity:0.5;"><span id="startLbl">はじめる</span><i class="ti ti-arrow-right" style="font-size:18px;"></i></button>
+    <p id="disclaimer" style="font-size:10px; color:#6E6555; margin:12px 2px 0; line-height:1.65; text-align:center;">revo は健康の維持・増進のためのアプリで、医療行為・診断・治療を目的とするものではありません。<br>「はじめる」を押すと、利用規約とプライバシーポリシーに同意したものとみなされます。</p>
+  </div>
+
+  <!-- ドロップダウンメニュー -->
+  <div id="langMenu" style="display:none; position:absolute; left:22px; right:22px; top:auto; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  <div id="regionMenu" style="display:none; position:absolute; left:22px; right:22px; top:auto; max-height:320px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:31;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"日本語":"Japanese","English":"English","简体中文":"Chinese (Simplified)","繁體中文":"Chinese (Traditional)","한국어":"Korean","Français":"French","Español":"Spanish","Deutsch":"German","Italiano":"Italian","Português":"Portuguese","ภาษาไทย":"Thai","हिन्दी":"Hindi","Tiếng Việt":"Vietnamese","Bahasa Indonesia":"Indonesian"};
+    var regions=[
+      {code:"JP",name:"日本",en:"Japan"},{code:"KR",name:"대한민국",en:"South Korea"},{code:"CN",name:"中国",en:"China"},{code:"TW",name:"台灣",en:"Taiwan"},{code:"HK",name:"香港",en:"Hong Kong"},{code:"TH",name:"ไทย",en:"Thailand"},{code:"VN",name:"Việt Nam",en:"Vietnam"},{code:"ID",name:"Indonesia",en:"Indonesia"},{code:"MY",name:"Malaysia",en:"Malaysia"},{code:"PH",name:"Philippines",en:"Philippines"},{code:"SG",name:"Singapore",en:"Singapore"},{code:"IN",name:"भारत",en:"India"},{code:"PK",name:"Pakistan",en:"Pakistan"},{code:"BD",name:"Bangladesh",en:"Bangladesh"},{code:"LK",name:"Sri Lanka",en:"Sri Lanka"},{code:"NP",name:"Nepal",en:"Nepal"},{code:"KH",name:"Cambodia",en:"Cambodia"},{code:"MM",name:"Myanmar",en:"Myanmar"},
+      {code:"AE",name:"الإمارات",en:"UAE"},{code:"SA",name:"السعودية",en:"Saudi Arabia"},{code:"QA",name:"قطر",en:"Qatar"},{code:"KW",name:"الكويت",en:"Kuwait"},{code:"IL",name:"ישראל",en:"Israel"},{code:"TR",name:"Türkiye",en:"Turkey"},{code:"IR",name:"ایران",en:"Iran"},
+      {code:"GB",name:"United Kingdom",en:"United Kingdom"},{code:"IE",name:"Ireland",en:"Ireland"},{code:"FR",name:"France",en:"France"},{code:"DE",name:"Deutschland",en:"Germany"},{code:"ES",name:"España",en:"Spain"},{code:"IT",name:"Italia",en:"Italy"},{code:"PT",name:"Portugal",en:"Portugal"},{code:"NL",name:"Nederland",en:"Netherlands"},{code:"BE",name:"België",en:"Belgium"},{code:"CH",name:"Schweiz",en:"Switzerland"},{code:"AT",name:"Österreich",en:"Austria"},{code:"SE",name:"Sverige",en:"Sweden"},{code:"NO",name:"Norge",en:"Norway"},{code:"DK",name:"Danmark",en:"Denmark"},{code:"FI",name:"Suomi",en:"Finland"},{code:"PL",name:"Polska",en:"Poland"},{code:"CZ",name:"Česko",en:"Czechia"},{code:"GR",name:"Ελλάδα",en:"Greece"},{code:"RO",name:"România",en:"Romania"},{code:"HU",name:"Magyarország",en:"Hungary"},{code:"UA",name:"Україна",en:"Ukraine"},{code:"RU",name:"Россия",en:"Russia"},
+      {code:"US",name:"United States",en:"United States"},{code:"CA",name:"Canada",en:"Canada"},{code:"MX",name:"México",en:"Mexico"},
+      {code:"BR",name:"Brasil",en:"Brazil"},{code:"AR",name:"Argentina",en:"Argentina"},{code:"CL",name:"Chile",en:"Chile"},{code:"CO",name:"Colombia",en:"Colombia"},{code:"PE",name:"Perú",en:"Peru"},
+      {code:"AU",name:"Australia",en:"Australia"},{code:"NZ",name:"New Zealand",en:"New Zealand"},
+      {code:"ZA",name:"South Africa",en:"South Africa"},{code:"EG",name:"مصر",en:"Egypt"},{code:"NG",name:"Nigeria",en:"Nigeria"},{code:"KE",name:"Kenya",en:"Kenya"},{code:"MA",name:"المغرب",en:"Morocco"},
+      {code:"OTHER",name:"その他",en:"Other"}
+    ];
+    var D={
+      "日本語":{welcome:"ようこそ",welcomeSub:"言語と国・地域を選んでください。<br>あとから設定でいつでも変更できます。",langLbl:"言語",regionLbl:"国・地域",regionPh:"選択してください",start:"はじめる",disc:"revo は健康の維持・増進のためのアプリで、医療行為・診断・治療を目的とするものではありません。<br>「はじめる」を押すと、利用規約とプライバシーポリシーに同意したものとみなされます。",local:true},
+      "English":{welcome:"Welcome",welcomeSub:"Choose your language and region.<br>You can change these anytime in settings.",langLbl:"Language",regionLbl:"Country / region",regionPh:"Select",start:"Get started",disc:"revo supports maintaining and improving health and is not intended for medical practice, diagnosis, or treatment.<br>By tapping \"Get started,\" you agree to the Terms of Use and Privacy Policy.",local:false},
+      "简体中文":{welcome:"欢迎",welcomeSub:"请选择语言和国家·地区。<br>以后可在设置中随时更改。",langLbl:"语言",regionLbl:"国家·地区",regionPh:"请选择",start:"开始",disc:"revo 是维持和增进健康的应用，并非以医疗行为、诊断或治疗为目的。<br>点击『开始』即视为您同意使用条款和隐私政策。",local:true},
+      "繁體中文":{welcome:"歡迎",welcomeSub:"請選擇語言和國家·地區。<br>之後可在設定中隨時更改。",langLbl:"語言",regionLbl:"國家·地區",regionPh:"請選擇",start:"開始",disc:"revo 是維持和增進健康的應用，並非以醫療行為、診斷或治療為目的。<br>點擊『開始』即視為您同意使用條款和隱私政策。",local:true},
+      "한국어":{welcome:"환영합니다",welcomeSub:"언어와 국가·지역을 선택하세요.<br>나중에 설정에서 언제든 바꿀 수 있어요.",langLbl:"언어",regionLbl:"국가·지역",regionPh:"선택하세요",start:"시작하기",disc:"revo는 건강 유지·증진을 위한 앱이며, 의료 행위·진단·치료를 목적으로 하지 않습니다.<br>'시작하기'를 누르면 이용약관과 개인정보 처리방침에 동의한 것으로 간주됩니다.",local:true},
+      "ภาษาไทย":{welcome:"ยินดีต้อนรับ",welcomeSub:"เลือกภาษาและประเทศ·ภูมิภาค<br>เปลี่ยนได้ทุกเมื่อในการตั้งค่า",langLbl:"ภาษา",regionLbl:"ประเทศ·ภูมิภาค",regionPh:"เลือก",start:"เริ่ม",disc:"revo เป็นแอปเพื่อรักษาและส่งเสริมสุขภาพ ไม่ได้มีวัตถุประสงค์เพื่อการรักษาพยาบาล การวินิจฉัย หรือการรักษาโรค<br>การกด 'เริ่ม' ถือว่าคุณยอมรับข้อกำหนดการใช้และนโยบายความเป็นส่วนตัว",local:true},
+      "Français":{welcome:"Bienvenue",welcomeSub:"Choisissez votre langue et région.<br>Modifiable à tout moment dans les réglages.",langLbl:"Langue",regionLbl:"Pays / région",regionPh:"Sélectionner",start:"Commencer",disc:"revo soutient le maintien et l'amélioration de la santé et n'est pas destiné à un acte médical, un diagnostic ou un traitement.<br>En appuyant sur « Commencer », vous acceptez les Conditions d'utilisation et la Politique de confidentialité.",local:false},
+      "Español":{welcome:"Bienvenido",welcomeSub:"Elige tu idioma y región.<br>Puedes cambiarlos cuando quieras en ajustes.",langLbl:"Idioma",regionLbl:"País / región",regionPh:"Seleccionar",start:"Empezar",disc:"revo apoya el mantenimiento y la mejora de la salud y no está destinado a actos médicos, diagnóstico ni tratamiento.<br>Al pulsar «Empezar», aceptas los Términos de uso y la Política de privacidad.",local:false},
+      "Deutsch":{welcome:"Willkommen",welcomeSub:"Wähle Sprache und Region.<br>Jederzeit in den Einstellungen änderbar.",langLbl:"Sprache",regionLbl:"Land / Region",regionPh:"Auswählen",start:"Loslegen",disc:"revo unterstützt die Erhaltung und Förderung der Gesundheit und ist nicht für medizinische Behandlung, Diagnose oder Therapie bestimmt.<br>Mit „Loslegen“ stimmst du den Nutzungsbedingungen und der Datenschutzrichtlinie zu.",local:false},
+      "Italiano":{welcome:"Benvenuto",welcomeSub:"Scegli lingua e regione.<br>Modificabili in qualsiasi momento nelle impostazioni.",langLbl:"Lingua",regionLbl:"Paese / regione",regionPh:"Seleziona",start:"Inizia",disc:"revo sostiene il mantenimento e il miglioramento della salute e non è destinato ad atti medici, diagnosi o trattamenti.<br>Toccando «Inizia», accetti i Termini d'uso e la Privacy policy.",local:false},
+      "Português":{welcome:"Bem-vindo",welcomeSub:"Escolha seu idioma e região.<br>Pode mudar quando quiser nas configurações.",langLbl:"Idioma",regionLbl:"País / região",regionPh:"Selecionar",start:"Começar",disc:"revo apoia a manutenção e melhoria da saúde e não tem finalidade de ato médico, diagnóstico ou tratamento.<br>Ao tocar em «Começar», você aceita os Termos de uso e a Política de privacidade.",local:false},
+      "हिन्दी":{welcome:"स्वागत है",welcomeSub:"अपनी भाषा और देश·क्षेत्र चुनें।<br>सेटिंग में कभी भी बदल सकते हैं।",langLbl:"भाषा",regionLbl:"देश·क्षेत्र",regionPh:"चुनें",start:"शुरू करें",disc:"revo स्वास्थ्य के रखरखाव और संवर्धन के लिए ऐप है, चिकित्सा कार्य, निदान या उपचार के लिए नहीं।<br>'शुरू करें' दबाने पर आप उपयोग की शर्तें और गोपनीयता नीति से सहमत माने जाएंगे।",local:true},
+      "Tiếng Việt":{welcome:"Chào mừng",welcomeSub:"Chọn ngôn ngữ và khu vực.<br>Có thể đổi bất cứ lúc nào trong cài đặt.",langLbl:"Ngôn ngữ",regionLbl:"Quốc gia / khu vực",regionPh:"Chọn",start:"Bắt đầu",disc:"revo hỗ trợ duy trì và cải thiện sức khỏe, không nhằm mục đích khám chữa bệnh, chẩn đoán hay điều trị.<br>Khi nhấn 'Bắt đầu', bạn đồng ý với Điều khoản sử dụng và Chính sách bảo mật.",local:false},
+      "Bahasa Indonesia":{welcome:"Selamat datang",welcomeSub:"Pilih bahasa dan wilayah.<br>Bisa diubah kapan saja di pengaturan.",langLbl:"Bahasa",regionLbl:"Negara / wilayah",regionPh:"Pilih",start:"Mulai",disc:"revo mendukung pemeliharaan dan peningkatan kesehatan dan bukan untuk tindakan medis, diagnosis, atau pengobatan.<br>Dengan menekan 'Mulai', kamu menyetujui Ketentuan Penggunaan dan Kebijakan Privasi.",local:false}
+    };
+    var cur="日本語", dark=true, selRegion=null;
+    var localLangs={"日本語":1,"简体中文":1,"繁體中文":1,"한국어":1,"ภาษาไทย":1,"हिन्दी":1};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",sel:"#26231C",menu:"#1F1C16",menuBd:"#3A352A",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",sel:"#F4EFE6",menu:"#FFFFFF",menuBd:"#E8E0CE",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function regionLabel(r){ return (localLangs[cur]?r.name:r.en); }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('welcome').textContent=d.welcome; $('welcomeSub').innerHTML=d.welcomeSub;
+      $('langLbl').textContent=d.langLbl; $('regionLbl').textContent=d.regionLbl;
+      $('langVal').textContent=cur;
+      if(selRegion){ var r=regions.filter(function(x){return x.code===selRegion;})[0]; $('regionVal').textContent= r?regionLabel(r):d.regionPh; }
+      else { $('regionVal').textContent=d.regionPh; }
+      $('startLbl').textContent=d.start; if(d.disc) $('disclaimer').innerHTML=d.disc;
+      $('startBtn').style.opacity= selRegion ? "1":"0.5";
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('welcome').style.color=t.txt; $('welcomeSub').style.color=t.sub;
+      var dc=$('disclaimer'); if(dc) dc.style.color=t.muted;
+      $('langLbl').style.color=t.sub; $('regionLbl').style.color=t.sub;
+      var lr=$('logoRevo'); if(lr) lr.setAttribute('fill', dark?"#F0EBE2":"#1A1813");
+      var lf=$('logoFit'); if(lf) lf.setAttribute('fill', dark?"#E3C56A":"#BA7517");
+      [$('langSelect'),$('regionSelect')].forEach(function(b){ b.style.background=t.card; b.style.borderColor=t.cardBd; });
+      $('langVal').style.color=t.txt; $('regionVal').style.color= selRegion?t.txt:t.sub;
+      $('startBtn').style.background=t.accent; $('startBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('themeBtn').style.background=t.menu; $('themeBtn').style.borderColor=t.menuBd;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      [$('langMenu'),$('regionMenu')].forEach(function(m){ m.style.background=t.menu; m.style.borderColor=t.menuBd; });
+    }
+    function positionMenu(menu, btn){
+      // ボタンの真下に配置
+      var sc=$('screen').getBoundingClientRect();
+      var b=btn.getBoundingClientRect();
+      menu.style.top=(b.bottom - sc.top + 6)+"px";
+    }
+    function openLang(){
+      var t=dark?T.dark:T.light, titleCol=t.txt, acc=t.accent;
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:11px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=t.sel; }; row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p><p style="font-size:10px; color:'+t.sub+'; margin:1px 0 0;">'+(langSub[l]||"")+'</p></div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); cur=l; $('langMenu').style.display="none"; $('langChev').className="ti ti-chevron-down"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+      positionMenu($('langMenu'),$('langSelect'));
+      $('langMenu').style.display="block"; $('langChev').className="ti ti-chevron-up";
+      $('regionMenu').style.display="none"; $('regionChev').className="ti ti-chevron-down";
+    }
+    function openRegion(){
+      var t=dark?T.dark:T.light, titleCol=t.txt, acc=t.accent;
+      $('regionMenu').innerHTML="";
+      regions.forEach(function(r){
+        var on=(r.code===selRegion);
+        var nm=regionLabel(r); var sub=(nm!==r.en)?r.en:"";
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=t.sel; }; row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+nm+'</p>'+(sub?'<p style="font-size:10px; color:'+t.sub+'; margin:1px 0 0;">'+sub+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); selRegion=r.code; $('regionMenu').style.display="none"; $('regionChev').className="ti ti-chevron-down"; applyUI(); applyTheme(); };
+        $('regionMenu').appendChild(row);
+      });
+      positionMenu($('regionMenu'),$('regionSelect'));
+      $('regionMenu').style.display="block"; $('regionChev').className="ti ti-chevron-up";
+      $('langMenu').style.display="none"; $('langChev').className="ti ti-chevron-down";
+    }
+    $('langSelect').onclick=function(e){ e.stopPropagation(); var open=($('langMenu').style.display==="block"); if(open){ $('langMenu').style.display="none"; $('langChev').className="ti ti-chevron-down"; } else openLang(); };
+    $('regionSelect').onclick=function(e){ e.stopPropagation(); var open=($('regionMenu').style.display==="block"); if(open){ $('regionMenu').style.display="none"; $('regionChev').className="ti ti-chevron-down"; } else openRegion(); };
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    $('regionMenu').onclick=function(e){ e.stopPropagation(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; $('regionMenu').style.display="none"; $('langChev').className="ti ti-chevron-down"; $('regionChev').className="ti ti-chevron-down"; });
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    $('startBtn').onclick=function(){ if(!selRegion) return; /* アプリへ（デモ） */ };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>

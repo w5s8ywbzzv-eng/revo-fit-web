@@ -1,0 +1,324 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">筋肉飯の表彰台。人気レシピ賞・アイデア賞・投稿数賞・新人賞の1位から3位。分け合う人を称える。新人にも光を当て、獲得したバッジがきらめいてメダルページへつながる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">筋肉飯アワード</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- 賞プルダウン -->
+  <div style="padding:14px 18px 0;">
+    <button id="awardSelect" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:13px 16px; cursor:pointer; transition:all 0.3s;">
+      <span style="display:flex; align-items:center; gap:10px;"><i class="ti ti-trophy" style="font-size:18px; color:#E3C56A;"></i><span id="awardVal" style="font-size:14px; color:#F0EBE2; font-weight:500;">人気レシピ賞</span></span>
+      <i id="awardChev" class="ti ti-chevron-down" style="font-size:18px; color:#6E6555;"></i>
+    </button>
+    <div id="awardMenu" style="display:none; position:absolute; left:18px; right:18px; margin-top:6px; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:25;"></div>
+  </div>
+
+  <!-- 賞の説明 -->
+  <p id="awardDesc" style="font-size:12px; color:#8A7E68; margin:0; padding:12px 18px 0; line-height:1.6; text-align:center;"></p>
+
+  <!-- 表彰台 -->
+  <div style="padding:20px 18px 0;">
+    <div id="podium" style="display:flex; align-items:flex-end; justify-content:center; gap:8px;"></div>
+  </div>
+
+  <!-- あなたのバッジ（きらめき演出） -->
+  <div style="padding:26px 18px 0;">
+    <div id="badgeCard" style="background:linear-gradient(140deg,#221E12,#1A1813); border:0.5px solid #3A3220; border-radius:18px; padding:20px; text-align:center; position:relative; overflow:hidden;">
+      <div id="sparkleWrap" style="position:relative; display:inline-block; margin:0 0 12px;">
+        <div id="badgeMedal"></div>
+        <div id="sparkles"></div>
+      </div>
+      <p id="badgeGot" style="font-size:14px; color:#F0EBE2; margin:0 0 4px; font-weight:600;">バッジを獲得しました</p>
+      <p id="badgeName" style="font-size:12px; color:#E3C56A; margin:0 0 16px;">アイデア賞・銅</p>
+      <button id="toMedals" style="background:#E3C56A; border:none; color:#16140F; font-size:13px; font-weight:600; padding:11px 24px; border-radius:12px; cursor:pointer; display:inline-flex; align-items:center; gap:7px;"><span id="toMedalsLbl">メダルページで見る</span><i class="ti ti-arrow-right" style="font-size:16px;"></i></button>
+    </div>
+  </div>
+
+  <!-- 新人へのメッセージ -->
+  <div style="padding:14px 18px 0;">
+    <div id="rookieCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:14px 16px; display:flex; align-items:flex-start; gap:10px;">
+      <i class="ti ti-plant-2" style="font-size:17px; color:#5DCAA5; margin-top:1px;"></i>
+      <p id="rookieMsg" style="font-size:13px; color:#C9E3D8; margin:0; line-height:1.65;">はじめたばかりでも大丈夫。新人賞は、勇気を出して分け合ったあなたのためにあります。</p>
+    </div>
+  </div>
+
+  <div style="height:22px;"></div>
+
+</div>
+</div>
+<style>
+@keyframes sparkFly{0%{transform:translate(0,0) scale(0);opacity:0;}30%{opacity:1;}100%{transform:translate(var(--dx),var(--dy)) scale(1);opacity:0;}}
+@keyframes medalPop{0%{transform:scale(0.6);opacity:0;}60%{transform:scale(1.12);}100%{transform:scale(1);opacity:1;}}
+@keyframes shine{0%{transform:translateX(-120%) rotate(20deg);}100%{transform:translateX(320%) rotate(20deg);}}
+.medalPop{animation:medalPop 0.6s cubic-bezier(0.22,1,0.36,1);}
+.shineBar{position:absolute; top:0; left:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent); animation:shine 1.4s ease-in-out infinite;}
+</style>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var AWARDS=["popular","idea","volume","rookie"];
+    // 各賞のトップ3（demo）。avatar絵文字, 数値
+    var WINNERS={
+      popular:[{n:"@mika_fit",a:"🍗",v:"12,400"},{n:"@ken_bulk",a:"🥚",v:"9,800"},{n:"@yuu_lean",a:"🥦",v:"7,200"}],
+      idea:[{n:"@sara_kitchen",a:"💡",v:"1,820"},{n:"@leo_meal",a:"🌶️",v:"1,540"},{n:"@ami_prep",a:"🥣",v:"1,190"}],
+      volume:[{n:"@dai_cook",a:"📚",v:"86"},{n:"@nao_chef",a:"🍳",v:"64"},{n:"@rin_food",a:"🥗",v:"51"}],
+      rookie:[{n:"@hana_new",a:"🌱",v:"3"},{n:"@sota_start",a:"✨",v:"2"},{n:"@mei_first",a:"🌸",v:"1"}]
+    };
+    var medalCol=["#E3C56A","#C8C8CC","#CD8E5A"]; // 金銀銅
+    var D={
+      "日本語":{hdr:"筋肉飯アワード",
+        tabs:{popular:"人気レシピ賞",idea:"アイデア賞",volume:"投稿数賞",rookie:"新人賞"},
+        desc:{popular:"みんなに作られた・参考にされたレシピ。",idea:"飽きを打ち破る、独創的な発想。",volume:"たくさん分け合ってくれた人。",rookie:"はじめたばかりで、一歩を踏み出した人。"},
+        unit:{popular:"人が参考に",idea:"アイデア票",volume:"品 投稿",rookie:"品めの勇気"},
+        badgeGot:"バッジを獲得しました",badgeName:"{a}・{m}",medals:["金","銀","銅"],
+        toMedals:"メダルページで見る",
+        rookie:"はじめたばかりでも大丈夫。新人賞は、勇気を出して分け合ったあなたのためにあります。"},
+      "English":{hdr:"Muscle Meal Awards",
+        tabs:{popular:"Popular Recipe",idea:"Idea Award",volume:"Volume Award",rookie:"Rookie Award"},
+        desc:{popular:"Recipes cooked and referenced by many.",idea:"Original ideas that break the boredom.",volume:"Those who shared the most.",rookie:"Those who just started and took the first step."},
+        unit:{popular:"found useful",idea:"idea votes",volume:"recipes",rookie:"recipe(s) of courage"},
+        badgeGot:"Badge earned",badgeName:"{a} · {m}",medals:["Gold","Silver","Bronze"],
+        toMedals:"See on medals page",
+        rookie:"It's okay to be new. The Rookie Award is for you — for the courage to share."},
+      "简体中文":{hdr:"增肌餐大奖",
+        tabs:{popular:"人气食谱奖",idea:"创意奖",volume:"投稿数奖",rookie:"新人奖"},
+        desc:{popular:"被大家做过·参考过的食谱。",idea:"打破乏味的独创发想。",volume:"分享最多的人。",rookie:"刚开始、迈出第一步的人。"},
+        unit:{popular:"人参考",idea:"创意票",volume:"道投稿",rookie:"道的勇气"},
+        badgeGot:"已获得徽章",badgeName:"{a}·{m}",medals:["金","银","铜"],
+        toMedals:"在奖章页查看",
+        rookie:"刚开始也没关系。新人奖，属于鼓起勇气分享的你。"},
+      "繁體中文":{hdr:"增肌餐大獎",
+        tabs:{popular:"人氣食譜獎",idea:"創意獎",volume:"投稿數獎",rookie:"新人獎"},
+        desc:{popular:"被大家做過·參考過的食譜。",idea:"打破乏味的獨創發想。",volume:"分享最多的人。",rookie:"剛開始、邁出第一步的人。"},
+        unit:{popular:"人參考",idea:"創意票",volume:"道投稿",rookie:"道的勇氣"},
+        badgeGot:"已獲得徽章",badgeName:"{a}·{m}",medals:["金","銀","銅"],
+        toMedals:"在獎章頁查看",
+        rookie:"剛開始也沒關係。新人獎，屬於鼓起勇氣分享的你。"},
+      "한국어":{hdr:"근육밥 어워드",
+        tabs:{popular:"인기 레시피상",idea:"아이디어상",volume:"투고수상",rookie:"신인상"},
+        desc:{popular:"많은 사람이 만들고 참고한 레시피.",idea:"질림을 깨는 독창적 발상.",volume:"가장 많이 나눠준 사람.",rookie:"막 시작해 첫발을 내디딘 사람."},
+        unit:{popular:"명이 참고",idea:"아이디어 표",volume:"개 투고",rookie:"개째의 용기"},
+        badgeGot:"배지를 획득했어요",badgeName:"{a}·{m}",medals:["금","은","동"],
+        toMedals:"메달 페이지에서 보기",
+        rookie:"막 시작해도 괜찮아요. 신인상은 용기 내어 나눈 당신을 위한 거예요."},
+      "ภาษาไทย":{hdr:"รางวัลเมนูสร้างกล้าม",
+        tabs:{popular:"รางวัลสูตรยอดนิยม",idea:"รางวัลไอเดีย",volume:"รางวัลจำนวนโพสต์",rookie:"รางวัลหน้าใหม่"},
+        desc:{popular:"สูตรที่คนทำและอ้างอิงมากมาย",idea:"ไอเดียแปลกใหม่ที่แก้เบื่อ",volume:"คนที่แบ่งปันมากที่สุด",rookie:"คนที่เพิ่งเริ่มและก้าวออกมา"},
+        unit:{popular:"คนอ้างอิง",idea:"โหวตไอเดีย",volume:"เมนู",rookie:"เมนูแห่งความกล้า"},
+        badgeGot:"ได้รับตราแล้ว",badgeName:"{a}·{m}",medals:["ทอง","เงิน","ทองแดง"],
+        toMedals:"ดูในหน้าเหรียญ",
+        rookie:"เพิ่งเริ่มก็ไม่เป็นไร รางวัลหน้าใหม่มีไว้เพื่อคุณที่กล้าแบ่งปัน"},
+      "Français":{hdr:"Prix Plats Muscle",
+        tabs:{popular:"Recette Populaire",idea:"Prix Idée",volume:"Prix Volume",rookie:"Prix Débutant"},
+        desc:{popular:"Recettes cuisinées et suivies par beaucoup.",idea:"Idées originales qui cassent la routine.",volume:"Ceux qui ont le plus partagé.",rookie:"Ceux qui débutent et ont fait le premier pas."},
+        unit:{popular:"l'ont trouvé utile",idea:"votes d'idée",volume:"recettes",rookie:"recette(s) de courage"},
+        badgeGot:"Badge obtenu",badgeName:"{a} · {m}",medals:["Or","Argent","Bronze"],
+        toMedals:"Voir sur la page médailles",
+        rookie:"C'est bien d'être débutant. Le Prix Débutant est pour vous — pour le courage de partager."},
+      "Español":{hdr:"Premios Comida Músculo",
+        tabs:{popular:"Receta Popular",idea:"Premio Idea",volume:"Premio Volumen",rookie:"Premio Novato"},
+        desc:{popular:"Recetas cocinadas y consultadas por muchos.",idea:"Ideas originales que rompen el aburrimiento.",volume:"Quienes más compartieron.",rookie:"Quienes empezaron y dieron el primer paso."},
+        unit:{popular:"lo vieron útil",idea:"votos de idea",volume:"recetas",rookie:"receta(s) de valentía"},
+        badgeGot:"Insignia obtenida",badgeName:"{a} · {m}",medals:["Oro","Plata","Bronce"],
+        toMedals:"Ver en la página de medallas",
+        rookie:"Está bien ser novato. El Premio Novato es para ti — por el valor de compartir."},
+      "Deutsch":{hdr:"Muskel-Essen-Awards",
+        tabs:{popular:"Beliebtes Rezept",idea:"Ideen-Award",volume:"Mengen-Award",rookie:"Neuling-Award"},
+        desc:{popular:"Von vielen gekochte und genutzte Rezepte.",idea:"Originelle Ideen gegen die Langeweile.",volume:"Wer am meisten geteilt hat.",rookie:"Wer gerade startet und den ersten Schritt macht."},
+        unit:{popular:"fanden es nützlich",idea:"Ideen-Stimmen",volume:"Rezepte",rookie:"Rezept(e) Mut"},
+        badgeGot:"Abzeichen erhalten",badgeName:"{a} · {m}",medals:["Gold","Silber","Bronze"],
+        toMedals:"Auf Medaillen-Seite ansehen",
+        rookie:"Neu zu sein ist okay. Der Neuling-Award ist für dich — für den Mut zu teilen."},
+      "Italiano":{hdr:"Premi Piatti Muscolo",
+        tabs:{popular:"Ricetta Popolare",idea:"Premio Idea",volume:"Premio Volume",rookie:"Premio Esordiente"},
+        desc:{popular:"Ricette cucinate e consultate da molti.",idea:"Idee originali che rompono la noia.",volume:"Chi ha condiviso di più.",rookie:"Chi inizia e fa il primo passo."},
+        unit:{popular:"l'hanno trovato utile",idea:"voti idea",volume:"ricette",rookie:"ricetta/e di coraggio"},
+        badgeGot:"Distintivo ottenuto",badgeName:"{a} · {m}",medals:["Oro","Argento","Bronzo"],
+        toMedals:"Vedi sulla pagina medaglie",
+        rookie:"Va bene essere esordienti. Il Premio Esordiente è per te — per il coraggio di condividere."},
+      "Português":{hdr:"Prêmios Comida Músculo",
+        tabs:{popular:"Receita Popular",idea:"Prêmio Ideia",volume:"Prêmio Volume",rookie:"Prêmio Novato"},
+        desc:{popular:"Receitas cozinhadas e consultadas por muitos.",idea:"Ideias originais que quebram o tédio.",volume:"Quem mais compartilhou.",rookie:"Quem começou e deu o primeiro passo."},
+        unit:{popular:"acharam útil",idea:"votos de ideia",volume:"receitas",rookie:"receita(s) de coragem"},
+        badgeGot:"Selo conquistado",badgeName:"{a} · {m}",medals:["Ouro","Prata","Bronze"],
+        toMedals:"Ver na página de medalhas",
+        rookie:"Tudo bem ser novato. O Prêmio Novato é para você — pela coragem de compartilhar."},
+      "हिन्दी":{hdr:"मसल फूड अवार्ड",
+        tabs:{popular:"लोकप्रिय रेसिपी",idea:"आइडिया अवार्ड",volume:"पोस्ट संख्या",rookie:"नवागंतुक अवार्ड"},
+        desc:{popular:"कई लोगों द्वारा बनाई·देखी रेसिपी।",idea:"ऊब तोड़ने वाले अनोखे विचार।",volume:"सबसे ज़्यादा बाँटने वाले।",rookie:"अभी शुरू करने वाले, पहला कदम रखने वाले।"},
+        unit:{popular:"को उपयोगी",idea:"आइडिया वोट",volume:"रेसिपी",rookie:"रेसिपी का साहस"},
+        badgeGot:"बैज मिला",badgeName:"{a}·{m}",medals:["स्वर्ण","रजत","कांस्य"],
+        toMedals:"मेडल पेज पर देखें",
+        rookie:"अभी शुरू किया हो तो भी ठीक है। नवागंतुक अवार्ड आपके लिए है — बाँटने के साहस के लिए।"},
+      "Tiếng Việt":{hdr:"Giải Món Cơ Bắp",
+        tabs:{popular:"Công Thức Được Yêu Thích",idea:"Giải Ý Tưởng",volume:"Giải Số Lượng",rookie:"Giải Tân Binh"},
+        desc:{popular:"Công thức được nhiều người nấu và tham khảo.",idea:"Ý tưởng độc đáo phá tan sự nhàm chán.",volume:"Người chia sẻ nhiều nhất.",rookie:"Người vừa bắt đầu và bước bước đầu tiên."},
+        unit:{popular:"thấy hữu ích",idea:"phiếu ý tưởng",volume:"công thức",rookie:"công thức của sự can đảm"},
+        badgeGot:"Đã nhận huy hiệu",badgeName:"{a} · {m}",medals:["Vàng","Bạc","Đồng"],
+        toMedals:"Xem ở trang huy chương",
+        rookie:"Mới bắt đầu cũng không sao. Giải Tân Binh dành cho bạn — vì sự can đảm chia sẻ."},
+      "Bahasa Indonesia":{hdr:"Penghargaan Menu Otot",
+        tabs:{popular:"Resep Populer",idea:"Penghargaan Ide",volume:"Penghargaan Jumlah",rookie:"Penghargaan Pemula"},
+        desc:{popular:"Resep yang dimasak dan dijadikan acuan banyak orang.",idea:"Ide orisinal yang memecah kebosanan.",volume:"Yang paling banyak berbagi.",rookie:"Yang baru mulai dan mengambil langkah pertama."},
+        unit:{popular:"merasa berguna",idea:"suara ide",volume:"resep",rookie:"resep keberanian"},
+        badgeGot:"Lencana diraih",badgeName:"{a} · {m}",medals:["Emas","Perak","Perunggu"],
+        toMedals:"Lihat di halaman medali",
+        rookie:"Baru mulai pun tak apa. Penghargaan Pemula untukmu — atas keberanian berbagi."}
+    };
+    var cur="日本語", dark=true, activeAward="popular";
+    var awardColor={popular:"#E0846A",idea:"#E3C56A",volume:"#8A9AE0",rookie:"#5DCAA5"};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84",podBg:"#1A1814",podBd:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",podBg:"#FBF7F1",podBd:"#F0EAE0",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderTabs(){
+      var d=D[cur]||D["English"];
+      $('awardVal').textContent=d.tabs[activeAward];
+    }
+    function renderAwardMenu(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var acc= dark?"#E3C56A":"#BA7517", titleCol=t.txt;
+      $('awardMenu').innerHTML="";
+      AWARDS.forEach(function(a){
+        var on=(activeAward===a);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:11px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div style="display:flex; align-items:center; gap:9px;"><span style="width:8px; height:8px; border-radius:50%; background:'+awardColor[a]+';"></span><span style="font-size:13px; color:'+(on?acc:titleCol)+'; font-weight:'+(on?"500":"400")+';">'+d.tabs[a]+'</span></div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); activeAward=a; $('awardMenu').style.display="none"; $('awardChev').className="ti ti-chevron-down"; renderTabs(); renderDesc(); renderPodium(); renderBadge(); };
+        $('awardMenu').appendChild(row);
+      });
+    }
+    function renderDesc(){
+      var d=D[cur]||D["English"]; $('awardDesc').textContent=d.desc[activeAward];
+    }
+    var medalGrad=[["#F5DE93","#C9A24E","#8a6a1e"],["#E8E8EC","#B8B8BE","#888890"],["#EBB98E","#CD8E5A","#8a5a2a"]]; // 金銀銅の[明,主,暗]
+    function podiumMedal(rank, size){
+      var g=medalGrad[rank], uid="pod"+rank+"_"+activeAward;
+      return '<svg viewBox="0 0 80 104" width="'+size+'" height="'+(size*1.3)+'" xmlns="http://www.w3.org/2000/svg">'+
+        '<defs><radialGradient id="'+uid+'" cx="38%" cy="30%" r="75%"><stop offset="0%" stop-color="'+g[0]+'"/><stop offset="68%" stop-color="'+g[1]+'"/><stop offset="100%" stop-color="'+g[2]+'"/></radialGradient></defs>'+
+        '<path d="M27 5 L40 46 L27 41 Z" fill="'+g[1]+'" opacity="0.9"/><path d="M53 5 L40 46 L53 41 Z" fill="'+g[2]+'" opacity="0.9"/>'+
+        '<circle cx="40" cy="67" r="30" fill="url(#'+uid+')" stroke="'+g[0]+'" stroke-width="1.5"/>'+
+        '<circle cx="40" cy="67" r="23" fill="none" stroke="'+g[2]+'" stroke-width="1.3" opacity="0.7"/>'+
+        '<circle cx="40" cy="67" r="24.5" fill="none" stroke="'+g[0]+'" stroke-width="0.6" opacity="0.6"/>'+
+        '<ellipse cx="31" cy="56" rx="9" ry="6" fill="#FFFFFF" opacity="0.3"/>'+
+        '<text x="40" y="75" text-anchor="middle" font-size="22" font-weight="700" fill="'+g[2]+'" font-family="Jost,sans-serif" opacity="0.85">'+(rank+1)+'</text>'+
+        '</svg>';
+    }
+    function podiumCol(winner, rank, t, d){
+      var heights=[74,54,44]; // 台座の高さ 1,2,3位
+      var col=medalCol[rank];
+      var order=[1,0,2][rank]; // 中央=1位
+      var h=heights[rank];
+      var msize=rank===0?70:58;
+      return {order:order, html:
+        '<div style="display:flex; flex-direction:column; align-items:center; width:100px;">'+
+          '<div style="margin:0 0 6px;">'+podiumMedal(rank,msize)+'</div>'+
+          '<span style="font-size:15px; margin:0 0 3px;">'+winner.a+'</span>'+
+          '<p style="font-size:11px; color:'+t.txt+'; margin:0 0 2px; font-weight:500; text-align:center; max-width:96px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">'+winner.n+'</p>'+
+          '<p style="font-size:10px; color:'+awardColor[activeAward]+'; margin:0 0 8px;">'+winner.v+' '+(d.unit[activeAward])+'</p>'+
+          '<div style="width:100%; height:'+h+'px; background:linear-gradient(180deg,'+col+'33,'+t.podBg+'); border:0.5px solid '+col+'66; border-top:2px solid '+col+'; border-radius:8px 8px 0 0;"></div>'+
+        '</div>'};
+    }
+    function renderPodium(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var winners=WINNERS[activeAward];
+      var cols=winners.map(function(w,i){ return podiumCol(w,i,t,d); });
+      cols.sort(function(a,b){ return a.order-b.order; });
+      $('podium').innerHTML=cols.map(function(c){return c.html;}).join("");
+    }
+    function renderBadge(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      // デモ：自分はアイデア賞・銅を獲得したとする（activeが何であれ、その賞の銅を演出）
+      var col=awardColor[activeAward];
+      var medal='<svg viewBox="0 0 80 104" width="76" height="99" xmlns="http://www.w3.org/2000/svg">'+
+        '<defs><radialGradient id="abg" cx="38%" cy="32%" r="75%"><stop offset="0%" stop-color="#F5DE93"/><stop offset="70%" stop-color="'+col+'"/><stop offset="100%" stop-color="#8a5a2a"/></radialGradient></defs>'+
+        '<path d="M28 6 L40 44 L28 40 Z" fill="'+col+'" opacity="0.9"/><path d="M52 6 L40 44 L52 40 Z" fill="#8a5a2a" opacity="0.9"/>'+
+        '<circle cx="40" cy="66" r="30" fill="url(#abg)" stroke="#F5DE93" stroke-width="1.5"/>'+
+        '<circle cx="40" cy="66" r="23" fill="none" stroke="#8a5a2a" stroke-width="1.2" opacity="0.6"/>'+
+        '<ellipse cx="31" cy="55" rx="9" ry="6" fill="#FFFFFF" opacity="0.3"/></svg>';
+      $('badgeMedal').innerHTML=medal;
+      $('badgeMedal').firstChild && $('badgeMedal').firstChild.classList.add('medalPop');
+      $('badgeGot').textContent=d.badgeGot;
+      $('badgeName').textContent=d.badgeName.replace("{a}",d.tabs[activeAward]).replace("{m}",d.medals[2]);
+      $('toMedalsLbl').textContent=d.toMedals;
+      // きらめき生成
+      spawnSparkles();
+    }
+    function spawnSparkles(){
+      var wrap=$('sparkles'); if(!wrap) return; wrap.innerHTML="";
+      var n=10;
+      for(var i=0;i<n;i++){
+        var ang=(Math.PI*2)*(i/n)+Math.random()*0.4;
+        var dist=42+Math.random()*22;
+        var dx=Math.cos(ang)*dist, dy=Math.sin(ang)*dist - 20;
+        var s=document.createElement('div');
+        s.style.cssText="position:absolute; left:50%; top:40%; width:6px; height:6px; border-radius:50%; background:#F0D98A; pointer-events:none; --dx:"+dx+"px; --dy:"+dy+"px; animation:sparkFly 1s ease-out forwards; animation-delay:"+(Math.random()*0.3)+"s; box-shadow:0 0 6px #E3C56A;";
+        wrap.appendChild(s);
+      }
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('rookieMsg').textContent=d.rookie;
+      renderTabs(); renderDesc(); renderPodium(); renderBadge();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('awardDesc').style.color=t.sub;
+      $('awardSelect').style.background=t.card; $('awardSelect').style.borderColor=t.cardBd;
+      $('awardVal').style.color=t.txt;
+      $('awardMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('awardMenu').style.borderColor= dark?"#3A352A":"#E8E0CE";
+      $('badgeCard').style.background= dark?"linear-gradient(140deg,#221E12,#1A1813)":"linear-gradient(140deg,#FBF3E0,#FBF7F1)"; $('badgeCard').style.borderColor= dark?"#3A3220":"#EADCBE";
+      $('badgeGot').style.color=t.txt;
+      $('toMedals').style.background=t.accent; $('toMedals').style.color= dark?"#16140F":"#FFFFFF";
+      $('rookieCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('rookieCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('rookieMsg').style.color= dark?"#C9E3D8":"#2E5D4E";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderTabs(); renderPodium();
+    }
+    $('awardSelect').onclick=function(e){ e.stopPropagation(); var open=($('awardMenu').style.display==="block"); if(open){ $('awardMenu').style.display="none"; $('awardChev').className="ti ti-chevron-down"; } else { renderAwardMenu(); $('awardMenu').style.display="block"; $('awardChev').className="ti ti-chevron-up"; $('langMenu').style.display="none"; } };
+    $('awardMenu').onclick=function(e){ e.stopPropagation(); };
+    $('toMedals').onclick=function(){ spawnSparkles(); var mp=$('badgeMedal').firstChild; if(mp){ mp.classList.remove('medalPop'); void mp.offsetWidth; mp.classList.add('medalPop'); } };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; $('awardMenu').style.display="none"; $('awardChev').className="ti ti-chevron-down"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>

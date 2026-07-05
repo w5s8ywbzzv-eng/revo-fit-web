@@ -1,0 +1,183 @@
+# revo fit — 記録 → ホーム「メモリ」反映 データ連携 設計書
+
+**目的**：記録画面（`revo_fit_log_black.html`）で入力・保存した内容を、ホーム画面（`revo_fit_home_black.html`）の「メモリ」＝総合スコアのリングと要素別ゲージにリアルタイムで反映し、増減が正しく機能するようにする。
+
+> この設計書は Claude Code での実装用。現状のモックは各画面が独立HTMLで、画面間のデータ受け渡し（状態管理・DB）は未実装。ここではその繋ぎ方を定義する。**モックの見た目・アニメーション・文言は変えないこと。**
+
+---
+
+## 1. 「メモリ」の正体（ホーム画面の可視化要素）
+
+ホーム画面 `revo_fit_home_black.html` に、反映先が3つある。
+
+### (A) 総合スコアのリング
+- SVG要素 `#fitArc`（円の進捗）と `#fitNum`（中央の数値）。
+- 現在ハードコード：`var target=78;`（この 78 が総合スコア）。
+- 円の進捗量の計算：`end = 628 - (628 × score/100)` を `#fitArc` の `stroke-dashoffset` に設定（full=628＝半径100の円周）。
+- **ここを「記録から計算した総合スコア」で動的に置き換える。**
+
+### (B) 要素別ゲージ（睡眠・食事・運動・回復）
+- 配列 `var FACTORS=[["sleep","ti-moon",82],["food","ti-salad",58],["move","ti-flame",80],["recover","ti-heart",76]];`
+- 各要素の第3値（82,58,80,76）がスコア。これが下のゲージ幅と数値・色に反映される。
+- 色分け（`scoreColor`）：**75以上=緑 #5DCAA5／60以上=金 #E3C56A／未満=オレンジ #E0936A**。
+- **この4値を「記録から計算した要素別スコア」で動的に置き換える。**
+
+### (C) 総合スコア = 要素別スコアの加重平均
+- 総合スコア(A) は要素別(B) から算出する。推奨の重み：**睡眠25% / 食事30% / 運動25% / 回復20%**。
+  - 例）0.25×82 + 0.30×58 + 0.25×80 + 0.20×76 = 20.5+17.4+20+15.2 = **73.1 → 73**。
+  - ※ 現状モックの 78 は仮値。実装では上式で算出した値に統一する。
+- 重み配分は最終的にプロダクト判断で調整可（この設計書の値を初期値とする）。
+
+---
+
+## 2. 記録画面の入力 → どの要素スコアに効くか（連携マップ）
+
+記録画面 `revo_fit_log_black.html` の入力を、4要素スコアに写像する。
+
+| 記録の入力 | 効く要素 | 効き方（増減の向き） |
+|---|---|---|
+| 睡眠時間・睡眠の質 | **睡眠 sleep** | 適正時間（例7〜8h）に近いほど加点。過不足で減点。 |
+| 食事（カロリー・PFCバランス・記録の有無） | **食事 food** | 目標比の達成度で加点。records が空だと低め。 |
+| 水分（白湯/水/お茶/プロテイン/EAA の合計 ml） | **食事 food（従属）** or 回復 | 目標 ml への到達で加点。※重み小。 |
+| 運動（トレーニング実施・強度・消費） | **運動 move** | 実施で加点。強度・継続で上乗せ。 |
+| 体組成（体重・体脂肪・筋肉量） | **回復 recover / 傾向指標** | 単日スコアには直結させず「傾向（増減トレンド）」として扱う。急変時のみ回復に軽く反映。 |
+| 筋肉痛・コンディション（記録画面のcondition） | **回復 recover** | 良好で加点、要休養で減点（＝「休むのが正解」を数値化）。 |
+
+### 体重など「大きい数値」の扱い（重要）
+- 体重・体脂肪・筋肉量は**その日のスコアを直接上下させない**。理由：1日の増減に一喜一憂させない設計思想（食事セクションの「調整しないことが原因」と同じ哲学）。
+- 代わりに **7日移動平均のトレンド**として保持し、分析画面 `revo_fit_analysis_black.html` と予測 `revo_fit_forecast_black.html` に流す。
+- ホームのメモリ（リング）には、体組成は「回復」経由でごく軽くしか効かせない。
+
+---
+
+## 3. データフロー（保存 → 反映）
+
+```
+[記録画面] ユーザーが入力（＋−ボタン / 直接入力）
+    ↓ 「保存」タップ
+[状態層] 当日レコードを upsert（1ユーザー×1日=1レコード）
+    ↓ 保存完了イベント
+[スコア計算] 要素別スコア(sleep/food/move/recover)を再計算
+    → 総合スコア = 加重平均
+    ↓
+[ホーム画面] 再訪 or リアルタイム購読で
+    #fitNum・#fitArc・FACTORS を新しい値で再描画（既存のアニメで増減）
+```
+
+### 保存の単位
+- **1ユーザー × 1日 = 1レコード**（`daily_log`）。同日中の再保存は上書き（upsert）。
+- 保存時に `updated_at` を更新。ホームはこの日付のレコードを読む。
+
+---
+
+## 4. 推奨データモデル（Supabase / Postgres 想定）
+
+```sql
+-- 日次記録（記録画面の保存先）
+create table daily_log (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id),
+  log_date date not null,
+  -- 睡眠
+  sleep_hours numeric,          -- 例 7.5
+  sleep_quality int,            -- 1-5
+  -- 食事
+  kcal int,
+  protein_g numeric, fat_g numeric, carb_g numeric,
+  meals_logged int default 0,   -- 記録した食事の数
+  -- 水分（種類別 ml、合計は算出）
+  water_ml int default 0,
+  -- 運動
+  workout_done boolean default false,
+  workout_intensity int,        -- 1-5
+  kcal_burned int,
+  -- 体組成（トレンド用・スコア直結させない）
+  body_weight numeric,          -- 68.2
+  body_fat numeric,             -- 18.4
+  body_muscle numeric,          -- 31.6
+  -- コンディション
+  condition_note text,
+  muscle_sore boolean default false,
+  updated_at timestamptz default now(),
+  unique(user_id, log_date)     -- 1日1レコード（upsertキー）
+);
+
+-- 算出済みスコア（ホームが読む。保存トリガーで再計算 or ビュー）
+create table daily_score (
+  user_id uuid not null,
+  log_date date not null,
+  sleep_score int, food_score int, move_score int, recover_score int,
+  total_score int,             -- 加重平均
+  updated_at timestamptz default now(),
+  primary key(user_id, log_date)
+);
+```
+
+- `daily_score` は保存時トリガー（または Edge Function）で `daily_log` から再計算して upsert。
+- ホームは `daily_score` の当日行を読むだけ（軽い）。
+
+---
+
+## 5. スコア計算ロジック（初期版・実装の出発点）
+
+各要素 0–100 で算出。あくまで初期値、運用で調整。
+
+```
+sleep_score  = clamp(100 - |sleep_hours - 7.5| × 12, 0, 100)   // 7.5hが満点、離れるほど減
+food_score   = round( 0.6×pfcBalanceScore + 0.3×kcalGoalScore + 0.1×min(meals_logged/3,1)×100 )
+move_score   = workout_done ? clamp(60 + workout_intensity×8, 0, 100) : 30
+recover_score= clamp(base - (muscle_sore?15:0) + conditionAdj, 0, 100)
+
+total_score  = round(0.25×sleep + 0.30×food + 0.25×move + 0.20×recover)
+```
+
+- `pfcBalanceScore`：目標PFC比への近さ。`kcalGoalScore`：目標カロリー達成度（過不足で減点）。
+- **食事を1つも記録していない日は food_score を低め**に（モックの初期 58 はこの状態を表す）。
+- 数値はすべて **DB取得値に置換**。新規ユーザーは全要素データなし→**エンプティステート**（下記6）。
+
+---
+
+## 6. エンプティステート（新規ユーザー・未記録日）
+
+- 記録がゼロの新規ユーザーでは、スコアを「78」等の見せかけ数字にしない。
+- リングは 0 or 「--」表示、要素ゲージも空。「最初の記録をしよう」への導線を出す。
+- 1項目でも記録されたら、その要素だけ点灯し、総合は「記録済み要素のみで暫定表示（残りは未計測）」とする。
+- ※ ROADMAP 13章「エンプティステート」と整合させる。
+
+---
+
+## 7. ホーム画面側の改修ポイント（既存モックのどこを繋ぐか）
+
+`revo_fit_home_black.html` 内、以下を「固定値 → 取得値」に差し替える。**見た目・アニメーションは維持。**
+
+1. `var FACTORS=[["sleep","ti-moon",82],...]` の各スコア値 → `daily_score` の sleep/food/move/recover_score に差し替え。
+2. `var target=78;` → `daily_score.total_score` に差し替え（既存の増減アニメ `ease()` はそのまま活かす＝値が変われば自然に増減アニメで動く）。
+3. 「今日の一手」`nextTtl/nextSub`（例：食事スコアが低め→たんぱく質提案）→ 最も低い要素スコアから動的生成すると更に良い（任意・第2段階）。
+4. 数値が変わると `scoreColor()` により色（緑/金/オレンジ）も自動追従するので、色は追加実装不要。
+
+> 既存の増減アニメーション（`fitArc` の dashoffset を 628→目標へ補間、`fitNum` を 0→目標へカウントアップ）は**そのまま再利用**。値だけ差し替えれば「メモリが増減する」挙動になる。
+
+---
+
+## 8. リアルタイム反映の実装オプション
+
+- **簡易**：記録保存後にホームへ戻る導線で、ホーム表示時に `daily_score` を再取得して再描画（十分実用的）。
+- **本格**：Supabase Realtime で `daily_score` の当日行を購読。記録保存→トリガー再計算→ホームが購読で自動更新。
+- どちらでも既存アニメが「増減」を表現するので、UXは保たれる。
+
+---
+
+## 9. 実装チェックリスト
+
+- [ ] `daily_log` / `daily_score` テーブル作成、upsert(user_id, log_date)。
+- [ ] 記録画面「保存」→ `daily_log` upsert → スコア再計算 → `daily_score` upsert。
+- [ ] ホーム画面の `FACTORS` 各値・`target` を `daily_score` から注入（固定値撤去）。
+- [ ] 既存の増減アニメ（ease/カウントアップ/dashoffset）を維持したまま値差し替え。
+- [ ] `scoreColor` の色追従が新値で正しく効くか確認（75/60境界）。
+- [ ] 体組成はスコア直結せず7日移動平均でトレンド化（分析・予測へ）。
+- [ ] 新規/未記録日のエンプティステート（78等の偽値を出さない）。
+- [ ] 数値入力は＋−と直接入力の併用（記録画面で実装済みの方針を全数値項目へ）。
+
+---
+
+**要点**：ホームの「メモリ」は `#fitArc`＋`#fitNum`＋`FACTORS` の3点。記録の入力を4要素スコアに写像し、加重平均で総合スコアを出し、それらをホームに注入すれば、既存の増減アニメがそのまま「メモリの増減」として機能する。体重など大きい数値は一喜一憂させないためスコア直結せずトレンド化する——これが revo の思想に沿った優しい設計。

@@ -1,0 +1,400 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">レシピを投稿。あなたのアイデアを分け合う。写真・料理名・タグ・材料・作り方・栄養・手間を入れる。タグは既存を提案して表記ゆれを防ぎ、新しく作ることもできる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <span id="closeTxt" style="font-size:14px; color:#8A7E68; cursor:pointer;">とじる</span>
+    <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">レシピを投稿</p>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button id="langBtn" aria-label="言語" style="width:30px; height:30px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:15px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:30px; height:30px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:15px; color:#E3C56A;" aria-hidden="true"></i></button>
+      <button id="postBtn" style="background:#E3C56A; border:none; color:#16140F; font-size:13px; font-weight:600; padding:8px 16px; border-radius:999px; cursor:pointer;">投稿</button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:50px; right:16px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:18px 16px 0; max-height:600px; overflow-y:auto;">
+
+    <!-- 写真 -->
+    <p id="photoLbl" class="secLbl" style="font-size:12px; color:#A89C84; margin:0 0 8px; font-weight:500;">料理写真（あれば）</p>
+    <div id="addPhoto" style="width:100%; height:120px; background:#1A1814; border:0.5px dashed #4A4232; border-radius:13px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; margin:0 0 20px;">
+      <i class="ti ti-camera-plus" style="font-size:26px; color:#8A7E68;" aria-hidden="true"></i>
+      <span id="photoHint" style="font-size:11px; color:#6E6555;">タップして写真を追加</span>
+    </div>
+
+    <!-- 料理名 -->
+    <p id="nameLbl" class="secLbl" style="font-size:12px; color:#A89C84; margin:0 0 8px; font-weight:500;">料理名 <span class="req" style="color:#E0846A;">*</span></p>
+    <input id="nameInput" type="text" placeholder="例：レンジ蒸し鶏のピリ辛だれ" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:11px; padding:12px 14px; font-size:14px; color:#F0EBE2; margin:0 0 20px; outline:none;">
+
+    <!-- タグ -->
+    <p id="tagLbl" class="secLbl" style="font-size:12px; color:#A89C84; margin:0 0 4px; font-weight:500;">タグ</p>
+    <p id="tagHint" style="font-size:11px; color:#6E6555; margin:0 0 8px; line-height:1.5;">みんなが見つけやすくなります。入力すると候補が出ます。</p>
+    <!-- 選択済みタグ -->
+    <div id="selTags" style="display:flex; flex-wrap:wrap; gap:6px; margin:0 0 8px;"></div>
+    <div style="position:relative; margin:0 0 20px;">
+      <input id="tagInput" type="text" placeholder="例：宅トレ飯" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:11px; padding:12px 14px; font-size:14px; color:#F0EBE2; outline:none;">
+      <div id="tagSuggest" style="display:none; position:absolute; left:0; right:0; margin-top:5px; background:#1F1C16; border:0.5px solid #3A352A; border-radius:12px; padding:6px; box-shadow:0 14px 34px -10px rgba(0,0,0,0.7); z-index:20; max-height:220px; overflow-y:auto;"></div>
+    </div>
+
+    <!-- 材料 -->
+    <p id="ingLbl" class="secLbl" style="font-size:12px; color:#A89C84; margin:0 0 8px; font-weight:500;">材料 <span class="req" style="color:#E0846A;">*</span></p>
+    <div id="ingList" style="display:flex; flex-direction:column; gap:8px; margin:0 0 10px;"></div>
+    <button id="addIng" style="display:flex; align-items:center; gap:6px; background:transparent; border:0.5px dashed #3A352A; color:#B0A488; font-size:12px; padding:9px 14px; border-radius:10px; cursor:pointer; margin:0 0 20px;"><i class="ti ti-plus" style="font-size:15px;"></i><span id="addIngLbl">材料を追加</span></button>
+
+    <!-- 作り方 -->
+    <p id="stepLbl" class="secLbl" style="font-size:12px; color:#A89C84; margin:0 0 8px; font-weight:500;">作り方 <span class="req" style="color:#E0846A;">*</span></p>
+    <div id="stepList" style="display:flex; flex-direction:column; gap:10px; margin:0 0 10px;"></div>
+    <button id="addStep" style="display:flex; align-items:center; gap:6px; background:transparent; border:0.5px dashed #3A352A; color:#B0A488; font-size:12px; padding:9px 14px; border-radius:10px; cursor:pointer; margin:0 0 20px;"><i class="ti ti-plus" style="font-size:15px;"></i><span id="addStepLbl">工程を追加</span></button>
+
+    <!-- PFC＋カロリー -->
+    <p id="pfcLbl" class="secLbl" style="font-size:12px; color:#A89C84; margin:0 0 8px; font-weight:500;">栄養（1食あたり）</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:0 0 20px;">
+      <div class="pfcField"><span class="pfcCap" data-k="kcal" style="font-size:11px; color:#8A7E68;">カロリー</span><div style="display:flex; align-items:center; gap:5px; margin-top:4px;"><input class="pfcInput" data-k="kcal" type="number" placeholder="280" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:9px; padding:9px 11px; font-size:13px; color:#F0EBE2; outline:none;"><span class="pfcUnit" style="font-size:11px; color:#6E6555;">kcal</span></div></div>
+      <div class="pfcField"><span class="pfcCap" data-k="p" style="font-size:11px; color:#8A7E68;">たんぱく質</span><div style="display:flex; align-items:center; gap:5px; margin-top:4px;"><input class="pfcInput" data-k="p" type="number" placeholder="32" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:9px; padding:9px 11px; font-size:13px; color:#F0EBE2; outline:none;"><span class="pfcUnit" style="font-size:11px; color:#6E6555;">g</span></div></div>
+      <div class="pfcField"><span class="pfcCap" data-k="f" style="font-size:11px; color:#8A7E68;">脂質</span><div style="display:flex; align-items:center; gap:5px; margin-top:4px;"><input class="pfcInput" data-k="f" type="number" placeholder="8" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:9px; padding:9px 11px; font-size:13px; color:#F0EBE2; outline:none;"><span class="pfcUnit" style="font-size:11px; color:#6E6555;">g</span></div></div>
+      <div class="pfcField"><span class="pfcCap" data-k="c" style="font-size:11px; color:#8A7E68;">炭水化物</span><div style="display:flex; align-items:center; gap:5px; margin-top:4px;"><input class="pfcInput" data-k="c" type="number" placeholder="14" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:9px; padding:9px 11px; font-size:13px; color:#F0EBE2; outline:none;"><span class="pfcUnit" style="font-size:11px; color:#6E6555;">g</span></div></div>
+    </div>
+
+    <!-- 手間 -->
+    <p id="effLbl" class="secLbl" style="font-size:12px; color:#A89C84; margin:0 0 8px; font-weight:500;">手間（あてはまるものを選ぶ）</p>
+    <div id="effWrap" style="display:flex; flex-wrap:wrap; gap:8px; margin:0 0 20px;"></div>
+
+    <!-- 公開範囲 -->
+    <div id="scopeRow" style="display:flex; align-items:center; justify-content:space-between; background:#1A1814; border-radius:11px; padding:13px 14px; margin:0 0 20px; cursor:pointer; transition:background 0.35s;">
+      <div style="display:flex; align-items:center; gap:10px;"><i class="ti ti-users" style="font-size:18px; color:#8A7E68;" aria-hidden="true"></i><span id="scopeLbl" style="font-size:13px; color:#E8E2D6;">公開する範囲</span></div>
+      <div style="display:flex; align-items:center; gap:5px;"><span id="scopeVal" style="font-size:12px; color:#8A7E68;">みんなに</span><i class="ti ti-chevron-right" style="font-size:15px; color:#6E6555;" aria-hidden="true"></i></div>
+    </div>
+
+  </div>
+
+  <div style="height:16px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 既存タグ（サジェスト用・使用数付き）
+    var TAGS={
+      home:{count:342,label:{"日本語":"宅トレ飯","English":"homegym"}},
+      zubora:{count:289,label:{"日本語":"ズボラ飯","English":"lazymeal"}},
+      bulkmax:{count:214,label:{"日本語":"増量爆盛り","English":"bulkmax"}},
+      cutting:{count:176,label:{"日本語":"減量中","English":"cutting"}},
+      cheatday:{count:156,label:{"日本語":"チートデイ","English":"cheatday"}},
+      nightshift:{count:98,label:{"日本語":"夜勤飯","English":"nightshift"}},
+      highprotein:{count:512,label:{"日本語":"高たんぱく","English":"highprotein"}},
+      lowcal:{count:388,label:{"日本語":"低カロリー","English":"lowcalorie"}},
+      mealprep:{count:274,label:{"日本語":"作り置き","English":"mealprep"}},
+      pescatarian:{count:64,label:{"日本語":"魚食","English":"pescatarian"}}
+    };
+    var D={
+      "日本語":{hdr:"レシピを投稿",close:"とじる",post:"投稿",
+        photo:"料理写真（あれば）",photoHint:"タップして写真を追加",
+        name:"料理名",namePh:"例：レンジ蒸し鶏のピリ辛だれ",
+        tag:"タグ",tagHint:"みんなが見つけやすくなります。入力すると候補が出ます。",tagPh:"例：宅トレ飯",
+        tagUsed:"{n}件",tagNew:"新しいタグ「{t}」を作る",
+        ing:"材料",addIng:"材料を追加",ingNamePh:"材料名",ingAmtPh:"分量",
+        step:"作り方",addStep:"工程を追加",stepPh:"手順を書く",
+        pfc:"栄養（1食あたり）",pfcCap:{kcal:"カロリー",p:"たんぱく質",f:"脂質",c:"炭水化物"},
+        eff:"手間（あてはまるものを選ぶ）",effs:{noKnife:"包丁いらず",noBoard:"まな板いらず",lessWash:"洗い物少",micro:"レンジだけ"},
+        scope:"公開する範囲",scopeVal:"みんなに"},
+      "English":{hdr:"Post a recipe",close:"Close",post:"Post",
+        photo:"Dish photo (optional)",photoHint:"Tap to add a photo",
+        name:"Dish name",namePh:"e.g. Microwave steamed chicken",
+        tag:"Tags",tagHint:"Helps others find it. Type to see suggestions.",tagPh:"e.g. homegym",
+        tagUsed:"{n} used",tagNew:"Create new tag \"{t}\"",
+        ing:"Ingredients",addIng:"Add ingredient",ingNamePh:"Ingredient",ingAmtPh:"Amount",
+        step:"Steps",addStep:"Add step",stepPh:"Write a step",
+        pfc:"Nutrition (per serving)",pfcCap:{kcal:"Calories",p:"Protein",f:"Fat",c:"Carbs"},
+        eff:"Effort (select what applies)",effs:{noKnife:"No knife",noBoard:"No board",lessWash:"Less washing",micro:"Microwave only"},
+        scope:"Who can see this",scopeVal:"Everyone"},
+      "简体中文":{hdr:"发布食谱",close:"关闭",post:"发布",
+        photo:"料理照片（可选）",photoHint:"点击添加照片",
+        name:"料理名",namePh:"例：微波蒸鸡配香辣酱",
+        tag:"标签",tagHint:"方便大家找到。输入会出现候选。",tagPh:"例：居家健身餐",
+        tagUsed:"{n}次",tagNew:"创建新标签「{t}」",
+        ing:"材料",addIng:"添加材料",ingNamePh:"材料名",ingAmtPh:"分量",
+        step:"做法",addStep:"添加步骤",stepPh:"写下步骤",
+        pfc:"营养（每份）",pfcCap:{kcal:"热量",p:"蛋白质",f:"脂肪",c:"碳水"},
+        eff:"省事（选择适用的）",effs:{noKnife:"免刀",noBoard:"免砧板",lessWash:"少洗碗",micro:"只用微波炉"},
+        scope:"公开范围",scopeVal:"所有人"},
+      "繁體中文":{hdr:"發布食譜",close:"關閉",post:"發布",
+        photo:"料理照片（可選）",photoHint:"點擊新增照片",
+        name:"料理名",namePh:"例：微波蒸雞配香辣醬",
+        tag:"標籤",tagHint:"方便大家找到。輸入會出現候選。",tagPh:"例：居家健身餐",
+        tagUsed:"{n}次",tagNew:"建立新標籤「{t}」",
+        ing:"材料",addIng:"新增材料",ingNamePh:"材料名",ingAmtPh:"分量",
+        step:"做法",addStep:"新增步驟",stepPh:"寫下步驟",
+        pfc:"營養（每份）",pfcCap:{kcal:"熱量",p:"蛋白質",f:"脂肪",c:"碳水"},
+        eff:"省事（選擇適用的）",effs:{noKnife:"免刀",noBoard:"免砧板",lessWash:"少洗碗",micro:"只用微波爐"},
+        scope:"公開範圍",scopeVal:"所有人"},
+      "한국어":{hdr:"레시피 올리기",close:"닫기",post:"올리기",
+        photo:"요리 사진(선택)",photoHint:"탭하여 사진 추가",
+        name:"요리 이름",namePh:"예: 전자레인지 닭찜",
+        tag:"태그",tagHint:"다른 사람이 찾기 쉬워요. 입력하면 추천이 나와요.",tagPh:"예: 홈트밥",
+        tagUsed:"{n}회",tagNew:"새 태그 \"{t}\" 만들기",
+        ing:"재료",addIng:"재료 추가",ingNamePh:"재료명",ingAmtPh:"분량",
+        step:"만드는 법",addStep:"단계 추가",stepPh:"순서를 적기",
+        pfc:"영양(1인분)",pfcCap:{kcal:"칼로리",p:"단백질",f:"지방",c:"탄수화물"},
+        eff:"수고(해당되는 것 선택)",effs:{noKnife:"칼 없이",noBoard:"도마 없이",lessWash:"설거지 적게",micro:"전자레인지만"},
+        scope:"공개 범위",scopeVal:"모두에게"},
+      "ภาษาไทย":{hdr:"โพสต์สูตร",close:"ปิด",post:"โพสต์",
+        photo:"รูปอาหาร (ถ้ามี)",photoHint:"แตะเพื่อเพิ่มรูป",
+        name:"ชื่อเมนู",namePh:"เช่น ไก่นึ่งไมโครเวฟ",
+        tag:"แท็ก",tagHint:"ช่วยให้คนอื่นเจอง่ายขึ้น พิมพ์เพื่อดูคำแนะนำ",tagPh:"เช่น ออกกำลังที่บ้าน",
+        tagUsed:"{n} ครั้ง",tagNew:"สร้างแท็กใหม่ \"{t}\"",
+        ing:"วัตถุดิบ",addIng:"เพิ่มวัตถุดิบ",ingNamePh:"ชื่อวัตถุดิบ",ingAmtPh:"ปริมาณ",
+        step:"วิธีทำ",addStep:"เพิ่มขั้นตอน",stepPh:"เขียนขั้นตอน",
+        pfc:"โภชนาการ (ต่อจาน)",pfcCap:{kcal:"แคลอรี่",p:"โปรตีน",f:"ไขมัน",c:"คาร์บ"},
+        eff:"ความง่าย (เลือกที่ตรง)",effs:{noKnife:"ไม่ใช้มีด",noBoard:"ไม่ใช้เขียง",lessWash:"ล้างน้อย",micro:"ไมโครเวฟล้วน"},
+        scope:"ใครเห็นได้บ้าง",scopeVal:"ทุกคน"},
+      "Français":{hdr:"Publier une recette",close:"Fermer",post:"Publier",
+        photo:"Photo du plat (facultatif)",photoHint:"Toucher pour ajouter une photo",
+        name:"Nom du plat",namePh:"ex : Poulet vapeur micro-ondes",
+        tag:"Tags",tagHint:"Aide les autres à trouver. Tapez pour voir des suggestions.",tagPh:"ex : homegym",
+        tagUsed:"{n} fois",tagNew:"Créer le tag \"{t}\"",
+        ing:"Ingrédients",addIng:"Ajouter un ingrédient",ingNamePh:"Ingrédient",ingAmtPh:"Quantité",
+        step:"Étapes",addStep:"Ajouter une étape",stepPh:"Décrire une étape",
+        pfc:"Nutrition (par portion)",pfcCap:{kcal:"Calories",p:"Protéines",f:"Lipides",c:"Glucides"},
+        eff:"Effort (cochez ce qui s'applique)",effs:{noKnife:"Sans couteau",noBoard:"Sans planche",lessWash:"Peu de vaisselle",micro:"Micro-ondes seul"},
+        scope:"Qui peut voir",scopeVal:"Tout le monde"},
+      "Español":{hdr:"Publicar receta",close:"Cerrar",post:"Publicar",
+        photo:"Foto del plato (opcional)",photoHint:"Toca para añadir foto",
+        name:"Nombre del plato",namePh:"ej: Pollo al microondas",
+        tag:"Etiquetas",tagHint:"Ayuda a que otros la encuentren. Escribe para ver sugerencias.",tagPh:"ej: gimnasiocasa",
+        tagUsed:"{n} veces",tagNew:"Crear etiqueta \"{t}\"",
+        ing:"Ingredientes",addIng:"Añadir ingrediente",ingNamePh:"Ingrediente",ingAmtPh:"Cantidad",
+        step:"Pasos",addStep:"Añadir paso",stepPh:"Escribe un paso",
+        pfc:"Nutrición (por ración)",pfcCap:{kcal:"Calorías",p:"Proteína",f:"Grasa",c:"Carbohidratos"},
+        eff:"Esfuerzo (marca lo que aplique)",effs:{noKnife:"Sin cuchillo",noBoard:"Sin tabla",lessWash:"Menos platos",micro:"Solo microondas"},
+        scope:"Quién puede verlo",scopeVal:"Todos"},
+      "Deutsch":{hdr:"Rezept posten",close:"Schließen",post:"Posten",
+        photo:"Gericht-Foto (optional)",photoHint:"Zum Hinzufügen tippen",
+        name:"Gericht-Name",namePh:"z.B. Mikrowellen-Hähnchen",
+        tag:"Tags",tagHint:"Hilft anderen beim Finden. Tippen für Vorschläge.",tagPh:"z.B. homegym",
+        tagUsed:"{n}×",tagNew:"Neuen Tag \"{t}\" erstellen",
+        ing:"Zutaten",addIng:"Zutat hinzufügen",ingNamePh:"Zutat",ingAmtPh:"Menge",
+        step:"Schritte",addStep:"Schritt hinzufügen",stepPh:"Schritt beschreiben",
+        pfc:"Nährwerte (pro Portion)",pfcCap:{kcal:"Kalorien",p:"Protein",f:"Fett",c:"Kohlenhydrate"},
+        eff:"Aufwand (Zutreffendes wählen)",effs:{noKnife:"Ohne Messer",noBoard:"Ohne Brett",lessWash:"Weniger Abwasch",micro:"Nur Mikrowelle"},
+        scope:"Wer es sehen kann",scopeVal:"Alle"},
+      "Italiano":{hdr:"Pubblica ricetta",close:"Chiudi",post:"Pubblica",
+        photo:"Foto del piatto (facoltativo)",photoHint:"Tocca per aggiungere foto",
+        name:"Nome del piatto",namePh:"es: Pollo al microonde",
+        tag:"Tag",tagHint:"Aiuta gli altri a trovarla. Scrivi per i suggerimenti.",tagPh:"es: homegym",
+        tagUsed:"{n} volte",tagNew:"Crea il tag \"{t}\"",
+        ing:"Ingredienti",addIng:"Aggiungi ingrediente",ingNamePh:"Ingrediente",ingAmtPh:"Quantità",
+        step:"Preparazione",addStep:"Aggiungi passaggio",stepPh:"Scrivi un passaggio",
+        pfc:"Valori (a porzione)",pfcCap:{kcal:"Calorie",p:"Proteine",f:"Grassi",c:"Carboidrati"},
+        eff:"Sforzo (seleziona ciò che vale)",effs:{noKnife:"Senza coltello",noBoard:"Senza tagliere",lessWash:"Pochi piatti",micro:"Solo microonde"},
+        scope:"Chi può vederla",scopeVal:"Tutti"},
+      "Português":{hdr:"Publicar receita",close:"Fechar",post:"Publicar",
+        photo:"Foto do prato (opcional)",photoHint:"Toque para adicionar foto",
+        name:"Nome do prato",namePh:"ex: Frango na micro-ondas",
+        tag:"Tags",tagHint:"Ajuda outros a encontrar. Digite para ver sugestões.",tagPh:"ex: homegym",
+        tagUsed:"{n} vezes",tagNew:"Criar tag \"{t}\"",
+        ing:"Ingredientes",addIng:"Adicionar ingrediente",ingNamePh:"Ingrediente",ingAmtPh:"Quantidade",
+        step:"Modo de fazer",addStep:"Adicionar passo",stepPh:"Escreva um passo",
+        pfc:"Nutrição (por porção)",pfcCap:{kcal:"Calorias",p:"Proteína",f:"Gordura",c:"Carboidratos"},
+        eff:"Esforço (marque o que se aplica)",effs:{noKnife:"Sem faca",noBoard:"Sem tábua",lessWash:"Menos louça",micro:"Só micro-ondas"},
+        scope:"Quem pode ver",scopeVal:"Todos"},
+      "हिन्दी":{hdr:"रेसिपी पोस्ट करें",close:"बंद करें",post:"पोस्ट",
+        photo:"व्यंजन फोटो (वैकल्पिक)",photoHint:"फोटो जोड़ने के लिए टैप करें",
+        name:"व्यंजन का नाम",namePh:"जैसे: माइक्रोवेव चिकन",
+        tag:"टैग",tagHint:"दूसरों को ढूँढने में आसानी। लिखने पर सुझाव आएँगे।",tagPh:"जैसे: होमजिम",
+        tagUsed:"{n} बार",tagNew:"नया टैग \"{t}\" बनाएँ",
+        ing:"सामग्री",addIng:"सामग्री जोड़ें",ingNamePh:"सामग्री",ingAmtPh:"मात्रा",
+        step:"विधि",addStep:"चरण जोड़ें",stepPh:"चरण लिखें",
+        pfc:"पोषण (प्रति सर्विंग)",pfcCap:{kcal:"कैलोरी",p:"प्रोटीन",f:"वसा",c:"कार्ब्स"},
+        eff:"मेहनत (जो लागू हो चुनें)",effs:{noKnife:"बिना चाकू",noBoard:"बिना बोर्ड",lessWash:"कम बर्तन",micro:"सिर्फ माइक्रोवेव"},
+        scope:"कौन देख सकता है",scopeVal:"सभी"},
+      "Tiếng Việt":{hdr:"Đăng công thức",close:"Đóng",post:"Đăng",
+        photo:"Ảnh món ăn (tùy chọn)",photoHint:"Chạm để thêm ảnh",
+        name:"Tên món",namePh:"vd: Gà hấp lò vi sóng",
+        tag:"Thẻ",tagHint:"Giúp người khác dễ tìm. Gõ để xem gợi ý.",tagPh:"vd: tậpnhà",
+        tagUsed:"{n} lần",tagNew:"Tạo thẻ mới \"{t}\"",
+        ing:"Nguyên liệu",addIng:"Thêm nguyên liệu",ingNamePh:"Nguyên liệu",ingAmtPh:"Số lượng",
+        step:"Cách làm",addStep:"Thêm bước",stepPh:"Viết một bước",
+        pfc:"Dinh dưỡng (mỗi phần)",pfcCap:{kcal:"Calo",p:"Đạm",f:"Béo",c:"Tinh bột"},
+        eff:"Công sức (chọn cái phù hợp)",effs:{noKnife:"Không dao",noBoard:"Không thớt",lessWash:"Ít rửa",micro:"Chỉ lò vi sóng"},
+        scope:"Ai có thể xem",scopeVal:"Mọi người"},
+      "Bahasa Indonesia":{hdr:"Posting resep",close:"Tutup",post:"Posting",
+        photo:"Foto masakan (opsional)",photoHint:"Ketuk untuk menambah foto",
+        name:"Nama masakan",namePh:"mis: Ayam kukus microwave",
+        tag:"Tag",tagHint:"Memudahkan orang menemukan. Ketik untuk melihat saran.",tagPh:"mis: gymrumah",
+        tagUsed:"{n} kali",tagNew:"Buat tag baru \"{t}\"",
+        ing:"Bahan",addIng:"Tambah bahan",ingNamePh:"Bahan",ingAmtPh:"Jumlah",
+        step:"Cara membuat",addStep:"Tambah langkah",stepPh:"Tulis langkah",
+        pfc:"Nutrisi (per porsi)",pfcCap:{kcal:"Kalori",p:"Protein",f:"Lemak",c:"Karbo"},
+        eff:"Usaha (pilih yang sesuai)",effs:{noKnife:"Tanpa pisau",noBoard:"Tanpa talenan",lessWash:"Sedikit cucian",micro:"Microwave saja"},
+        scope:"Siapa yang bisa lihat",scopeVal:"Semua"}
+    };
+    var cur="日本語", dark=true;
+    var selectedTags=[]; // {key or newText}
+    var ings=[{},{}]; // 材料行（初期2つ）
+    var steps=[{},{}]; // 工程（初期2つ）
+    var effState={noKnife:false,noBoard:false,lessWash:false,micro:false};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#A89C84",muted:"#6E6555",field:"#1A1814",fieldBd:"#2A2620",chip:"#221E14",chipTx:"#D8C79A",menu:"#1F1C16",menuBd:"#3A352A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",field:"#FBF7F1",fieldBd:"#F0EAE0",chip:"#FBF3E0",chipTx:"#7A6A3E",menu:"#FFFFFF",menuBd:"#E8E0CE",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function tagLabel(key){ return (TAGS[key]&&(TAGS[key].label[cur]||TAGS[key].label["English"]))||key; }
+    function renderSelTags(){
+      var t=dark?T.dark:T.light;
+      $('selTags').innerHTML="";
+      selectedTags.forEach(function(tg,i){
+        var lbl = tg.key ? tagLabel(tg.key) : tg.text;
+        var chip=document.createElement('span');
+        chip.style.cssText="display:inline-flex; align-items:center; gap:5px; font-size:12px; padding:6px 10px; border-radius:999px; background:"+t.accent+"; color:"+(dark?"#16140F":"#FFFFFF")+"; font-weight:600;";
+        chip.innerHTML='#'+lbl+'<i class="ti ti-x" style="font-size:13px; cursor:pointer;"></i>';
+        chip.querySelector('i').onclick=function(){ selectedTags.splice(i,1); renderSelTags(); };
+        $('selTags').appendChild(chip);
+      });
+    }
+    function renderTagSuggest(q){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var box=$('tagSuggest');
+      if(!q){ box.style.display="none"; return; }
+      var ql=q.toLowerCase();
+      // 既存タグから前方・部分一致（使用数順）。すでに選択済みは除外
+      var selKeys=selectedTags.filter(function(x){return x.key;}).map(function(x){return x.key;});
+      var matches=Object.keys(TAGS).filter(function(k){
+        if(selKeys.indexOf(k)>=0) return false;
+        var lbl=(TAGS[k].label[cur]||"")+ " "+(TAGS[k].label["English"]||"")+" "+k;
+        return lbl.toLowerCase().indexOf(ql)>=0;
+      }).sort(function(a,b){ return TAGS[b].count-TAGS[a].count; });
+      box.innerHTML="";
+      matches.forEach(function(k){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:9px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<span style="font-size:13px; color:'+t.accent+';">#'+tagLabel(k)+'</span><span style="font-size:10px; color:'+t.muted+';">'+d.tagUsed.replace("{n}",TAGS[k].count.toLocaleString())+'</span>';
+        row.onclick=function(){ selectedTags.push({key:k}); $('tagInput').value=""; renderSelTags(); box.style.display="none"; };
+        box.appendChild(row);
+      });
+      // 完全一致がなければ「新規作成」
+      var exact=matches.some(function(k){ return (TAGS[k].label[cur]||"").toLowerCase()===ql || k.toLowerCase()===ql; });
+      if(!exact){
+        var mk=document.createElement('div');
+        mk.style.cssText="display:flex; align-items:center; gap:7px; padding:10px 12px; border-radius:9px; cursor:pointer; border-top:0.5px solid "+t.menuBd+"; margin-top:2px;";
+        mk.onmouseenter=function(){ mk.style.background=dark?"#26231C":"#F4EFE6"; };
+        mk.onmouseleave=function(){ mk.style.background="transparent"; };
+        mk.innerHTML='<i class="ti ti-plus" style="font-size:15px; color:'+t.sub+';"></i><span style="font-size:13px; color:'+t.txt+';">'+d.tagNew.replace("{t}",q)+'</span>';
+        mk.onclick=function(){ selectedTags.push({text:q}); $('tagInput').value=""; renderSelTags(); box.style.display="none"; };
+        box.appendChild(mk);
+      }
+      box.style.display="block";
+    }
+    function renderIngs(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('ingList').innerHTML="";
+      ings.forEach(function(ig,i){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; gap:8px; align-items:center;";
+        row.innerHTML='<input type="text" placeholder="'+d.ingNamePh+'" value="'+(ig.name||"")+'" style="flex:2; box-sizing:border-box; background:'+t.field+'; border:0.5px solid '+t.fieldBd+'; border-radius:10px; padding:10px 12px; font-size:13px; color:'+t.txt+'; outline:none;">'+
+          '<input type="text" placeholder="'+d.ingAmtPh+'" value="'+(ig.amt||"")+'" style="flex:1; box-sizing:border-box; background:'+t.field+'; border:0.5px solid '+t.fieldBd+'; border-radius:10px; padding:10px 12px; font-size:13px; color:'+t.txt+'; outline:none;">'+
+          (ings.length>1?'<i class="ti ti-x" style="font-size:16px; color:'+t.muted+'; cursor:pointer; flex-shrink:0;"></i>':'<span style="width:16px; flex-shrink:0;"></span>');
+        var inputs=row.querySelectorAll('input');
+        inputs[0].oninput=function(){ ig.name=this.value; };
+        inputs[1].oninput=function(){ ig.amt=this.value; };
+        var x=row.querySelector('i.ti-x'); if(x) x.onclick=function(){ ings.splice(i,1); renderIngs(); };
+        $('ingList').appendChild(row);
+      });
+    }
+    function renderSteps(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('stepList').innerHTML="";
+      steps.forEach(function(st,i){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; gap:9px; align-items:flex-start;";
+        row.innerHTML='<div style="width:24px; height:24px; border-radius:50%; background:'+t.accent+'; color:'+(dark?"#16140F":"#FFFFFF")+'; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; flex-shrink:0; margin-top:4px; font-family:Jost;">'+(i+1)+'</div>'+
+          '<textarea placeholder="'+d.stepPh+'" rows="2" style="flex:1; box-sizing:border-box; background:'+t.field+'; border:0.5px solid '+t.fieldBd+'; border-radius:10px; padding:10px 12px; font-size:13px; color:'+t.txt+'; outline:none; resize:vertical; font-family:inherit;">'+(st.text||"")+'</textarea>'+
+          (steps.length>1?'<i class="ti ti-x" style="font-size:16px; color:'+t.muted+'; cursor:pointer; flex-shrink:0; margin-top:8px;"></i>':'<span style="width:16px; flex-shrink:0;"></span>');
+        row.querySelector('textarea').oninput=function(){ st.text=this.value; };
+        var x=row.querySelector('i.ti-x'); if(x) x.onclick=function(){ steps.splice(i,1); renderSteps(); };
+        $('stepList').appendChild(row);
+      });
+    }
+    function renderEff(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('effWrap').innerHTML="";
+      ["noKnife","noBoard","lessWash","micro"].forEach(function(k){
+        var on=effState[k];
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:12px; padding:8px 13px; border-radius:999px; cursor:pointer; "+(on?"background:"+t.accent+"; color:"+(dark?"#16140F":"#FFFFFF")+"; font-weight:600;":"background:"+t.field+"; color:"+t.sub+"; border:0.5px solid "+t.fieldBd+";");
+        chip.textContent=d.effs[k];
+        chip.onclick=function(){ effState[k]=!effState[k]; renderEff(); };
+        $('effWrap').appendChild(chip);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('closeTxt').textContent=d.close; $('postBtn').textContent=d.post;
+      $('photoLbl').firstChild.textContent=d.photo; $('photoHint').textContent=d.photoHint;
+      $('nameLbl').firstChild.textContent=d.name+" "; $('nameInput').placeholder=d.namePh;
+      $('tagLbl').firstChild.textContent=d.tag; $('tagHint').textContent=d.tagHint; $('tagInput').placeholder=d.tagPh;
+      $('ingLbl').firstChild.textContent=d.ing+" "; $('addIngLbl').textContent=d.addIng;
+      $('stepLbl').firstChild.textContent=d.step+" "; $('addStepLbl').textContent=d.addStep;
+      $('pfcLbl').textContent=d.pfc;
+      document.querySelectorAll('.pfcCap').forEach(function(el){ el.textContent=d.pfcCap[el.getAttribute('data-k')]; });
+      $('effLbl').textContent=d.eff;
+      $('scopeLbl').textContent=d.scope; $('scopeVal').textContent=d.scopeVal;
+      renderSelTags(); renderIngs(); renderSteps(); renderEff();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt; $('closeTxt').style.color=t.sub;
+      document.querySelectorAll('.secLbl').forEach(function(el){ el.style.color=t.sub; });
+      $('tagHint').style.color=t.muted;
+      $('addPhoto').style.background=t.field; $('addPhoto').style.borderColor= dark?"#4A4232":"#D8CBB0";
+      $('nameInput').style.background=t.field; $('nameInput').style.borderColor=t.fieldBd; $('nameInput').style.color=t.txt;
+      $('tagInput').style.background=t.field; $('tagInput').style.borderColor=t.fieldBd; $('tagInput').style.color=t.txt;
+      $('tagSuggest').style.background=t.menu; $('tagSuggest').style.borderColor=t.menuBd;
+      $('addIng').style.borderColor= dark?"#3A352A":"#E0DACE"; $('addIng').style.color=t.sub;
+      $('addStep').style.borderColor= dark?"#3A352A":"#E0DACE"; $('addStep').style.color=t.sub;
+      document.querySelectorAll('.pfcInput').forEach(function(el){ el.style.background=t.field; el.style.borderColor=t.fieldBd; el.style.color=t.txt; });
+      document.querySelectorAll('.pfcUnit').forEach(function(el){ el.style.color=t.muted; });
+      $('scopeRow').style.background=t.field; $('scopeLbl').style.color=t.txt; $('scopeVal').style.color=t.sub;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('postBtn').style.background=t.accent; $('postBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background=t.menu; $('langMenu').style.borderColor=t.menuBd;
+      applyUI();
+    }
+    // イベント
+    $('tagInput').oninput=function(){ renderTagSuggest(this.value.trim()); };
+    $('tagInput').onkeydown=function(e){ if(e.key==="Enter"){ e.preventDefault(); var v=this.value.trim(); if(v){ selectedTags.push({text:v}); this.value=""; renderSelTags(); $('tagSuggest').style.display="none"; } } };
+    $('addIng').onclick=function(){ ings.push({}); renderIngs(); };
+    $('addStep').onclick=function(){ steps.push({}); renderSteps(); };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(e){ $('langMenu').style.display="none"; if(!$('tagSuggest').contains(e.target) && e.target!==$('tagInput')) $('tagSuggest').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    $('tagInput').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

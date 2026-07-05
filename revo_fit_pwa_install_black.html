@@ -1,0 +1,68 @@
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div style="background:#0E0D0A; border-radius:14px; padding:20px; display:flex; justify-content:center; font-family:'Jost',sans-serif;">
+<div style="max-width:430px; width:100%;">
+  <p style="font-size:12px; color:#8A7E68; margin:0 0 16px; letter-spacing:0.08em;">ホーム画面での見え方（4案 × 実機イメージ）</p>
+
+  <div id="stage" style="display:flex; flex-direction:column; gap:18px;"></div>
+
+  <svg width="0" height="0" style="position:absolute;"><defs><clipPath id="sq"><rect width="180" height="180" rx="40"/></clipPath></defs></svg>
+</div>
+</div>
+<script>
+  // Revoアイコン生成（案ごと）
+  function icon(kind, sub){
+    var g='#E3C56A', w='#F0EBE2', bg='#16140F';
+    var inner='';
+    if(kind==='ring'){ // 案2 円環＋頭文字
+      inner='<circle cx="90" cy="90" r="54" fill="none" stroke="'+g+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="255 84" transform="rotate(-90 90 90)"/><text x="90" y="94" text-anchor="middle" dominant-baseline="central" font-family="Jost" font-weight="200" font-size="66" fill="'+w+'">'+sub[0]+'</text>';
+    } else if(kind==='ringR'){ // 案6 環＋r＋サブ
+      inner='<circle cx="90" cy="80" r="42" fill="none" stroke="'+g+'" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="198 66" transform="rotate(-90 90 80)"/><text x="90" y="84" text-anchor="middle" dominant-baseline="central" font-family="Jost" font-weight="200" font-size="52" fill="'+w+'">r</text><text x="90" y="150" text-anchor="middle" font-family="Jost" font-weight="400" font-size="15" letter-spacing="1.5" fill="#8A7E68">'+sub+'</text>';
+    } else if(kind==='spiral'){ // 案7 螺旋
+      inner='<path d="M112 128 A38 38 0 1 1 122 92 A26 26 0 1 1 74 84" fill="none" stroke="'+g+'" stroke-width="5.5" stroke-linecap="round"/><text x="92" y="96" text-anchor="middle" dominant-baseline="central" font-family="Jost" font-weight="200" font-size="46" fill="'+w+'">'+sub[0]+'</text>';
+    } else if(kind==='dot'){ // 案9 環＋起点ドット
+      inner='<circle cx="90" cy="90" r="50" fill="none" stroke="'+g+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="248 66" transform="rotate(-90 90 90)"/><circle cx="90" cy="40" r="7" fill="'+g+'"/><text x="90" y="98" text-anchor="middle" dominant-baseline="central" font-family="Jost" font-weight="200" font-size="50" fill="'+w+'">'+sub[0]+'</text>';
+    }
+    return '<svg width="60" height="60" viewBox="0 0 180 180" style="display:block;"><g clip-path="url(#sq)"><rect width="180" height="180" fill="'+bg+'"/>'+inner+'</g></svg>';
+  }
+  // ダミーアプリ（周囲）
+  function dummy(color, letter){
+    return '<svg width="60" height="60" viewBox="0 0 180 180" style="display:block;"><g clip-path="url(#sq)"><rect width="180" height="180" fill="'+color+'"/><text x="90" y="98" text-anchor="middle" dominant-baseline="central" font-family="-apple-system,sans-serif" font-weight="600" font-size="80" fill="#fff">'+letter+'</text></g></svg>';
+  }
+  function labelIcon(svg,name){ return '<div style="text-align:center; width:64px;">'+svg+'<div style="font-size:10px; color:#fff; margin-top:5px; text-shadow:0 1px 3px rgba(0,0,0,0.5); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+name+'</div></div>'; }
+
+  var dummies=[['#4A90D9','M'],['#E85D75','P'],['#5DBB63','S'],['#F0A93B','C'],['#9B7EDE','N'],['#3 FC1CB','T']];
+  var dRow=[['#4A90D9','✉'],['#5DBB63','☰'],['#F0A93B','◷'],['#E85D75','♪']];
+
+  var cases=[
+    {k:'ring', label:'案2 ― 円環＋頭文字'},
+    {k:'ringR', label:'案6 ― 環＋r＋サブ文字'},
+    {k:'spiral', label:'案7 ― 螺旋'},
+    {k:'dot', label:'案9 ― 環＋起点ドット'}
+  ];
+  var wp=['linear-gradient(160deg,#3A4A6B,#232838)','linear-gradient(160deg,#5B3A54,#2A1E2C)','linear-gradient(160deg,#2E4A45,#1A2624)','linear-gradient(160deg,#4A3A2E,#241C16)'];
+
+  var html='';
+  cases.forEach(function(c,ci){
+    html+='<div style="padding:0;">';
+    html+='<p style="font-size:13px; color:#F0EBE2; font-weight:500; margin:0 0 9px;">'+c.label+'</p>';
+    html+='<div style="background:'+wp[ci]+'; border-radius:22px; padding:20px 16px 16px; box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.08);">';
+    // アプリグリッド（4列2行）: Revo Fit, Revo Life を混ぜる
+    html+='<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px 8px; justify-items:center;">';
+    html+=labelIcon(dummy('#4A90D9','M'),'Mail');
+    html+=labelIcon(icon(c.k,'fit'),'Revo Fit');
+    html+=labelIcon(icon(c.k,'life'),'Revo Life');
+    html+=labelIcon(dummy('#5DBB63','S'),'Notes');
+    html+=labelIcon(dummy('#F0A93B','C'),'Cal');
+    html+=labelIcon(dummy('#9B7EDE','N'),'News');
+    html+=labelIcon(dummy('#E85D75','P'),'Photos');
+    html+=labelIcon(dummy('#3AC1CB','T'),'Tips');
+    html+='</div>';
+    // ドック
+    html+='<div style="margin-top:16px; background:rgba(255,255,255,0.14); border-radius:20px; padding:10px 12px; backdrop-filter:blur(8px);"><div style="display:flex; justify-content:space-around;">';
+    dRow.forEach(function(d){ html+=dummy(d[0],d[1]); });
+    html+='</div></div>';
+    html+='</div></div>';
+  });
+  document.getElementById('stage').innerHTML=html;
+</script>
+</div>

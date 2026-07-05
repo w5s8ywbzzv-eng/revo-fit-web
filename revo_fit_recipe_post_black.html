@@ -1,0 +1,271 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; min-height:680px; display:flex; flex-direction:column; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">体組成と目標の設定。目指すことを複数選べる。減量・増量・維持・睡眠改善・腸内改善。体重と身長を入れ、体脂肪率や筋肉量は任意。あとで変更できる。言語と明暗を切り替えられる</h2>
+
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px 0;">
+    <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+    <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+  </div>
+
+  <div style="flex:1; padding:14px 22px 0; overflow-y:auto;">
+    <p id="ttl" style="font-size:21px; font-weight:500; color:#F0EBE2; margin:0 0 6px;">目指すことを、選びましょう</p>
+    <p id="sub" style="font-size:12px; color:#8A7E68; margin:0 0 22px; line-height:1.6;">いくつ選んでも大丈夫。あとから設定でいつでも変えられます。</p>
+
+    <!-- ニックネーム -->
+    <p id="nickLbl" style="font-size:12px; color:#8A7E68; font-weight:500; margin:0 0 8px;">ニックネーム</p>
+    <input id="nickIn" type="text" placeholder="revoでの呼び名" style="width:100%; box-sizing:border-box; background:#1F1C16; border:0.5px solid #3A352A; border-radius:13px; padding:14px 16px; color:#F0EBE2; font-size:14px; outline:none; margin:0 0 20px; font-family:inherit;">
+
+    <!-- レベル（ビギナー/トレーニー） -->
+    <p id="levelLbl" style="font-size:12px; color:#8A7E68; font-weight:500; margin:0 0 8px;">レベル</p>
+    <div id="levelRow" style="display:flex; gap:9px; margin:0 0 6px;"></div>
+    <p id="lvSub" style="font-size:11px; color:#6E6555; margin:0 0 24px; line-height:1.6;">いまの経験に合わせて、提案を調整します。</p>
+
+    <!-- 目標タイプ（複数選択） -->
+    <div id="goals" style="display:flex; flex-direction:column; gap:9px; margin:0 0 24px;"></div>
+
+    <!-- 体組成入力 -->
+    <p id="bodyLbl" style="font-size:13px; color:#F0EBE2; margin:0 0 4px; font-weight:600;">いまの体</p>
+    <p id="bodySub" style="font-size:11px; color:#8A7E68; margin:0 0 14px; line-height:1.6;">分かる範囲で大丈夫。体脂肪率や筋肉量は、あとでも入れられます。</p>
+
+    <!-- 体重 -->
+    <div class="inputRow" style="margin:0 0 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 8px;"><span class="rowLbl" data-k="weight" style="font-size:12px; color:#8A7E68;">体重</span><span id="weightVal" style="font-size:15px; color:#E3C56A; font-weight:600; font-family:Jost;">68.2 kg</span></div>
+      <input id="weight" type="range" min="35" max="150" step="0.1" value="68.2" style="width:100%;">
+    </div>
+    <!-- 身長 -->
+    <div class="inputRow" style="margin:0 0 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 8px;"><span class="rowLbl" data-k="height" style="font-size:12px; color:#8A7E68;">身長</span><span id="heightVal" style="font-size:15px; color:#E3C56A; font-weight:600; font-family:Jost;">170 cm</span></div>
+      <input id="height" type="range" min="130" max="210" step="0.5" value="170" style="width:100%;">
+    </div>
+    <!-- 目標体重（減量/増量時のみ） -->
+    <div id="goalWeightRow" class="inputRow" style="margin:0 0 16px; display:none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 8px;"><span class="rowLbl" data-k="goalWeight" style="font-size:12px; color:#8A7E68;">目標体重</span><span id="goalWeightVal" style="font-size:15px; color:#E3C56A; font-weight:600; font-family:Jost;">64.0 kg</span></div>
+      <input id="goalWeight" type="range" min="35" max="150" step="0.1" value="64.0" style="width:100%;">
+    </div>
+
+    <!-- 任意：体脂肪率・筋肉量 -->
+    <div id="optToggle" style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; cursor:pointer; border-top:0.5px solid #2A2620; margin:6px 0 0;">
+      <span id="optLbl" style="font-size:13px; color:#B0A488;">体脂肪率・筋肉量を入れる（任意）</span>
+      <i id="optChev" class="ti ti-chevron-down" style="font-size:18px; color:#6E6555;"></i>
+    </div>
+    <div id="optBox" style="display:none;">
+      <div class="inputRow" style="margin:8px 0 16px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 8px;"><span class="rowLbl" data-k="bodyfat" style="font-size:12px; color:#8A7E68;">体脂肪率</span><span id="bodyfatVal" style="font-size:15px; color:#E3C56A; font-weight:600; font-family:Jost;">20.0 %</span></div>
+        <input id="bodyfat" type="range" min="3" max="50" step="0.1" value="20" style="width:100%;">
+      </div>
+      <div class="inputRow" style="margin:0 0 8px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 8px;"><span class="rowLbl" data-k="muscle" style="font-size:12px; color:#8A7E68;">筋肉量</span><span id="muscleVal" style="font-size:15px; color:#E3C56A; font-weight:600; font-family:Jost;">28.0 kg</span></div>
+        <input id="muscle" type="range" min="15" max="70" step="0.1" value="28" style="width:100%;">
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:14px 22px 24px;">
+    <button id="startBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; opacity:0.5;"><span id="startLbl">はじめる</span><i class="ti ti-arrow-right" style="font-size:18px;"></i></button>
+    <p id="medNote" style="font-size:10px; color:#6E6555; margin:12px 2px 0; line-height:1.65; text-align:center;">入力された数値やこの先の提案は、あくまで目安です。医療上の診断・治療を目的とするものではありません。</p>
+  </div>
+
+</div>
+</div>
+<style>
+  input[type=range]{ -webkit-appearance:none; appearance:none; height:5px; border-radius:3px; background:#2A2620; outline:none; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:20px; height:20px; border-radius:50%; background:#E3C56A; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.4); }
+  input[type=range]::-moz-range-thumb{ width:20px; height:20px; border:none; border-radius:50%; background:#E3C56A; cursor:pointer; }
+</style>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var GOALS=[
+      {k:"lose",ic:"ti-flame",needW:true},
+      {k:"gain",ic:"ti-barbell",needW:true},
+      {k:"maintain",ic:"ti-heart",needW:false},
+      {k:"sleep",ic:"ti-moon",needW:false},
+      {k:"gut",ic:"ti-droplet",needW:false}
+    ];
+    var D={
+      "日本語":{nickLbl:"ニックネーム",nickPh:"revoでの呼び名",levelLbl:"レベル",lvBeginner:"はじめて・初級",lvTrainee:"経験者",lvSub:"いまの経験に合わせて、提案を調整します。",ttl:"目指すことを、選びましょう",sub:"いくつ選んでも大丈夫。あとから設定でいつでも変えられます。",
+        bodyLbl:"いまの体",bodySub:"分かる範囲で大丈夫。体脂肪率や筋肉量は、あとでも入れられます。",
+        goals:{lose:"減量したい",gain:"筋肉をつけたい",maintain:"維持・健康",sleep:"睡眠を改善したい",gut:"腸内環境を整えたい"},
+        goalsSub:{lose:"体重をゆっくり落とす",gain:"バルクアップ",maintain:"いまの調子を保つ",sleep:"よく眠れるように",gut:"お通じ・腸活"},
+        rows:{weight:"体重",height:"身長",goalWeight:"目標体重",bodyfat:"体脂肪率",muscle:"筋肉量"},
+        opt:"体脂肪率・筋肉量を入れる（任意）",start:"はじめる",med:"入力された数値やこの先の提案は、あくまで目安です。医療上の診断・治療を目的とするものではありません。",kg:"kg",cm:"cm",pct:"%"},
+      "English":{nickLbl:"Nickname",nickPh:"Your name on revo",levelLbl:"Level",lvBeginner:"Beginner",lvTrainee:"Experienced",lvSub:"We tailor suggestions to your level.",ttl:"Choose what you're aiming for",sub:"Pick as many as you like. You can change these anytime in settings.",
+        bodyLbl:"Your body now",bodySub:"Whatever you know is fine. Body fat and muscle can be added later.",
+        goals:{lose:"Lose weight",gain:"Build muscle",maintain:"Maintain / health",sleep:"Improve sleep",gut:"Improve gut health"},
+        goalsSub:{lose:"drop weight slowly",gain:"bulk up",maintain:"keep your current shape",sleep:"sleep better",gut:"digestion & gut care"},
+        rows:{weight:"Weight",height:"Height",goalWeight:"Goal weight",bodyfat:"Body fat",muscle:"Muscle"},
+        opt:"Add body fat & muscle (optional)",start:"Get started",med:"The values you enter and the suggestions ahead are estimates only. They are not intended for medical diagnosis or treatment.",kg:"kg",cm:"cm",pct:"%"},
+      "简体中文":{nickLbl:"昵称",nickPh:"在revo的称呼",levelLbl:"水平",lvBeginner:"新手",lvTrainee:"有经验",lvSub:"根据你的水平调整建议。",ttl:"选择你的目标",sub:"选几个都可以。以后可在设置中随时更改。",
+        bodyLbl:"现在的身体",bodySub:"知道多少填多少。体脂率和肌肉量以后也能补。",
+        goals:{lose:"想减重",gain:"想增肌",maintain:"维持·健康",sleep:"想改善睡眠",gut:"想调理肠道"},
+        goalsSub:{lose:"慢慢减重",gain:"增肌",maintain:"保持现状",sleep:"睡得更好",gut:"通便·肠道养护"},
+        rows:{weight:"体重",height:"身高",goalWeight:"目标体重",bodyfat:"体脂率",muscle:"肌肉量"},
+        opt:"填写体脂率·肌肉量（可选）",start:"开始",med:"输入的数值和之后的建议仅供参考，并非以医疗诊断或治疗为目的。",kg:"kg",cm:"cm",pct:"%"},
+      "繁體中文":{nickLbl:"暱稱",nickPh:"在revo的稱呼",levelLbl:"程度",lvBeginner:"新手",lvTrainee:"有經驗",lvSub:"依你的程度調整建議。",ttl:"選擇你的目標",sub:"選幾個都可以。之後可在設定中隨時更改。",
+        bodyLbl:"現在的身體",bodySub:"知道多少填多少。體脂率和肌肉量以後也能補。",
+        goals:{lose:"想減重",gain:"想增肌",maintain:"維持·健康",sleep:"想改善睡眠",gut:"想調理腸道"},
+        goalsSub:{lose:"慢慢減重",gain:"增肌",maintain:"保持現狀",sleep:"睡得更好",gut:"通便·腸道養護"},
+        rows:{weight:"體重",height:"身高",goalWeight:"目標體重",bodyfat:"體脂率",muscle:"肌肉量"},
+        opt:"填寫體脂率·肌肉量（可選）",start:"開始",med:"輸入的數值和之後的建議僅供參考，並非以醫療診斷或治療為目的。",kg:"kg",cm:"cm",pct:"%"},
+      "한국어":{nickLbl:"닉네임",nickPh:"revo에서의 이름",levelLbl:"레벨",lvBeginner:"초보",lvTrainee:"경험자",lvSub:"수준에 맞춰 제안을 조정합니다.",ttl:"목표를 골라보세요",sub:"몇 개든 괜찮아요. 나중에 설정에서 언제든 바꿀 수 있어요.",
+        bodyLbl:"지금의 몸",bodySub:"아는 만큼이면 돼요. 체지방률과 근육량은 나중에도 넣을 수 있어요.",
+        goals:{lose:"감량하고 싶어요",gain:"근육을 키우고 싶어요",maintain:"유지·건강",sleep:"수면을 개선하고 싶어요",gut:"장 건강을 챙기고 싶어요"},
+        goalsSub:{lose:"천천히 체중 감량",gain:"벌크업",maintain:"지금 상태 유지",sleep:"잘 자기 위해",gut:"배변·장 관리"},
+        rows:{weight:"체중",height:"키",goalWeight:"목표 체중",bodyfat:"체지방률",muscle:"근육량"},
+        opt:"체지방률·근육량 입력(선택)",start:"시작하기",med:"입력한 수치와 앞으로의 제안은 어디까지나 예상치이며, 의료상 진단·치료를 목적으로 하지 않습니다.",kg:"kg",cm:"cm",pct:"%"},
+      "ภาษาไทย":{nickLbl:"ชื่อเล่น",nickPh:"ชื่อของคุณใน revo",levelLbl:"ระดับ",lvBeginner:"มือใหม่",lvTrainee:"มีประสบการณ์",lvSub:"ปรับคำแนะนำตามระดับของคุณ",ttl:"เลือกสิ่งที่ตั้งเป้า",sub:"เลือกกี่อย่างก็ได้ เปลี่ยนได้ทุกเมื่อในการตั้งค่า",
+        bodyLbl:"ร่างกายตอนนี้",bodySub:"รู้เท่าไหร่ก็กรอกเท่านั้น ไขมันและกล้ามเนื้อใส่ทีหลังได้",
+        goals:{lose:"อยากลดน้ำหนัก",gain:"อยากเพิ่มกล้าม",maintain:"คงสภาพ·สุขภาพ",sleep:"อยากนอนหลับดีขึ้น",gut:"อยากดูแลลำไส้"},
+        goalsSub:{lose:"ลดน้ำหนักช้าๆ",gain:"เพิ่มกล้าม",maintain:"รักษาสภาพปัจจุบัน",sleep:"หลับสบายขึ้น",gut:"ขับถ่าย·ดูแลลำไส้"},
+        rows:{weight:"น้ำหนัก",height:"ส่วนสูง",goalWeight:"น้ำหนักเป้าหมาย",bodyfat:"ไขมัน",muscle:"กล้ามเนื้อ"},
+        opt:"กรอกไขมัน·กล้ามเนื้อ (ถ้ามี)",start:"เริ่ม",med:"ตัวเลขที่กรอกและคำแนะนำต่อจากนี้เป็นเพียงค่าประมาณ ไม่ได้มีวัตถุประสงค์เพื่อการวินิจฉัยหรือรักษาทางการแพทย์",kg:"กก.",cm:"ซม.",pct:"%"},
+      "Français":{nickLbl:"Pseudo",nickPh:"Votre nom sur revo",levelLbl:"Niveau",lvBeginner:"Débutant",lvTrainee:"Confirmé",lvSub:"Nous adaptons les conseils à votre niveau.",ttl:"Choisissez vos objectifs",sub:"Autant que vous voulez. Modifiable à tout moment dans les réglages.",
+        bodyLbl:"Votre corps aujourd'hui",bodySub:"Ce que vous savez suffit. Masse grasse et muscle s'ajoutent plus tard.",
+        goals:{lose:"Perdre du poids",gain:"Prendre du muscle",maintain:"Maintien / santé",sleep:"Améliorer le sommeil",gut:"Améliorer la digestion"},
+        goalsSub:{lose:"perdre du poids doucement",gain:"prise de masse",maintain:"garder la forme actuelle",sleep:"mieux dormir",gut:"transit & flore"},
+        rows:{weight:"Poids",height:"Taille",goalWeight:"Poids cible",bodyfat:"Masse grasse",muscle:"Muscle"},
+        opt:"Ajouter masse grasse & muscle (facultatif)",start:"Commencer",med:"Les valeurs saisies et les suggestions à venir sont indicatives. Elles ne sont pas destinées à un diagnostic ou un traitement médical.",kg:"kg",cm:"cm",pct:"%"},
+      "Español":{nickLbl:"Apodo",nickPh:"Tu nombre en revo",levelLbl:"Nivel",lvBeginner:"Principiante",lvTrainee:"Con experiencia",lvSub:"Adaptamos las sugerencias a tu nivel.",ttl:"Elige tus objetivos",sub:"Elige los que quieras. Puedes cambiarlos cuando quieras en ajustes.",
+        bodyLbl:"Tu cuerpo ahora",bodySub:"Con lo que sepas basta. Grasa y músculo se añaden después.",
+        goals:{lose:"Bajar de peso",gain:"Ganar músculo",maintain:"Mantener / salud",sleep:"Mejorar el sueño",gut:"Mejorar la salud intestinal"},
+        goalsSub:{lose:"bajar peso poco a poco",gain:"aumentar volumen",maintain:"mantener tu forma actual",sleep:"dormir mejor",gut:"digestión y flora"},
+        rows:{weight:"Peso",height:"Altura",goalWeight:"Peso objetivo",bodyfat:"Grasa corporal",muscle:"Músculo"},
+        opt:"Añadir grasa y músculo (opcional)",start:"Empezar",med:"Los valores que ingresas y las sugerencias siguientes son estimaciones. No están destinados a diagnóstico ni tratamiento médico.",kg:"kg",cm:"cm",pct:"%"},
+      "Deutsch":{nickLbl:"Spitzname",nickPh:"Dein Name bei revo",levelLbl:"Level",lvBeginner:"Anfänger",lvTrainee:"Erfahren",lvSub:"Wir passen Vorschläge an dein Level an.",ttl:"Wähle deine Ziele",sub:"So viele du willst. Jederzeit in den Einstellungen änderbar.",
+        bodyLbl:"Dein Körper jetzt",bodySub:"Was du weißt, reicht. Körperfett und Muskeln gehen später.",
+        goals:{lose:"Abnehmen",gain:"Muskeln aufbauen",maintain:"Halten / Gesundheit",sleep:"Schlaf verbessern",gut:"Darmgesundheit verbessern"},
+        goalsSub:{lose:"langsam abnehmen",gain:"Masse aufbauen",maintain:"aktuelle Form halten",sleep:"besser schlafen",gut:"Verdauung & Darm"},
+        rows:{weight:"Gewicht",height:"Größe",goalWeight:"Zielgewicht",bodyfat:"Körperfett",muscle:"Muskeln"},
+        opt:"Körperfett & Muskeln (optional)",start:"Loslegen",med:"Die eingegebenen Werte und die folgenden Vorschläge sind Schätzungen. Sie dienen nicht der medizinischen Diagnose oder Behandlung.",kg:"kg",cm:"cm",pct:"%"},
+      "Italiano":{nickLbl:"Soprannome",nickPh:"Il tuo nome su revo",levelLbl:"Livello",lvBeginner:"Principiante",lvTrainee:"Esperto",lvSub:"Adattiamo i consigli al tuo livello.",ttl:"Scegli i tuoi obiettivi",sub:"Quanti vuoi. Modificabili in qualsiasi momento nelle impostazioni.",
+        bodyLbl:"Il tuo corpo ora",bodySub:"Va bene quel che sai. Massa grassa e muscoli si aggiungono dopo.",
+        goals:{lose:"Dimagrire",gain:"Mettere muscoli",maintain:"Mantenere / salute",sleep:"Migliorare il sonno",gut:"Migliorare l'intestino"},
+        goalsSub:{lose:"perdere peso piano",gain:"massa muscolare",maintain:"mantenere la forma attuale",sleep:"dormire meglio",gut:"digestione & flora"},
+        rows:{weight:"Peso",height:"Altezza",goalWeight:"Peso obiettivo",bodyfat:"Massa grassa",muscle:"Muscolo"},
+        opt:"Aggiungi massa grassa & muscoli (facoltativo)",start:"Inizia",med:"I valori inseriti e i suggerimenti successivi sono stime. Non sono destinati a diagnosi o trattamenti medici.",kg:"kg",cm:"cm",pct:"%"},
+      "Português":{nickLbl:"Apelido",nickPh:"Seu nome no revo",levelLbl:"Nível",lvBeginner:"Iniciante",lvTrainee:"Experiente",lvSub:"Ajustamos as sugestões ao seu nível.",ttl:"Escolha seus objetivos",sub:"Escolha quantos quiser. Pode mudar quando quiser nas configurações.",
+        bodyLbl:"Seu corpo agora",bodySub:"O que você souber já basta. Gordura e músculo dá pra adicionar depois.",
+        goals:{lose:"Emagrecer",gain:"Ganhar músculo",maintain:"Manter / saúde",sleep:"Melhorar o sono",gut:"Melhorar o intestino"},
+        goalsSub:{lose:"perder peso devagar",gain:"ganhar massa",maintain:"manter a forma atual",sleep:"dormir melhor",gut:"digestão & flora"},
+        rows:{weight:"Peso",height:"Altura",goalWeight:"Peso alvo",bodyfat:"Gordura corporal",muscle:"Músculo"},
+        opt:"Adicionar gordura & músculo (opcional)",start:"Começar",med:"Os valores inseridos e as sugestões seguintes são estimativas. Não se destinam a diagnóstico ou tratamento médico.",kg:"kg",cm:"cm",pct:"%"},
+      "हिन्दी":{nickLbl:"उपनाम",nickPh:"revo पर आपका नाम",levelLbl:"स्तर",lvBeginner:"शुरुआती",lvTrainee:"अनुभवी",lvSub:"हम आपके स्तर के अनुसार सुझाव देते हैं।",ttl:"अपने लक्ष्य चुनें",sub:"जितने चाहें चुनें। सेटिंग में कभी भी बदल सकते हैं।",
+        bodyLbl:"अभी का शरीर",bodySub:"जितना पता हो उतना ठीक है। फैट और मसल बाद में भी डाल सकते हैं।",
+        goals:{lose:"वज़न घटाना",gain:"मसल बढ़ाना",maintain:"बनाए रखना·सेहत",sleep:"नींद सुधारना",gut:"आँत की सेहत सुधारना"},
+        goalsSub:{lose:"धीरे-धीरे वज़न कम",gain:"बल्क अप",maintain:"मौजूदा स्थिति बनाए रखें",sleep:"बेहतर नींद",gut:"पाचन·आँत की देखभाल"},
+        rows:{weight:"वज़न",height:"कद",goalWeight:"लक्ष्य वज़न",bodyfat:"शरीर फैट",muscle:"मसल"},
+        opt:"फैट·मसल डालें (वैकल्पिक)",start:"शुरू करें",med:"दर्ज किए गए मान और आगे के सुझाव केवल अनुमान हैं। ये चिकित्सा निदान या उपचार के लिए नहीं हैं।",kg:"kg",cm:"cm",pct:"%"},
+      "Tiếng Việt":{nickLbl:"Biệt danh",nickPh:"Tên của bạn trên revo",levelLbl:"Trình độ",lvBeginner:"Người mới",lvTrainee:"Có kinh nghiệm",lvSub:"Chúng tôi điều chỉnh gợi ý theo trình độ.",ttl:"Chọn mục tiêu của bạn",sub:"Chọn bao nhiêu cũng được. Đổi bất cứ lúc nào trong cài đặt.",
+        bodyLbl:"Cơ thể hiện tại",bodySub:"Biết bao nhiêu điền bấy nhiêu. Mỡ và cơ có thể thêm sau.",
+        goals:{lose:"Giảm cân",gain:"Tăng cơ",maintain:"Duy trì / sức khỏe",sleep:"Cải thiện giấc ngủ",gut:"Cải thiện đường ruột"},
+        goalsSub:{lose:"giảm cân từ từ",gain:"tăng khối lượng",maintain:"giữ dáng hiện tại",sleep:"ngủ ngon hơn",gut:"tiêu hóa & đường ruột"},
+        rows:{weight:"Cân nặng",height:"Chiều cao",goalWeight:"Cân nặng mục tiêu",bodyfat:"Mỡ cơ thể",muscle:"Cơ"},
+        opt:"Thêm mỡ & cơ (tùy chọn)",start:"Bắt đầu",med:"Các giá trị bạn nhập và gợi ý phía sau chỉ là ước tính. Chúng không nhằm mục đích chẩn đoán hay điều trị y tế.",kg:"kg",cm:"cm",pct:"%"},
+      "Bahasa Indonesia":{nickLbl:"Nama panggilan",nickPh:"Nama kamu di revo",levelLbl:"Level",lvBeginner:"Pemula",lvTrainee:"Berpengalaman",lvSub:"Kami menyesuaikan saran dengan levelmu.",ttl:"Pilih tujuanmu",sub:"Pilih sebanyak yang kamu mau. Bisa diubah kapan saja di pengaturan.",
+        bodyLbl:"Tubuhmu sekarang",bodySub:"Seadanya yang kamu tahu. Lemak dan otot bisa ditambah nanti.",
+        goals:{lose:"Turun berat",gain:"Bangun otot",maintain:"Jaga / kesehatan",sleep:"Perbaiki tidur",gut:"Perbaiki kesehatan usus"},
+        goalsSub:{lose:"turun berat perlahan",gain:"bulking",maintain:"jaga bentuk sekarang",sleep:"tidur lebih nyenyak",gut:"pencernaan & usus"},
+        rows:{weight:"Berat",height:"Tinggi",goalWeight:"Berat target",bodyfat:"Lemak tubuh",muscle:"Otot"},
+        opt:"Tambah lemak & otot (opsional)",start:"Mulai",med:"Nilai yang kamu masukkan dan saran berikutnya hanya perkiraan. Bukan untuk diagnosis atau pengobatan medis.",kg:"kg",cm:"cm",pct:"%"}
+    };
+    var cur="日本語", dark=true, optOpen=false;
+    var sel={}; // 選択された目標
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",sel:"#26231C",track:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",sel:"#FBF3E0",track:"#EDE6D8",iconBg:"#FFFFFF",iconBd:"#E8E0CE",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function anyGoal(){ return Object.keys(sel).some(function(k){return sel[k];}); }
+    function needWeight(){ return GOALS.some(function(g){ return g.needW && sel[g.k]; }); }
+    function renderGoals(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('goals').innerHTML="";
+      GOALS.forEach(function(g){
+        var on=!!sel[g.k];
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:13px; padding:13px 15px; border-radius:13px; cursor:pointer; background:"+(on?t.sel:t.card)+"; border:"+(on?"1.5px solid "+t.accent:"0.5px solid "+t.cardBd)+";";
+        row.innerHTML='<div style="width:38px; height:38px; border-radius:11px; background:'+(on?t.accent+"22":t.iconBg)+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+g.ic+'" style="font-size:19px; color:'+(on?t.accent:t.sub)+';"></i></div>'+
+          '<div style="flex:1;"><p style="font-size:14px; color:'+(on?t.accent:t.txt)+'; margin:0 0 2px; font-weight:'+(on?"600":"500")+';">'+d.goals[g.k]+'</p><p style="font-size:11px; color:'+t.sub+'; margin:0;">'+d.goalsSub[g.k]+'</p></div>'+
+          (on?'<i class="ti ti-check" style="font-size:19px; color:'+t.accent+';"></i>':'<div style="width:19px;"></div>');
+        row.onclick=function(){ sel[g.k]=!sel[g.k]; renderGoals(); updateVisibility(); };
+        $('goals').appendChild(row);
+      });
+    }
+    function updateVisibility(){
+      $('goalWeightRow').style.display = needWeight() ? "block":"none";
+      $('startBtn').style.opacity = anyGoal() ? "1":"0.5";
+    }
+    function bindSlider(id, unitKey){
+      var el=$(id), out=$(id+"Val");
+      el.oninput=function(){
+        var d=D[cur]||D["English"];
+        var v=parseFloat(el.value);
+        var u = unitKey==="cm"?d.cm : unitKey==="pct"?d.pct : d.kg;
+        out.textContent = (unitKey==="pct"? v.toFixed(1): (id==="height"? Math.round(v): v.toFixed(1))) + " " + u;
+        var t=dark?T.dark:T.light;
+        var pct=(v-el.min)/(el.max-el.min)*100;
+        el.style.background="linear-gradient(90deg,"+t.accent+" "+pct+"%,"+t.track+" "+pct+"%)";
+      };
+      el.oninput();
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('ttl').textContent=d.ttl; $('sub').textContent=d.sub;
+      $('bodyLbl').textContent=d.bodyLbl; $('bodySub').textContent=d.bodySub;
+      $('optLbl').textContent=d.opt; $('startLbl').textContent=d.start; if(d.med) $('medNote').textContent=d.med;
+      // ニックネーム・レベル
+      if($('nickLbl')) $('nickLbl').textContent=d.nickLbl||"Nickname";
+      if($('nickIn')) $('nickIn').setAttribute('placeholder', d.nickPh||"");
+      if($('levelLbl')) $('levelLbl').textContent=d.levelLbl||"Level";
+      if($('lvSub')) $('lvSub').textContent=d.lvSub||"";
+      renderLevel();
+      document.querySelectorAll('.rowLbl').forEach(function(el){ el.textContent=d.rows[el.getAttribute('data-k')]; });
+      renderGoals(); updateVisibility();
+      ["weight","height","goalWeight","bodyfat","muscle"].forEach(function(id){
+        var u = (id==="height")?"cm":(id==="bodyfat")?"pct":"kg"; bindSlider(id,u);
+      });
+    }
+    var selLevel=0;
+    function renderLevel(){
+      var d=D[cur]||D["English"]; var box=$('levelRow'); if(!box) return;
+      var opts=[d.lvBeginner||"Beginner", d.lvTrainee||"Experienced"];
+      box.innerHTML="";
+      opts.forEach(function(x,i){
+        var on=(i===selLevel);
+        var b=document.createElement('button');
+        b.style.cssText="flex:1; padding:13px 10px; border-radius:13px; cursor:pointer; font-size:13px; font-weight:500; transition:all .2s; "+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+(dark?"#E3C56A":"#B8912F")+"; border:1.5px solid "+(dark?"#E3C56A":"#B8912F")+";":"background:"+(dark?"#1F1C16":"#FFFFFF")+"; color:"+(dark?"#A89C84":"#5F5E5A")+"; border:0.5px solid "+(dark?"#3A352A":"#E0DACE")+";");
+        b.textContent=x;
+        b.onclick=function(){ selLevel=i; renderLevel(); };
+        box.appendChild(b);
+      });
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('ttl').style.color=t.txt; $('sub').style.color=t.sub; $('bodyLbl').style.color=t.txt; $('bodySub').style.color=t.sub;
+      var mn=$('medNote'); if(mn) mn.style.color=t.muted;
+      $('optToggle').style.borderColor=t.cardBd; $('optLbl').style.color= dark?"#B0A488":"#7A6E58";
+      $('startBtn').style.background=t.accent; $('startBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('themeBtn').style.background=t.iconBg; $('themeBtn').style.borderColor=t.iconBd;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      document.querySelectorAll('.rowLbl').forEach(function(el){ el.style.color=t.sub; });
+      // ニックネーム・レベルのテーマ追従
+      if($('nickLbl')) $('nickLbl').style.color=t.sub;
+      if($('levelLbl')) $('levelLbl').style.color=t.sub;
+      if($('lvSub')) $('lvSub').style.color=t.muted;
+      var ni=$('nickIn'); if(ni){ ni.style.background=(dark?"#1F1C16":"#FFFFFF"); ni.style.borderColor=(dark?"#3A352A":"#E0DACE"); ni.style.color=t.txt; }
+      renderLevel();
+      renderGoals();
+      ["weight","height","goalWeight","bodyfat","muscle"].forEach(function(id){ $(id).oninput(); });
+    }
+    $('optToggle').onclick=function(){ optOpen=!optOpen; $('optBox').style.display=optOpen?"block":"none"; $('optChev').className=optOpen?"ti ti-chevron-up":"ti ti-chevron-down"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    $('startBtn').onclick=function(){ if(!anyGoal()) return; };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>

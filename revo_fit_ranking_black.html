@@ -1,0 +1,243 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">クリエイターダッシュボード。今月受け取った応援、受け取りまでの残り、フォロワー、参考にされた数、よく届いた投稿。あなたの歩みが誰かの力になっている。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">クリエイター</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- 今月の成果 -->
+  <div style="padding:18px 16px 8px;">
+    <div id="resultCard" style="background:linear-gradient(140deg,#221E12,#1A1813); border:0.5px solid #3A3220; border-radius:16px; padding:18px;">
+      <p id="resultLbl" style="font-size:11px; color:#B0A488; margin:0 0 6px;">今月の応援</p>
+      <p style="font-size:32px; font-weight:600; color:#E3C56A; margin:0 0 2px; font-family:Jost;">¥3,200</p>
+      <p id="vsLast" style="font-size:11px; color:#B0A488; margin:0;">先月より ＋¥1,100</p>
+      <div style="display:flex; align-items:center; gap:7px; margin:14px 0 0; padding:13px 0 0; border-top:0.5px solid #3A352A;">
+        <i class="ti ti-world" style="font-size:15px; color:#9A8E78;" aria-hidden="true"></i>
+        <span id="reachLine" style="font-size:11px; color:#B0A488;">18か国の仲間から、あなたの歩みへの気持ちが届きました</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 受け取りまで -->
+  <div style="padding:12px 16px 8px;">
+    <div id="payoutCard" style="background:#1A1814; border-radius:14px; padding:14px 15px; transition:background 0.35s;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 9px;">
+        <p id="payoutLbl" style="font-size:12px; color:#A89C84; margin:0; font-weight:500;">受け取りまで</p>
+        <span id="freeFrom" style="font-size:11px; color:#8A7E68;">5,000円から振込無料</span>
+      </div>
+      <div style="height:8px; background:#2A2620; border-radius:4px; overflow:hidden; margin:0 0 7px;"><div id="payoutBar" style="width:64%; height:8px; background:linear-gradient(90deg,#22C8A8,#5DCAA5);"></div></div>
+      <p id="remainTxt" style="font-size:11px; color:#C9C0AE; margin:0;">あと <span style="font-weight:500; color:#5DCAA5;">¥1,800</span> で、振込手数料なしで受け取れます</p>
+    </div>
+  </div>
+
+  <!-- フォロワー / 参考にされた -->
+  <div style="padding:10px 16px 8px;">
+    <div style="display:flex; gap:10px;">
+      <div id="statF" style="flex:1; background:#16201C; border-radius:13px; padding:13px 14px;">
+        <div style="display:flex; align-items:center; gap:5px; margin:0 0 5px;"><i class="ti ti-users" style="font-size:14px; color:#5DCAA5;" aria-hidden="true"></i><span id="followLbl" style="font-size:11px; color:#A89C84;">フォロワー</span></div>
+        <p id="followNum" style="font-size:19px; font-weight:600; color:#F0EBE2; margin:0; font-family:Jost;">2,140</p>
+        <p id="followAdd" style="font-size:10px; color:#5DCAA5; margin:0;">今月 ＋164</p>
+      </div>
+      <div id="statR" style="flex:1; background:#161E26; border-radius:13px; padding:13px 14px;">
+        <div style="display:flex; align-items:center; gap:5px; margin:0 0 5px;"><i class="ti ti-bookmark" style="font-size:14px; color:#6FA8DC;" aria-hidden="true"></i><span id="madeLbl" style="font-size:11px; color:#A89C84;">参考にされた</span></div>
+        <p id="madeNum" style="font-size:19px; font-weight:600; color:#F0EBE2; margin:0; font-family:Jost;">1,286</p>
+        <p id="madeFrom" style="font-size:10px; color:#6FA8DC; margin:0;">今月 ＋312</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- よく届いた投稿 -->
+  <div style="padding:14px 16px 8px;">
+    <p id="topLbl" style="font-size:12px; color:#A89C84; margin:0 0 11px; font-weight:500;">よく届いた投稿</p>
+    <div id="topPosts" style="display:flex; flex-direction:column; gap:9px;"></div>
+  </div>
+
+  <!-- 還元の説明 -->
+  <div style="padding:6px 16px 8px;">
+    <div id="feeCard" style="display:flex; align-items:flex-start; gap:8px; padding:0 2px;">
+      <i class="ti ti-info-circle" style="font-size:13px; color:#6E6555; margin-top:1px;" aria-hidden="true"></i>
+      <span id="feeTxt" style="font-size:10px; color:#6E6555; line-height:1.6;">応援の75%があなたに届きます（手数料25%）。金額は目安です。</span>
+    </div>
+  </div>
+
+  <!-- 励ましメッセージ -->
+  <div style="padding:8px 16px 20px;">
+    <div id="msgCard" style="background:#16201C; border-radius:12px; padding:12px 14px; display:flex; align-items:flex-start; gap:9px; transition:background 0.35s;">
+      <i class="ti ti-heart" style="font-size:16px; color:#5DCAA5; margin-top:1px;" aria-hidden="true"></i>
+      <span id="msgTxt" style="font-size:11px; color:#7FB89E; line-height:1.6;">あなたの歩みは、今月18か国の仲間に届きました。あなたが続けてきたことが、世界のどこかで、誰かの背中を押しています。</span>
+    </div>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var POSTS=[
+      {ic:"ti-barbell", amt:"¥1,800", from:11},
+      {ic:"ti-flame", amt:"¥900", from:7}
+    ];
+    var D={
+      "日本語":{hdr:"クリエイター",resultLbl:"今月の応援",vsLast:"先月より ＋¥1,100",reach:"18か国の仲間から、あなたの歩みへの気持ちが届きました",
+        payoutLbl:"受け取りまで",freeFrom:"5,000円から振込無料",remain:"あと <b>¥1,800</b> で、振込手数料なしで受け取れます",
+        followLbl:"フォロワー",followAdd:"今月 ＋164",madeLbl:"参考にされた",madeFrom:"今月 ＋312",
+        topLbl:"よく届いた投稿",posts:[{t:"胸・三頭を鍛えた",s:"¥1,800 ・11か国から"},{t:"レンジ蒸し鶏のピリ辛だれ",s:"¥900 ・7か国から"}],
+        feeTxt:"応援の75%があなたに届きます（手数料25%）。金額は目安です。",
+        msg:"あなたの歩みは、今月18か国の仲間に届きました。あなたが続けてきたことが、世界のどこかで、誰かの背中を押しています。"},
+      "English":{hdr:"Creator",resultLbl:"Support this month",vsLast:"+¥1,100 vs last month",reach:"Feelings from friends in 18 countries reached you",
+        payoutLbl:"Until payout",freeFrom:"Free transfer from ¥5,000",remain:"<b>¥1,800</b> more to receive with no transfer fee",
+        followLbl:"Followers",followAdd:"+164 this month",madeLbl:"Referenced",madeFrom:"+312 this month",
+        topLbl:"Most-loved posts",posts:[{t:"Trained chest & triceps",s:"¥1,800 ・from 11 countries"},{t:"Microwave chicken, spicy sauce",s:"¥900 ・from 7 countries"}],
+        feeTxt:"75% of support reaches you (25% fee). Amounts are estimates.",
+        msg:"Your journey reached friends in 18 countries this month. What you've kept doing is pushing someone forward, somewhere in the world."},
+      "简体中文":{hdr:"创作者",resultLbl:"本月应援",vsLast:"比上月 ＋¥1,100",reach:"来自18个国家伙伴的心意送达了你",
+        payoutLbl:"距离提现",freeFrom:"满5,000日元免手续费",remain:"再 <b>¥1,800</b> 即可免手续费提现",
+        followLbl:"粉丝",followAdd:"本月 ＋164",madeLbl:"被参考",madeFrom:"本月 ＋312",
+        topLbl:"最受欢迎的投稿",posts:[{t:"练了胸·三头",s:"¥1,800 ・来自11国"},{t:"微波蒸鸡配香辣酱",s:"¥900 ・来自7国"}],
+        feeTxt:"应援的75%送达你（手续费25%）。金额为参考。",
+        msg:"你的歩み本月送达18个国家的伙伴。你一直坚持的事，正在世界某处推着某个人前进。"},
+      "繁體中文":{hdr:"創作者",resultLbl:"本月應援",vsLast:"比上月 ＋¥1,100",reach:"來自18個國家夥伴的心意送達了你",
+        payoutLbl:"距離提現",freeFrom:"滿5,000日圓免手續費",remain:"再 <b>¥1,800</b> 即可免手續費提現",
+        followLbl:"粉絲",followAdd:"本月 ＋164",madeLbl:"被參考",madeFrom:"本月 ＋312",
+        topLbl:"最受歡迎的貼文",posts:[{t:"練了胸·三頭",s:"¥1,800 ・來自11國"},{t:"微波蒸雞配香辣醬",s:"¥900 ・來自7國"}],
+        feeTxt:"應援的75%送達你（手續費25%）。金額為參考。",
+        msg:"你的旅程本月送達18個國家的夥伴。你一直堅持的事，正在世界某處推著某個人前進。"},
+      "한국어":{hdr:"크리에이터",resultLbl:"이번 달 응원",vsLast:"지난달보다 ＋¥1,100",reach:"18개국 동료들의 마음이 당신에게 닿았어요",
+        payoutLbl:"받기까지",freeFrom:"5,000엔부터 이체 무료",remain:"<b>¥1,800</b> 더 모으면 수수료 없이 받을 수 있어요",
+        followLbl:"팔로워",followAdd:"이번 달 ＋164",madeLbl:"참고됨",madeFrom:"이번 달 ＋312",
+        topLbl:"많이 닿은 게시물",posts:[{t:"가슴·삼두 운동",s:"¥1,800 ・11개국에서"},{t:"전자레인지 닭찜 매콤소스",s:"¥900 ・7개국에서"}],
+        feeTxt:"응원의 75%가 당신에게 닿아요(수수료 25%). 금액은 예상치예요.",
+        msg:"당신의 여정은 이번 달 18개국 동료에게 닿았어요. 당신이 이어온 것이 세계 어딘가에서 누군가의 등을 밀어주고 있어요."},
+      "ภาษาไทย":{hdr:"ครีเอเตอร์",resultLbl:"กำลังใจเดือนนี้",vsLast:"เทียบเดือนก่อน ＋¥1,100",reach:"ความรู้สึกจากเพื่อนใน 18 ประเทศส่งถึงคุณ",
+        payoutLbl:"จนกว่าจะรับได้",freeFrom:"โอนฟรีตั้งแต่ 5,000 เยน",remain:"อีก <b>¥1,800</b> รับได้โดยไม่มีค่าโอน",
+        followLbl:"ผู้ติดตาม",followAdd:"เดือนนี้ ＋164",madeLbl:"ถูกอ้างอิง",madeFrom:"เดือนนี้ ＋312",
+        topLbl:"โพสต์ที่ส่งถึงมากที่สุด",posts:[{t:"เล่นอก·หลังแขน",s:"¥1,800 ・จาก 11 ประเทศ"},{t:"ไก่นึ่งไมโครเวฟซอสเผ็ด",s:"¥900 ・จาก 7 ประเทศ"}],
+        feeTxt:"75% ของกำลังใจส่งถึงคุณ (ค่าธรรมเนียม 25%) จำนวนเป็นค่าประมาณ",
+        msg:"เส้นทางของคุณส่งถึงเพื่อนใน 18 ประเทศเดือนนี้ สิ่งที่คุณทำต่อเนื่อง กำลังผลักดันใครสักคนที่ไหนสักแห่งในโลก"},
+      "Français":{hdr:"Créateur",resultLbl:"Soutien ce mois-ci",vsLast:"+¥1,100 vs mois dernier",reach:"Les sentiments d'amis de 18 pays vous sont parvenus",
+        payoutLbl:"Avant réception",freeFrom:"Virement gratuit dès 5 000 ¥",remain:"Encore <b>¥1,800</b> pour recevoir sans frais",
+        followLbl:"Abonnés",followAdd:"+164 ce mois-ci",madeLbl:"Référencé",madeFrom:"+312 ce mois-ci",
+        topLbl:"Publications les plus touchantes",posts:[{t:"Pecs & triceps travaillés",s:"¥1,800 ・de 11 pays"},{t:"Poulet vapeur, sauce épicée",s:"¥900 ・de 7 pays"}],
+        feeTxt:"75% du soutien vous parvient (frais 25%). Montants estimatifs.",
+        msg:"Votre parcours a touché des amis dans 18 pays ce mois-ci. Ce que vous avez continué pousse quelqu'un, quelque part dans le monde."},
+      "Español":{hdr:"Creador",resultLbl:"Apoyo este mes",vsLast:"+¥1,100 vs mes pasado",reach:"Los sentimientos de amigos de 18 países llegaron a ti",
+        payoutLbl:"Hasta recibir",freeFrom:"Transferencia gratis desde ¥5,000",remain:"<b>¥1,800</b> más para recibir sin comisión",
+        followLbl:"Seguidores",followAdd:"+164 este mes",madeLbl:"Referenciado",madeFrom:"+312 este mes",
+        topLbl:"Publicaciones más queridas",posts:[{t:"Pecho y tríceps trabajados",s:"¥1,800 ・de 11 países"},{t:"Pollo al microondas, salsa picante",s:"¥900 ・de 7 países"}],
+        feeTxt:"El 75% del apoyo llega a ti (comisión 25%). Montos estimados.",
+        msg:"Tu camino llegó a amigos en 18 países este mes. Lo que has seguido haciendo empuja a alguien, en algún lugar del mundo."},
+      "Deutsch":{hdr:"Creator",resultLbl:"Unterstützung diesen Monat",vsLast:"+¥1,100 vs letzter Monat",reach:"Gefühle von Freunden aus 18 Ländern erreichten dich",
+        payoutLbl:"Bis zur Auszahlung",freeFrom:"Kostenlose Überweisung ab ¥5.000",remain:"Noch <b>¥1,800</b> für gebührenfreien Erhalt",
+        followLbl:"Follower",followAdd:"+164 diesen Monat",madeLbl:"Referenziert",madeFrom:"+312 diesen Monat",
+        topLbl:"Beliebteste Beiträge",posts:[{t:"Brust & Trizeps trainiert",s:"¥1,800 ・aus 11 Ländern"},{t:"Mikrowellen-Hähnchen, scharf",s:"¥900 ・aus 7 Ländern"}],
+        feeTxt:"75% der Unterstützung erreichen dich (25% Gebühr). Beträge sind Schätzungen.",
+        msg:"Dein Weg erreichte diesen Monat Freunde in 18 Ländern. Was du weitergemacht hast, treibt jemanden voran, irgendwo auf der Welt."},
+      "Italiano":{hdr:"Creator",resultLbl:"Sostegno questo mese",vsLast:"+¥1,100 vs mese scorso",reach:"I sentimenti di amici in 18 paesi ti sono arrivati",
+        payoutLbl:"Fino al pagamento",freeFrom:"Bonifico gratis da ¥5.000",remain:"Ancora <b>¥1,800</b> per ricevere senza commissioni",
+        followLbl:"Follower",followAdd:"+164 questo mese",madeLbl:"Consultato",madeFrom:"+312 questo mese",
+        topLbl:"Post più amati",posts:[{t:"Petto e tricipiti allenati",s:"¥1,800 ・da 11 paesi"},{t:"Pollo al microonde, salsa piccante",s:"¥900 ・da 7 paesi"}],
+        feeTxt:"Il 75% del sostegno ti arriva (commissione 25%). Importi stimati.",
+        msg:"Il tuo percorso ha raggiunto amici in 18 paesi questo mese. Ciò che hai continuato spinge qualcuno, da qualche parte nel mondo."},
+      "Português":{hdr:"Criador",resultLbl:"Apoio este mês",vsLast:"+¥1,100 vs mês passado",reach:"Os sentimentos de amigos de 18 países chegaram a você",
+        payoutLbl:"Até receber",freeFrom:"Transferência grátis a partir de ¥5.000",remain:"Mais <b>¥1,800</b> para receber sem taxa",
+        followLbl:"Seguidores",followAdd:"+164 este mês",madeLbl:"Referenciado",madeFrom:"+312 este mês",
+        topLbl:"Posts mais queridos",posts:[{t:"Peito e tríceps treinados",s:"¥1,800 ・de 11 países"},{t:"Frango na micro-ondas, picante",s:"¥900 ・de 7 países"}],
+        feeTxt:"75% do apoio chega a você (taxa 25%). Valores estimados.",
+        msg:"Sua jornada alcançou amigos em 18 países este mês. O que você continuou fazendo empurra alguém, em algum lugar do mundo."},
+      "हिन्दी":{hdr:"क्रिएटर",resultLbl:"इस माह का सहयोग",vsLast:"पिछले माह से ＋¥1,100",reach:"18 देशों के साथियों की भावनाएँ आप तक पहुँचीं",
+        payoutLbl:"प्राप्ति तक",freeFrom:"¥5,000 से मुफ्त ट्रांसफर",remain:"बिना शुल्क पाने के लिए <b>¥1,800</b> और",
+        followLbl:"फॉलोअर",followAdd:"इस माह ＋164",madeLbl:"संदर्भित",madeFrom:"इस माह ＋312",
+        topLbl:"सबसे ज़्यादा पहुँचे पोस्ट",posts:[{t:"चेस्ट·ट्राइसेप्स किया",s:"¥1,800 ・11 देशों से"},{t:"माइक्रोवेव चिकन, तीखी चटनी",s:"¥900 ・7 देशों से"}],
+        feeTxt:"सहयोग का 75% आप तक पहुँचता है (शुल्क 25%)। राशि अनुमानित।",
+        msg:"आपकी राह इस माह 18 देशों के साथियों तक पहुँची। जो आपने जारी रखा, वह दुनिया में कहीं किसी की हिम्मत बढ़ा रहा है।"},
+      "Tiếng Việt":{hdr:"Nhà sáng tạo",resultLbl:"Ủng hộ tháng này",vsLast:"+¥1,100 so tháng trước",reach:"Tình cảm từ bạn bè ở 18 quốc gia đã đến với bạn",
+        payoutLbl:"Đến khi nhận",freeFrom:"Chuyển miễn phí từ ¥5.000",remain:"Thêm <b>¥1,800</b> để nhận không mất phí",
+        followLbl:"Người theo dõi",followAdd:"+164 tháng này",madeLbl:"Được tham khảo",madeFrom:"+312 tháng này",
+        topLbl:"Bài được yêu thích nhất",posts:[{t:"Tập ngực & tay sau",s:"¥1,800 ・từ 11 nước"},{t:"Gà hấp lò vi sóng, sốt cay",s:"¥900 ・từ 7 nước"}],
+        feeTxt:"75% ủng hộ đến với bạn (phí 25%). Số tiền là ước tính.",
+        msg:"Hành trình của bạn đã đến với bạn bè ở 18 quốc gia tháng này. Điều bạn duy trì đang tiếp sức cho ai đó, ở đâu đó trên thế giới."},
+      "Bahasa Indonesia":{hdr:"Kreator",resultLbl:"Dukungan bulan ini",vsLast:"+¥1,100 vs bulan lalu",reach:"Perasaan dari teman di 18 negara sampai kepadamu",
+        payoutLbl:"Hingga pencairan",freeFrom:"Transfer gratis mulai ¥5.000",remain:"<b>¥1,800</b> lagi untuk terima tanpa biaya",
+        followLbl:"Pengikut",followAdd:"+164 bulan ini",madeLbl:"Dijadikan acuan",madeFrom:"+312 bulan ini",
+        topLbl:"Postingan paling disukai",posts:[{t:"Latih dada & trisep",s:"¥1,800 ・dari 11 negara"},{t:"Ayam kukus microwave, pedas",s:"¥900 ・dari 7 negara"}],
+        feeTxt:"75% dukungan sampai kepadamu (biaya 25%). Jumlah perkiraan.",
+        msg:"Perjalananmu menjangkau teman di 18 negara bulan ini. Yang kamu tekuni sedang mendorong seseorang, di suatu tempat di dunia."}
+    };
+    var cur="日本語", dark=true;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",result:"linear-gradient(140deg,#221E12,#1A1813)",resultBd:"#3A3220",statF:"#16201C",statR:"#161E26",msg:"#16201C",msgTx:"#7FB89E",thumb:"linear-gradient(150deg,#3A352A,#262219)",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A",track:"#2A2620"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",result:"linear-gradient(140deg,#FBF3E0,#FBF7F1)",resultBd:"#EADCBE",statF:"#EAF6F1",statR:"#EAF1F8",msg:"#EAF6F1",msgTx:"#3E8068",thumb:"linear-gradient(150deg,#EDE6D8,#F5F0E6)",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517",track:"#EDE6D8"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderPosts(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('topPosts').innerHTML="";
+      d.posts.forEach(function(p,i){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:11px;";
+        row.innerHTML='<div style="width:44px; height:44px; border-radius:11px; background:'+t.thumb+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+POSTS[i].ic+'" style="font-size:20px; color:'+t.iconCol+';"></i></div>'+
+          '<div style="flex:1;"><p style="font-size:13px; color:'+t.txt+'; margin:0;">'+p.t+'</p><p style="font-size:10px; color:'+t.sub+'; margin:0;">'+p.s+'</p></div>'+
+          '<i class="ti ti-chevron-right" style="font-size:16px; color:'+t.muted+';"></i>';
+        $('topPosts').appendChild(row);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('resultLbl').textContent=d.resultLbl; $('vsLast').textContent=d.vsLast; $('reachLine').textContent=d.reach;
+      $('payoutLbl').textContent=d.payoutLbl; $('freeFrom').textContent=d.freeFrom; $('remainTxt').innerHTML=d.remain.replace("<b>",'<span style="font-weight:500; color:#5DCAA5;">').replace("</b>","</span>");
+      $('followLbl').textContent=d.followLbl; $('followAdd').textContent=d.followAdd; $('madeLbl').textContent=d.madeLbl; $('madeFrom').textContent=d.madeFrom;
+      $('topLbl').textContent=d.topLbl; $('feeTxt').textContent=d.feeTxt; $('msgTxt').textContent=d.msg;
+      renderPosts();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('resultCard').style.background=t.result; $('resultCard').style.borderColor=t.resultBd;
+      $('payoutCard').style.background=t.card;
+      $('statF').style.background=t.statF; $('statR').style.background=t.statR;
+      $('followNum').style.color=t.txt; $('madeNum').style.color=t.txt;
+      $('msgCard').style.background=t.msg; $('msgTxt').style.color=t.msgTx; $('msgCard').querySelector('i').style.color= dark?"#5DCAA5":"#3E8068";
+      $('payoutBar').parentElement.style.background=t.track;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

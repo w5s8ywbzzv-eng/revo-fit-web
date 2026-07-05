@@ -1,0 +1,362 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">枕のトレンドランキング。自分の国と世界で切り替え。無料は人気カテゴリのトップ3まで、スタンダードは商品名や味、みんなの声まで見られる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">トレンド</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="regionBtn" aria-label="国・地域" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-map-pin" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+    <div id="regionMenu" style="display:none; position:absolute; top:54px; right:18px; width:230px; max-height:320px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:31;"></div>
+  </div>
+
+  <!-- 各国/世界 切替 -->
+  <div style="padding:14px 18px 0;">
+    <div id="scopeBar" style="display:flex; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:3px;">
+      <button id="natTab" style="flex:1; padding:9px; border-radius:9px; border:none; background:#E3C56A; color:#16140F; font-size:13px; font-weight:600; cursor:pointer;">日本のトレンド</button>
+      <button id="wldTab" style="flex:1; padding:9px; border-radius:9px; border:none; background:transparent; color:#8A7E68; font-size:13px; font-weight:500; cursor:pointer;">世界のトレンド</button>
+    </div>
+  </div>
+
+  <!-- 枕/抱き枕 切替 -->
+  <div style="padding:10px 18px 0;">
+    <div id="kindBar" style="display:flex; gap:8px;">
+      <button id="normalBtn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:9px; border-radius:11px; border:none; background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; cursor:pointer;"><i class="ti ti-bed" style="font-size:15px;"></i><span id="normalLbl">枕</span></button>
+      <button id="hugBtn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:9px; border-radius:11px; border:0.5px solid #2A2620; background:transparent; color:#8A7E68; font-size:12px; font-weight:500; cursor:pointer;"><i class="ti ti-mood-kid" style="font-size:15px;"></i><span id="hugLbl">抱き枕</span></button>
+    </div>
+  </div>
+
+  <!-- 無料：人気カテゴリTOP3（大枠） -->
+  <div style="padding:18px 18px 0;">
+    <div style="display:flex; align-items:center; gap:7px; margin:0 0 12px;">
+      <i class="ti ti-flame" style="font-size:17px; color:#E0846A;"></i>
+      <p id="freeTtl" style="font-size:13px; color:#F0EBE2; margin:0; font-weight:600;">いま使われているもの TOP3</p>
+    </div>
+    <div id="catRank" style="display:flex; flex-direction:column; gap:9px;"></div>
+  </div>
+
+  <!-- スタンダード：商品TOP10（ぼかし＋鍵） -->
+  <div style="padding:22px 18px 0;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 12px;">
+      <div style="display:flex; align-items:center; gap:7px;">
+        <i class="ti ti-trophy" style="font-size:17px; color:#E3C56A;"></i>
+        <p id="prodTtl" style="font-size:13px; color:#F0EBE2; margin:0; font-weight:600;">人気の枕 TOP10</p>
+      </div>
+      <span id="stdBadge" style="font-size:10px; color:#E3C56A; border:0.5px solid #E3C56A; padding:2px 9px; border-radius:999px;">スタンダード</span>
+    </div>
+    <div style="position:relative;">
+      <div id="prodRank" style="display:flex; flex-direction:column; gap:8px;"></div>
+      <!-- 鍵オーバーレイ -->
+      <div id="lockOverlay" style="position:absolute; left:0; right:0; bottom:0; top:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0; background:linear-gradient(180deg, rgba(22,20,15,0.55) 0%, rgba(22,20,15,0.86) 100%);">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:11px; padding:20px;">
+          <div style="width:46px; height:46px; border-radius:50%; background:#E3C56A; display:flex; align-items:center; justify-content:center;"><i class="ti ti-lock" style="font-size:23px; color:#16140F;"></i></div>
+          <p id="lockTxt" style="font-size:13px; color:#F0EBE2; margin:0; text-align:center; line-height:1.6; font-weight:500;">続きは、メーカー名・モデル・みんなの声まで。</p>
+          <button id="unlockBtn" style="background:#E3C56A; border:none; color:#16140F; font-size:14px; font-weight:600; padding:13px 28px; border-radius:12px; cursor:pointer;">スタンダードで解放する</button>
+          <p id="lockSub" style="font-size:11px; color:#8A7E68; margin:0; text-align:center;">月額980円・いつでも解約できます</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:24px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 無料：人気カテゴリTOP3（大枠）国別/世界
+    var CAT_NAT=[{k:"memory",pct:58},{k:"pipe",pct:39},{k:"feather",pct:28}];
+    var CAT_WLD=[{k:"memory",pct:62},{k:"latex",pct:44},{k:"highrebound",pct:35}];
+    // 抱き枕のタイプTOP3
+    var HUGCAT_NAT=[{k:"hugbody",pct:61},{k:"hugcooling",pct:34},{k:"hugmaternity",pct:22}];
+    var HUGCAT_WLD=[{k:"hugbody",pct:67},{k:"hugmaternity",pct:41},{k:"hugcooling",pct:29}];
+    // スタンダード：商品TOP10（チラ見せ用に上位だけ実データ、下はダミー）
+    var PROD_NAT=[
+      {rank:1,name:"テンピュール オリジナル",flavor:"低反発",rate:4.6,users:"14,200"},
+      {rank:2,name:"ニトリ 高さ調整できる枕",flavor:"パイプ",rate:4.4,users:"11,900"},
+      {rank:3,name:"西川 エアー ピロー",flavor:"高反発",rate:4.3,users:"8,600"}
+    ];
+    var PROD_WLD=[
+      {rank:1,name:"Tempur Original Pillow",flavor:"Memory foam",rate:4.7,users:"284,000"},
+      {rank:2,name:"Coop Home Goods Adjustable",flavor:"Shredded foam",rate:4.6,users:"196,000"},
+      {rank:3,name:"MyPillow Premium",flavor:"Fiber",rate:4.4,users:"173,000"}
+    ];
+    var HUGPROD_NAT=[
+      {rank:1,name:"MOGU 気持ちいい抱きまくら",flavor:"パウダービーズ",rate:4.6,users:"9,200"},
+      {rank:2,name:"無印良品 体にフィットする抱き枕",flavor:"マイクロビーズ",rate:4.5,users:"7,800"},
+      {rank:3,name:"ニトリ 抱き枕",flavor:"わた",rate:4.2,users:"5,400"}
+    ];
+    var HUGPROD_WLD=[
+      {rank:1,name:"Snuggle-Pedic Body Pillow",flavor:"Shredded foam",rate:4.7,users:"142,000"},
+      {rank:2,name:"Pharmedoc Pregnancy Pillow",flavor:"U-shape",rate:4.6,users:"118,000"},
+      {rank:3,name:"Leachco Snoogle",flavor:"Maternity",rate:4.5,users:"96,000"}
+    ];
+    var catColorsAll={memory:"#3B6FE0",highrebound:"#14B8A6",feather:"#E89BB8",buckwheat:"#C9A24E",pipe:"#9B7BD4",latex:"#5DCAA5",fiber:"#E0A86A",hugbody:"#5D9CEA",hugmaternity:"#E89BB8",hugcooling:"#14B8A6"};
+    var catColors=catColorsAll;
+    var medal=["#E3C56A","#C8C8CC","#CD8E5A"];
+    var D={
+      "日本語":{hdr:"トレンド",natTab:"{c}のトレンド",wldTab:"世界のトレンド",
+        freeTtl:"いま使われているもの TOP3",prodTtl:"人気の枕 TOP10",std:"スタンダード",
+        lock:"続きは、メーカー名・モデル・みんなの声まで。",unlock:"スタンダードで解放する",lockSub:"月額980円・いつでも解約できます",
+        cats:{memory:"低反発",highrebound:"高反発",feather:"羽毛",buckwheat:"そばがら",pipe:"パイプ",latex:"ラテックス",fiber:"ファイバー",hugbody:"抱き枕",hugmaternity:"妊婦用抱き枕",hugcooling:"接触冷感抱き枕"},normal:"枕",hug:"抱き枕",prodTtlHug:"人気の抱き枕 TOP10",
+        users:"人",usersLbl:"人が利用",rateLbl:"",country:"日本"},
+      "English":{hdr:"Trends",natTab:"{c} trends",wldTab:"World trends",
+        freeTtl:"Most used right now · TOP3",prodTtl:"Top pillows · TOP10",std:"Standard",
+        lock:"Unlock brands, flavors and real reviews.",unlock:"Unlock with Standard",lockSub:"$9.80/mo · cancel anytime",
+        cats:{memory:"Memory foam",highrebound:"High-rebound",feather:"Feather",buckwheat:"Buckwheat",pipe:"Pipe",latex:"Latex",fiber:"Fiber",hugbody:"Body pillow",hugmaternity:"Maternity pillow",hugcooling:"Cooling body pillow"},normal:"Pillow",hug:"Body pillow",prodTtlHug:"Top body pillows · TOP10",
+        users:"",usersLbl:"users",rateLbl:"",country:"your country"},
+      "简体中文":{hdr:"趋势",natTab:"{c}趋势",wldTab:"世界趋势",
+        freeTtl:"现在最多人在用 TOP3",prodTtl:"热门枕头 TOP10",std:"标准版",
+        lock:"解锁品牌·口味·真实评价。",unlock:"用标准版解锁",lockSub:"每月980日元·随时取消",
+        cats:{memory:"记忆棉",highrebound:"高回弹",feather:"羽毛",buckwheat:"荞麦",pipe:"管棉",latex:"乳胶",fiber:"纤维",hugbody:"抱枕",hugmaternity:"孕妇抱枕",hugcooling:"凉感抱枕"},normal:"枕头",hug:"抱枕",prodTtlHug:"热门抱枕 TOP10",
+        users:"人",usersLbl:"人在用",rateLbl:"",country:"中国"},
+      "繁體中文":{hdr:"趨勢",natTab:"{c}趨勢",wldTab:"世界趨勢",
+        freeTtl:"現在最多人在用 TOP3",prodTtl:"熱門枕頭 TOP10",std:"標準版",
+        lock:"解鎖品牌·口味·真實評價。",unlock:"用標準版解鎖",lockSub:"每月980日圓·隨時取消",
+        cats:{memory:"記憶棉",highrebound:"高回彈",feather:"羽毛",buckwheat:"蕎麥",pipe:"管棉",latex:"乳膠",fiber:"纖維",hugbody:"抱枕",hugmaternity:"孕婦抱枕",hugcooling:"涼感抱枕"},normal:"枕頭",hug:"抱枕",prodTtlHug:"熱門抱枕 TOP10",
+        users:"人",usersLbl:"人在用",rateLbl:"",country:"台灣"},
+      "한국어":{hdr:"트렌드",natTab:"{c} 트렌드",wldTab:"세계 트렌드",
+        freeTtl:"지금 가장 많이 쓰는 것 TOP3",prodTtl:"인기 베개 TOP10",std:"스탠다드",
+        lock:"브랜드·맛·생생한 후기까지 잠금 해제.",unlock:"스탠다드로 해제",lockSub:"월 980엔·언제든 해지",
+        cats:{memory:"메모리폼",highrebound:"고반발",feather:"깃털",buckwheat:"메밀",pipe:"파이프",latex:"라텍스",fiber:"파이버",hugbody:"바디필로우",hugmaternity:"임산부 베개",hugcooling:"쿨링 바디필로우"},normal:"베개",hug:"바디필로우",prodTtlHug:"인기 바디필로우 TOP10",
+        users:"명",usersLbl:"명 사용",rateLbl:"",country:"한국"},
+      "ภาษาไทย":{hdr:"เทรนด์",natTab:"เทรนด์{c}",wldTab:"เทรนด์โลก",
+        freeTtl:"ที่คนใช้มากตอนนี้ TOP3",prodTtl:"หมอนยอดนิยม TOP10",std:"สแตนดาร์ด",
+        lock:"ปลดล็อกแบรนด์ รสชาติ และรีวิวจริง",unlock:"ปลดล็อกด้วยสแตนดาร์ด",lockSub:"980 เยน/เดือน ยกเลิกได้ทุกเมื่อ",
+        cats:{memory:"เมมโมรีโฟม",highrebound:"คืนตัวสูง",feather:"ขนนก",buckwheat:"บัควีท",pipe:"ไปป์",latex:"ลาเท็กซ์",fiber:"ไฟเบอร์",hugbody:"หมอนข้าง",hugmaternity:"หมอนคนท้อง",hugcooling:"หมอนข้างเย็นสบาย"},normal:"หมอน",hug:"หมอนข้าง",prodTtlHug:"หมอนข้างยอดนิยม TOP10",
+        users:"คน",usersLbl:"คนใช้",rateLbl:"",country:"ไทย"},
+      "Français":{hdr:"Tendances",natTab:"Tendances {c}",wldTab:"Tendances mondiales",
+        freeTtl:"Les plus utilisés en ce moment · TOP3",prodTtl:"Oreillers populaires · TOP10",std:"Standard",
+        lock:"Débloquez marques, goûts et vrais avis.",unlock:"Débloquer avec Standard",lockSub:"980 ¥/mois · résiliable à tout moment",
+        cats:{memory:"Mémoire de forme",highrebound:"Haute résilience",feather:"Plume",buckwheat:"Sarrasin",pipe:"Tubes",latex:"Latex",fiber:"Fibre",hugbody:"Oreiller corporel",hugmaternity:"Oreiller de grossesse",hugcooling:"Oreiller rafraîchissant"},normal:"Oreiller",hug:"Oreiller corporel",prodTtlHug:"Top oreillers corporels · TOP10",
+        users:"",usersLbl:"utilisateurs",rateLbl:"",country:"la France"},
+      "Español":{hdr:"Tendencias",natTab:"Tendencias de {c}",wldTab:"Tendencias mundiales",
+        freeTtl:"Lo más usado ahora · TOP3",prodTtl:"Almohadas populares · TOP10",std:"Estándar",
+        lock:"Desbloquea marcas, sabores y reseñas reales.",unlock:"Desbloquear con Estándar",lockSub:"980 ¥/mes · cancela cuando quieras",
+        cats:{memory:"Viscoelástica",highrebound:"Alta resiliencia",feather:"Plumas",buckwheat:"Trigo sarraceno",pipe:"Tubos",latex:"Látex",fiber:"Fibra",hugbody:"Almohada de cuerpo",hugmaternity:"Almohada de embarazo",hugcooling:"Almohada refrescante"},normal:"Almohada",hug:"Almohada de cuerpo",prodTtlHug:"Top almohadas de cuerpo · TOP10",
+        users:"",usersLbl:"usuarios",rateLbl:"",country:"tu país"},
+      "Deutsch":{hdr:"Trends",natTab:"{c}-Trends",wldTab:"Welt-Trends",
+        freeTtl:"Aktuell am meisten genutzt · TOP3",prodTtl:"Beliebte Kissen · TOP10",std:"Standard",
+        lock:"Marken, Geschmäcker und echte Reviews freischalten.",unlock:"Mit Standard freischalten",lockSub:"980 ¥/Monat · jederzeit kündbar",
+        cats:{memory:"Memory-Schaum",highrebound:"Hochelastisch",feather:"Feder",buckwheat:"Buchweizen",pipe:"Röhrchen",latex:"Latex",fiber:"Faser",hugbody:"Körperkissen",hugmaternity:"Schwangerschaftskissen",hugcooling:"Kühlendes Körperkissen"},normal:"Kissen",hug:"Körperkissen",prodTtlHug:"Beliebte Körperkissen · TOP10",
+        users:"",usersLbl:"Nutzer",rateLbl:"",country:"dein Land"},
+      "Italiano":{hdr:"Tendenze",natTab:"Tendenze {c}",wldTab:"Tendenze mondiali",
+        freeTtl:"I più usati ora · TOP3",prodTtl:"Cuscini popolari · TOP10",std:"Standard",
+        lock:"Sblocca marche, gusti e recensioni vere.",unlock:"Sblocca con Standard",lockSub:"980 ¥/mese · disdici quando vuoi",
+        cats:{memory:"Memory foam",highrebound:"Alta resilienza",feather:"Piuma",buckwheat:"Grano saraceno",pipe:"Tubicini",latex:"Lattice",fiber:"Fibra",hugbody:"Cuscino per il corpo",hugmaternity:"Cuscino gravidanza",hugcooling:"Cuscino rinfrescante"},normal:"Cuscino",hug:"Cuscino per il corpo",prodTtlHug:"Top cuscini per il corpo · TOP10",
+        users:"",usersLbl:"utenti",rateLbl:"",country:"il tuo paese"},
+      "Português":{hdr:"Tendências",natTab:"Tendências do {c}",wldTab:"Tendências mundiais",
+        freeTtl:"Os mais usados agora · TOP3",prodTtl:"Almohadas populares · TOP10",std:"Standard",
+        lock:"Desbloqueie marcas, sabores e avaliações reais.",unlock:"Desbloquear com Standard",lockSub:"980 ¥/mês · cancele quando quiser",
+        cats:{memory:"Espuma viscoelástica",highrebound:"Alta resiliência",feather:"Pena",buckwheat:"Trigo-sarraceno",pipe:"Tubos",latex:"Látex",fiber:"Fibra",hugbody:"Travesseiro de corpo",hugmaternity:"Travesseiro de gravidez",hugcooling:"Travesseiro refrescante"},normal:"Travesseiro",hug:"Travesseiro de corpo",prodTtlHug:"Top travesseiros de corpo · TOP10",
+        users:"",usersLbl:"usuários",rateLbl:"",country:"seu país"},
+      "हिन्दी":{hdr:"ट्रेंड",natTab:"{c} के ट्रेंड",wldTab:"विश्व ट्रेंड",
+        freeTtl:"अभी सबसे ज़्यादा इस्तेमाल हो रहे · TOP3",prodTtl:"लोकप्रिय तकिए · TOP10",std:"स्टैंडर्ड",
+        lock:"ब्रांड, फ्लेवर और असली रिव्यू अनलॉक करें।",unlock:"स्टैंडर्ड से अनलॉक करें",lockSub:"980 ¥/माह · कभी भी रद्द करें",
+        cats:{memory:"मेमोरी फोम",highrebound:"हाई-रिबाउंड",feather:"पंख",buckwheat:"कुट्टू",pipe:"पाइप",latex:"लेटेक्स",fiber:"फाइबर",hugbody:"बॉडी पिलो",hugmaternity:"मैटरनिटी पिलो",hugcooling:"कूलिंग बॉडी पिलो"},normal:"तकिया",hug:"बॉडी पिलो",prodTtlHug:"लोकप्रिय बॉडी पिलो · TOP10",
+        users:"",usersLbl:"उपयोगकर्ता",rateLbl:"",country:"आपका देश"},
+      "Tiếng Việt":{hdr:"Xu hướng",natTab:"Xu hướng {c}",wldTab:"Xu hướng thế giới",
+        freeTtl:"Đang dùng nhiều nhất · TOP3",prodTtl:"Gối phổ biến · TOP10",std:"Tiêu chuẩn",
+        lock:"Mở khóa thương hiệu, vị và đánh giá thật.",unlock:"Mở khóa với Tiêu chuẩn",lockSub:"980 ¥/tháng · hủy bất cứ lúc nào",
+        cats:{memory:"Memory foam",highrebound:"Đàn hồi cao",feather:"Lông vũ",buckwheat:"Kiều mạch",pipe:"Ống nhựa",latex:"Cao su",fiber:"Sợi",hugbody:"Gối ôm",hugmaternity:"Gối bà bầu",hugcooling:"Gối ôm mát"},normal:"Gối",hug:"Gối ôm",prodTtlHug:"Gối ôm phổ biến · TOP10",
+        users:"",usersLbl:"người dùng",rateLbl:"",country:"nước bạn"},
+      "Bahasa Indonesia":{hdr:"Tren",natTab:"Tren {c}",wldTab:"Tren dunia",
+        freeTtl:"Paling banyak dipakai · TOP3",prodTtl:"Bantal populer · TOP10",std:"Standar",
+        lock:"Buka merek, rasa, dan ulasan asli.",unlock:"Buka dengan Standar",lockSub:"980 ¥/bln · batalkan kapan saja",
+        cats:{memory:"Memory foam",highrebound:"High-rebound",feather:"Bulu",buckwheat:"Soba",pipe:"Pipa",latex:"Lateks",fiber:"Serat",hugbody:"Bantal guling",hugmaternity:"Bantal hamil",hugcooling:"Bantal guling sejuk"},normal:"Bantal",hug:"Bantal guling",prodTtlHug:"Bantal guling populer · TOP10",
+        users:"",usersLbl:"pengguna",rateLbl:"",country:"negaramu"}
+    };
+    var cur="日本語", dark=true, scope="nat", curKind="normal";
+    // 国・地域（世界を広く網羅・間口を狭めない）。name=現地/一般表記, en=英語
+    var regions=[
+      // アジア
+      {code:"JP",name:"日本",en:"Japan"},{code:"KR",name:"대한민국",en:"South Korea"},
+      {code:"CN",name:"中国",en:"China"},{code:"TW",name:"台灣",en:"Taiwan"},
+      {code:"HK",name:"香港",en:"Hong Kong"},{code:"TH",name:"ไทย",en:"Thailand"},
+      {code:"VN",name:"Việt Nam",en:"Vietnam"},{code:"ID",name:"Indonesia",en:"Indonesia"},
+      {code:"MY",name:"Malaysia",en:"Malaysia"},{code:"PH",name:"Philippines",en:"Philippines"},
+      {code:"SG",name:"Singapore",en:"Singapore"},{code:"IN",name:"भारत",en:"India"},
+      {code:"PK",name:"Pakistan",en:"Pakistan"},{code:"BD",name:"Bangladesh",en:"Bangladesh"},
+      {code:"LK",name:"Sri Lanka",en:"Sri Lanka"},{code:"NP",name:"Nepal",en:"Nepal"},
+      {code:"KH",name:"Cambodia",en:"Cambodia"},{code:"MM",name:"Myanmar",en:"Myanmar"},
+      // 中東
+      {code:"AE",name:"الإمارات",en:"UAE"},{code:"SA",name:"السعودية",en:"Saudi Arabia"},
+      {code:"QA",name:"قطر",en:"Qatar"},{code:"KW",name:"الكويت",en:"Kuwait"},
+      {code:"IL",name:"ישראל",en:"Israel"},{code:"TR",name:"Türkiye",en:"Turkey"},
+      {code:"IR",name:"ایران",en:"Iran"},
+      // ヨーロッパ
+      {code:"GB",name:"United Kingdom",en:"United Kingdom"},{code:"IE",name:"Ireland",en:"Ireland"},
+      {code:"FR",name:"France",en:"France"},{code:"DE",name:"Deutschland",en:"Germany"},
+      {code:"ES",name:"España",en:"Spain"},{code:"IT",name:"Italia",en:"Italy"},
+      {code:"PT",name:"Portugal",en:"Portugal"},{code:"NL",name:"Nederland",en:"Netherlands"},
+      {code:"BE",name:"België",en:"Belgium"},{code:"CH",name:"Schweiz",en:"Switzerland"},
+      {code:"AT",name:"Österreich",en:"Austria"},{code:"SE",name:"Sverige",en:"Sweden"},
+      {code:"NO",name:"Norge",en:"Norway"},{code:"DK",name:"Danmark",en:"Denmark"},
+      {code:"FI",name:"Suomi",en:"Finland"},{code:"PL",name:"Polska",en:"Poland"},
+      {code:"CZ",name:"Česko",en:"Czechia"},{code:"GR",name:"Ελλάδα",en:"Greece"},
+      {code:"RO",name:"România",en:"Romania"},{code:"HU",name:"Magyarország",en:"Hungary"},
+      {code:"UA",name:"Україна",en:"Ukraine"},{code:"RU",name:"Россия",en:"Russia"},
+      // 北米
+      {code:"US",name:"United States",en:"United States"},{code:"CA",name:"Canada",en:"Canada"},
+      {code:"MX",name:"México",en:"Mexico"},
+      // 中南米
+      {code:"BR",name:"Brasil",en:"Brazil"},{code:"AR",name:"Argentina",en:"Argentina"},
+      {code:"CL",name:"Chile",en:"Chile"},{code:"CO",name:"Colombia",en:"Colombia"},
+      {code:"PE",name:"Perú",en:"Peru"},
+      // オセアニア
+      {code:"AU",name:"Australia",en:"Australia"},{code:"NZ",name:"New Zealand",en:"New Zealand"},
+      // アフリカ
+      {code:"ZA",name:"South Africa",en:"South Africa"},{code:"EG",name:"مصر",en:"Egypt"},
+      {code:"NG",name:"Nigeria",en:"Nigeria"},{code:"KE",name:"Kenya",en:"Kenya"},
+      {code:"MA",name:"المغرب",en:"Morocco"},
+      {code:"OTHER",name:"その他の国・地域",en:"Other"}
+    ];
+    var curRegion="JP";
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",track:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",track:"#EDE6D8",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderFree(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var arr= curKind==="hug" ? (scope==="nat"?HUGCAT_NAT:HUGCAT_WLD) : (scope==="nat"?CAT_NAT:CAT_WLD);
+      $('catRank').innerHTML="";
+      arr.forEach(function(c,i){
+        var col=catColors[c.k]||"#8A7E68";
+        var row=document.createElement('div');
+        row.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:13px; padding:13px 15px; display:flex; align-items:center; gap:12px;";
+        row.innerHTML=
+          '<span style="font-size:18px; font-weight:700; color:'+medal[i]+'; width:22px; text-align:center; font-family:Jost,sans-serif;">'+(i+1)+'</span>'+
+          '<div style="flex:1;">'+
+            '<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 6px;"><span style="font-size:14px; color:'+t.txt+'; font-weight:500;">'+(d.cats[c.k]||c.k)+'</span><span style="font-size:11px; color:'+t.sub+';">'+c.pct+'%</span></div>'+
+            '<div style="width:100%; height:6px; background:'+t.track+'; border-radius:3px; overflow:hidden;"><div style="width:'+c.pct+'%; height:6px; background:'+col+';"></div></div>'+
+          '</div>';
+        $('catRank').appendChild(row);
+      });
+    }
+    function renderProd(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var arr= curKind==="hug" ? (scope==="nat"?HUGPROD_NAT:HUGPROD_WLD) : (scope==="nat"?PROD_NAT:PROD_WLD);
+      $('prodRank').innerHTML="";
+      // 1位から全部ぼかし。実データ行もぼかして「何かある」気配だけ残す
+      arr.forEach(function(p,i){
+        var row=document.createElement('div');
+        row.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:12px; padding:11px 14px; display:flex; align-items:center; gap:12px; filter:blur(5px); opacity:0.6;";
+        row.innerHTML=
+          '<span style="font-size:16px; font-weight:700; color:'+(medal[i]||t.sub)+'; width:20px; text-align:center; font-family:Jost,sans-serif;">'+p.rank+'</span>'+
+          '<div style="flex:1; min-width:0;">'+
+            '<p style="font-size:13px; color:'+t.txt+'; margin:0 0 2px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+p.name+'</p>'+
+            '<p style="font-size:11px; color:'+t.sub+'; margin:0;">'+p.flavor+'</p>'+
+          '</div>'+
+          '<div style="display:flex; align-items:center; gap:3px;"><i class="ti ti-star-filled" style="font-size:13px; color:'+t.accent+';"></i><span style="font-size:13px; color:'+t.txt+'; font-weight:600;">'+p.rate+'</span></div>';
+        $('prodRank').appendChild(row);
+      });
+      // さらにダミー行（4〜7位ぶん）
+      for(var k=0;k<4;k++){
+        var dum=document.createElement('div');
+        dum.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:12px; padding:11px 14px; display:flex; align-items:center; gap:12px; filter:blur(5px); opacity:0.5;";
+        dum.innerHTML=
+          '<span style="font-size:16px; font-weight:700; color:'+t.sub+'; width:20px; text-align:center; font-family:Jost,sans-serif;">'+(k+4)+'</span>'+
+          '<div style="flex:1;"><div style="width:'+(60-k*6)+'%; height:11px; background:'+t.track+'; border-radius:4px; margin:0 0 5px;"></div><div style="width:'+(40-k*4)+'%; height:9px; background:'+t.track+'; border-radius:4px;"></div></div>'+
+          '<div style="width:34px; height:13px; background:'+t.track+'; border-radius:4px;"></div>';
+        $('prodRank').appendChild(dum);
+      }
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr;
+      var reg=regions.filter(function(r){return r.code===curRegion;})[0]||regions[0];
+      var regName = (cur==="日本語"||cur==="简体中文"||cur==="繁體中文"||cur==="한국어"||cur==="ภาษาไทย"||cur==="हिन्दी") ? reg.name : reg.en;
+      $('natTab').textContent=(d.natTab||"{c}").replace("{c}", regName);
+      $('wldTab').textContent=d.wldTab;
+      $('freeTtl').textContent=d.freeTtl; $('prodTtl').textContent= curKind==="hug" ? (d.prodTtlHug||d.prodTtl) : d.prodTtl;
+      $('normalLbl').textContent=d.normal||"Pillow"; $('hugLbl').textContent=d.hug||"Body pillow";
+      $('stdBadge').textContent=d.std; $('lockTxt').textContent=d.lock; $('unlockBtn').textContent=d.unlock; $('lockSub').textContent=d.lockSub;
+      renderFree(); renderProd();
+    }
+    function setScope(sc){
+      scope=sc;
+      var nOn=(sc==="nat");
+      applyTheme();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('scopeBar').style.background=t.card; $('scopeBar').style.borderColor=t.cardBd;
+      var nOn=(scope==="nat");
+      $('natTab').style.background=nOn?t.accent:"transparent"; $('natTab').style.color=nOn?(dark?"#16140F":"#FFFFFF"):t.sub;
+      $('wldTab').style.background=!nOn?t.accent:"transparent"; $('wldTab').style.color=!nOn?(dark?"#16140F":"#FFFFFF"):t.sub;
+      $('freeTtl').style.color=t.txt; $('prodTtl').style.color=t.txt;
+      var kOn=(curKind==="normal");
+      $('normalBtn').style.background=kOn?t.accent:'transparent'; $('normalBtn').style.color=kOn?(dark?'#16140F':'#FFFFFF'):t.sub; $('normalBtn').style.border=kOn?'none':'0.5px solid '+t.cardBd;
+      $('hugBtn').style.background=!kOn?t.accent:'transparent'; $('hugBtn').style.color=!kOn?(dark?'#16140F':'#FFFFFF'):t.sub; $('hugBtn').style.border=!kOn?'none':'0.5px solid '+t.cardBd;
+      $('stdBadge').style.color=t.accent; $('stdBadge').style.borderColor=t.accent;
+      $('lockTxt').style.color=t.txt; $('lockSub').style.color=t.sub;
+      $('unlockBtn').style.background=t.accent; $('unlockBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('lockOverlay').style.background="linear-gradient(180deg, "+(dark?"rgba(22,20,15,0)":"rgba(255,255,255,0)")+" 0%, "+(dark?"rgba(22,20,15,0.82)":"rgba(255,255,255,0.82)")+" 42%, "+(dark?"rgba(22,20,15,0.97)":"rgba(255,255,255,0.97)")+" 100%)";
+      [$('langBtn'),$('themeBtn'),$('regionBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('regionBtn').querySelector('i').style.color=t.iconCol;
+      $('regionMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('regionMenu').style.borderColor=t.iconBd;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderFree(); renderProd();
+    }
+    $('natTab').onclick=function(){ setScope("nat"); };
+    $('wldTab').onclick=function(){ setScope("wld"); };
+    $('normalBtn').onclick=function(){ curKind="normal"; applyUI(); applyTheme(); };
+    $('hugBtn').onclick=function(){ curKind="hug"; applyUI(); applyTheme(); };
+    function renderRegionMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('regionMenu').innerHTML="";
+      var localName=(cur==="日本語"||cur==="简体中文"||cur==="繁體中文"||cur==="한국어"||cur==="ภาษาไทย"||cur==="हिन्दी");
+      regions.forEach(function(r){
+        var on=(r.code===curRegion);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        var nm = localName ? r.name : r.en;
+        var sub = (r.name!==r.en && nm!==r.en) ? '<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+r.en+'</p>' : '';
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+nm+'</p>'+sub+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ curRegion=r.code; $('regionMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('regionMenu').appendChild(row);
+      });
+    }
+    $('regionBtn').onclick=function(e){ e.stopPropagation(); renderRegionMenu(); var m=$('regionMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; $('langMenu').style.display="none"; };
+    $('regionMenu').onclick=function(e){ e.stopPropagation(); };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; $('regionMenu').style.display="none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; $('regionMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>

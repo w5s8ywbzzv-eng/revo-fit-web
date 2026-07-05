@@ -1,0 +1,160 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.5s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">revo のアカウントを作成する画面。Google や Apple で素早く登録するか、メールアドレスとパスワードで登録できる。すでにアカウントがある人はログインへ。言語と明暗を切り替えられる。</h2>
+
+  <!-- ヘッダー：戻る＋言語＋明るさ -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; position:relative;">
+    <button id="backBtn" aria-label="戻る" style="width:32px; height:32px; border-radius:50%; background:transparent; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;"><i class="ti ti-arrow-left" style="font-size:20px; color:#8A7E68;"></i></button>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button id="langBtn" aria-label="言語" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i class="ti ti-world" style="font-size:15px; color:#8A7E68;"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i id="themeIcon" class="ti ti-sun" style="font-size:15px; color:#8A7E68;"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:52px; right:18px; width:206px; max-height:290px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:12px 30px 40px;">
+
+    <!-- ワードマーク -->
+    <div style="display:flex; justify-content:center; margin:8px 0 22px;">
+      <span style="font-family:Jost; font-weight:100; font-size:28px; letter-spacing:0.02em; line-height:1;"><span id="wmRevo" style="color:#F0EBE2;">revo</span><span id="wmSuffix" style="color:#E3C56A; font-weight:200; margin-left:0.18em;">fit</span></span>
+    </div>
+
+    <p id="ttl" style="font-size:21px; color:#F0EBE2; margin:0 0 6px; font-weight:400; text-align:center; letter-spacing:0.01em;">アカウントを作成</p>
+    <p id="ttlSub" style="font-size:12px; color:#8A7E68; margin:0 0 28px; text-align:center; font-weight:300;">あなたの revo を、はじめましょう。</p>
+
+    <!-- ソーシャル登録 -->
+    <button id="googleBtn" class="socialBtn" style="width:100%; background:#FFFFFF; border:none; color:#1A1A1A; font-size:14px; font-weight:500; padding:14px; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin:0 0 11px;">
+      <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5 16.3 4.5 9.7 8.8 6.3 14.7z"/><path fill="#4CAF50" d="M24 43.5c5.4 0 10.3-2 14-5.3l-6.5-5.5c-2 1.5-4.6 2.3-7.5 2.3-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.6 39.1 16.2 43.5 24 43.5z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3c-.8 2.2-2.2 4.1-4 5.5l6.5 5.5c-.5.4 7-5 7-15 0-1.2-.1-2.3-.4-3.5z"/></svg>
+      <span id="googleLbl">Google で続ける</span>
+    </button>
+    <button id="appleBtn" class="socialBtn" style="width:100%; background:#000000; border:0.5px solid #2A2620; color:#FFFFFF; font-size:14px; font-weight:500; padding:14px; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; margin:0 0 20px;">
+      <i class="ti ti-brand-apple-filled" style="font-size:17px;"></i>
+      <span id="appleLbl">Apple で続ける</span>
+    </button>
+
+    <!-- 区切り -->
+    <div style="display:flex; align-items:center; gap:12px; margin:0 0 20px;">
+      <div id="divL" style="flex:1; height:0.5px; background:#2A2620;"></div>
+      <span id="orLbl" style="font-size:11px; color:#6E6555;">または</span>
+      <div id="divR" style="flex:1; height:0.5px; background:#2A2620;"></div>
+    </div>
+
+    <!-- メール -->
+    <label id="emailLbl" style="display:block; font-size:11px; color:#8A7E68; margin:0 0 6px; font-weight:400;">メールアドレス</label>
+    <div id="emailWrap" style="display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:11px; padding:0 13px; margin:0 0 15px;">
+      <i class="ti ti-mail" style="font-size:16px; color:#6E6555;"></i>
+      <input id="emailInput" type="email" placeholder="you@example.com" style="flex:1; background:transparent; border:none; outline:none; color:#F0EBE2; font-size:14px; padding:13px 0; font-family:inherit;">
+    </div>
+
+    <!-- パスワード -->
+    <label id="pwLbl" style="display:block; font-size:11px; color:#8A7E68; margin:0 0 6px; font-weight:400;">パスワード</label>
+    <div id="pwWrap" style="display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:11px; padding:0 13px; margin:0 0 8px;">
+      <i class="ti ti-lock" style="font-size:16px; color:#6E6555;"></i>
+      <input id="pwInput" type="password" placeholder="••••••••" style="flex:1; background:transparent; border:none; outline:none; color:#F0EBE2; font-size:14px; padding:13px 0; font-family:inherit;">
+      <button id="pwToggle" style="background:transparent; border:none; cursor:pointer; padding:4px;"><i id="pwEye" class="ti ti-eye" style="font-size:16px; color:#6E6555;"></i></button>
+    </div>
+    <p id="pwHint" style="font-size:10px; color:#6E6555; margin:0 0 22px; font-weight:300;">8文字以上。英字と数字を含めてください。</p>
+
+    <!-- 登録ボタン -->
+    <button id="submitBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:13px; cursor:pointer; letter-spacing:0.02em; margin:0 0 20px;">登録する</button>
+
+    <!-- ログインへ -->
+    <p id="toLogin" style="font-size:12px; color:#8A7E68; text-align:center; margin:0 0 20px; font-weight:300;">すでにアカウントをお持ちですか？ <span id="loginLink" style="color:#E3C56A; font-weight:500; cursor:pointer;">ログイン</span></p>
+
+    <p id="tos" style="font-size:10px; color:#6E6555; text-align:center; line-height:1.7; font-weight:300;">登録することで、利用規約とプライバシーポリシーに同意したものとみなされます。</p>
+
+  </div>
+
+  <div id="toast" style="position:absolute; left:50%; bottom:22px; transform:translateX(-50%); background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; padding:11px 20px; border-radius:11px; box-shadow:0 12px 30px -8px rgba(0,0,0,0.6); opacity:0; transition:opacity 0.3s; white-space:nowrap; pointer-events:none; z-index:40;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur="日本語", dark=true, showPw=false;
+    var T={dark:{bg:"#16140F",title:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",accent:"#E3C56A",field:"#1A1814",fieldBd:"#2A2620",input:"#F0EBE2",line:"#2A2620",divider:"#3A352A"},
+            light:{bg:"#FCFAF6",title:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",accent:"#BA7517",field:"#FBF7F1",fieldBd:"#EFE8DC",input:"#2E2A24",line:"#EFE8DC",divider:"#E0D6C4"}};
+    var D={
+      "日本語":{ttl:"アカウントを作成",ttlSub:"あなたの revo を、はじめましょう。",google:"Google で続ける",apple:"Apple で続ける",or:"または",email:"メールアドレス",pw:"パスワード",pwHint:"8文字以上。英字と数字を含めてください。",submit:"登録する",toLogin:"すでにアカウントをお持ちですか？ ",login:"ログイン",tos:"登録することで、利用規約とプライバシーポリシーに同意したものとみなされます。",toast:"確認メールを送信しました"},
+      "English":{ttl:"Create account",ttlSub:"Let's begin your revo.",google:"Continue with Google",apple:"Continue with Apple",or:"or",email:"Email",pw:"Password",pwHint:"At least 8 characters, with letters and numbers.",submit:"Sign up",toLogin:"Already have an account? ",login:"Log in",tos:"By signing up, you agree to the Terms and Privacy Policy.",toast:"Confirmation email sent"},
+      "简体中文":{ttl:"创建账户",ttlSub:"开始你的 revo。",google:"使用 Google 继续",apple:"使用 Apple 继续",or:"或",email:"邮箱",pw:"密码",pwHint:"至少8位，需含字母和数字。",submit:"注册",toLogin:"已有账户？ ",login:"登录",tos:"注册即表示你同意条款与隐私政策。",toast:"确认邮件已发送"},
+      "繁體中文":{ttl:"建立帳戶",ttlSub:"開始你的 revo。",google:"使用 Google 繼續",apple:"使用 Apple 繼續",or:"或",email:"電子郵件",pw:"密碼",pwHint:"至少8位，需含字母和數字。",submit:"註冊",toLogin:"已有帳戶？ ",login:"登入",tos:"註冊即表示你同意條款與隱私政策。",toast:"確認郵件已發送"},
+      "한국어":{ttl:"계정 만들기",ttlSub:"당신의 revo를 시작해요.",google:"Google로 계속",apple:"Apple로 계속",or:"또는",email:"이메일",pw:"비밀번호",pwHint:"8자 이상, 영문과 숫자 포함.",submit:"가입하기",toLogin:"이미 계정이 있나요? ",login:"로그인",tos:"가입하면 약관과 개인정보 정책에 동의한 것으로 간주돼요.",toast:"확인 이메일을 보냈어요"},
+      "Français":{ttl:"Créer un compte",ttlSub:"Commençons votre revo.",google:"Continuer avec Google",apple:"Continuer avec Apple",or:"ou",email:"E-mail",pw:"Mot de passe",pwHint:"Au moins 8 caractères, lettres et chiffres.",submit:"S'inscrire",toLogin:"Vous avez déjà un compte ? ",login:"Se connecter",tos:"En vous inscrivant, vous acceptez les CGU et la politique de confidentialité.",toast:"E-mail de confirmation envoyé"},
+      "Español":{ttl:"Crear cuenta",ttlSub:"Empecemos tu revo.",google:"Continuar con Google",apple:"Continuar con Apple",or:"o",email:"Correo",pw:"Contraseña",pwHint:"Al menos 8 caracteres, con letras y números.",submit:"Registrarse",toLogin:"¿Ya tienes cuenta? ",login:"Iniciar sesión",tos:"Al registrarte, aceptas los Términos y la Política de privacidad.",toast:"Correo de confirmación enviado"},
+      "Deutsch":{ttl:"Konto erstellen",ttlSub:"Starten wir dein revo.",google:"Mit Google fortfahren",apple:"Mit Apple fortfahren",or:"oder",email:"E-Mail",pw:"Passwort",pwHint:"Mindestens 8 Zeichen, mit Buchstaben und Zahlen.",submit:"Registrieren",toLogin:"Schon ein Konto? ",login:"Anmelden",tos:"Mit der Registrierung stimmst du den AGB und der Datenschutzerklärung zu.",toast:"Bestätigungs-E-Mail gesendet"},
+      "Italiano":{ttl:"Crea account",ttlSub:"Iniziamo il tuo revo.",google:"Continua con Google",apple:"Continua con Apple",or:"o",email:"E-mail",pw:"Password",pwHint:"Almeno 8 caratteri, con lettere e numeri.",submit:"Registrati",toLogin:"Hai già un account? ",login:"Accedi",tos:"Registrandoti, accetti i Termini e la Privacy.",toast:"E-mail di conferma inviata"},
+      "Português":{ttl:"Criar conta",ttlSub:"Vamos começar seu revo.",google:"Continuar com Google",apple:"Continuar com Apple",or:"ou",email:"E-mail",pw:"Senha",pwHint:"Pelo menos 8 caracteres, com letras e números.",submit:"Cadastrar",toLogin:"Já tem uma conta? ",login:"Entrar",tos:"Ao cadastrar, você aceita os Termos e a Política de Privacidade.",toast:"E-mail de confirmação enviado"},
+      "ภาษาไทย":{ttl:"สร้างบัญชี",ttlSub:"เริ่ม revo ของคุณกันเถอะ",google:"ดำเนินการต่อด้วย Google",apple:"ดำเนินการต่อด้วย Apple",or:"หรือ",email:"อีเมล",pw:"รหัสผ่าน",pwHint:"อย่างน้อย 8 ตัว มีตัวอักษรและตัวเลข",submit:"สมัคร",toLogin:"มีบัญชีอยู่แล้ว? ",login:"เข้าสู่ระบบ",tos:"การสมัครถือว่าคุณยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัว",toast:"ส่งอีเมลยืนยันแล้ว"},
+      "हिन्दी":{ttl:"खाता बनाएं",ttlSub:"अपना revo शुरू करें।",google:"Google से जारी रखें",apple:"Apple से जारी रखें",or:"या",email:"ईमेल",pw:"पासवर्ड",pwHint:"कम से कम 8 अक्षर, अक्षर और अंक सहित।",submit:"साइन अप",toLogin:"पहले से खाता है? ",login:"लॉग इन",tos:"साइन अप करने पर आप शर्तें और गोपनीयता नीति स्वीकार करते हैं।",toast:"पुष्टिकरण ईमेल भेजा गया"},
+      "Tiếng Việt":{ttl:"Tạo tài khoản",ttlSub:"Bắt đầu revo của bạn.",google:"Tiếp tục với Google",apple:"Tiếp tục với Apple",or:"hoặc",email:"Email",pw:"Mật khẩu",pwHint:"Ít nhất 8 ký tự, gồm chữ và số.",submit:"Đăng ký",toLogin:"Đã có tài khoản? ",login:"Đăng nhập",tos:"Khi đăng ký, bạn đồng ý với Điều khoản và Chính sách bảo mật.",toast:"Đã gửi email xác nhận"},
+      "Bahasa Indonesia":{ttl:"Buat akun",ttlSub:"Mari mulai revo-mu.",google:"Lanjut dengan Google",apple:"Lanjut dengan Apple",or:"atau",email:"Email",pw:"Kata sandi",pwHint:"Minimal 8 karakter, dengan huruf dan angka.",submit:"Daftar",toLogin:"Sudah punya akun? ",login:"Masuk",tos:"Dengan mendaftar, kamu menyetujui Ketentuan dan Kebijakan Privasi.",toast:"Email konfirmasi terkirim"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function applyLang(){
+      var d=D[cur]||D["English"];
+      $('ttl').textContent=d.ttl; $('ttlSub').textContent=d.ttlSub;
+      $('googleLbl').textContent=d.google; $('appleLbl').textContent=d.apple;
+      $('orLbl').textContent=d.or; $('emailLbl').textContent=d.email; $('pwLbl').textContent=d.pw;
+      $('pwHint').textContent=d.pwHint; $('submitBtn').textContent=d.submit;
+      $('toLogin').innerHTML=d.toLogin+'<span id="loginLink" style="color:'+(dark?"#E3C56A":"#BA7517")+'; font-weight:500; cursor:pointer;">'+d.login+'</span>';
+      $('tos').textContent=d.tos;
+      bindLoginLink();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('ttl').style.color=t.title; $('ttlSub').style.color=t.sub;
+      $('wmSuffix').style.color=t.accent;
+      $('wmRevo').style.color= dark?t.title:"#5A5F66";
+      $('emailLbl').style.color=t.sub; $('pwLbl').style.color=t.sub; $('pwHint').style.color=t.muted;
+      [$('emailWrap'),$('pwWrap')].forEach(function(w){ w.style.background=t.field; w.style.borderColor=t.fieldBd; });
+      $('emailInput').style.color=t.input; $('pwInput').style.color=t.input;
+      $('orLbl').style.color=t.muted; $('divL').style.background=t.line; $('divR').style.background=t.line;
+      $('submitBtn').style.background=t.accent; $('submitBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('toLogin').style.color=t.sub; $('tos').style.color=t.muted;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.borderColor=t.divider; });
+      $('langBtn').querySelector('i').style.color=t.sub; $('backBtn').querySelector('i').style.color=t.sub;
+      $('themeIcon').className= dark?"ti ti-sun":"ti ti-moon"; $('themeIcon').style.color=t.sub;
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.divider;
+      // Appleボタンはライトでも黒（ブランド指定）
+      applyLang();
+    }
+    function bindLoginLink(){
+      var l=$('loginLink');
+      if(l) l.onclick=function(){ toast((D[cur]||D["English"]).login); };
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    function toast(msg){ var t=$('toast'); t.textContent=msg; t.style.opacity="1"; setTimeout(function(){t.style.opacity="0";},2000); }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    $('pwToggle').onclick=function(){ showPw=!showPw; $('pwInput').type= showPw?"text":"password"; $('pwEye').className= showPw?"ti ti-eye-off":"ti ti-eye"; };
+    $('googleBtn').onclick=function(){ toast("Google"); };
+    $('appleBtn').onclick=function(){ toast("Apple"); };
+    $('submitBtn').onclick=function(){ toast((D[cur]||D["English"]).toast); };
+    $('backBtn').onclick=function(){ toast("←"); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

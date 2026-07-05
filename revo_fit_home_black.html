@@ -1,0 +1,154 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@keyframes revoBellA { 0%,100%{ opacity:0.7; transform:scale(0.98); } 50%{ opacity:1; transform:scale(1.08); } }
+</style>
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.5s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">通知をオンにするかどうかを、押し付けずに尋ねる画面。応援が届いたときや仲間の動き、停滞期の励ましなど、通知で受け取れる嬉しいことを控えめに伝える。通知をオンにする、またはあとで、を選べる。言語と明暗を切り替えられる。</h2>
+
+  <!-- 右上：言語と明るさ -->
+  <div style="display:flex; align-items:center; justify-content:flex-end; padding:16px 18px; gap:8px; position:relative; z-index:5;">
+    <button id="langBtn" aria-label="言語" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i class="ti ti-world" style="font-size:15px; color:#8A7E68;"></i></button>
+    <button id="themeBtn" aria-label="明るさ" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i id="themeIcon" class="ti ti-sun" style="font-size:15px; color:#8A7E68;"></i></button>
+    <div id="langMenu" style="display:none; position:absolute; top:52px; right:18px; width:206px; max-height:290px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 30px 40px; text-align:center;">
+
+    <!-- ベルアイコン（淡く揺らぐ） -->
+    <div style="display:flex; justify-content:center; margin:26px 0 30px;">
+      <div style="position:relative; width:88px; height:88px; display:flex; align-items:center; justify-content:center;">
+        <div id="bellGlow" style="position:absolute; width:130px; height:130px; border-radius:50%; background:radial-gradient(circle, rgba(227,197,106,0.28) 0%, rgba(227,197,106,0) 68%); animation:revoBellA 3.4s ease-in-out infinite;"></div>
+        <div style="position:relative; width:72px; height:72px; border-radius:20px; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px -4px rgba(227,197,106,0.35);">
+          <i class="ti ti-bell" style="font-size:32px; color:#E3C56A;"></i>
+        </div>
+      </div>
+    </div>
+
+    <p id="ttl" style="font-size:21px; color:#F0EBE2; margin:0 0 12px; font-weight:400; line-height:1.4; letter-spacing:0.01em;">通知を、オンにしませんか？</p>
+    <p id="sub" style="font-size:13px; color:#8A7E68; margin:0 0 30px; font-weight:300; line-height:1.8;">あなたの頑張りに届く応援を、<br>見逃さないように。</p>
+
+    <!-- 通知で受け取れること（控えめに3点） -->
+    <div id="perks" style="text-align:left; margin:0 0 34px;"></div>
+
+    <!-- オンにする -->
+    <button id="allowBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:13px; cursor:pointer; letter-spacing:0.02em; margin:0 0 14px;">通知をオンにする</button>
+    <!-- あとで -->
+    <button id="laterBtn" style="background:transparent; border:none; color:#6E6555; font-size:13px; font-weight:400; cursor:pointer; letter-spacing:0.02em;">あとで</button>
+
+    <p id="note" style="font-size:10px; color:#6E6555; margin:24px 0 0; line-height:1.7; font-weight:300;">通知はいつでも設定から変更できます。</p>
+
+  </div>
+
+  <div id="toast" style="position:absolute; left:50%; bottom:22px; transform:translateX(-50%); background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; padding:11px 20px; border-radius:11px; box-shadow:0 12px 30px -8px rgba(0,0,0,0.6); opacity:0; transition:opacity 0.3s; white-space:nowrap; pointer-events:none; z-index:40;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur="日本語", dark=true;
+    var T={dark:{bg:"#16140F",title:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",accent:"#E3C56A",card:"#1A1814",cardBd:"#2A2620",perkTxt:"#C4B79E",divider:"#3A352A"},
+            light:{bg:"#FCFAF6",title:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",accent:"#BA7517",card:"#FBF7F1",cardBd:"#EFE8DC",perkTxt:"#6B6250",divider:"#E0D6C4"}};
+    var D={
+      "日本語":{ttl:"通知を、オンにしませんか？",sub:"あなたの頑張りに届く応援を、<br>見逃さないように。",
+        perks:[["ti-heart","仲間からの応援が届いたとき"],["ti-flame","記録が途切れそうなとき、そっと"],["ti-cup","メダルや称号を手にしたとき"]],
+        allow:"通知をオンにする",later:"あとで",note:"通知はいつでも設定から変更できます。",toast:"通知をオンにしました"},
+      "English":{ttl:"Turn on notifications?",sub:"So you never miss the cheers<br>for your effort.",
+        perks:[["ti-heart","When a friend sends you support"],["ti-flame","A gentle nudge before a streak breaks"],["ti-cup","When you earn a medal or title"]],
+        allow:"Turn on notifications",later:"Later",note:"You can change notifications anytime in settings.",toast:"Notifications on"},
+      "简体中文":{ttl:"开启通知？",sub:"不错过为你的努力<br>而来的加油。",
+        perks:[["ti-heart","当伙伴为你加油时"],["ti-flame","记录快中断时，轻轻提醒"],["ti-cup","当你获得奖牌或称号时"]],
+        allow:"开启通知",later:"稍后",note:"随时可在设置中更改通知。",toast:"已开启通知"},
+      "繁體中文":{ttl:"開啟通知？",sub:"不錯過為你的努力<br>而來的加油。",
+        perks:[["ti-heart","當夥伴為你加油時"],["ti-flame","記錄快中斷時，輕輕提醒"],["ti-cup","當你獲得獎牌或稱號時"]],
+        allow:"開啟通知",later:"稍後",note:"隨時可在設定中更改通知。",toast:"已開啟通知"},
+      "한국어":{ttl:"알림을 켤까요?",sub:"당신의 노력에 닿는 응원을<br>놓치지 않도록.",
+        perks:[["ti-heart","동료의 응원이 도착했을 때"],["ti-flame","기록이 끊길 것 같을 때, 살며시"],["ti-cup","메달이나 칭호를 얻었을 때"]],
+        allow:"알림 켜기",later:"나중에",note:"알림은 언제든 설정에서 바꿀 수 있어요.",toast:"알림을 켰어요"},
+      "Français":{ttl:"Activer les notifications ?",sub:"Pour ne rien manquer des<br>encouragements à vos efforts.",
+        perks:[["ti-heart","Quand un ami vous soutient"],["ti-flame","Un rappel doux avant de perdre une série"],["ti-cup","Quand vous gagnez une médaille"]],
+        allow:"Activer les notifications",later:"Plus tard",note:"Modifiable à tout moment dans les réglages.",toast:"Notifications activées"},
+      "Español":{ttl:"¿Activar notificaciones?",sub:"Para no perderte los ánimos<br>a tu esfuerzo.",
+        perks:[["ti-heart","Cuando un amigo te apoya"],["ti-flame","Un aviso suave antes de perder una racha"],["ti-cup","Cuando ganas una medalla o título"]],
+        allow:"Activar notificaciones",later:"Más tarde",note:"Puedes cambiarlas cuando quieras en ajustes.",toast:"Notificaciones activadas"},
+      "Deutsch":{ttl:"Mitteilungen aktivieren?",sub:"Damit du keinen Zuspruch<br>für deine Mühe verpasst.",
+        perks:[["ti-heart","Wenn dich jemand unterstützt"],["ti-flame","Ein sanfter Hinweis vor dem Serien-Ende"],["ti-cup","Wenn du eine Medaille erhältst"]],
+        allow:"Mitteilungen aktivieren",later:"Später",note:"Jederzeit in den Einstellungen änderbar.",toast:"Mitteilungen aktiviert"},
+      "Italiano":{ttl:"Attivare le notifiche?",sub:"Per non perdere gli incoraggiamenti<br>al tuo impegno.",
+        perks:[["ti-heart","Quando un amico ti sostiene"],["ti-flame","Un promemoria gentile prima di perdere una serie"],["ti-cup","Quando ottieni una medaglia"]],
+        allow:"Attiva le notifiche",later:"Più tardi",note:"Modificabili in qualsiasi momento nelle impostazioni.",toast:"Notifiche attivate"},
+      "Português":{ttl:"Ativar notificações?",sub:"Para não perder o apoio<br>ao seu esforço.",
+        perks:[["ti-heart","Quando um amigo te apoia"],["ti-flame","Um lembrete gentil antes de perder uma sequência"],["ti-cup","Quando você ganha uma medalha"]],
+        allow:"Ativar notificações",later:"Depois",note:"Você pode mudar quando quiser nas configurações.",toast:"Notificações ativadas"},
+      "ภาษาไทย":{ttl:"เปิดการแจ้งเตือนไหม?",sub:"เพื่อไม่พลาดกำลังใจ<br>ที่ส่งถึงความพยายามของคุณ",
+        perks:[["ti-heart","เมื่อเพื่อนส่งกำลังใจ"],["ti-flame","เตือนเบาๆ ก่อนสถิติจะขาด"],["ti-cup","เมื่อคุณได้เหรียญหรือตำแหน่ง"]],
+        allow:"เปิดการแจ้งเตือน",later:"ภายหลัง",note:"เปลี่ยนการแจ้งเตือนได้ทุกเมื่อในการตั้งค่า",toast:"เปิดการแจ้งเตือนแล้ว"},
+      "हिन्दी":{ttl:"सूचनाएं चालू करें?",sub:"आपके प्रयास तक पहुंचने वाले<br>प्रोत्साहन को न चूकें।",
+        perks:[["ti-heart","जब कोई साथी समर्थन भेजे"],["ti-flame","स्ट्रीक टूटने से पहले, धीरे से"],["ti-cup","जब आप मेडल या खिताब पाएं"]],
+        allow:"सूचनाएं चालू करें",later:"बाद में",note:"सूचनाएं कभी भी सेटिंग्स में बदल सकते हैं।",toast:"सूचनाएं चालू कीं"},
+      "Tiếng Việt":{ttl:"Bật thông báo?",sub:"Để không bỏ lỡ lời cổ vũ<br>cho nỗ lực của bạn.",
+        perks:[["ti-heart","Khi một người bạn ủng hộ bạn"],["ti-flame","Nhắc nhẹ trước khi chuỗi bị đứt"],["ti-cup","Khi bạn giành huy chương hay danh hiệu"]],
+        allow:"Bật thông báo",later:"Để sau",note:"Bạn có thể đổi thông báo bất cứ lúc nào trong cài đặt.",toast:"Đã bật thông báo"},
+      "Bahasa Indonesia":{ttl:"Aktifkan notifikasi?",sub:"Agar tak melewatkan dukungan<br>untuk usahamu.",
+        perks:[["ti-heart","Saat teman memberi dukungan"],["ti-flame","Pengingat lembut sebelum rentetan putus"],["ti-cup","Saat kamu meraih medali atau gelar"]],
+        allow:"Aktifkan notifikasi",later:"Nanti",note:"Notifikasi bisa diubah kapan saja di pengaturan.",toast:"Notifikasi diaktifkan"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderPerks(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('perks').innerHTML="";
+      d.perks.forEach(function(p,i){
+        var el=document.createElement('div');
+        el.style.cssText="display:flex; align-items:center; gap:14px; padding:14px 2px; "+(i<d.perks.length-1?"border-bottom:0.5px solid "+t.cardBd+";":"");
+        el.innerHTML='<div style="width:38px; height:38px; border-radius:11px; background:'+t.card+'; border:0.5px solid '+t.cardBd+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+p[0]+'" style="font-size:18px; color:'+t.accent+';"></i></div><span style="font-size:13px; color:'+t.perkTxt+'; font-weight:300; line-height:1.5;">'+p[1]+'</span>';
+        $('perks').appendChild(el);
+      });
+    }
+    function applyLang(){
+      var d=D[cur]||D["English"];
+      $('ttl').textContent=d.ttl; $('sub').innerHTML=d.sub;
+      $('allowBtn').textContent=d.allow; $('laterBtn').textContent=d.later; $('note').textContent=d.note;
+      renderPerks();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('ttl').style.color=t.title; $('sub').style.color=t.sub;
+      $('allowBtn').style.background=t.accent; $('allowBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('laterBtn').style.color=t.muted; $('note').style.color=t.muted;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.borderColor=t.divider; });
+      $('langBtn').querySelector('i').style.color=t.sub;
+      $('themeIcon').className= dark?"ti ti-sun":"ti ti-moon"; $('themeIcon').style.color=t.sub;
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.divider;
+      applyLang();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    function toast(msg){ var t=$('toast'); t.textContent=msg; t.style.opacity="1"; setTimeout(function(){t.style.opacity="0";},2000); }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    $('allowBtn').onclick=function(){ toast((D[cur]||D["English"]).toast); };
+    $('laterBtn').onclick=function(){ toast((D[cur]||D["English"]).later); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

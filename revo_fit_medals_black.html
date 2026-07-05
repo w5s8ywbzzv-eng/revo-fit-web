@@ -1,0 +1,279 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">設定。アカウント、通知、言語、表示テーマのカラー変更、プランと解約、特定商取引法、プライバシーポリシー、利用規約、お問い合わせ、ログアウト。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">設定</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:14px 16px 22px; max-height:600px; overflow-y:auto;">
+    <div id="groups"></div>
+
+    <p id="ver" style="text-align:center; font-size:10px; color:#4A4438; margin:22px 0 0;">revo fit  v1.0.0</p>
+  </div>
+
+  <!-- テーマ選択シート -->
+  <div id="themeSheet" style="display:none; position:absolute; inset:0; z-index:40;">
+    <div id="sheetBackdrop" style="position:absolute; inset:0; background:rgba(0,0,0,0.55);"></div>
+    <div id="sheetPanel" style="position:absolute; left:0; right:0; bottom:0; background:#1A1814; border-radius:22px 22px 0 0; padding:8px 18px 26px; transition:background 0.35s;">
+      <div style="width:38px; height:4px; border-radius:2px; background:#3A352A; margin:8px auto 16px;"></div>
+      <p id="sheetTtl" style="font-size:16px; color:#F0EBE2; margin:0 0 3px; font-weight:600;">表示テーマ</p>
+      <p id="sheetSub" style="font-size:12px; color:#8A7E68; margin:0 0 18px;">アプリの色を選べます</p>
+      <p id="recoLbl" style="font-size:11px; color:#8A7E68; margin:0 0 9px; font-weight:500;">おすすめ</p>
+      <div id="recoWrap" style="display:flex; flex-direction:column; gap:8px; margin:0 0 18px;"></div>
+      <p id="chooseLbl" style="font-size:11px; color:#8A7E68; margin:0 0 9px; font-weight:500;">えらぶ</p>
+      <div id="chooseWrap" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 設定項目の構成（グループ→行）。type: nav=画面遷移, theme=テーマシート, toggle=スイッチ, danger=赤字
+    var STRUCT=[
+      {gkey:"account", rows:[
+        {key:"profile", ic:"ti-user"},
+        {key:"notif", ic:"ti-bell", type:"toggle", on:true},
+        {key:"lang", ic:"ti-world", val:"cur"},
+        {key:"theme", ic:"ti-color-swatch", type:"theme"}
+      ]},
+      {gkey:"plan", rows:[
+        {key:"plan", ic:"ti-star", val:"planval"},
+        {key:"cancel", ic:"ti-credit-card"}
+      ]},
+      {gkey:"legal", rows:[
+        {key:"tokusho", ic:"ti-info-circle"},
+        {key:"privacy", ic:"ti-lock"},
+        {key:"terms", ic:"ti-file"},
+        {key:"contact", ic:"ti-mail"}
+      ]},
+      {gkey:"other", rows:[
+        {key:"logout", ic:"ti-logout", type:"danger"}
+      ]}
+    ];
+    var THEMES_RECO=[
+      {key:"dark", swA:"#16140F", swB:"#E3C56A"},
+      {key:"gold", swA:"#FAF5EA", swB:"#C29A2E"}
+    ];
+    var THEMES_CHOOSE=[
+      {key:"soft", swA:"#EAF2FB", swB:"#E3EFE9"},
+      {key:"time", swA:"#F5D9A8", swB:"#9B7BB8"},
+      {key:"custom", swA:"conic", swB:""}
+    ];
+    var D={
+      "日本語":{hdr:"設定",
+        g:{account:"アカウント",plan:"プラン",legal:"情報・サポート",other:""},
+        r:{profile:"プロフィール",notif:"通知",lang:"言語",theme:"表示テーマ",plan:"プラン",cancel:"解約・支払い履歴",tokusho:"特定商取引法に基づく表記",privacy:"プライバシーポリシー",terms:"利用規約",contact:"お問い合わせ",logout:"ログアウト"},
+        planval:"スタンダード",
+        sheetTtl:"表示テーマ",sheetSub:"アプリの色を選べます",reco:"おすすめ",choose:"えらぶ",
+        th:{dark:["revoブラック","黒と金・夜の上質"],gold:["revoゴールド","ベージュと金・昼の上質"],soft:["やさしい","やわらかいパステル・親しみ"],time:["時間帯でかわる","朝・昼・夕方・夜"],custom:["じぶん色","自分で色をえらぶ"]}},
+      "English":{hdr:"Settings",
+        g:{account:"Account",plan:"Plan",legal:"Info & Support",other:""},
+        r:{profile:"Profile",notif:"Notifications",lang:"Language",theme:"Display theme",plan:"Plan",cancel:"Cancel & billing",tokusho:"Commercial transactions notice",privacy:"Privacy policy",terms:"Terms of use",contact:"Contact us",logout:"Log out"},
+        planval:"Standard",
+        sheetTtl:"Display theme",sheetSub:"Choose the app's colors",reco:"Recommended",choose:"Choose",
+        th:{dark:["revo Black","Black & gold · night"],gold:["revo Gold","Beige & gold · day"],soft:["Soft","Soft pastels · friendly"],time:["By time of day","Morning to night"],custom:["Your color","Pick your own"]}},
+      "简体中文":{hdr:"设置",
+        g:{account:"账户",plan:"套餐",legal:"信息与支持",other:""},
+        r:{profile:"个人资料",notif:"通知",lang:"语言",theme:"显示主题",plan:"套餐",cancel:"解约·付款记录",tokusho:"特定商业交易法标示",privacy:"隐私政策",terms:"使用条款",contact:"联系我们",logout:"退出登录"},
+        planval:"标准版",
+        sheetTtl:"显示主题",sheetSub:"选择应用的颜色",reco:"推荐",choose:"选择",
+        th:{dark:["revo黑金","黑与金·夜的质感"],gold:["revo金","米色与金·昼的质感"],soft:["柔和","柔和粉彩·亲切"],time:["随时段变化","晨·昼·傍晚·夜"],custom:["自选色","自己选颜色"]}},
+      "繁體中文":{hdr:"設定",
+        g:{account:"帳戶",plan:"方案",legal:"資訊與支援",other:""},
+        r:{profile:"個人資料",notif:"通知",lang:"語言",theme:"顯示主題",plan:"方案",cancel:"解約·付款紀錄",tokusho:"特定商業交易法標示",privacy:"隱私政策",terms:"使用條款",contact:"聯絡我們",logout:"登出"},
+        planval:"標準版",
+        sheetTtl:"顯示主題",sheetSub:"選擇應用的顏色",reco:"推薦",choose:"選擇",
+        th:{dark:["revo黑金","黑與金·夜的質感"],gold:["revo金","米色與金·晝的質感"],soft:["柔和","柔和粉彩·親切"],time:["隨時段變化","晨·晝·傍晚·夜"],custom:["自選色","自己選顏色"]}},
+      "한국어":{hdr:"설정",
+        g:{account:"계정",plan:"플랜",legal:"정보·지원",other:""},
+        r:{profile:"프로필",notif:"알림",lang:"언어",theme:"표시 테마",plan:"플랜",cancel:"해지·결제 내역",tokusho:"특정상거래법 표기",privacy:"개인정보 처리방침",terms:"이용약관",contact:"문의하기",logout:"로그아웃"},
+        planval:"스탠다드",
+        sheetTtl:"표시 테마",sheetSub:"앱의 색을 고를 수 있어요",reco:"추천",choose:"고르기",
+        th:{dark:["revo 블랙","검정과 금·밤의 품격"],gold:["revo 골드","베이지와 금·낮의 품격"],soft:["부드러움","부드러운 파스텔·친근"],time:["시간대별 변화","아침·낮·저녁·밤"],custom:["나만의 색","직접 색을 고르기"]}},
+      "ภาษาไทย":{hdr:"ตั้งค่า",
+        g:{account:"บัญชี",plan:"แพ็กเกจ",legal:"ข้อมูลและสนับสนุน",other:""},
+        r:{profile:"โปรไฟล์",notif:"การแจ้งเตือน",lang:"ภาษา",theme:"ธีมการแสดงผล",plan:"แพ็กเกจ",cancel:"ยกเลิก·ประวัติการชำระ",tokusho:"ประกาศธุรกรรมการค้า",privacy:"นโยบายความเป็นส่วนตัว",terms:"ข้อกำหนดการใช้",contact:"ติดต่อเรา",logout:"ออกจากระบบ"},
+        planval:"สแตนดาร์ด",
+        sheetTtl:"ธีมการแสดงผล",sheetSub:"เลือกสีของแอปได้",reco:"แนะนำ",choose:"เลือก",
+        th:{dark:["revo ดำ","ดำและทอง·ค่ำคืนหรูหรา"],gold:["revo ทอง","เบจและทอง·กลางวันหรูหรา"],soft:["นุ่มนวล","พาสเทลนุ่ม·เป็นกันเอง"],time:["เปลี่ยนตามเวลา","เช้า·กลางวัน·เย็น·ค่ำ"],custom:["สีของคุณ","เลือกสีเอง"]}},
+      "Français":{hdr:"Réglages",
+        g:{account:"Compte",plan:"Abonnement",legal:"Infos & Support",other:""},
+        r:{profile:"Profil",notif:"Notifications",lang:"Langue",theme:"Thème d'affichage",plan:"Abonnement",cancel:"Résiliation & paiements",tokusho:"Mentions légales commerciales",privacy:"Politique de confidentialité",terms:"Conditions d'utilisation",contact:"Nous contacter",logout:"Se déconnecter"},
+        planval:"Standard",
+        sheetTtl:"Thème d'affichage",sheetSub:"Choisissez les couleurs de l'app",reco:"Recommandé",choose:"Choisir",
+        th:{dark:["revo Noir","Noir & or · nuit"],gold:["revo Or","Beige & or · jour"],soft:["Doux","Pastels doux · convivial"],time:["Selon l'heure","Du matin au soir"],custom:["Ta couleur","Choisis la tienne"]}},
+      "Español":{hdr:"Ajustes",
+        g:{account:"Cuenta",plan:"Plan",legal:"Info y Soporte",other:""},
+        r:{profile:"Perfil",notif:"Notificaciones",lang:"Idioma",theme:"Tema de pantalla",plan:"Plan",cancel:"Cancelar y pagos",tokusho:"Aviso de transacciones comerciales",privacy:"Política de privacidad",terms:"Términos de uso",contact:"Contáctanos",logout:"Cerrar sesión"},
+        planval:"Estándar",
+        sheetTtl:"Tema de pantalla",sheetSub:"Elige los colores de la app",reco:"Recomendado",choose:"Elegir",
+        th:{dark:["revo Negro","Negro y oro · noche"],gold:["revo Oro","Beige y oro · día"],soft:["Suave","Pasteles suaves · amable"],time:["Según la hora","De mañana a noche"],custom:["Tu color","Elige el tuyo"]}},
+      "Deutsch":{hdr:"Einstellungen",
+        g:{account:"Konto",plan:"Plan",legal:"Info & Support",other:""},
+        r:{profile:"Profil",notif:"Benachrichtigungen",lang:"Sprache",theme:"Anzeigethema",plan:"Plan",cancel:"Kündigung & Zahlungen",tokusho:"Impressum (Handelsgesetz)",privacy:"Datenschutz",terms:"Nutzungsbedingungen",contact:"Kontakt",logout:"Abmelden"},
+        planval:"Standard",
+        sheetTtl:"Anzeigethema",sheetSub:"Wähle die Farben der App",reco:"Empfohlen",choose:"Wählen",
+        th:{dark:["revo Schwarz","Schwarz & Gold · Nacht"],gold:["revo Gold","Beige & Gold · Tag"],soft:["Sanft","Sanfte Pastelltöne · freundlich"],time:["Nach Tageszeit","Morgen bis Nacht"],custom:["Deine Farbe","Wähle selbst"]}},
+      "Italiano":{hdr:"Impostazioni",
+        g:{account:"Account",plan:"Piano",legal:"Info e Supporto",other:""},
+        r:{profile:"Profilo",notif:"Notifiche",lang:"Lingua",theme:"Tema di visualizzazione",plan:"Piano",cancel:"Disdetta e pagamenti",tokusho:"Note transazioni commerciali",privacy:"Privacy policy",terms:"Termini d'uso",contact:"Contattaci",logout:"Esci"},
+        planval:"Standard",
+        sheetTtl:"Tema di visualizzazione",sheetSub:"Scegli i colori dell'app",reco:"Consigliato",choose:"Scegli",
+        th:{dark:["revo Nero","Nero e oro · notte"],gold:["revo Oro","Beige e oro · giorno"],soft:["Morbido","Pastelli morbidi · amichevole"],time:["Per ora del giorno","Da mattina a notte"],custom:["Il tuo colore","Scegli il tuo"]}},
+      "Português":{hdr:"Configurações",
+        g:{account:"Conta",plan:"Plano",legal:"Info e Suporte",other:""},
+        r:{profile:"Perfil",notif:"Notificações",lang:"Idioma",theme:"Tema de exibição",plan:"Plano",cancel:"Cancelar e pagamentos",tokusho:"Aviso de transações comerciais",privacy:"Política de privacidade",terms:"Termos de uso",contact:"Fale conosco",logout:"Sair"},
+        planval:"Padrão",
+        sheetTtl:"Tema de exibição",sheetSub:"Escolha as cores do app",reco:"Recomendado",choose:"Escolher",
+        th:{dark:["revo Preto","Preto e ouro · noite"],gold:["revo Ouro","Bege e ouro · dia"],soft:["Suave","Pastéis suaves · amigável"],time:["Pela hora do dia","Da manhã à noite"],custom:["Sua cor","Escolha a sua"]}},
+      "हिन्दी":{hdr:"सेटिंग्स",
+        g:{account:"खाता",plan:"प्लान",legal:"जानकारी·सहायता",other:""},
+        r:{profile:"प्रोफ़ाइल",notif:"सूचनाएँ",lang:"भाषा",theme:"डिस्प्ले थीम",plan:"प्लान",cancel:"रद्द·भुगतान इतिहास",tokusho:"वाणिज्यिक लेनदेन सूचना",privacy:"गोपनीयता नीति",terms:"उपयोग की शर्तें",contact:"संपर्क करें",logout:"लॉग आउट"},
+        planval:"स्टैंडर्ड",
+        sheetTtl:"डिस्प्ले थीम",sheetSub:"ऐप के रंग चुनें",reco:"अनुशंसित",choose:"चुनें",
+        th:{dark:["revo ब्लैक","काला और सोना·रात"],gold:["revo गोल्ड","बेज और सोना·दिन"],soft:["कोमल","कोमल पेस्टल·मित्रवत"],time:["समय अनुसार","सुबह से रात"],custom:["आपका रंग","खुद रंग चुनें"]}},
+      "Tiếng Việt":{hdr:"Cài đặt",
+        g:{account:"Tài khoản",plan:"Gói",legal:"Thông tin·Hỗ trợ",other:""},
+        r:{profile:"Hồ sơ",notif:"Thông báo",lang:"Ngôn ngữ",theme:"Giao diện hiển thị",plan:"Gói",cancel:"Hủy·lịch sử thanh toán",tokusho:"Thông báo giao dịch thương mại",privacy:"Chính sách bảo mật",terms:"Điều khoản sử dụng",contact:"Liên hệ",logout:"Đăng xuất"},
+        planval:"Tiêu chuẩn",
+        sheetTtl:"Giao diện hiển thị",sheetSub:"Chọn màu của ứng dụng",reco:"Đề xuất",choose:"Chọn",
+        th:{dark:["revo Đen","Đen & vàng · đêm"],gold:["revo Vàng","Be & vàng · ngày"],soft:["Dịu nhẹ","Pastel dịu · thân thiện"],time:["Theo thời gian","Sáng đến đêm"],custom:["Màu của bạn","Tự chọn màu"]}},
+      "Bahasa Indonesia":{hdr:"Pengaturan",
+        g:{account:"Akun",plan:"Paket",legal:"Info & Dukungan",other:""},
+        r:{profile:"Profil",notif:"Notifikasi",lang:"Bahasa",theme:"Tema tampilan",plan:"Paket",cancel:"Batal·riwayat bayar",tokusho:"Pemberitahuan transaksi komersial",privacy:"Kebijakan privasi",terms:"Ketentuan penggunaan",contact:"Hubungi kami",logout:"Keluar"},
+        planval:"Standar",
+        sheetTtl:"Tema tampilan",sheetSub:"Pilih warna aplikasi",reco:"Direkomendasikan",choose:"Pilih",
+        th:{dark:["revo Hitam","Hitam & emas · malam"],gold:["revo Emas","Krem & emas · siang"],soft:["Lembut","Pastel lembut · ramah"],time:["Sesuai waktu","Pagi hingga malam"],custom:["Warnamu","Pilih sendiri"]}}
+    };
+    var cur="日本語", dark=true, curTheme="dark", notifOn=true;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",gLbl:"#8A7E68",rowTx:"#E8E2D6",iconCol:"#B0A488",iconBg:"#1F1C16",iconBd:"#3A352A",accent:"#E3C56A",sheet:"#1A1814",danger:"#E0846A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",gLbl:"#8A7E68",rowTx:"#3A362E",iconCol:"#9A8E78",iconBg:"#FFFFFF",iconBd:"#E8E0CE",accent:"#BA7517",sheet:"#FFFFFF",danger:"#C85A3A"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderGroups(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('groups').innerHTML="";
+      STRUCT.forEach(function(g){
+        var gl=d.g[g.gkey];
+        if(gl){
+          var lbl=document.createElement('p');
+          lbl.style.cssText="font-size:11px; color:"+t.gLbl+"; margin:16px 4px 8px; font-weight:500;";
+          lbl.textContent=gl;
+          $('groups').appendChild(lbl);
+        }
+        var card=document.createElement('div');
+        card.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:14px; overflow:hidden;";
+        g.rows.forEach(function(r,ri){
+          var row=document.createElement('div');
+          row.style.cssText="display:flex; align-items:center; gap:12px; padding:14px 15px; cursor:pointer; "+(ri<g.rows.length-1?"border-bottom:0.5px solid "+t.cardBd+";":"");
+          var isDanger=(r.type==="danger");
+          var rightHtml="";
+          if(r.type==="toggle"){
+            var on=notifOn;
+            rightHtml='<div class="tgl" style="width:40px; height:23px; border-radius:12px; background:'+(on?t.accent:(dark?"#2A2620":"#E0DACE"))+'; position:relative; transition:background 0.25s; flex-shrink:0;"><div style="width:19px; height:19px; border-radius:50%; background:#fff; position:absolute; top:2px; left:'+(on?"19px":"2px")+'; transition:left 0.25s;"></div></div>';
+          } else if(r.val==="cur"){
+            rightHtml='<span style="font-size:12px; color:'+t.sub+';">'+cur+'</span><i class="ti ti-chevron-right" style="font-size:16px; color:'+t.muted+';"></i>';
+          } else if(r.val==="planval"){
+            rightHtml='<span style="font-size:12px; color:'+t.accent+'; font-weight:500;">'+d.planval+'</span><i class="ti ti-chevron-right" style="font-size:16px; color:'+t.muted+';"></i>';
+          } else if(r.type==="theme"){
+            rightHtml='<span style="width:16px; height:16px; border-radius:5px; background:linear-gradient(135deg,'+(curTheme==="gold"?"#FAF5EA,#C29A2E":"#16140F,#E3C56A")+'); border:0.5px solid '+t.cardBd+';"></span><i class="ti ti-chevron-right" style="font-size:16px; color:'+t.muted+';"></i>';
+          } else if(!isDanger){
+            rightHtml='<i class="ti ti-chevron-right" style="font-size:16px; color:'+t.muted+';"></i>';
+          }
+          row.innerHTML='<i class="ti '+r.ic+'" style="font-size:19px; color:'+(isDanger?t.danger:t.iconCol)+';"></i>'+
+            '<span style="flex:1; font-size:14px; color:'+(isDanger?t.danger:t.rowTx)+';">'+d.r[r.key]+'</span>'+
+            '<div style="display:flex; align-items:center; gap:7px;">'+rightHtml+'</div>';
+          if(r.type==="toggle"){
+            row.onclick=function(e){ e.stopPropagation(); notifOn=!notifOn; renderGroups(); };
+          } else if(r.type==="theme"){
+            row.onclick=function(e){ e.stopPropagation(); openThemeSheet(); };
+          }
+          card.appendChild(row);
+        });
+        $('groups').appendChild(card);
+      });
+    }
+    function themeRow(s){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var on=(curTheme===s.key);
+      var sw = s.swA==="conic"
+        ? '<div style="width:42px; height:42px; border-radius:11px; background:conic-gradient(#D4537E,#BA7517,#1D9E75,#185FA5,#534AB7,#D4537E); flex-shrink:0;"></div>'
+        : '<div style="width:42px; height:42px; border-radius:11px; overflow:hidden; display:flex; flex-shrink:0;"><div style="flex:1; background:'+s.swA+';"></div><div style="flex:1; background:'+s.swB+';"></div></div>';
+      var row=document.createElement('div');
+      row.style.cssText="display:flex; align-items:center; gap:13px; padding:11px 13px; border-radius:13px; cursor:pointer; background:"+(on?(dark?"#221E14":"#FBF3E0"):"transparent")+"; border:0.5px solid "+(on?t.accent:(dark?"#2A2620":"#F0EAE0"))+";";
+      row.innerHTML=sw+'<div style="flex:1;"><p style="font-size:14px; color:'+t.txt+'; margin:0 0 2px; font-weight:500;">'+d.th[s.key][0]+'</p><p style="font-size:11px; color:'+t.sub+'; margin:0;">'+d.th[s.key][1]+'</p></div>'+(on?'<i class="ti ti-check" style="font-size:18px; color:'+t.accent+';"></i>':'');
+      row.onclick=function(){
+        curTheme=s.key;
+        if(s.key==="gold"){ dark=false; } else if(s.key==="dark"){ dark=true; }
+        closeThemeSheet(); applyTheme();
+      };
+      return row;
+    }
+    function renderThemeSheet(){
+      var d=D[cur]||D["English"];
+      $('sheetTtl').textContent=d.sheetTtl; $('sheetSub').textContent=d.sheetSub;
+      $('recoLbl').textContent=d.reco; $('chooseLbl').textContent=d.choose;
+      $('recoWrap').innerHTML=""; THEMES_RECO.forEach(function(s){ $('recoWrap').appendChild(themeRow(s)); });
+      $('chooseWrap').innerHTML=""; THEMES_CHOOSE.forEach(function(s){ $('chooseWrap').appendChild(themeRow(s)); });
+    }
+    function openThemeSheet(){ renderThemeSheet(); $('themeSheet').style.display="block"; }
+    function closeThemeSheet(){ $('themeSheet').style.display="none"; }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr;
+      renderGroups();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('ver').style.color= dark?"#4A4438":"#C8BCA4";
+      $('sheetPanel').style.background=t.sheet;
+      $('sheetTtl').style.color=t.txt;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      if($('themeSheet').style.display==="block") renderThemeSheet();
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; curTheme= dark?"dark":"gold"; applyTheme(); };
+    $('sheetBackdrop').onclick=function(){ closeThemeSheet(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

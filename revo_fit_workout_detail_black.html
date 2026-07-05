@@ -1,0 +1,265 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">プライバシーポリシー。収集する情報、利用目的、第三者提供、安全管理、ユーザーの権利、健康データの扱い、お問い合わせ。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:15px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">プライバシーポリシー</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 18px 24px; max-height:600px; overflow-y:auto;">
+    <p id="intro" style="font-size:12px; color:#8A7E68; margin:0 0 8px; line-height:1.7;"></p>
+    <p id="updated" style="font-size:10px; color:#6E6555; margin:0 0 20px;"></p>
+    <div id="sections" style="display:flex; flex-direction:column; gap:20px;"></div>
+    <div id="contactBox" style="margin:24px 0 0; padding:14px 15px; background:#1A1814; border-radius:12px; border:0.5px solid #2A2620;">
+      <p id="contactLbl" style="font-size:11px; color:#8A7E68; margin:0 0 5px;">お問い合わせ</p>
+      <a id="contactMail" href="mailto:support@revo-app.jp" style="font-size:13px; color:#E3C56A; text-decoration:none;">support@revo-app.jp</a>
+    </div>
+    <p id="note" style="font-size:10px; color:#6E6555; margin:16px 0 0; line-height:1.7;"></p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var SEC=["collect","purpose","health","thirdparty","security","rights","children","changes"];
+    var D={
+      "日本語":{hdr:"プライバシーポリシー",
+        intro:"revo（以下「本サービス」）は、あなたのプライバシーを何より大切にします。本ポリシーは、収集する情報とその扱いについて説明します。",
+        updated:"最終更新：準備中",note:"※ 本文は要点をまとめたものです。正式な条文は正式リリースまでに掲載します。",
+        contactLbl:"お問い合わせ",
+        s:{collect:["収集する情報","アカウント情報（メールアドレス等）、あなたが入力した記録（体重・トレーニング・食事・睡眠など）、アプリの利用状況を収集します。"],
+          purpose:["利用目的","記録の保存と表示、改善提案やスコアの算出、サービスの品質向上のために利用します。あなたに合った提案を届けるための最小限に留めます。"],
+          health:["健康データの扱い","体組成やトレーニングなどの健康関連データは、特に慎重に扱います。あなたの同意なく、広告目的で第三者に共有することはありません。"],
+          thirdparty:["第三者提供","法令に基づく場合を除き、あなたの同意なく個人情報を第三者に提供しません。決済・分析等の委託先には、必要な範囲で適切に管理させます。"],
+          security:["安全管理","暗号化などの適切な手段で、あなたの情報を保護します。"],
+          rights:["あなたの権利","あなたはいつでも、自分の情報の確認・訂正・削除を求めることができます。"],
+          children:["お子さまについて","本サービスは、法令の定める年齢に満たない方の利用を想定していません。"],
+          changes:["ポリシーの変更","本ポリシーを変更する場合は、アプリ内でお知らせします。"]}},
+      "English":{hdr:"Privacy Policy",
+        intro:"revo (the \"Service\") values your privacy above all. This policy explains what we collect and how we handle it.",
+        updated:"Last updated: In preparation",note:"* This is a summary of key points. The full text will be posted before official release.",
+        contactLbl:"Contact",
+        s:{collect:["Information we collect","Account info (such as email), records you enter (weight, training, meals, sleep, etc.), and app usage."],
+          purpose:["Purpose of use","To save and show your records, calculate suggestions and scores, and improve the service. Kept to the minimum needed to give you fitting suggestions."],
+          health:["Handling of health data","Health-related data like body composition and training is handled with special care. We never share it with third parties for advertising without your consent."],
+          thirdparty:["Third-party sharing","Except as required by law, we do not share personal data with third parties without your consent. Payment/analytics providers manage data appropriately within the necessary scope."],
+          security:["Security","We protect your information with appropriate measures such as encryption."],
+          rights:["Your rights","You may request to view, correct, or delete your information at any time."],
+          children:["About children","The Service is not intended for those under the age required by law."],
+          changes:["Changes to this policy","If we change this policy, we will notify you within the app."]}},
+      "简体中文":{hdr:"隐私政策",
+        intro:"revo（以下称『本服务』）将您的隐私放在首位。本政策说明我们收集的信息及其处理方式。",
+        updated:"最后更新：准备中",note:"※ 本文为要点概述。正式条文将在正式发布前刊登。",
+        contactLbl:"联系我们",
+        s:{collect:["收集的信息","账户信息（如电子邮箱）、您输入的记录（体重·训练·饮食·睡眠等）、应用使用情况。"],
+          purpose:["使用目的","用于保存和显示记录、计算改善建议与评分、提升服务质量。仅限于向您提供合适建议的最小范围。"],
+          health:["健康数据的处理","体成分、训练等健康相关数据将特别谨慎处理。未经您同意，不会为广告目的与第三方共享。"],
+          thirdparty:["第三方提供","除法律规定外，未经您同意不会向第三方提供个人信息。支付·分析等委托方将在必要范围内妥善管理。"],
+          security:["安全管理","通过加密等适当手段保护您的信息。"],
+          rights:["您的权利","您可随时要求确认、更正或删除自己的信息。"],
+          children:["关于儿童","本服务不面向未达法律规定年龄者。"],
+          changes:["政策变更","如变更本政策，将在应用内通知您。"]}},
+      "繁體中文":{hdr:"隱私政策",
+        intro:"revo（以下稱『本服務』）將您的隱私放在首位。本政策說明我們收集的資訊及其處理方式。",
+        updated:"最後更新：準備中",note:"※ 本文為要點概述。正式條文將在正式發布前刊登。",
+        contactLbl:"聯絡我們",
+        s:{collect:["收集的資訊","帳戶資訊（如電子郵箱）、您輸入的記錄（體重·訓練·飲食·睡眠等）、應用使用情況。"],
+          purpose:["使用目的","用於保存和顯示記錄、計算改善建議與評分、提升服務品質。僅限於向您提供合適建議的最小範圍。"],
+          health:["健康資料的處理","體成分、訓練等健康相關資料將特別謹慎處理。未經您同意，不會為廣告目的與第三方共享。"],
+          thirdparty:["第三方提供","除法律規定外，未經您同意不會向第三方提供個人資訊。支付·分析等委託方將在必要範圍內妥善管理。"],
+          security:["安全管理","透過加密等適當手段保護您的資訊。"],
+          rights:["您的權利","您可隨時要求確認、更正或刪除自己的資訊。"],
+          children:["關於兒童","本服務不面向未達法律規定年齡者。"],
+          changes:["政策變更","如變更本政策，將在應用內通知您。"]}},
+      "한국어":{hdr:"개인정보 처리방침",
+        intro:"revo(이하 '본 서비스')는 당신의 프라이버시를 무엇보다 소중히 여깁니다. 본 방침은 수집하는 정보와 그 취급을 설명합니다.",
+        updated:"최종 업데이트: 준비 중",note:"※ 본문은 요점을 정리한 것입니다. 정식 조문은 정식 출시 전까지 게재합니다.",
+        contactLbl:"문의",
+        s:{collect:["수집하는 정보","계정 정보(이메일 등), 당신이 입력한 기록(체중·트레이닝·식사·수면 등), 앱 이용 상황을 수집합니다."],
+          purpose:["이용 목적","기록의 저장과 표시, 개선 제안과 점수 산출, 서비스 품질 향상을 위해 이용합니다. 당신에게 맞는 제안을 위한 최소한으로 제한합니다."],
+          health:["건강 데이터 취급","체성분·트레이닝 등 건강 관련 데이터는 특히 신중히 다룹니다. 당신의 동의 없이 광고 목적으로 제3자에게 공유하지 않습니다."],
+          thirdparty:["제3자 제공","법령에 근거한 경우를 제외하고, 동의 없이 개인정보를 제3자에게 제공하지 않습니다. 결제·분석 위탁처는 필요한 범위에서 적절히 관리합니다."],
+          security:["안전 관리","암호화 등 적절한 수단으로 당신의 정보를 보호합니다."],
+          rights:["당신의 권리","당신은 언제든 자신의 정보 확인·정정·삭제를 요청할 수 있습니다."],
+          children:["어린이에 대하여","본 서비스는 법령이 정한 연령 미만인 분의 이용을 상정하지 않습니다."],
+          changes:["방침 변경","본 방침을 변경할 경우 앱 내에서 알려드립니다."]}},
+      "ภาษาไทย":{hdr:"นโยบายความเป็นส่วนตัว",
+        intro:"revo (ต่อไปนี้เรียกว่า \"บริการ\") ให้ความสำคัญกับความเป็นส่วนตัวของคุณเหนือสิ่งอื่นใด นโยบายนี้อธิบายสิ่งที่เราเก็บและวิธีจัดการ",
+        updated:"อัปเดตล่าสุด: กำลังเตรียม",note:"※ นี่คือสรุปประเด็นสำคัญ ข้อความฉบับเต็มจะเผยแพร่ก่อนเปิดตัวอย่างเป็นทางการ",
+        contactLbl:"ติดต่อ",
+        s:{collect:["ข้อมูลที่เราเก็บ","ข้อมูลบัญชี (เช่น อีเมล) บันทึกที่คุณกรอก (น้ำหนัก·การเทรน·อาหาร·การนอน ฯลฯ) และการใช้งานแอป"],
+          purpose:["วัตถุประสงค์การใช้","เพื่อบันทึกและแสดงข้อมูล คำนวณคำแนะนำและคะแนน และปรับปรุงบริการ จำกัดไว้เท่าที่จำเป็นเพื่อให้คำแนะนำที่เหมาะกับคุณ"],
+          health:["การจัดการข้อมูลสุขภาพ","ข้อมูลสุขภาพ เช่น องค์ประกอบร่างกายและการเทรน จัดการอย่างระมัดระวังเป็นพิเศษ เราจะไม่แชร์กับบุคคลที่สามเพื่อโฆษณาโดยไม่ได้รับความยินยอมจากคุณ"],
+          thirdparty:["การให้บุคคลที่สาม","ยกเว้นที่กฎหมายกำหนด เราจะไม่ให้ข้อมูลส่วนบุคคลแก่บุคคลที่สามโดยไม่ได้รับความยินยอม ผู้รับมอบหมายด้านชำระเงิน·วิเคราะห์จะจัดการอย่างเหมาะสมในขอบเขตที่จำเป็น"],
+          security:["การจัดการความปลอดภัย","เราปกป้องข้อมูลของคุณด้วยมาตรการที่เหมาะสม เช่น การเข้ารหัส"],
+          rights:["สิทธิของคุณ","คุณสามารถขอดู แก้ไข หรือลบข้อมูลของคุณได้ทุกเมื่อ"],
+          children:["เกี่ยวกับเด็ก","บริการนี้ไม่ได้มีไว้สำหรับผู้ที่อายุต่ำกว่าที่กฎหมายกำหนด"],
+          changes:["การเปลี่ยนแปลงนโยบาย","หากเปลี่ยนแปลงนโยบายนี้ เราจะแจ้งให้ทราบภายในแอป"]}},
+      "Français":{hdr:"Politique de confidentialité",
+        intro:"revo (le « Service ») accorde la plus grande importance à votre vie privée. Cette politique explique ce que nous collectons et comment nous le traitons.",
+        updated:"Dernière mise à jour : En préparation",note:"* Ceci est un résumé des points clés. Le texte complet sera publié avant la sortie officielle.",
+        contactLbl:"Contact",
+        s:{collect:["Informations collectées","Infos de compte (e-mail, etc.), les données que vous saisissez (poids, entraînement, repas, sommeil, etc.) et l'utilisation de l'app."],
+          purpose:["Finalité","Pour sauvegarder et afficher vos données, calculer suggestions et scores, et améliorer le service. Limité au minimum nécessaire pour vous proposer des suggestions adaptées."],
+          health:["Traitement des données de santé","Les données de santé comme la composition corporelle et l'entraînement sont traitées avec un soin particulier. Jamais partagées à des tiers à des fins publicitaires sans votre consentement."],
+          thirdparty:["Partage à des tiers","Sauf obligation légale, nous ne partageons pas vos données personnelles sans votre consentement. Les prestataires de paiement/analyse les gèrent correctement dans la limite nécessaire."],
+          security:["Sécurité","Nous protégeons vos informations par des mesures appropriées comme le chiffrement."],
+          rights:["Vos droits","Vous pouvez à tout moment demander à consulter, corriger ou supprimer vos informations."],
+          children:["Concernant les enfants","Le Service n'est pas destiné aux personnes en dessous de l'âge requis par la loi."],
+          changes:["Modifications","Si nous modifions cette politique, nous vous en informerons dans l'app."]}},
+      "Español":{hdr:"Política de privacidad",
+        intro:"revo (el \"Servicio\") valora tu privacidad por encima de todo. Esta política explica qué recopilamos y cómo lo tratamos.",
+        updated:"Última actualización: En preparación",note:"* Este es un resumen de puntos clave. El texto completo se publicará antes del lanzamiento oficial.",
+        contactLbl:"Contacto",
+        s:{collect:["Información que recopilamos","Datos de cuenta (como correo), los registros que ingresas (peso, entrenamiento, comidas, sueño, etc.) y el uso de la app."],
+          purpose:["Finalidad","Para guardar y mostrar tus registros, calcular sugerencias y puntuaciones, y mejorar el servicio. Limitado al mínimo necesario para darte sugerencias adecuadas."],
+          health:["Manejo de datos de salud","Los datos de salud como composición corporal y entrenamiento se tratan con especial cuidado. Nunca los compartimos con terceros para publicidad sin tu consentimiento."],
+          thirdparty:["Compartir con terceros","Salvo exigencia legal, no compartimos datos personales sin tu consentimiento. Los proveedores de pago/análisis los gestionan adecuadamente en lo necesario."],
+          security:["Seguridad","Protegemos tu información con medidas apropiadas como el cifrado."],
+          rights:["Tus derechos","Puedes solicitar ver, corregir o eliminar tu información en cualquier momento."],
+          children:["Sobre los niños","El Servicio no está destinado a menores de la edad requerida por la ley."],
+          changes:["Cambios","Si cambiamos esta política, te lo notificaremos en la app."]}},
+      "Deutsch":{hdr:"Datenschutzrichtlinie",
+        intro:"revo (der „Dienst“) schätzt deine Privatsphäre über alles. Diese Richtlinie erklärt, was wir erfassen und wie wir damit umgehen.",
+        updated:"Zuletzt aktualisiert: In Vorbereitung",note:"* Dies ist eine Zusammenfassung. Der vollständige Text wird vor dem offiziellen Release veröffentlicht.",
+        contactLbl:"Kontakt",
+        s:{collect:["Erfasste Informationen","Kontodaten (z. B. E-Mail), von dir eingegebene Daten (Gewicht, Training, Mahlzeiten, Schlaf usw.) und App-Nutzung."],
+          purpose:["Zweck","Um deine Daten zu speichern und anzuzeigen, Vorschläge und Werte zu berechnen und den Dienst zu verbessern. Auf das Nötigste beschränkt, um dir passende Vorschläge zu machen."],
+          health:["Umgang mit Gesundheitsdaten","Gesundheitsdaten wie Körperzusammensetzung und Training werden besonders sorgfältig behandelt. Ohne deine Zustimmung niemals zu Werbezwecken an Dritte weitergegeben."],
+          thirdparty:["Weitergabe an Dritte","Außer bei gesetzlicher Pflicht geben wir personenbezogene Daten nicht ohne deine Zustimmung weiter. Zahlungs-/Analyse-Dienstleister verwalten sie angemessen im nötigen Umfang."],
+          security:["Sicherheit","Wir schützen deine Daten mit geeigneten Mitteln wie Verschlüsselung."],
+          rights:["Deine Rechte","Du kannst jederzeit Einsicht, Berichtigung oder Löschung deiner Daten verlangen."],
+          children:["Zu Kindern","Der Dienst ist nicht für Personen unter dem gesetzlich vorgeschriebenen Alter bestimmt."],
+          changes:["Änderungen","Falls wir diese Richtlinie ändern, informieren wir dich in der App."]}},
+      "Italiano":{hdr:"Informativa sulla privacy",
+        intro:"revo (il \"Servizio\") tiene alla tua privacy più di ogni altra cosa. Questa informativa spiega cosa raccogliamo e come lo trattiamo.",
+        updated:"Ultimo aggiornamento: In preparazione",note:"* Questo è un riassunto dei punti chiave. Il testo completo sarà pubblicato prima del rilascio ufficiale.",
+        contactLbl:"Contatto",
+        s:{collect:["Informazioni raccolte","Dati dell'account (come email), i dati che inserisci (peso, allenamento, pasti, sonno, ecc.) e l'uso dell'app."],
+          purpose:["Finalità","Per salvare e mostrare i tuoi dati, calcolare suggerimenti e punteggi e migliorare il servizio. Limitato al minimo necessario per darti suggerimenti adatti."],
+          health:["Trattamento dei dati sanitari","I dati sanitari come composizione corporea e allenamento sono trattati con particolare cura. Mai condivisi con terzi a fini pubblicitari senza il tuo consenso."],
+          thirdparty:["Condivisione con terzi","Salvo obbligo di legge, non condividiamo dati personali senza il tuo consenso. I fornitori di pagamento/analisi li gestiscono adeguatamente nei limiti necessari."],
+          security:["Sicurezza","Proteggiamo le tue informazioni con misure adeguate come la crittografia."],
+          rights:["I tuoi diritti","Puoi richiedere di visualizzare, correggere o eliminare le tue informazioni in qualsiasi momento."],
+          children:["Sui minori","Il Servizio non è destinato a chi ha un'età inferiore a quella richiesta dalla legge."],
+          changes:["Modifiche","Se modifichiamo questa informativa, te lo comunicheremo nell'app."]}},
+      "Português":{hdr:"Política de Privacidade",
+        intro:"revo (o \"Serviço\") valoriza sua privacidade acima de tudo. Esta política explica o que coletamos e como tratamos.",
+        updated:"Última atualização: Em preparação",note:"* Este é um resumo dos pontos principais. O texto completo será publicado antes do lançamento oficial.",
+        contactLbl:"Contato",
+        s:{collect:["Informações que coletamos","Dados da conta (como e-mail), os registros que você insere (peso, treino, refeições, sono, etc.) e o uso do app."],
+          purpose:["Finalidade","Para salvar e exibir seus registros, calcular sugestões e pontuações e melhorar o serviço. Limitado ao mínimo necessário para dar sugestões adequadas."],
+          health:["Tratamento de dados de saúde","Dados de saúde como composição corporal e treino são tratados com cuidado especial. Nunca compartilhados com terceiros para publicidade sem seu consentimento."],
+          thirdparty:["Compartilhamento com terceiros","Exceto por exigência legal, não compartilhamos dados pessoais sem seu consentimento. Provedores de pagamento/análise os gerenciam adequadamente no necessário."],
+          security:["Segurança","Protegemos suas informações com medidas apropriadas como criptografia."],
+          rights:["Seus direitos","Você pode solicitar ver, corrigir ou excluir suas informações a qualquer momento."],
+          children:["Sobre crianças","O Serviço não se destina a menores da idade exigida por lei."],
+          changes:["Alterações","Se alterarmos esta política, avisaremos no app."]}},
+      "हिन्दी":{hdr:"गोपनीयता नीति",
+        intro:"revo (आगे \"सेवा\") आपकी गोपनीयता को सबसे ऊपर रखती है। यह नीति बताती है कि हम क्या एकत्र करते हैं और कैसे संभालते हैं।",
+        updated:"अंतिम अपडेट: तैयारी में",note:"※ यह मुख्य बिंदुओं का सारांश है। पूर्ण पाठ आधिकारिक रिलीज़ से पहले प्रकाशित होगा।",
+        contactLbl:"संपर्क",
+        s:{collect:["हम जो जानकारी एकत्र करते हैं","खाता जानकारी (जैसे ईमेल), आपके दर्ज किए रिकॉर्ड (वजन, ट्रेनिंग, भोजन, नींद आदि), और ऐप उपयोग।"],
+          purpose:["उपयोग का उद्देश्य","आपके रिकॉर्ड सहेजने और दिखाने, सुझाव व स्कोर की गणना, और सेवा सुधार के लिए। आपको उपयुक्त सुझाव देने हेतु न्यूनतम तक सीमित।"],
+          health:["स्वास्थ्य डेटा का प्रबंधन","शरीर संरचना और ट्रेनिंग जैसे स्वास्थ्य डेटा को विशेष सावधानी से संभाला जाता है। आपकी सहमति के बिना विज्ञापन हेतु तीसरे पक्ष से साझा नहीं करते।"],
+          thirdparty:["तीसरे पक्ष को साझा","कानूनी आवश्यकता को छोड़कर, आपकी सहमति के बिना व्यक्तिगत जानकारी साझा नहीं करते। भुगतान/विश्लेषण प्रदाता आवश्यक सीमा में उचित प्रबंधन करते हैं।"],
+          security:["सुरक्षा","एन्क्रिप्शन जैसे उपयुक्त साधनों से आपकी जानकारी की रक्षा करते हैं।"],
+          rights:["आपके अधिकार","आप कभी भी अपनी जानकारी देखने, सुधारने या हटाने का अनुरोध कर सकते हैं।"],
+          children:["बच्चों के बारे में","सेवा कानून द्वारा निर्धारित आयु से कम के लिए नहीं है।"],
+          changes:["नीति परिवर्तन","यदि हम यह नीति बदलते हैं, तो ऐप में सूचित करेंगे।"]}},
+      "Tiếng Việt":{hdr:"Chính sách bảo mật",
+        intro:"revo (\"Dịch vụ\") coi trọng quyền riêng tư của bạn hơn tất cả. Chính sách này giải thích những gì chúng tôi thu thập và cách xử lý.",
+        updated:"Cập nhật lần cuối: Đang chuẩn bị",note:"※ Đây là bản tóm tắt các điểm chính. Toàn văn sẽ được đăng trước khi ra mắt chính thức.",
+        contactLbl:"Liên hệ",
+        s:{collect:["Thông tin chúng tôi thu thập","Thông tin tài khoản (như email), các bản ghi bạn nhập (cân nặng, tập luyện, bữa ăn, giấc ngủ, v.v.) và việc sử dụng ứng dụng."],
+          purpose:["Mục đích sử dụng","Để lưu và hiển thị bản ghi, tính toán gợi ý và điểm số, và cải thiện dịch vụ. Giới hạn ở mức tối thiểu cần thiết để đưa gợi ý phù hợp cho bạn."],
+          health:["Xử lý dữ liệu sức khỏe","Dữ liệu sức khỏe như thành phần cơ thể và tập luyện được xử lý đặc biệt cẩn thận. Không bao giờ chia sẻ cho bên thứ ba vì mục đích quảng cáo nếu không có sự đồng ý của bạn."],
+          thirdparty:["Chia sẻ cho bên thứ ba","Trừ khi luật yêu cầu, chúng tôi không chia sẻ dữ liệu cá nhân nếu không có sự đồng ý. Nhà cung cấp thanh toán/phân tích quản lý phù hợp trong phạm vi cần thiết."],
+          security:["Bảo mật","Chúng tôi bảo vệ thông tin của bạn bằng các biện pháp phù hợp như mã hóa."],
+          rights:["Quyền của bạn","Bạn có thể yêu cầu xem, sửa hoặc xóa thông tin của mình bất cứ lúc nào."],
+          children:["Về trẻ em","Dịch vụ không dành cho người dưới độ tuổi luật định."],
+          changes:["Thay đổi","Nếu thay đổi chính sách này, chúng tôi sẽ thông báo trong ứng dụng."]}},
+      "Bahasa Indonesia":{hdr:"Kebijakan Privasi",
+        intro:"revo (\"Layanan\") menghargai privasimu di atas segalanya. Kebijakan ini menjelaskan apa yang kami kumpulkan dan cara menanganinya.",
+        updated:"Pembaruan terakhir: Sedang disiapkan",note:"※ Ini adalah ringkasan poin utama. Teks lengkap akan dimuat sebelum rilis resmi.",
+        contactLbl:"Kontak",
+        s:{collect:["Informasi yang kami kumpulkan","Info akun (seperti email), catatan yang kamu masukkan (berat, latihan, makanan, tidur, dll.), dan penggunaan aplikasi."],
+          purpose:["Tujuan penggunaan","Untuk menyimpan dan menampilkan catatan, menghitung saran dan skor, serta meningkatkan layanan. Dibatasi seminimal mungkin untuk memberi saran yang cocok untukmu."],
+          health:["Penanganan data kesehatan","Data kesehatan seperti komposisi tubuh dan latihan ditangani dengan sangat hati-hati. Tidak pernah dibagikan ke pihak ketiga untuk iklan tanpa persetujuanmu."],
+          thirdparty:["Berbagi ke pihak ketiga","Kecuali diwajibkan hukum, kami tidak membagikan data pribadi tanpa persetujuanmu. Penyedia pembayaran/analitik mengelolanya dengan tepat sesuai kebutuhan."],
+          security:["Keamanan","Kami melindungi informasimu dengan langkah tepat seperti enkripsi."],
+          rights:["Hakmu","Kamu dapat meminta melihat, mengoreksi, atau menghapus informasimu kapan saja."],
+          children:["Tentang anak-anak","Layanan tidak ditujukan bagi yang di bawah usia yang diwajibkan hukum."],
+          changes:["Perubahan","Jika kami mengubah kebijakan ini, kami akan memberi tahu di aplikasi."]}}
+    };
+    var cur="日本語", dark=true;
+    var T={
+      dark:{bg:"#16140F",txt:"#E8E2D6",sub:"#8A7E68",muted:"#6E6555",head:"#F0EBE2",card:"#1A1814",cardBd:"#2A2620",accent:"#E3C56A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488"},
+      light:{bg:"#FFFFFF",txt:"#4A453B",sub:"#8A7E68",muted:"#B7A98F",head:"#2E2A24",card:"#FBF7F1",cardBd:"#F0EAE0",accent:"#BA7517",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderSections(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('sections').innerHTML="";
+      SEC.forEach(function(k,i){
+        var sec=d.s[k];
+        var el=document.createElement('div');
+        el.innerHTML='<p style="font-size:14px; color:'+t.head+'; margin:0 0 6px; font-weight:600;">'+(i+1)+'. '+sec[0]+'</p>'+
+          '<p style="font-size:12px; color:'+t.txt+'; margin:0; line-height:1.75;">'+sec[1]+'</p>';
+        $('sections').appendChild(el);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('intro').textContent=d.intro; $('updated').textContent=d.updated;
+      $('contactLbl').textContent=d.contactLbl; $('note').textContent=d.note;
+      renderSections();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.head;
+      $('intro').style.color=t.sub; $('updated').style.color=t.muted; $('note').style.color=t.muted;
+      $('contactBox').style.background=t.card; $('contactBox').style.borderColor=t.cardBd; $('contactLbl').style.color=t.sub;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

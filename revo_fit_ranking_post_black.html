@@ -1,0 +1,389 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">マイサプリ。自分が使っているプロテインやサプリを登録して棚のように並べる。次に買うときの備忘録になり、評価はランキングの素になる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">マイサプリ</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- リード文 -->
+  <p id="lead" style="font-size:12px; color:#8A7E68; margin:0; padding:14px 18px 0; line-height:1.6;">使っているサプリを棚に。次に買うときの目印になり、みんなの登録がランキングになります。</p>
+
+  <!-- ビギナー/トレーニー切替 -->
+  <div style="padding:14px 18px 0;">
+    <div id="levelBar" style="display:flex; gap:8px;">
+      <button id="begBtn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-radius:12px; border:none; background:#E3C56A; color:#16140F; font-size:13px; font-weight:600; cursor:pointer;"><i class="ti ti-plant-2" style="font-size:16px;"></i><span id="begLbl">ビギナー向け</span></button>
+      <button id="trnBtn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-radius:12px; border:0.5px solid #2A2620; background:transparent; color:#8A7E68; font-size:13px; font-weight:500; cursor:pointer;"><i class="ti ti-barbell" style="font-size:16px;"></i><span id="trnLbl">トレーニー向け</span></button>
+    </div>
+  </div>
+
+  <!-- カテゴリ別プルダウン群 -->
+  <div id="catGroups" style="padding:14px 18px 0; display:flex; flex-direction:column; gap:9px;"></div>
+
+  <!-- 追加ボタン -->
+  <div style="padding:14px 18px 0;">
+    <button id="addBtn" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:transparent; border:1px dashed #3A352A; color:#B0A488; font-size:14px; font-weight:500; padding:14px; border-radius:13px; cursor:pointer; transition:all 0.3s;"><i class="ti ti-plus" style="font-size:18px;"></i><span id="addLbl">サプリを追加</span></button>
+  </div>
+
+  <!-- 追加フォーム（展開式・初期非表示） -->
+  <div id="addForm" style="display:none; padding:14px 18px 0;">
+    <div style="background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; padding:16px;">
+      <p id="formTtl" style="font-size:13px; color:#F0EBE2; margin:0 0 13px; font-weight:600;">サプリを登録</p>
+
+      <!-- カテゴリ -->
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="cat">カテゴリ</p>
+      <div id="catChips" style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px;"></div>
+
+      <!-- 商品名 -->
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="name">ブランド・商品名</p>
+      <div id="nameBox" style="background:#16140F; border:0.5px solid #2A2620; border-radius:10px; padding:11px 13px; margin:0 0 14px; color:#6E6555; font-size:13px;">例：Optimum Nutrition ゴールドスタンダード</div>
+
+      <!-- 味 -->
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="flavor">味（任意）</p>
+      <div id="flavorBox" style="background:#16140F; border:0.5px solid #2A2620; border-radius:10px; padding:11px 13px; margin:0 0 14px; color:#6E6555; font-size:13px;">例：チョコレート</div>
+
+      <!-- 容量・形状 -->
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="form">容量・形状</p>
+      <div id="formChips" style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px;"></div>
+
+      <!-- 評価 -->
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="rate">評価</p>
+      <div id="rateStars" style="display:flex; gap:5px; margin:0 0 16px;"></div>
+
+      <!-- 一言コメント -->
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="note">使ってみてどうだった？（任意）</p>
+      <div id="noteBox" style="background:#16140F; border:0.5px solid #2A2620; border-radius:10px; padding:11px 13px; margin:0 0 14px; color:#6E6555; font-size:13px; line-height:1.5; min-height:42px;">例：さっぱりで毎日飲める。匂いは少し独特。</div>
+
+      <!-- 共有トグル -->
+      <div id="shareRow" style="display:flex; align-items:center; justify-content:space-between; background:#16140F; border:0.5px solid #2A2620; border-radius:11px; padding:12px 14px; margin:0 0 16px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:9px; flex:1; padding-right:10px;">
+          <i class="ti ti-users" style="font-size:17px; color:#8A7E68;"></i>
+          <span id="shareLbl" style="font-size:12px; color:#C9C0AE; line-height:1.4;">この感想をランキングに載せる</span>
+        </div>
+        <div id="shareToggle" style="width:42px; height:24px; border-radius:999px; background:#2A2620; position:relative; transition:background 0.25s; flex-shrink:0;">
+          <div id="shareKnob" style="width:18px; height:18px; border-radius:50%; background:#6E6555; position:absolute; top:3px; left:3px; transition:all 0.25s;"></div>
+        </div>
+      </div>
+
+      <!-- 保存 -->
+      <button id="saveBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:14px; font-weight:600; padding:13px; border-radius:12px; cursor:pointer;">棚に追加する</button>
+    </div>
+  </div>
+
+  <div style="height:24px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 登録済みサプリ（デモ・各カテゴリに散らす）
+    var MYSUPP=[
+      {cat:"protein", name:"Optimum Nutrition ゴールドスタンダード", flavor:"チョコレート", form:"powder", rate:5, note:"溶けやすくてダマにならない。甘すぎず毎日飲める。", share:true},
+      {cat:"protein", name:"マイプロテイン Impact ホエイ", flavor:"ミルクティー", form:"powder", rate:4, note:"コスパ最高。味の種類が多くて飽きない。", share:true},
+      {cat:"creatine", name:"バルクスポーツ クレアチン", flavor:"", form:"powder", rate:4, note:"無味でなんにでも混ぜられる。コスパ良し。", share:true},
+      {cat:"multi", name:"ネイチャーメイド スーパーマルチ", flavor:"", form:"tablet", rate:4, note:"粒が大きめ。朝1錠で続けやすい。", share:false},
+      {cat:"eaa", name:"XTEND EAA", flavor:"マンゴー", form:"powder", rate:5, note:"トレ中に飲むとバテにくい。さっぱり。", share:true},
+      {cat:"hmb", name:"バルクスポーツ HMBタブレット", flavor:"", form:"tablet", rate:3, note:"効果は実感しづらいが続けてる。", share:false},
+      {cat:"citrulline", name:"now シトルリン", flavor:"", form:"capsule", rate:4, note:"パンプ感が出る。粒がやや大きい。", share:true},
+      {cat:"fishoil", name:"now フィッシュオイル", flavor:"", form:"capsule", rate:4, note:"魚臭さ控えめ。関節の調子が良い。", share:false}
+    ];
+    // ビギナー＝土台のみ。トレーニー＝土台＋専門（包含関係）
+    var BASE=["protein","creatine","multi","bcaa","eaa"];
+    var GROUPS={
+      beginner:BASE,
+      trainee:BASE.concat(["hmb","beta","glutamine","citrulline","caffeine","fishoil","zma"])
+    };
+    var catColors={protein:"#3B6FE0",creatine:"#14B8A6",eaa:"#9B7BD4",bcaa:"#9B7BD4",multi:"#F5C518",hmb:"#E0846A",beta:"#E0846A",glutamine:"#5D9CEA",citrulline:"#E0A86A",caffeine:"#C97BD4",fishoil:"#5DCAA5",zma:"#8A9AE0",other:"#8A7E68"};
+    var D={
+      "日本語":{hdr:"マイサプリ",lead:"使っているサプリを棚に。次に買うときの目印になり、みんなの登録がランキングになります。",
+        add:"サプリを追加",formTtl:"サプリを登録",save:"棚に追加する",
+        f:{cat:"カテゴリ",name:"ブランド・商品名",flavor:"味（任意）",form:"容量・形状",rate:"評価",note:"使ってみてどうだった？（任意）"},
+        namePh:"例：Optimum Nutrition ゴールドスタンダード",flavorPh:"例：チョコレート",
+        notePh:"例：さっぱりで毎日飲める。匂いは少し独特。",
+        shareLbl:"この感想をランキングに載せる",sharedTag:"みんなに公開中",
+        cats:{protein:"プロテイン",creatine:"クレアチン",eaa:"EAA",bcaa:"BCAA",multi:"マルチビタミン",hmb:"HMB",beta:"β-アラニン",glutamine:"グルタミン",citrulline:"シトルリン",caffeine:"カフェイン",fishoil:"フィッシュオイル",zma:"ZMA",other:"その他"},
+        forms:{powder:"粉末",capsule:"カプセル",tablet:"タブレット",liquid:"ドリンク"},
+        repeat:"また買う",beg:"ビギナー向け",trn:"トレーニー向け",empty:"まだ登録がありません",count:"件"},
+      "English":{hdr:"My supplements",lead:"Shelve what you use. A reminder for your next purchase — and everyone's entries become the ranking.",
+        add:"Add a supplement",formTtl:"Register a supplement",save:"Add to shelf",
+        f:{cat:"Category",name:"Brand / product",flavor:"Flavor (optional)",form:"Size / form",rate:"Rating",note:"How was it? (optional)"},
+        namePh:"e.g. Optimum Nutrition Gold Standard",flavorPh:"e.g. Chocolate",
+        notePh:"e.g. Light, easy to drink daily. Smell is a bit unique.",
+        shareLbl:"Show this note on the ranking",sharedTag:"Shared publicly",
+        cats:{protein:"Protein",creatine:"Creatine",eaa:"EAA",bcaa:"BCAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-Alanine",glutamine:"Glutamine",citrulline:"Citrulline",caffeine:"Caffeine",fishoil:"Fish oil",zma:"ZMA",other:"Other"},
+        forms:{powder:"Powder",capsule:"Capsule",tablet:"Tablet",liquid:"Drink"},
+        repeat:"Buy again",beg:"Beginner",trn:"Trainee",empty:"Nothing registered yet",count:""},
+      "简体中文":{hdr:"我的补剂",lead:"把在用的补剂放上架。下次购买的提醒，大家的登记会变成排行榜。",
+        add:"添加补剂",formTtl:"登记补剂",save:"加入货架",
+        f:{cat:"类别",name:"品牌·商品名",flavor:"口味（可选）",form:"容量·形态",rate:"评分",note:"用着怎么样？（可选）"},
+        namePh:"例：Optimum Nutrition 金标准",flavorPh:"例：巧克力",
+        notePh:"例：清爽，每天都能喝。气味略特别。",
+        shareLbl:"把这条感想放到排行榜",sharedTag:"已公开",
+        cats:{protein:"蛋白粉",creatine:"肌酸",eaa:"EAA",bcaa:"BCAA",multi:"复合维生素",hmb:"HMB",beta:"β-丙氨酸",glutamine:"谷氨酰胺",citrulline:"瓜氨酸",caffeine:"咖啡因",fishoil:"鱼油",zma:"ZMA",other:"其他"},
+        forms:{powder:"粉末",capsule:"胶囊",tablet:"片剂",liquid:"饮品"},
+        repeat:"再次购买",beg:"新手向",trn:"进阶向",empty:"还没有登记",count:"个"},
+      "繁體中文":{hdr:"我的補劑",lead:"把在用的補劑放上架。下次購買的提醒，大家的登記會變成排行榜。",
+        add:"新增補劑",formTtl:"登記補劑",save:"加入貨架",
+        f:{cat:"類別",name:"品牌·商品名",flavor:"口味（可選）",form:"容量·形態",rate:"評分",note:"用起來如何？（可選）"},
+        namePh:"例：Optimum Nutrition 金標準",flavorPh:"例：巧克力",
+        notePh:"例：清爽，每天都能喝。氣味略特別。",
+        shareLbl:"把這則感想放到排行榜",sharedTag:"已公開",
+        cats:{protein:"蛋白粉",creatine:"肌酸",eaa:"EAA",bcaa:"BCAA",multi:"綜合維生素",hmb:"HMB",beta:"β-丙氨酸",glutamine:"麩醯胺酸",citrulline:"瓜胺酸",caffeine:"咖啡因",fishoil:"魚油",zma:"ZMA",other:"其他"},
+        forms:{powder:"粉末",capsule:"膠囊",tablet:"片劑",liquid:"飲品"},
+        repeat:"再次購買",beg:"新手向",trn:"進階向",empty:"還沒有登記",count:"個"},
+      "한국어":{hdr:"내 보충제",lead:"쓰는 보충제를 선반에. 다음 구매의 표시가 되고, 모두의 등록이 랭킹이 됩니다.",
+        add:"보충제 추가",formTtl:"보충제 등록",save:"선반에 추가",
+        f:{cat:"분류",name:"브랜드·제품명",flavor:"맛(선택)",form:"용량·형태",rate:"평가",note:"써보니 어땠나요?(선택)"},
+        namePh:"예: Optimum Nutrition 골드 스탠다드",flavorPh:"예: 초콜릿",
+        notePh:"예: 담백해서 매일 마셔요. 향은 조금 독특.",
+        shareLbl:"이 후기를 랭킹에 올리기",sharedTag:"공개 중",
+        cats:{protein:"프로틴",creatine:"크레아틴",eaa:"EAA",bcaa:"BCAA",multi:"종합비타민",hmb:"HMB",beta:"베타알라닌",glutamine:"글루타민",citrulline:"시트룰린",caffeine:"카페인",fishoil:"피쉬오일",zma:"ZMA",other:"기타"},
+        forms:{powder:"분말",capsule:"캡슐",tablet:"정제",liquid:"드링크"},
+        repeat:"다시 구매",beg:"입문자용",trn:"트레이니용",empty:"아직 등록이 없어요",count:"개"},
+      "ภาษาไทย":{hdr:"อาหารเสริมของฉัน",lead:"เก็บที่ใช้ไว้บนชั้น เป็นตัวเตือนตอนซื้อครั้งหน้า และการบันทึกของทุกคนจะกลายเป็นอันดับ",
+        add:"เพิ่มอาหารเสริม",formTtl:"ลงทะเบียนอาหารเสริม",save:"เพิ่มลงชั้น",
+        f:{cat:"หมวด",name:"แบรนด์·ชื่อสินค้า",flavor:"รสชาติ (ถ้ามี)",form:"ขนาด·รูปแบบ",rate:"คะแนน",note:"ใช้แล้วเป็นไง? (ถ้ามี)"},
+        namePh:"เช่น Optimum Nutrition Gold Standard",flavorPh:"เช่น ช็อกโกแลต",
+        notePh:"เช่น รสซอฟต์ ดื่มทุกวันได้ กลิ่นแปลกนิด",
+        shareLbl:"แสดงความเห็นนี้บนอันดับ",sharedTag:"เปิดเผยแล้ว",
+        cats:{protein:"โปรตีน",creatine:"ครีเอทีน",eaa:"EAA",bcaa:"BCAA",multi:"วิตามินรวม",hmb:"HMB",beta:"เบต้าอะลานีน",glutamine:"กลูตามีน",citrulline:"ซิตรูลลีน",caffeine:"คาเฟอีน",fishoil:"น้ำมันปลา",zma:"ZMA",other:"อื่นๆ"},
+        forms:{powder:"ผง",capsule:"แคปซูล",tablet:"เม็ด",liquid:"เครื่องดื่ม"},
+        repeat:"ซื้ออีก",beg:"สำหรับมือใหม่",trn:"สำหรับสายเทรน",empty:"ยังไม่มีรายการ",count:""},
+      "Français":{hdr:"Mes compléments",lead:"Rangez ce que vous utilisez. Un repère pour le prochain achat — et les entrées de tous font le classement.",
+        add:"Ajouter un complément",formTtl:"Enregistrer un complément",save:"Ajouter à l'étagère",
+        f:{cat:"Catégorie",name:"Marque / produit",flavor:"Goût (facultatif)",form:"Taille / forme",rate:"Note",note:"Alors, ce produit ? (facultatif)"},
+        namePh:"ex. Optimum Nutrition Gold Standard",flavorPh:"ex. Chocolat",
+        notePh:"ex. Léger, facile à boire au quotidien. Odeur un peu particulière.",
+        shareLbl:"Afficher cet avis dans le classement",sharedTag:"Partagé",
+        cats:{protein:"Protéine",creatine:"Créatine",eaa:"EAA",bcaa:"BCAA",multi:"Multivitamines",hmb:"HMB",beta:"Bêta-alanine",glutamine:"Glutamine",citrulline:"Citrulline",caffeine:"Caféine",fishoil:"Huile de poisson",zma:"ZMA",other:"Autre"},
+        forms:{powder:"Poudre",capsule:"Gélule",tablet:"Comprimé",liquid:"Boisson"},
+        repeat:"Racheter",beg:"Débutant",trn:"Confirmé",empty:"Rien d'enregistré",count:""},
+      "Español":{hdr:"Mis suplementos",lead:"Guarda lo que usas. Un recordatorio para tu próxima compra — y los registros de todos forman el ranking.",
+        add:"Añadir suplemento",formTtl:"Registrar suplemento",save:"Añadir al estante",
+        f:{cat:"Categoría",name:"Marca / producto",flavor:"Sabor (opcional)",form:"Tamaño / forma",rate:"Valoración",note:"¿Qué tal te fue? (opcional)"},
+        namePh:"ej. Optimum Nutrition Gold Standard",flavorPh:"ej. Chocolate",
+        notePh:"ej. Suave, fácil de tomar a diario. Olor algo particular.",
+        shareLbl:"Mostrar esta opinión en el ranking",sharedTag:"Compartido",
+        cats:{protein:"Proteína",creatine:"Creatina",eaa:"EAA",bcaa:"BCAA",multi:"Multivitamínico",hmb:"HMB",beta:"Beta-alanina",glutamine:"Glutamina",citrulline:"Citrulina",caffeine:"Cafeína",fishoil:"Aceite de pescado",zma:"ZMA",other:"Otro"},
+        forms:{powder:"Polvo",capsule:"Cápsula",tablet:"Tableta",liquid:"Bebida"},
+        repeat:"Comprar otra vez",beg:"Principiante",trn:"Avanzado",empty:"Nada registrado aún",count:""},
+      "Deutsch":{hdr:"Meine Supplements",lead:"Stell ins Regal, was du nutzt. Eine Erinnerung für den nächsten Kauf — und alle Einträge ergeben das Ranking.",
+        add:"Supplement hinzufügen",formTtl:"Supplement erfassen",save:"Ins Regal",
+        f:{cat:"Kategorie",name:"Marke / Produkt",flavor:"Geschmack (optional)",form:"Größe / Form",rate:"Bewertung",note:"Wie war es? (optional)"},
+        namePh:"z.B. Optimum Nutrition Gold Standard",flavorPh:"z.B. Schokolade",
+        notePh:"z.B. Leicht, täglich gut trinkbar. Geruch etwas speziell.",
+        shareLbl:"Diese Notiz im Ranking zeigen",sharedTag:"Geteilt",
+        cats:{protein:"Protein",creatine:"Kreatin",eaa:"EAA",bcaa:"BCAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-Alanin",glutamine:"Glutamin",citrulline:"Citrullin",caffeine:"Koffein",fishoil:"Fischöl",zma:"ZMA",other:"Andere"},
+        forms:{powder:"Pulver",capsule:"Kapsel",tablet:"Tablette",liquid:"Drink"},
+        repeat:"Erneut kaufen",beg:"Einsteiger",trn:"Fortgeschritten",empty:"Noch nichts erfasst",count:""},
+      "Italiano":{hdr:"I miei integratori",lead:"Metti sullo scaffale ciò che usi. Un promemoria per il prossimo acquisto — e le voci di tutti fanno la classifica.",
+        add:"Aggiungi integratore",formTtl:"Registra integratore",save:"Aggiungi allo scaffale",
+        f:{cat:"Categoria",name:"Marca / prodotto",flavor:"Gusto (facoltativo)",form:"Formato",rate:"Valutazione",note:"Com'è andata? (facoltativo)"},
+        namePh:"es. Optimum Nutrition Gold Standard",flavorPh:"es. Cioccolato",
+        notePh:"es. Leggero, facile da bere ogni giorno. Odore un po'' particolare.",
+        shareLbl:"Mostra questo commento in classifica",sharedTag:"Condiviso",
+        cats:{protein:"Proteine",creatine:"Creatina",eaa:"EAA",bcaa:"BCAA",multi:"Multivitaminico",hmb:"HMB",beta:"Beta-alanina",glutamine:"Glutammina",citrulline:"Citrullina",caffeine:"Caffeina",fishoil:"Olio di pesce",zma:"ZMA",other:"Altro"},
+        forms:{powder:"Polvere",capsule:"Capsula",tablet:"Compressa",liquid:"Bevanda"},
+        repeat:"Ricompra",beg:"Principiante",trn:"Avanzato",empty:"Ancora niente",count:""},
+      "Português":{hdr:"Meus suplementos",lead:"Coloque na prateleira o que você usa. Um lembrete para a próxima compra — e os registros de todos viram o ranking.",
+        add:"Adicionar suplemento",formTtl:"Registrar suplemento",save:"Adicionar à prateleira",
+        f:{cat:"Categoria",name:"Marca / produto",flavor:"Sabor (opcional)",form:"Tamanho / forma",rate:"Avaliação",note:"E aí, como foi? (opcional)"},
+        namePh:"ex. Optimum Nutrition Gold Standard",flavorPh:"ex. Chocolate",
+        notePh:"ex. Leve, fácil de tomar todo dia. Cheiro um pouco peculiar.",
+        shareLbl:"Mostrar este comentário no ranking",sharedTag:"Compartilhado",
+        cats:{protein:"Proteína",creatine:"Creatina",eaa:"EAA",bcaa:"BCAA",multi:"Multivitamínico",hmb:"HMB",beta:"Beta-alanina",glutamine:"Glutamina",citrulline:"Citrulina",caffeine:"Cafeína",fishoil:"Óleo de peixe",zma:"ZMA",other:"Outro"},
+        forms:{powder:"Pó",capsule:"Cápsula",tablet:"Comprimido",liquid:"Bebida"},
+        repeat:"Comprar de novo",beg:"Iniciante",trn:"Avançado",empty:"Nada registrado ainda",count:""},
+      "हिन्दी":{hdr:"मेरे सप्लिमेंट",lead:"जो इस्तेमाल करते हैं उन्हें शेल्फ पर रखें। अगली खरीद की याद, और सबकी एंट्री रैंकिंग बनती है।",
+        add:"सप्लिमेंट जोड़ें",formTtl:"सप्लिमेंट दर्ज करें",save:"शेल्फ में जोड़ें",
+        f:{cat:"श्रेणी",name:"ब्रांड·उत्पाद",flavor:"फ्लेवर (वैकल्पिक)",form:"आकार·रूप",rate:"रेटिंग",note:"इस्तेमाल कैसा रहा? (वैकल्पिक)"},
+        namePh:"उदा. Optimum Nutrition Gold Standard",flavorPh:"उदा. चॉकलेट",
+        notePh:"उदा. हल्का, रोज़ पीना आसान। गंध थोड़ी अलग।",
+        shareLbl:"यह राय रैंकिंग में दिखाएँ",sharedTag:"सार्वजनिक",
+        cats:{protein:"प्रोटीन",creatine:"क्रिएटिन",eaa:"EAA",bcaa:"BCAA",multi:"मल्टीविटामिन",hmb:"HMB",beta:"बीटा-एलानिन",glutamine:"ग्लूटामिन",citrulline:"सिट्रुलाइन",caffeine:"कैफीन",fishoil:"फिश ऑयल",zma:"ZMA",other:"अन्य"},
+        forms:{powder:"पाउडर",capsule:"कैप्सूल",tablet:"टैबलेट",liquid:"ड्रिंक"},
+        repeat:"फिर से खरीदें",beg:"शुरुआती",trn:"अनुभवी",empty:"अभी कुछ दर्ज नहीं",count:""},
+      "Tiếng Việt":{hdr:"Thực phẩm bổ sung của tôi",lead:"Xếp lên kệ thứ bạn dùng. Nhắc cho lần mua sau — và mục của mọi người tạo nên bảng xếp hạng.",
+        add:"Thêm thực phẩm bổ sung",formTtl:"Đăng ký",save:"Thêm vào kệ",
+        f:{cat:"Danh mục",name:"Thương hiệu / sản phẩm",flavor:"Vị (tùy chọn)",form:"Dung lượng / dạng",rate:"Đánh giá",note:"Dùng thấy sao? (tùy chọn)"},
+        namePh:"vd. Optimum Nutrition Gold Standard",flavorPh:"vd. Sô-cô-la",
+        notePh:"vd. Nhẹ, dễ uống mỗi ngày. Mùi hơi lạ.",
+        shareLbl:"Hiện nhận xét này trên bảng xếp hạng",sharedTag:"Đã chia sẻ",
+        cats:{protein:"Protein",creatine:"Creatine",eaa:"EAA",bcaa:"BCAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-Alanine",glutamine:"Glutamine",citrulline:"Citrulline",caffeine:"Caffeine",fishoil:"Dầu cá",zma:"ZMA",other:"Khác"},
+        forms:{powder:"Bột",capsule:"Viên nang",tablet:"Viên nén",liquid:"Đồ uống"},
+        repeat:"Mua lại",beg:"Người mới",trn:"Nâng cao",empty:"Chưa có mục nào",count:""},
+      "Bahasa Indonesia":{hdr:"Suplemen saya",lead:"Taruh yang kamu pakai di rak. Pengingat untuk pembelian berikutnya — dan entri semua orang jadi peringkat.",
+        add:"Tambah suplemen",formTtl:"Daftarkan suplemen",save:"Tambah ke rak",
+        f:{cat:"Kategori",name:"Merek / produk",flavor:"Rasa (opsional)",form:"Ukuran / bentuk",rate:"Penilaian",note:"Gimana rasanya? (opsional)"},
+        namePh:"mis. Optimum Nutrition Gold Standard",flavorPh:"mis. Cokelat",
+        notePh:"mis. Ringan, enak diminum tiap hari. Baunya agak khas.",
+        shareLbl:"Tampilkan ulasan ini di peringkat",sharedTag:"Dibagikan",
+        cats:{protein:"Protein",creatine:"Kreatin",eaa:"EAA",bcaa:"BCAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-Alanine",glutamine:"Glutamine",citrulline:"Citrulline",caffeine:"Kafein",fishoil:"Minyak ikan",zma:"ZMA",other:"Lainnya"},
+        forms:{powder:"Bubuk",capsule:"Kapsul",tablet:"Tablet",liquid:"Minuman"},
+        repeat:"Beli lagi",beg:"Pemula",trn:"Lanjutan",empty:"Belum ada yang terdaftar",count:""}
+    };
+    var cur="日本語", dark=true, formOpen=false;
+    var sel={cat:"protein", form:"powder", rate:0, share:false};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84",inputBg:"#16140F",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",inputBg:"#F4EFE6",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    var curLevel="beginner";
+    var openCats={};
+    function suppCardHtml(s, d, t){
+      var col=catColors[s.cat]||"#8A7E68";
+      var stars="";
+      for(var i=1;i<=5;i++){ stars+='<i class="ti ti-star'+(i<=s.rate?'-filled':'')+'" style="font-size:12px; color:'+(i<=s.rate?t.accent:t.muted)+';"></i>'; }
+      var sub=[s.flavor, d.forms[s.form]||s.form].filter(Boolean).join(" ・ ");
+      var noteHtml = s.note ? '<p style="font-size:12px; color:'+(dark?"#C9C0AE":"#5F5E5A")+'; margin:6px 0 0; line-height:1.5; padding:7px 10px; background:'+(dark?"#16140F":"#F4EFE6")+'; border-radius:8px;">「'+s.note+'」'+(s.share?' <span style="font-size:9px; color:'+t.accent+';">'+(d.sharedTag||"公開中")+'</span>':'')+'</p>' : '';
+      return '<div style="display:flex; align-items:flex-start; gap:11px; padding:11px 0; border-top:0.5px solid '+t.cardBd+';">'+
+          '<div style="width:3px; align-self:stretch; background:'+col+'; border-radius:2px;"></div>'+
+          '<div style="flex:1;">'+
+            '<p style="font-size:13px; color:'+t.txt+'; margin:0 0 3px; font-weight:500; line-height:1.4;">'+s.name+'</p>'+
+            (sub?'<p style="font-size:11px; color:'+t.sub+'; margin:0 0 5px;">'+sub+'</p>':'')+
+            '<div style="display:flex; align-items:center; gap:8px;"><div style="display:flex; gap:2px;">'+stars+'</div>'+
+            (s.rate>=4?'<span style="font-size:9px; color:'+t.accent+'; background:'+(dark?"#2A2418":"#FBF3E0")+'; padding:2px 8px; border-radius:999px;">'+d.repeat+'</span>':'')+'</div>'+
+            noteHtml+
+          '</div></div>';
+    }
+    function renderGroups(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('catGroups').innerHTML="";
+      var cats=GROUPS[curLevel];
+      cats.forEach(function(cat){
+        var items=MYSUPP.filter(function(s){ return s.cat===cat; });
+        var isOpen=!!openCats[cat];
+        var col=catColors[cat]||"#8A7E68";
+        var wrap=document.createElement('div');
+        wrap.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:13px; overflow:hidden;";
+        // ヘッダー（プルダウン）
+        var head=document.createElement('button');
+        head.style.cssText="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:13px 15px; cursor:pointer;";
+        head.innerHTML='<div style="display:flex; align-items:center; gap:10px;">'+
+            '<span style="width:8px; height:8px; border-radius:50%; background:'+col+';"></span>'+
+            '<span style="font-size:13px; color:'+t.txt+'; font-weight:500;">'+(d.cats[cat]||cat)+'</span>'+
+            '<span style="font-size:11px; color:'+t.muted+';">'+items.length+(d.count||"")+'</span>'+
+          '</div>'+
+          '<i class="ti ti-chevron-'+(isOpen?"up":"down")+'" style="font-size:17px; color:'+t.muted+';"></i>';
+        head.onclick=function(){ openCats[cat]=!openCats[cat]; renderGroups(); };
+        wrap.appendChild(head);
+        // 中身
+        if(isOpen){
+          var body=document.createElement('div');
+          body.style.cssText="padding:0 15px 8px;";
+          if(items.length){ body.innerHTML=items.map(function(s){ return suppCardHtml(s,d,t); }).join(""); }
+          else{ body.innerHTML='<p style="font-size:12px; color:'+t.muted+'; padding:10px 0 12px; border-top:0.5px solid '+t.cardBd+';">'+(d.empty||"")+'</p>'; }
+          wrap.appendChild(body);
+        }
+        $('catGroups').appendChild(wrap);
+      });
+    }
+    function renderForm(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      // カテゴリチップ
+      $('catChips').innerHTML="";
+      Object.keys(d.cats).forEach(function(k){
+        var on=(sel.cat===k);
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; "+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+t.accent+"; border:1.5px solid "+t.accent+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        chip.textContent=d.cats[k];
+        chip.onclick=function(){ sel.cat=k; renderForm(); };
+        $('catChips').appendChild(chip);
+      });
+      // 形状チップ
+      $('formChips').innerHTML="";
+      Object.keys(d.forms).forEach(function(k){
+        var on=(sel.form===k);
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; "+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+t.accent+"; border:1.5px solid "+t.accent+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        chip.textContent=d.forms[k];
+        chip.onclick=function(){ sel.form=k; renderForm(); };
+        $('formChips').appendChild(chip);
+      });
+      // 評価スター
+      $('rateStars').innerHTML="";
+      for(var i=1;i<=5;i++){(function(i){
+        var st=document.createElement('i');
+        st.className="ti ti-star"+(i<=sel.rate?'-filled':'');
+        st.style.cssText="font-size:24px; color:"+(i<=sel.rate?t.accent:t.muted)+"; cursor:pointer;";
+        st.onclick=function(){ sel.rate=i; renderForm(); };
+        $('rateStars').appendChild(st);
+      })(i);}
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead; $('addLbl').textContent=d.add;
+      $('begLbl').textContent=d.beg||'Beginner'; $('trnLbl').textContent=d.trn||'Trainee';
+      $('formTtl').textContent=d.formTtl; $('saveBtn').textContent=d.save;
+      document.querySelectorAll('.fLbl').forEach(function(el){ el.textContent=d.f[el.getAttribute('data-k')]; });
+      $('nameBox').textContent=d.namePh; $('flavorBox').textContent=d.flavorPh;
+      $('noteBox').textContent=d.notePh||""; $('shareLbl').textContent=d.shareLbl||"";
+      renderGroups(); renderForm();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('lead').style.color=t.sub;
+      var bOn=(curLevel==='beginner');
+      $('begBtn').style.background=bOn?t.accent:'transparent'; $('begBtn').style.color=bOn?(dark?'#16140F':'#FFFFFF'):t.sub; $('begBtn').style.border=bOn?'none':'0.5px solid '+t.cardBd;
+      $('trnBtn').style.background=!bOn?t.accent:'transparent'; $('trnBtn').style.color=!bOn?(dark?'#16140F':'#FFFFFF'):t.sub; $('trnBtn').style.border=!bOn?'none':'0.5px solid '+t.cardBd;
+      $('addBtn').style.borderColor= dark?"#3A352A":"#E0DACE"; $('addBtn').style.color=t.sub;
+      $('addForm').querySelector('div').style.background=t.card; $('addForm').querySelector('div').style.borderColor=t.cardBd;
+      $('formTtl').style.color=t.txt;
+      document.querySelectorAll('.fLbl').forEach(function(el){ el.style.color=t.sub; });
+      [$('nameBox'),$('flavorBox'),$('noteBox')].forEach(function(b){ b.style.background=t.inputBg; b.style.borderColor=t.cardBd; b.style.color=t.muted; });
+      $('shareRow').style.background=t.inputBg; $('shareRow').style.borderColor=t.cardBd;
+      $('shareLbl').style.color= dark?"#C9C0AE":"#5F5E5A";
+      var on=sel.share;
+      $('shareToggle').style.background= on? t.accent : (dark?"#2A2620":"#E0DACE");
+      $('shareKnob').style.left= on? "21px":"3px"; $('shareKnob').style.background= on?(dark?"#16140F":"#FFFFFF"):(dark?"#6E6555":"#B7A98F");
+      $('saveBtn').style.background=t.accent; $('saveBtn').style.color= dark?"#16140F":"#FFFFFF";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderGroups(); renderForm();
+    }
+    $('begBtn').onclick=function(){ curLevel='beginner'; openCats={}; applyTheme(); };
+    $('trnBtn').onclick=function(){ curLevel='trainee'; openCats={}; applyTheme(); };
+    $('addBtn').onclick=function(){ formOpen=!formOpen; $('addForm').style.display=formOpen?"block":"none"; };
+    $('shareRow').onclick=function(){ sel.share=!sel.share; applyTheme(); };
+    $('saveBtn').onclick=function(){ formOpen=false; $('addForm').style.display="none"; };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>

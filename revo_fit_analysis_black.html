@@ -1,0 +1,152 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">特定商取引法に基づく表記。事業者名、運営責任者、所在地、連絡先、販売価格、支払方法、提供時期、解約・返金について。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:15px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">特定商取引法に基づく表記</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 18px 24px; max-height:600px; overflow-y:auto;">
+    <p id="intro" style="font-size:12px; color:#8A7E68; margin:0 0 18px; line-height:1.7;">特定商取引法第11条に基づき、以下のとおり表示します。</p>
+    <div id="rows" style="display:flex; flex-direction:column;"></div>
+    <p id="note" style="font-size:10px; color:#6E6555; margin:20px 0 0; line-height:1.7;">※ 準備中の項目は、正式リリースまでに記載します。<br>※ 本ページの事業者名・所在地・連絡先・登録番号等はサンプル表示です。実際の事業者情報に置き換えてください。<br>※ 記載事項・返金条件・各国の消費者保護法への適合は、公開前に弁護士・税理士など専門家の確認を受けてください。</p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var EMAIL="support@revo-app.jp";
+    var TBD="prep"; // 準備中マーカー
+    // 各行：ラベルキー + 値（"prep"=準備中, "email"=メール, その他は直接値キー）
+    var ROWS=[
+      {k:"seller", v:"prep"},
+      {k:"manager", v:"prep"},
+      {k:"address", v:"prep"},
+      {k:"email", v:"email"},
+      {k:"tel", v:"teldisclose"},
+      {k:"price", v:"price"},
+      {k:"extra", v:"extra"},
+      {k:"payment", v:"payment"},
+      {k:"paytime", v:"paytime"},
+      {k:"delivery", v:"delivery"},
+      {k:"cancel", v:"cancel"}
+    ];
+    var D={
+      "日本語":{hdr:"特定商取引法に基づく表記",intro:"特定商取引法第11条に基づき、以下のとおり表示します。",prep:"準備中",teldisclose:"請求があった場合、遅滞なく開示します。まずは {mail} までご連絡ください。",note:"※ 準備中の項目は、正式リリースまでに記載します。",
+        lbl:{seller:"販売事業者",manager:"運営統括責任者",address:"所在地",tel:"電話番号",email:"メールアドレス",price:"販売価格",extra:"商品代金以外の費用",payment:"支払方法",paytime:"支払時期",delivery:"提供時期",cancel:"解約・返金について"},
+        val:{price:"各プランのご案内画面に表示します（スタンダード 月額980円 ほか）。",extra:"インターネット接続にかかる通信料はお客様のご負担となります。",payment:"クレジットカード等（決済代行：Stripe）でのお支払い。",paytime:"ご購入時、および各更新日。",delivery:"決済完了後、ただちにご利用いただけます。",cancel:"サブスクリプションはいつでも解約できます。解約は設定→プラン、または契約管理ページから行えます。新規のご購入については、購入日から14日以内であれば全額返金いたします。14日を経過した後は、解約されても更新日まではご利用いただけますが、返金はいたしかねます。更新（2回目以降の請求）には14日間の返金は適用されません。"}},
+      "English":{hdr:"Commercial Transactions Notice",intro:"The following is disclosed pursuant to Article 11 of the Act on Specified Commercial Transactions.",prep:"In preparation",teldisclose:"Disclosed without delay upon request. Please contact {mail} first.",note:"* Items in preparation will be filled in before official release.",
+        lbl:{seller:"Seller",manager:"Managing operator",address:"Address",tel:"Phone",email:"Email",price:"Price",extra:"Costs other than the product",payment:"Payment method",paytime:"Payment timing",delivery:"Delivery timing",cancel:"Cancellation & refunds"},
+        val:{price:"Shown on each plan's page (Standard ¥980/month, etc.).",extra:"Internet connection fees are borne by the customer.",payment:"Credit card and others (payment processing: Stripe).",paytime:"At purchase, and on each renewal date.",delivery:"Available immediately after payment is complete.",cancel:"You can cancel anytime, from Settings → Plan or the billing management page. New purchases are fully refundable within 14 days. After 14 days, you keep access until renewal with no refund. Renewals are not eligible for the 14-day refund."}},
+      "简体中文":{hdr:"特定商业交易法标示",intro:"根据《特定商业交易法》第11条，标示如下。",prep:"准备中",teldisclose:"如有请求，将不迟延地开示。请先联系 {mail}。",note:"※ 准备中的项目将在正式发布前填写。",
+        lbl:{seller:"销售事业者",manager:"运营负责人",address:"所在地",tel:"电话号码",email:"电子邮箱",price:"销售价格",extra:"商品以外的费用",payment:"支付方式",paytime:"支付时期",delivery:"提供时期",cancel:"解约与退款"},
+        val:{price:"在各套餐介绍页显示（标准版 每月980日元等）。",extra:"网络连接的通信费由客户承担。",payment:"通过信用卡等支付（支付服务：Stripe）。",paytime:"购买时，以及每个续费日。",delivery:"付款完成后立即可用。",cancel:"订阅可随时解约，从设置→套餐或账单管理页面进行。新购买自购买日起14天内可全额退款。超过14天后，解约仍可用至续费日，但不退款。续费（第二次及以后扣款）不适用14天退款。"}},
+      "繁體中文":{hdr:"特定商業交易法標示",intro:"根據《特定商業交易法》第11條，標示如下。",prep:"準備中",teldisclose:"如有請求，將不遲延地開示。請先聯絡 {mail}。",note:"※ 準備中的項目將在正式發布前填寫。",
+        lbl:{seller:"銷售事業者",manager:"營運負責人",address:"所在地",tel:"電話號碼",email:"電子郵箱",price:"銷售價格",extra:"商品以外的費用",payment:"支付方式",paytime:"支付時期",delivery:"提供時期",cancel:"解約與退款"},
+        val:{price:"在各方案介紹頁顯示（標準版 每月980日圓等）。",extra:"網路連線的通訊費由客戶承擔。",payment:"透過信用卡等支付（支付服務：Stripe）。",paytime:"購買時，以及每個續訂日。",delivery:"付款完成後立即可用。",cancel:"訂閱可隨時解約，從設定→方案或帳單管理頁面進行。新購買自購買日起14天內可全額退款。超過14天後，解約仍可用至續訂日，但不退款。續訂（第二次及以後扣款）不適用14天退款。"}},
+      "한국어":{hdr:"특정상거래법 표기",intro:"특정상거래법 제11조에 따라 아래와 같이 표시합니다.",prep:"준비 중",teldisclose:"청구가 있을 경우 지체 없이 공개합니다. 먼저 {mail} 로 연락 주세요.",note:"※ 준비 중인 항목은 정식 출시 전까지 기재합니다.",
+        lbl:{seller:"판매 사업자",manager:"운영 총괄 책임자",address:"소재지",tel:"전화번호",email:"이메일",price:"판매 가격",extra:"상품 외 비용",payment:"결제 수단",paytime:"결제 시기",delivery:"제공 시기",cancel:"해지·환불"},
+        val:{price:"각 플랜 안내 화면에 표시합니다(스탠다드 월 980엔 등).",extra:"인터넷 접속 통신료는 고객 부담입니다.",payment:"신용카드 등 결제（결제 대행: Stripe）.",paytime:"구매 시 및 각 갱신일.",delivery:"결제 완료 후 즉시 이용 가능합니다.",cancel:"구독은 언제든 설정→플랜 또는 결제 관리 페이지에서 해지할 수 있어요. 신규 구매는 구매일로부터 14일 이내 전액 환불됩니다. 14일 이후에는 해지해도 갱신일까지 이용 가능하나 환불되지 않습니다. 갱신(2회차 이후 결제)에는 14일 환불이 적용되지 않습니다."}},
+      "ภาษาไทย":{hdr:"ประกาศธุรกรรมการค้า",intro:"เปิดเผยตามมาตรา 11 แห่งกฎหมายธุรกรรมการค้าเฉพาะ ดังนี้",prep:"กำลังเตรียม",teldisclose:"เปิดเผยโดยไม่ชักช้าเมื่อมีการร้องขอ กรุณาติดต่อ {mail} ก่อน",note:"※ รายการที่กำลังเตรียมจะระบุก่อนเปิดตัวอย่างเป็นทางการ",
+        lbl:{seller:"ผู้จำหน่าย",manager:"ผู้รับผิดชอบการดำเนินงาน",address:"ที่อยู่",tel:"โทรศัพท์",email:"อีเมล",price:"ราคา",extra:"ค่าใช้จ่ายนอกเหนือจากสินค้า",payment:"วิธีชำระเงิน",paytime:"เวลาชำระเงิน",delivery:"เวลาให้บริการ",cancel:"การยกเลิกและคืนเงิน"},
+        val:{price:"แสดงในหน้าแต่ละแพ็กเกจ (สแตนดาร์ด 980 เยน/เดือน ฯลฯ)",extra:"ค่าเชื่อมต่ออินเทอร์เน็ตลูกค้าเป็นผู้รับผิดชอบ",payment:"บัตรเครดิตและอื่นๆ (ผู้ให้บริการชำระเงิน: Stripe)",paytime:"เมื่อซื้อ และในแต่ละวันต่ออายุ",delivery:"ใช้งานได้ทันทีหลังชำระเงินสำเร็จ",cancel:"ยกเลิกได้ทุกเมื่อ จากการตั้งค่า→แพ็กเกจ หรือหน้าจัดการการชำระเงิน การซื้อใหม่คืนเงินเต็มภายใน 14 วัน หลัง 14 วัน ยกเลิกได้แต่ใช้ได้ถึงวันต่ออายุ ไม่คืนเงิน การต่ออายุไม่เข้าเงื่อนไขคืนเงิน 14 วัน"}},
+      "Français":{hdr:"Mentions légales commerciales",intro:"Divulgation conforme à l'article 11 de la loi sur les transactions commerciales spécifiées.",prep:"En préparation",teldisclose:"Communiqué sans délai sur demande. Veuillez d'abord contacter {mail}.",note:"* Les éléments en préparation seront complétés avant la sortie officielle.",
+        lbl:{seller:"Vendeur",manager:"Responsable d'exploitation",address:"Adresse",tel:"Téléphone",email:"E-mail",price:"Prix",extra:"Frais autres que le produit",payment:"Mode de paiement",paytime:"Moment du paiement",delivery:"Délai de fourniture",cancel:"Résiliation et remboursement"},
+        val:{price:"Affiché sur la page de chaque abonnement (Standard 980 ¥/mois, etc.).",extra:"Les frais de connexion Internet sont à la charge du client.",payment:"Carte de crédit et autres (paiement : Stripe).",paytime:"À l'achat et à chaque date de renouvellement.",delivery:"Disponible immédiatement après le paiement.",cancel:"Vous pouvez résilier à tout moment via Réglages → Abonnement ou la page de gestion de facturation. Les nouveaux achats sont remboursables sous 14 jours. Après 14 jours, l'accès continue jusqu'au renouvellement sans remboursement. Les renouvellements ne sont pas éligibles au remboursement de 14 jours."}},
+      "Español":{hdr:"Aviso de transacciones comerciales",intro:"Se divulga conforme al Artículo 11 de la Ley de Transacciones Comerciales Específicas.",prep:"En preparación",teldisclose:"Se divulga sin demora a solicitud. Contacta primero a {mail}.",note:"* Los elementos en preparación se completarán antes del lanzamiento oficial.",
+        lbl:{seller:"Vendedor",manager:"Responsable de operación",address:"Dirección",tel:"Teléfono",email:"Correo",price:"Precio",extra:"Costos aparte del producto",payment:"Método de pago",paytime:"Momento del pago",delivery:"Momento de entrega",cancel:"Cancelación y reembolso"},
+        val:{price:"Se muestra en la página de cada plan (Estándar ¥980/mes, etc.).",extra:"Los gastos de conexión a Internet corren por cuenta del cliente.",payment:"Tarjeta de crédito y otros (pago: Stripe).",paytime:"Al comprar y en cada fecha de renovación.",delivery:"Disponible de inmediato tras completar el pago.",cancel:"Puedes cancelar cuando quieras desde Ajustes → Plan o la página de gestión de facturación. Las compras nuevas tienen reembolso total en 14 días. Tras 14 días, mantienes acceso hasta la renovación sin reembolso. Las renovaciones no son elegibles para el reembolso de 14 días."}},
+      "Deutsch":{hdr:"Impressum (Handelsgesetz)",intro:"Offenlegung gemäß Artikel 11 des Gesetzes über bestimmte Handelsgeschäfte.",prep:"In Vorbereitung",teldisclose:"Wird auf Anfrage unverzüglich mitgeteilt. Bitte zuerst {mail} kontaktieren.",note:"* In Vorbereitung befindliche Angaben werden vor dem offiziellen Release ergänzt.",
+        lbl:{seller:"Verkäufer",manager:"Betriebsverantwortlicher",address:"Adresse",tel:"Telefon",email:"E-Mail",price:"Preis",extra:"Kosten außer dem Produkt",payment:"Zahlungsart",paytime:"Zahlungszeitpunkt",delivery:"Bereitstellung",cancel:"Kündigung & Erstattung"},
+        val:{price:"Auf der Seite jedes Plans angezeigt (Standard ¥980/Monat usw.).",extra:"Internetverbindungsgebühren trägt der Kunde.",payment:"Kreditkarte u.a. (Zahlungsabwicklung: Stripe).",paytime:"Beim Kauf und an jedem Verlängerungsdatum.",delivery:"Sofort nach Abschluss der Zahlung verfügbar.",cancel:"Du kannst jederzeit über Einstellungen → Plan oder die Zahlungsverwaltung kündigen. Neukäufe sind innerhalb von 14 Tagen voll erstattbar. Danach bleibt der Zugang bis zur Verlängerung ohne Erstattung. Verlängerungen sind von der 14-Tage-Erstattung ausgenommen."}},
+      "Italiano":{hdr:"Note transazioni commerciali",intro:"Divulgazione ai sensi dell'articolo 11 della Legge sulle Transazioni Commerciali Specificate.",prep:"In preparazione",teldisclose:"Comunicato senza indugio su richiesta. Contatta prima {mail}.",note:"* Gli elementi in preparazione saranno compilati prima del rilascio ufficiale.",
+        lbl:{seller:"Venditore",manager:"Responsabile operativo",address:"Indirizzo",tel:"Telefono",email:"Email",price:"Prezzo",extra:"Costi oltre al prodotto",payment:"Metodo di pagamento",paytime:"Momento del pagamento",delivery:"Tempi di fornitura",cancel:"Disdetta e rimborso"},
+        val:{price:"Mostrato nella pagina di ogni piano (Standard ¥980/mese, ecc.).",extra:"Le spese di connessione Internet sono a carico del cliente.",payment:"Carta di credito e altri (pagamento: Stripe).",paytime:"All'acquisto e a ogni data di rinnovo.",delivery:"Disponibile subito dopo il pagamento.",cancel:"Puoi disdire in qualsiasi momento da Impostazioni → Piano o dalla pagina di gestione pagamenti. I nuovi acquisti sono rimborsabili entro 14 giorni. Dopo 14 giorni, mantieni l'accesso fino al rinnovo senza rimborso. I rinnovi non sono idonei al rimborso di 14 giorni."}},
+      "Português":{hdr:"Aviso de transações comerciais",intro:"Divulgado nos termos do Artigo 11 da Lei de Transações Comerciais Específicas.",prep:"Em preparação",teldisclose:"Divulgado sem demora mediante solicitação. Contate primeiro {mail}.",note:"* Os itens em preparação serão preenchidos antes do lançamento oficial.",
+        lbl:{seller:"Vendedor",manager:"Responsável pela operação",address:"Endereço",tel:"Telefone",email:"E-mail",price:"Preço",extra:"Custos além do produto",payment:"Forma de pagamento",paytime:"Momento do pagamento",delivery:"Prazo de entrega",cancel:"Cancelamento e reembolso"},
+        val:{price:"Exibido na página de cada plano (Padrão ¥980/mês, etc.).",extra:"As taxas de conexão à Internet são por conta do cliente.",payment:"Cartão de crédito e outros (pagamento: Stripe).",paytime:"Na compra e em cada data de renovação.",delivery:"Disponível imediatamente após o pagamento.",cancel:"Você pode cancelar a qualquer momento em Configurações → Plano ou na página de gestão de cobrança. Novas compras têm reembolso total em 14 dias. Após 14 dias, mantém acesso até a renovação sem reembolso. Renovações não são elegíveis ao reembolso de 14 dias."}},
+      "हिन्दी":{hdr:"वाणिज्यिक लेनदेन सूचना",intro:"विशिष्ट वाणिज्यिक लेनदेन अधिनियम की धारा 11 के अनुसार निम्नलिखित प्रकट किया जाता है।",prep:"तैयारी में",teldisclose:"अनुरोध पर बिना देरी के प्रकट किया जाएगा। पहले {mail} पर संपर्क करें।",note:"※ तैयारी वाले आइटम आधिकारिक रिलीज़ से पहले भरे जाएंगे।",
+        lbl:{seller:"विक्रेता",manager:"संचालन प्रभारी",address:"पता",tel:"फोन",email:"ईमेल",price:"मूल्य",extra:"उत्पाद के अलावा लागत",payment:"भुगतान विधि",paytime:"भुगतान समय",delivery:"प्रदान समय",cancel:"रद्दीकरण और रिफंड"},
+        val:{price:"प्रत्येक प्लान पृष्ठ पर दिखाया जाता है (स्टैंडर्ड ¥980/माह आदि)।",extra:"इंटरनेट कनेक्शन शुल्क ग्राहक वहन करता है।",payment:"क्रेडिट कार्ड आदि (भुगतान: Stripe)।",paytime:"खरीद पर, और प्रत्येक नवीनीकरण तिथि पर।",delivery:"भुगतान पूरा होते ही तुरंत उपलब्ध।",cancel:"सदस्यता कभी भी सेटिंग्स → प्लान या बिलिंग प्रबंधन पेज से रद्द कर सकते हैं। नई खरीद 14 दिनों में पूर्ण रिफंड योग्य है। 14 दिनों के बाद, रद्द करने पर भी नवीनीकरण तक उपयोग, पर रिफंड नहीं। नवीनीकरण पर 14-दिन रिफंड लागू नहीं।"}},
+      "Tiếng Việt":{hdr:"Thông báo giao dịch thương mại",intro:"Được công bố theo Điều 11 của Luật Giao dịch Thương mại Đặc định.",prep:"Đang chuẩn bị",teldisclose:"Công bố không chậm trễ khi có yêu cầu. Vui lòng liên hệ {mail} trước.",note:"※ Các mục đang chuẩn bị sẽ được điền trước khi ra mắt chính thức.",
+        lbl:{seller:"Người bán",manager:"Người phụ trách vận hành",address:"Địa chỉ",tel:"Điện thoại",email:"Email",price:"Giá",extra:"Chi phí ngoài sản phẩm",payment:"Phương thức thanh toán",paytime:"Thời điểm thanh toán",delivery:"Thời gian cung cấp",cancel:"Hủy và hoàn tiền"},
+        val:{price:"Hiển thị trên trang của từng gói (Tiêu chuẩn ¥980/tháng, v.v.).",extra:"Phí kết nối Internet do khách hàng chịu.",payment:"Thẻ tín dụng và khác (thanh toán: Stripe).",paytime:"Khi mua và vào mỗi ngày gia hạn.",delivery:"Sử dụng ngay sau khi thanh toán xong.",cancel:"Bạn có thể hủy bất cứ lúc nào từ Cài đặt → Gói hoặc trang quản lý thanh toán. Mua mới được hoàn tiền đầy đủ trong 14 ngày. Sau 14 ngày, hủy vẫn dùng đến ngày gia hạn nhưng không hoàn tiền. Gia hạn không được áp dụng hoàn tiền 14 ngày."}},
+      "Bahasa Indonesia":{hdr:"Pemberitahuan transaksi komersial",intro:"Diungkapkan berdasarkan Pasal 11 Undang-Undang Transaksi Komersial Tertentu.",prep:"Sedang disiapkan",teldisclose:"Diungkap tanpa penundaan atas permintaan. Silakan hubungi {mail} dulu.",note:"※ Item yang sedang disiapkan akan diisi sebelum rilis resmi.",
+        lbl:{seller:"Penjual",manager:"Penanggung jawab operasi",address:"Alamat",tel:"Telepon",email:"Email",price:"Harga",extra:"Biaya selain produk",payment:"Metode pembayaran",paytime:"Waktu pembayaran",delivery:"Waktu penyediaan",cancel:"Pembatalan & pengembalian"},
+        val:{price:"Ditampilkan di halaman tiap paket (Standar ¥980/bulan, dll.).",extra:"Biaya koneksi internet ditanggung pelanggan.",payment:"Kartu kredit dan lainnya (pembayaran: Stripe).",paytime:"Saat membeli dan pada tiap tanggal perpanjangan.",delivery:"Tersedia segera setelah pembayaran selesai.",cancel:"Kamu bisa membatalkan kapan saja dari Pengaturan → Paket atau halaman manajemen tagihan. Pembelian baru dapat refund penuh dalam 14 hari. Setelah 14 hari, pembatalan tetap bisa dipakai sampai perpanjangan tanpa refund. Perpanjangan tidak memenuhi syarat refund 14 hari."}}
+    };
+    var cur="日本語", dark=true;
+    var T={
+      dark:{bg:"#16140F",txt:"#E8E2D6",sub:"#8A7E68",muted:"#6E6555",lblc:"#B0A488",rowBd:"#2A2620",accent:"#E3C56A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488"},
+      light:{bg:"#FFFFFF",txt:"#3A362E",sub:"#8A7E68",muted:"#B7A98F",lblc:"#8A7E68",rowBd:"#F0EAE0",accent:"#BA7517",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderRows(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('rows').innerHTML="";
+      ROWS.forEach(function(r,i){
+        var val;
+        if(r.v==="prep"){ val='<span style="color:'+t.muted+'; font-style:italic;">'+d.prep+'</span>'; }
+        else if(r.v==="email"){ val='<a href="mailto:'+EMAIL+'" style="color:'+t.accent+'; text-decoration:none;">'+EMAIL+'</a>'; }
+        else if(r.v==="teldisclose"){ val=(d.teldisclose||"").replace("{mail}",'<a href="mailto:'+EMAIL+'" style="color:'+t.accent+'; text-decoration:none;">'+EMAIL+'</a>'); }
+        else { val=d.val[r.v]; }
+        var row=document.createElement('div');
+        row.style.cssText="padding:14px 0; "+(i<ROWS.length-1?"border-bottom:0.5px solid "+t.rowBd+";":"");
+        row.innerHTML='<p style="font-size:11px; color:'+t.lblc+'; margin:0 0 5px; font-weight:500;">'+d.lbl[r.k]+'</p>'+
+          '<p style="font-size:13px; color:'+t.txt+'; margin:0; line-height:1.65;">'+val+'</p>';
+        $('rows').appendChild(row);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('intro').textContent=d.intro; $('note').textContent=d.note;
+      renderRows();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('intro').style.color=t.sub; $('note').style.color=t.muted;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

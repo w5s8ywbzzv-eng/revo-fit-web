@@ -1,0 +1,472 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">横断プランの総合スコア。今週の称号とランク、動いた時間のリング、7日間の軌跡、fitとlifeで実際にやったことの一覧、達成の勲章、ねぎらい。統合と個別を切り替えられ、言語と明暗も切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">総合スコア</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 18px 24px; max-height:640px; overflow-y:auto;">
+
+    <p id="lead" style="font-size:12px; color:#8A7E68; margin:0 0 14px; line-height:1.6;">横断プランで見られる、今週の全体像です。</p>
+
+    <div id="modeToggle" style="display:flex; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:4px; margin:0 0 16px;">
+      <button id="tabTotalBtn" style="flex:1; font-size:12px; font-weight:600; padding:9px; border-radius:9px; border:none; cursor:pointer; background:#221E14; color:#E3C56A;">統合</button>
+      <button id="tabSplitBtn" style="flex:1; font-size:12px; font-weight:500; padding:9px; border-radius:9px; border:none; cursor:pointer; background:transparent; color:#8A7E68;">個別</button>
+    </div>
+
+    <!-- 統合ビュー -->
+    <div id="totalView">
+
+      <!-- 称号（主役・重い） -->
+      <div id="titleCard" style="background:linear-gradient(150deg,#2A2416,#1A1814); border:1px solid #3A352A; border-radius:18px; padding:22px 18px 20px; margin:0 0 14px; text-align:center; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:-50px; right:-50px; width:160px; height:160px; border-radius:50%; background:radial-gradient(circle, rgba(227,197,106,0.16), transparent 70%); pointer-events:none;"></div>
+        <div style="position:relative;">
+          <span id="rankBadge" style="display:inline-block; font-size:13px; letter-spacing:0.26em; color:#E3C56A; border:1px solid #E3C56A; padding:6px 18px; border-radius:999px; margin:0 0 12px; font-weight:600;">GOLD</span>
+          <p id="rankNote" style="font-size:13px; color:#D8CFBB; margin:0; font-weight:400; line-height:1.5;">総重量が、過去最高を更新</p>
+          <div style="width:36px; height:2px; background:#E3C56A; margin:15px auto 0; opacity:0.7;"></div>
+        </div>
+      </div>
+
+      <!-- 満ちる時間リング -->
+      <div id="ringCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:16px; padding:18px; margin:0 0 14px; display:flex; align-items:center; gap:18px;">
+        <div style="flex-shrink:0;">
+          <svg width="118" height="118" viewBox="0 0 118 118">
+            <circle cx="59" cy="59" r="50" fill="none" stroke="#2A2620" stroke-width="9"/>
+            <circle id="arcFit" cx="59" cy="59" r="50" fill="none" stroke="#E3C56A" stroke-width="9" stroke-linecap="round" stroke-dasharray="132 314" stroke-dashoffset="0" transform="rotate(-90 59 59)"/>
+            <circle id="arcLife" cx="59" cy="59" r="50" fill="none" stroke="#5DCAA5" stroke-width="9" stroke-linecap="round" stroke-dasharray="119 314" stroke-dashoffset="-132" transform="rotate(-90 59 59)"/>
+            <circle id="arcRun" cx="59" cy="59" r="50" fill="none" stroke="#6FA8DC" stroke-width="9" stroke-linecap="round" stroke-dasharray="63 314" stroke-dashoffset="-251" transform="rotate(-90 59 59)"/>
+            <text id="ringTime" x="59" y="55" text-anchor="middle" dominant-baseline="central" font-family="Jost" font-weight="600" font-size="21" fill="#F0EBE2">5:20</text>
+            <text id="ringUnit" x="59" y="74" text-anchor="middle" dominant-baseline="central" font-family="Jost" font-weight="400" font-size="10" fill="#8A7E68">時間</text>
+          </svg>
+        </div>
+        <div style="flex:1;">
+          <p id="ringLbl" style="font-size:12px; color:#B0A488; margin:0 0 10px; font-weight:500;">今週、動いた時間</p>
+          <div style="display:flex; flex-direction:column; gap:7px;">
+            <div style="display:flex; align-items:center; gap:7px;"><span style="width:9px; height:9px; border-radius:2px; background:#E3C56A;"></span><span id="ringFit" style="font-size:12px; color:#D8CFBB;">fit 2時間15分</span></div>
+            <div style="display:flex; align-items:center; gap:7px;"><span style="width:9px; height:9px; border-radius:2px; background:#5DCAA5;"></span><span id="ringLife" style="font-size:12px; color:#D8CFBB;">life 2時間</span></div>
+            <div style="display:flex; align-items:center; gap:7px;"><span style="width:9px; height:9px; border-radius:2px; background:#6FA8DC;"></span><span id="ringRun" style="font-size:12px; color:#D8CFBB;">running 1時間5分</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 週7日の軌跡 -->
+      <div id="weekCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:16px; padding:16px; margin:0 0 14px;">
+        <p id="weekLbl" style="font-size:12px; color:#B0A488; margin:0 0 12px; font-weight:500;">今週の軌跡</p>
+        <div id="weekRow" style="display:flex; gap:6px; justify-content:space-between;"></div>
+      </div>
+
+      <!-- fit/life の具体的な中身は「個別」ビューへ -->
+
+      <!-- 合わせて（物語の締め） -->
+      <div id="sumCard" style="display:flex; align-items:flex-start; gap:10px; background:linear-gradient(140deg,#221E14,#1A1814); border:0.5px solid #3A352A; border-radius:14px; padding:14px 15px; margin:0 0 14px;">
+        <i class="ti ti-arrow-up-right" style="font-size:18px; color:#E3C56A; margin-top:1px; flex-shrink:0;"></i>
+        <p id="storySumTxt" style="font-size:13px; color:#F0EBE2; margin:0; line-height:1.6; font-weight:500;">合わせて 5時間20分。先週より 40分多く動きました。</p>
+      </div>
+
+      <!-- 今週の勲章 -->
+      <p id="achieveTtl" style="font-size:12px; color:#B0A488; font-weight:500; margin:0 0 9px;">今週の勲章</p>
+      <div id="medalWrap" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; padding:15px; margin:0 0 14px;">
+        <p id="medalLead" style="font-size:11px; color:#8A7E68; margin:0 0 12px; line-height:1.6;">fit と life、両方の達成が、1つの棚に集まります。</p>
+        <div id="medalRow" style="display:flex; gap:10px;"></div>
+      </div>
+
+      <!-- ねぎらい -->
+      <div id="praiseCard" style="display:flex; align-items:flex-start; gap:10px; background:linear-gradient(140deg,#1D2320,#1A1814); border:0.5px solid #243A30; border-radius:14px; padding:15px;">
+        <i class="ti ti-heart" style="font-size:18px; color:#5DCAA5; margin-top:1px; flex-shrink:0;"></i>
+        <p id="praiseTxt" style="font-size:12px; color:#C9D6C9; margin:0; line-height:1.75;">トレーニングも、暮らしの動きも、ぜんぶあなたの頑張り。よく積み重ねました。</p>
+      </div>
+    </div>
+
+    <!-- 個別ビュー -->
+    <div id="splitView" style="display:none;">
+      <div id="cardFit" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; padding:15px; margin:0 0 11px;">
+        <div style="display:flex; align-items:center; gap:8px; margin:0 0 4px;">
+          <span style="width:10px; height:10px; border-radius:3px; background:#E3C56A;"></span>
+          <span style="font-family:Jost; font-weight:500; font-size:14px; color:#F0EBE2;">revo <span style="color:#E3C56A;">fit</span></span>
+          <span id="fitAxis" style="font-size:10px; color:#8A7E68; margin-left:auto;">筋力の質</span>
+        </div>
+        <div style="display:flex; align-items:center; margin:0 0 12px;">
+          <span id="fitHead" style="font-size:11px; color:#8A7E68;">やったこと</span>
+          <span id="fitSum" style="font-size:11px; color:#E3C56A; margin-left:auto; font-family:Jost;">総重量 18t</span>
+        </div>
+        <div id="fitList2" style="display:flex; flex-direction:column; gap:9px;"></div>
+      </div>
+      <div id="cardLife" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; padding:15px; margin:0 0 11px;">
+        <div style="display:flex; align-items:center; gap:8px; margin:0 0 4px;">
+          <span style="width:10px; height:10px; border-radius:3px; background:#5DCAA5;"></span>
+          <span style="font-family:Jost; font-weight:500; font-size:14px; color:#F0EBE2;">revo <span style="color:#5DCAA5;">life</span></span>
+          <span id="lifeAxis" style="font-size:10px; color:#8A7E68; margin-left:auto;">生活の量</span>
+        </div>
+        <div style="display:flex; align-items:center; margin:0 0 12px;">
+          <span id="lifeHead" style="font-size:11px; color:#8A7E68;">やったこと</span>
+          <span id="lifeSum" style="font-size:11px; color:#5DCAA5; margin-left:auto; font-family:Jost;">活動 2時間</span>
+        </div>
+        <div id="lifeList2" style="display:flex; flex-direction:column; gap:9px;"></div>
+      </div>
+      <div id="cardRun" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; padding:15px; position:relative;">
+        <div style="display:flex; align-items:center; gap:8px; margin:0 0 11px;">
+          <span style="width:10px; height:10px; border-radius:3px; background:#6FA8DC;"></span>
+          <span style="font-family:Jost; font-weight:500; font-size:14px; color:#F0EBE2;">revo <span style="color:#6FA8DC;">running</span></span>
+          <span id="runBadge" style="font-size:9px; color:#6FA8DC; background:#16202A; padding:2px 7px; border-radius:5px; font-weight:600; margin-left:auto;">近日登場</span>
+        </div>
+        <p id="runSoon" style="font-size:11px; color:#8A7E68; margin:0; line-height:1.6;">revo running が登場すると、走行距離・ペース・坂道が、ここに加わります。</p>
+      </div>
+    </div>
+
+    <p id="foot" style="font-size:10px; color:#6E6555; margin:16px 0 0; line-height:1.65; text-align:center;">記録は各アプリが持ち、ここは合計して見せる窓です。同じ活動を二重に数えることはありません。</p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur="日本語", dark=true, mode="total";
+    var T={
+      dark:{bg:"#16140F",title:"#F0EBE2",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",lbl:"#B0A488",card:"#1A1814",cardBd:"#2A2620",accent:"#E3C56A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",toggleOn:"#221E14",item:"#D8CFBB",cellBg:"#16140F"},
+      light:{bg:"#FFFFFF",title:"#2E2A24",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",lbl:"#7A7060",card:"#FBF7F1",cardBd:"#F0EAE0",accent:"#BA7517",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",toggleOn:"#FBF3E0",item:"#4A4436",cellBg:"#FFFFFF"}
+    };
+    // 週の軌跡：曜日ラベルは言語別、強度0-3
+    var weekData=[["月",2],["火",3],["水",0],["木",2],["金",3],["土",1],["日",2]];
+    var D={
+      "日本語":{hdr:"総合スコア",lead:"横断プランで見られる、今週の全体像です。",tabTotal:"統合",tabSplit:"個別",
+        rank:"GOLD",rankNote:"総重量が、過去最高を更新",title:"限界を、2度越えた週。",
+        ringLbl:"今週、動いた時間",ringTime:"5:20",ringUnit:"時間",ringFit:"fit 2時間15分",ringLife:"life 2時間",ringRun:"running 1時間5分",
+        weekLbl:"今週の軌跡",week:["月","火","水","木","金","土","日"],
+        fitHead:"fit でやったこと",fitSum:"総重量 18t",
+        fitList:[["ti-barbell","ベンチプレス","80kg × 5 × 3"],["ti-barbell","スクワット","100kg × 8 × 3"],["ti-barbell","デッドリフト","120kg × 5 × 2"],["ti-flame","懸垂","自重 × 10 × 3"]],
+        lifeHead:"life でやったこと",lifeSum:"活動 2時間",
+        lifeList:[["ti-walk","保育園の送り迎え","5回・往復45分"],["ti-cup","夕食づくり","4回"],["ti-plant-2","公園で外遊び","2回・計2時間"],["ti-home","掃除・洗濯","6回"]],
+        storySum:"合わせて 5時間20分。先週より 40分多く動きました。",
+        achieveTtl:"今週の勲章",medalLead:"fit と life、両方の達成が、1つの棚に集まります。",
+        medals:[["ti-flame","7日連続"],["ti-barbell","自己ベスト"],["ti-walk","よく歩いた"],["ti-heart","応援100"]],
+        fitAxis:"筋力の質",lifeAxis:"生活の量",runBadge:"近日登場",
+        runSoon:"revo running が登場すると、走行距離・ペース・坂道が、ここに加わります。",
+        praise:"トレーニングも、暮らしの動きも、ぜんぶあなたの頑張り。よく積み重ねました。",
+        foot:"記録は各アプリが持ち、ここは合計して見せる窓です。同じ活動を二重に数えることはありません。"},
+      "English":{hdr:"Total score",lead:"Your whole week, visible with the Cross plan.",tabTotal:"Combined",tabSplit:"Separate",
+        rank:"GOLD",rankNote:"Total volume hit an all-time high",title:"The week you broke your limit — twice.",
+        ringLbl:"Time moving this week",ringTime:"5:20",ringUnit:"hrs",ringFit:"fit 2h 15m",ringLife:"life 2h",ringRun:"running 1h 5m",
+        weekLbl:"This week's trail",week:["M","T","W","T","F","S","S"],
+        fitHead:"What you did in fit",fitSum:"18t total",
+        fitList:[["ti-barbell","Bench press","80kg × 5 × 3"],["ti-barbell","Squat","100kg × 8 × 3"],["ti-barbell","Deadlift","120kg × 5 × 2"],["ti-flame","Pull-ups","bodyweight × 10 × 3"]],
+        lifeHead:"What you did in life",lifeSum:"2h active",
+        lifeList:[["ti-walk","Nursery drop-off","5× · 45m round trip"],["ti-cup","Cooked dinner","4×"],["ti-plant-2","Park playtime","2× · 2h total"],["ti-home","Cleaning & laundry","6×"]],
+        storySum:"Together, 5h 20m — 40 min more than last week.",
+        achieveTtl:"This week's medals",medalLead:"Achievements from both fit and life, on one shelf.",
+        medals:[["ti-flame","7-day streak"],["ti-barbell","New PR"],["ti-walk","Walked a lot"],["ti-heart","100 cheers"]],
+        fitAxis:"Strength quality",lifeAxis:"Life volume",runBadge:"Coming soon",
+        runSoon:"When revo running arrives, distance, pace and hills appear here.",
+        praise:"Training and daily motion, all of it is your effort. You stacked it well.",
+        foot:"Each app keeps its own records. This is a window that sums them. Nothing is counted twice."},
+      "简体中文":{hdr:"综合评分",lead:"横跨套餐可见的本周全貌。",tabTotal:"综合",tabSplit:"分开",
+        rank:"GOLD",rankNote:"总重量刷新历史新高",title:"两次突破极限的一周。",
+        ringLbl:"本周活动时间",ringTime:"5:20",ringUnit:"小时",ringFit:"fit 2小时15分",ringLife:"life 2小时",ringRun:"running 1小时5分",
+        weekLbl:"本周轨迹",week:["一","二","三","四","五","六","日"],
+        fitHead:"在 fit 做了什么",fitSum:"总重量 18t",
+        fitList:[["ti-barbell","卧推","80kg × 5 × 3"],["ti-barbell","深蹲","100kg × 8 × 3"],["ti-barbell","硬拉","120kg × 5 × 2"],["ti-flame","引体向上","自重 × 10 × 3"]],
+        lifeHead:"在 life 做了什么",lifeSum:"活动 2小时",
+        lifeList:[["ti-walk","接送幼儿园","5次·往返45分"],["ti-cup","做晚饭","4次"],["ti-plant-2","公园玩耍","2次·共2小时"],["ti-home","打扫·洗衣","6次"]],
+        storySum:"合计 5小时20分，比上周多动了40分钟。",
+        achieveTtl:"本周勋章",medalLead:"fit 与 life 的成就，汇聚于一处。",
+        medals:[["ti-flame","连续7天"],["ti-barbell","个人最佳"],["ti-walk","走了很多"],["ti-heart","应援100"]],
+        fitAxis:"力量质量",lifeAxis:"生活量",runBadge:"即将推出",
+        runSoon:"revo running 推出后，距离、配速与坡道将出现在这里。",
+        praise:"训练与生活的动，都是你的努力。积累得很好。",
+        foot:"记录由各应用保存，这里是汇总展示的窗口。不会重复计算同一活动。"},
+      "繁體中文":{hdr:"綜合評分",lead:"橫跨方案可見的本週全貌。",tabTotal:"綜合",tabSplit:"分開",
+        rank:"GOLD",rankNote:"總重量刷新歷史新高",title:"兩次突破極限的一週。",
+        ringLbl:"本週活動時間",ringTime:"5:20",ringUnit:"小時",ringFit:"fit 2小時15分",ringLife:"life 2小時",ringRun:"running 1小時5分",
+        weekLbl:"本週軌跡",week:["一","二","三","四","五","六","日"],
+        fitHead:"在 fit 做了什麼",fitSum:"總重量 18t",
+        fitList:[["ti-barbell","臥推","80kg × 5 × 3"],["ti-barbell","深蹲","100kg × 8 × 3"],["ti-barbell","硬舉","120kg × 5 × 2"],["ti-flame","引體向上","自重 × 10 × 3"]],
+        lifeHead:"在 life 做了什麼",lifeSum:"活動 2小時",
+        lifeList:[["ti-walk","接送幼兒園","5次·往返45分"],["ti-cup","做晚飯","4次"],["ti-plant-2","公園玩耍","2次·共2小時"],["ti-home","打掃·洗衣","6次"]],
+        storySum:"合計 5小時20分，比上週多動了40分鐘。",
+        achieveTtl:"本週勳章",medalLead:"fit 與 life 的成就，匯聚於一處。",
+        medals:[["ti-flame","連續7天"],["ti-barbell","個人最佳"],["ti-walk","走了很多"],["ti-heart","應援100"]],
+        fitAxis:"力量品質",lifeAxis:"生活量",runBadge:"即將推出",
+        runSoon:"revo running 推出後，距離、配速與坡道將出現在這裡。",
+        praise:"訓練與生活的動，都是你的努力。累積得很好。",
+        foot:"記錄由各應用保存，這裡是彙總展示的窗口。不會重複計算同一活動。"},
+      "한국어":{hdr:"종합 점수",lead:"크로스 플랜에서 보는 이번 주 전체입니다.",tabTotal:"통합",tabSplit:"개별",
+        rank:"GOLD",rankNote:"총 볼륨이 역대 최고 갱신",title:"한계를 두 번 넘은 한 주.",
+        ringLbl:"이번 주 움직인 시간",ringTime:"5:20",ringUnit:"시간",ringFit:"fit 2시간 15분",ringLife:"life 2시간",ringRun:"running 1시간 5분",
+        weekLbl:"이번 주 궤적",week:["월","화","수","목","금","토","일"],
+        fitHead:"fit에서 한 것",fitSum:"총 볼륨 18t",
+        fitList:[["ti-barbell","벤치프레스","80kg × 5 × 3"],["ti-barbell","스쿼트","100kg × 8 × 3"],["ti-barbell","데드리프트","120kg × 5 × 2"],["ti-flame","턱걸이","자중 × 10 × 3"]],
+        lifeHead:"life에서 한 것",lifeSum:"활동 2시간",
+        lifeList:[["ti-walk","어린이집 등하원","5회·왕복 45분"],["ti-cup","저녁 준비","4회"],["ti-plant-2","공원 놀이","2회·총 2시간"],["ti-home","청소·빨래","6회"]],
+        storySum:"합쳐서 5시간 20분. 지난주보다 40분 더 움직였어요.",
+        achieveTtl:"이번 주 메달",medalLead:"fit과 life의 성취가 하나의 선반에 모입니다.",
+        medals:[["ti-flame","7일 연속"],["ti-barbell","개인 기록"],["ti-walk","많이 걸음"],["ti-heart","응원 100"]],
+        fitAxis:"근력의 질",lifeAxis:"생활의 양",runBadge:"곧 출시",
+        runSoon:"revo running이 나오면 거리·페이스·언덕이 여기에 더해집니다.",
+        praise:"훈련도 생활의 움직임도, 모두 당신의 노력. 잘 쌓았어요.",
+        foot:"기록은 각 앱이 갖고, 여기는 합산해 보여주는 창입니다. 같은 활동을 두 번 세지 않습니다."},
+      "Français":{hdr:"Score total",lead:"Toute votre semaine, avec le plan Croisé.",tabTotal:"Combiné",tabSplit:"Séparé",
+        rank:"GOLD",rankNote:"Volume total au plus haut niveau",title:"La semaine où vous avez dépassé vos limites deux fois.",
+        ringLbl:"Temps en mouvement",ringTime:"5:20",ringUnit:"h",ringFit:"fit 2h 15",ringLife:"life 2h",ringRun:"running 1h 05",
+        weekLbl:"Le parcours de la semaine",week:["L","M","M","J","V","S","D"],
+        fitHead:"Fait dans fit",fitSum:"18t au total",
+        fitList:[["ti-barbell","Développé couché","80kg × 5 × 3"],["ti-barbell","Squat","100kg × 8 × 3"],["ti-barbell","Soulevé de terre","120kg × 5 × 2"],["ti-flame","Tractions","poids du corps × 10 × 3"]],
+        lifeHead:"Fait dans life",lifeSum:"2h actives",
+        lifeList:[["ti-walk","Trajets crèche","5× · 45 min A/R"],["ti-cup","Dîner cuisiné","4×"],["ti-plant-2","Parc avec enfant","2× · 2h"],["ti-home","Ménage & linge","6×"]],
+        storySum:"Ensemble : 5h20, soit 40 min de plus que la semaine passée.",
+        achieveTtl:"Médailles de la semaine",medalLead:"Les réussites de fit et life, sur une seule étagère.",
+        medals:[["ti-flame","7 jours"],["ti-barbell","Record"],["ti-walk","Beaucoup marché"],["ti-heart","100 soutiens"]],
+        fitAxis:"Qualité force",lifeAxis:"Volume de vie",runBadge:"Bientôt",
+        runSoon:"Avec revo running : distance, allure et côtes apparaîtront ici.",
+        praise:"Entraînement et gestes du quotidien, tout est votre effort. Bien accumulé.",
+        foot:"Chaque app garde ses données. Ceci les additionne. Rien n'est compté deux fois."},
+      "Español":{hdr:"Puntuación total",lead:"Toda tu semana, con el plan Cruzado.",tabTotal:"Combinado",tabSplit:"Separado",
+        rank:"GOLD",rankNote:"Volumen total en máximo histórico",title:"La semana en que superaste tu límite dos veces.",
+        ringLbl:"Tiempo en movimiento",ringTime:"5:20",ringUnit:"h",ringFit:"fit 2h 15m",ringLife:"life 2h",ringRun:"running 1h 5m",
+        weekLbl:"El recorrido de la semana",week:["L","M","X","J","V","S","D"],
+        fitHead:"Hecho en fit",fitSum:"18t en total",
+        fitList:[["ti-barbell","Press de banca","80kg × 5 × 3"],["ti-barbell","Sentadilla","100kg × 8 × 3"],["ti-barbell","Peso muerto","120kg × 5 × 2"],["ti-flame","Dominadas","peso corporal × 10 × 3"]],
+        lifeHead:"Hecho en life",lifeSum:"2h activas",
+        lifeList:[["ti-walk","Llevar a guardería","5× · 45 min ida y vuelta"],["ti-cup","Cocinar cena","4×"],["ti-plant-2","Parque con peque","2× · 2h"],["ti-home","Limpieza y ropa","6×"]],
+        storySum:"Juntas: 5h 20m, 40 min más que la semana pasada.",
+        achieveTtl:"Medallas de la semana",medalLead:"Los logros de fit y life, en un solo estante.",
+        medals:[["ti-flame","7 días"],["ti-barbell","Récord"],["ti-walk","Caminó mucho"],["ti-heart","100 ánimos"]],
+        fitAxis:"Calidad de fuerza",lifeAxis:"Volumen de vida",runBadge:"Próximamente",
+        runSoon:"Con revo running: distancia, ritmo y cuestas aparecerán aquí.",
+        praise:"Entrenar y moverte en la vida, todo es tu esfuerzo. Bien acumulado.",
+        foot:"Cada app guarda sus datos. Esto los suma. Nada se cuenta dos veces."},
+      "Deutsch":{hdr:"Gesamtwertung",lead:"Deine ganze Woche, mit dem Cross-Plan.",tabTotal:"Kombiniert",tabSplit:"Getrennt",
+        rank:"GOLD",rankNote:"Gesamtvolumen auf Allzeithoch",title:"Die Woche, in der du zweimal über deine Grenze gingst.",
+        ringLbl:"Bewegungszeit diese Woche",ringTime:"5:20",ringUnit:"Std",ringFit:"fit 2 Std 15",ringLife:"life 2 Std",ringRun:"running 1 Std 5",
+        weekLbl:"Der Verlauf der Woche",week:["M","D","M","D","F","S","S"],
+        fitHead:"In fit gemacht",fitSum:"18t gesamt",
+        fitList:[["ti-barbell","Bankdrücken","80kg × 5 × 3"],["ti-barbell","Kniebeuge","100kg × 8 × 3"],["ti-barbell","Kreuzheben","120kg × 5 × 2"],["ti-flame","Klimmzüge","Körpergewicht × 10 × 3"]],
+        lifeHead:"In life gemacht",lifeSum:"2 Std aktiv",
+        lifeList:[["ti-walk","Kita-Wege","5× · 45 Min hin/zurück"],["ti-cup","Abendessen gekocht","4×"],["ti-plant-2","Spielplatz","2× · 2 Std"],["ti-home","Putzen & Wäsche","6×"]],
+        storySum:"Zusammen: 5 Std 20, 40 Min mehr als letzte Woche.",
+        achieveTtl:"Medaillen der Woche",medalLead:"Erfolge aus fit und life, in einem Regal.",
+        medals:[["ti-flame","7 Tage"],["ti-barbell","Bestwert"],["ti-walk","Viel gelaufen"],["ti-heart","100 Anfeuern"]],
+        fitAxis:"Kraftqualität",lifeAxis:"Lebensmenge",runBadge:"Bald",
+        runSoon:"Mit revo running erscheinen hier Distanz, Tempo und Anstiege.",
+        praise:"Training und Alltag, alles dein Einsatz. Gut aufgebaut.",
+        foot:"Jede App behält ihre Daten. Dies summiert sie. Nichts wird doppelt gezählt."},
+      "Italiano":{hdr:"Punteggio totale",lead:"Tutta la settimana, con il piano Incrociato.",tabTotal:"Combinato",tabSplit:"Separato",
+        rank:"GOLD",rankNote:"Volume totale ai massimi storici",title:"La settimana in cui hai superato il limite due volte.",
+        ringLbl:"Tempo in movimento",ringTime:"5:20",ringUnit:"h",ringFit:"fit 2h 15",ringLife:"life 2h",ringRun:"running 1h 5",
+        weekLbl:"Il percorso della settimana",week:["L","M","M","G","V","S","D"],
+        fitHead:"Fatto in fit",fitSum:"18t totali",
+        fitList:[["ti-barbell","Panca piana","80kg × 5 × 3"],["ti-barbell","Squat","100kg × 8 × 3"],["ti-barbell","Stacco","120kg × 5 × 2"],["ti-flame","Trazioni","corpo libero × 10 × 3"]],
+        lifeHead:"Fatto in life",lifeSum:"2h attive",
+        lifeList:[["ti-walk","Asilo andata/ritorno","5× · 45 min"],["ti-cup","Cena cucinata","4×"],["ti-plant-2","Parco con bimbo","2× · 2h"],["ti-home","Pulizie e bucato","6×"]],
+        storySum:"Insieme: 5h 20, 40 min più della scorsa settimana.",
+        achieveTtl:"Medaglie della settimana",medalLead:"I traguardi di fit e life, su un solo scaffale.",
+        medals:[["ti-flame","7 giorni"],["ti-barbell","Record"],["ti-walk","Camminato molto"],["ti-heart","100 sostegni"]],
+        fitAxis:"Qualità forza",lifeAxis:"Volume di vita",runBadge:"Presto",
+        runSoon:"Con revo running: distanza, ritmo e salite appariranno qui.",
+        praise:"Allenamento e vita quotidiana, tutto il tuo impegno. Ben accumulato.",
+        foot:"Ogni app tiene i suoi dati. Qui si sommano. Niente è contato due volte."},
+      "Português":{hdr:"Pontuação total",lead:"Sua semana inteira, com o plano Cruzado.",tabTotal:"Combinado",tabSplit:"Separado",
+        rank:"GOLD",rankNote:"Volume total em máxima histórica",title:"A semana em que você superou seu limite duas vezes.",
+        ringLbl:"Tempo em movimento",ringTime:"5:20",ringUnit:"h",ringFit:"fit 2h 15",ringLife:"life 2h",ringRun:"running 1h 5",
+        weekLbl:"O trajeto da semana",week:["S","T","Q","Q","S","S","D"],
+        fitHead:"Feito no fit",fitSum:"18t no total",
+        fitList:[["ti-barbell","Supino","80kg × 5 × 3"],["ti-barbell","Agachamento","100kg × 8 × 3"],["ti-barbell","Levantamento terra","120kg × 5 × 2"],["ti-flame","Barra fixa","peso corporal × 10 × 3"]],
+        lifeHead:"Feito no life",lifeSum:"2h ativas",
+        lifeList:[["ti-walk","Levar à creche","5× · 45 min ida/volta"],["ti-cup","Jantar cozinhado","4×"],["ti-plant-2","Parque com criança","2× · 2h"],["ti-home","Limpeza e roupa","6×"]],
+        storySum:"Juntas: 5h 20min, 40 min a mais que semana passada.",
+        achieveTtl:"Medalhas da semana",medalLead:"As conquistas de fit e life, numa só prateleira.",
+        medals:[["ti-flame","7 dias"],["ti-barbell","Recorde"],["ti-walk","Caminhou muito"],["ti-heart","100 apoios"]],
+        fitAxis:"Qualidade de força",lifeAxis:"Volume de vida",runBadge:"Em breve",
+        runSoon:"Com revo running: distância, ritmo e subidas aparecerão aqui.",
+        praise:"Treino e movimento do dia a dia, tudo é seu esforço. Bem acumulado.",
+        foot:"Cada app guarda seus dados. Isto os soma. Nada é contado duas vezes."},
+      "ภาษาไทย":{hdr:"คะแนนรวม",lead:"ภาพรวมทั้งสัปดาห์ ดูได้ด้วยแพ็กเกจข้ามแอป",tabTotal:"รวม",tabSplit:"แยก",
+        rank:"GOLD",rankNote:"ปริมาณรวมทำสถิติสูงสุด",title:"สัปดาห์ที่คุณข้ามขีดจำกัดถึงสองครั้ง",
+        ringLbl:"เวลาที่ขยับสัปดาห์นี้",ringTime:"5:20",ringUnit:"ชม.",ringFit:"fit 2 ชม. 15",ringLife:"life 2 ชม.",ringRun:"running 1 ชม. 5",
+        weekLbl:"เส้นทางสัปดาห์นี้",week:["จ","อ","พ","พฤ","ศ","ส","อา"],
+        fitHead:"ทำใน fit",fitSum:"รวม 18t",
+        fitList:[["ti-barbell","เบนช์เพรส","80kg × 5 × 3"],["ti-barbell","สควอต","100kg × 8 × 3"],["ti-barbell","เดดลิฟต์","120kg × 5 × 2"],["ti-flame","ดึงข้อ","น้ำหนักตัว × 10 × 3"]],
+        lifeHead:"ทำใน life",lifeSum:"กิจกรรม 2 ชม.",
+        lifeList:[["ti-walk","รับส่งเนอสเซอรี","5 ครั้ง·ไปกลับ 45 น."],["ti-cup","ทำมื้อเย็น","4 ครั้ง"],["ti-plant-2","เล่นที่สวน","2 ครั้ง·รวม 2 ชม."],["ti-home","ทำความสะอาด·ซักผ้า","6 ครั้ง"]],
+        storySum:"รวม 5 ชม. 20 น. มากกว่าสัปดาห์ก่อน 40 นาที",
+        achieveTtl:"เหรียญสัปดาห์นี้",medalLead:"ความสำเร็จจาก fit และ life มารวมในที่เดียว",
+        medals:[["ti-flame","7 วันติด"],["ti-barbell","สถิติใหม่"],["ti-walk","เดินเยอะ"],["ti-heart","กำลังใจ 100"]],
+        fitAxis:"คุณภาพแรง",lifeAxis:"ปริมาณชีวิต",runBadge:"เร็ว ๆ นี้",
+        runSoon:"เมื่อ revo running มา ระยะทาง·เพซ·เนินจะเพิ่มตรงนี้",
+        praise:"ทั้งการฝึกและการขยับในชีวิต ล้วนเป็นความพยายามของคุณ สะสมได้ดีมาก",
+        foot:"แต่ละแอปเก็บข้อมูลเอง ที่นี่คือหน้าต่างรวมยอด ไม่นับกิจกรรมซ้ำ"},
+      "हिन्दी":{hdr:"कुल स्कोर",lead:"क्रॉस प्लान में दिखने वाली, इस हफ्ते की पूरी झलक।",tabTotal:"एकीकृत",tabSplit:"अलग",
+        rank:"GOLD",rankNote:"कुल वॉल्यूम अब तक का सर्वाधिक",title:"वह हफ्ता, जब आपने दो बार अपनी सीमा पार की।",
+        ringLbl:"इस हफ्ते चले समय",ringTime:"5:20",ringUnit:"घंटे",ringFit:"fit 2 घं 15",ringLife:"life 2 घं",ringRun:"running 1 घं 5",
+        weekLbl:"इस हफ्ते का सफर",week:["सो","मं","बु","गु","शु","श","र"],
+        fitHead:"fit में किया",fitSum:"कुल 18t",
+        fitList:[["ti-barbell","बेंच प्रेस","80kg × 5 × 3"],["ti-barbell","स्क्वाट","100kg × 8 × 3"],["ti-barbell","डेडलिफ्ट","120kg × 5 × 2"],["ti-flame","पुल-अप","बॉडीवेट × 10 × 3"]],
+        lifeHead:"life में किया",lifeSum:"गतिविधि 2 घं",
+        lifeList:[["ti-walk","नर्सरी छोड़ना-लाना","5 बार·आना-जाना 45 मि"],["ti-cup","रात का खाना बनाया","4 बार"],["ti-plant-2","पार्क में खेल","2 बार·कुल 2 घं"],["ti-home","सफाई·कपड़े","6 बार"]],
+        storySum:"मिलाकर 5 घं 20 मि, पिछले हफ्ते से 40 मिनट ज्यादा।",
+        achieveTtl:"इस हफ्ते के पदक",medalLead:"fit और life दोनों की उपलब्धियाँ, एक ही जगह।",
+        medals:[["ti-flame","7 दिन"],["ti-barbell","नया रिकॉर्ड"],["ti-walk","खूब चले"],["ti-heart","100 सहयोग"]],
+        fitAxis:"ताकत की गुणवत्ता",lifeAxis:"जीवन की मात्रा",runBadge:"जल्द आ रहा",
+        runSoon:"revo running आने पर दूरी·गति·ढलान यहाँ जुड़ेंगे।",
+        praise:"ट्रेनिंग और जीवन की हलचल, सब आपकी मेहनत। खूब जमा किया।",
+        foot:"रिकॉर्ड हर ऐप के पास हैं, यह जोड़कर दिखाने की खिड़की है। एक ही गतिविधि दो बार नहीं गिनी जाती।"},
+      "Tiếng Việt":{hdr:"Điểm tổng",lead:"Toàn bộ tuần của bạn, xem được với gói Kết hợp.",tabTotal:"Gộp",tabSplit:"Riêng",
+        rank:"GOLD",rankNote:"Tổng khối lượng cao nhất từ trước tới nay",title:"Tuần bạn vượt giới hạn hai lần.",
+        ringLbl:"Thời gian vận động tuần này",ringTime:"5:20",ringUnit:"giờ",ringFit:"fit 2g 15",ringLife:"life 2g",ringRun:"running 1g 5",
+        weekLbl:"Hành trình tuần này",week:["T2","T3","T4","T5","T6","T7","CN"],
+        fitHead:"Đã làm ở fit",fitSum:"Tổng 18t",
+        fitList:[["ti-barbell","Đẩy ngực","80kg × 5 × 3"],["ti-barbell","Squat","100kg × 8 × 3"],["ti-barbell","Deadlift","120kg × 5 × 2"],["ti-flame","Hít xà","trọng lượng cơ thể × 10 × 3"]],
+        lifeHead:"Đã làm ở life",lifeSum:"Hoạt động 2g",
+        lifeList:[["ti-walk","Đưa đón nhà trẻ","5 lần·khứ hồi 45 phút"],["ti-cup","Nấu bữa tối","4 lần"],["ti-plant-2","Chơi ở công viên","2 lần·tổng 2g"],["ti-home","Dọn dẹp·giặt giũ","6 lần"]],
+        storySum:"Cộng lại: 5g 20p, nhiều hơn tuần trước 40 phút.",
+        achieveTtl:"Huy chương tuần này",medalLead:"Thành tựu từ fit và life, trên cùng một kệ.",
+        medals:[["ti-flame","7 ngày"],["ti-barbell","Kỷ lục"],["ti-walk","Đi bộ nhiều"],["ti-heart","100 cổ vũ"]],
+        fitAxis:"Chất lượng sức mạnh",lifeAxis:"Lượng sinh hoạt",runBadge:"Sắp ra mắt",
+        runSoon:"Khi revo running ra mắt, quãng đường·tốc độ·dốc sẽ thêm vào đây.",
+        praise:"Tập luyện và vận động đời thường, đều là nỗ lực của bạn. Tích lũy tốt lắm.",
+        foot:"Mỗi app giữ dữ liệu riêng. Đây là cửa sổ cộng lại. Không đếm hai lần."},
+      "Bahasa Indonesia":{hdr:"Skor total",lead:"Seluruh pekanmu, terlihat dengan paket Lintas.",tabTotal:"Gabungan",tabSplit:"Terpisah",
+        rank:"GOLD",rankNote:"Volume total mencapai rekor tertinggi",title:"Pekan saat kamu melewati batas dua kali.",
+        ringLbl:"Waktu bergerak pekan ini",ringTime:"5:20",ringUnit:"jam",ringFit:"fit 2j 15m",ringLife:"life 2j",ringRun:"running 1j 5m",
+        weekLbl:"Jejak pekan ini",week:["Sn","Sl","Rb","Km","Jm","Sb","Mg"],
+        fitHead:"Dilakukan di fit",fitSum:"Total 18t",
+        fitList:[["ti-barbell","Bench press","80kg × 5 × 3"],["ti-barbell","Squat","100kg × 8 × 3"],["ti-barbell","Deadlift","120kg × 5 × 2"],["ti-flame","Pull-up","berat badan × 10 × 3"]],
+        lifeHead:"Dilakukan di life",lifeSum:"Aktif 2j",
+        lifeList:[["ti-walk","Antar-jemput PAUD","5×·PP 45 mnt"],["ti-cup","Masak makan malam","4×"],["ti-plant-2","Main di taman","2×·total 2j"],["ti-home","Bersih-bersih·cuci","6×"]],
+        storySum:"Total: 5j 20m, 40 menit lebih dari pekan lalu.",
+        achieveTtl:"Medali pekan ini",medalLead:"Pencapaian fit dan life, di satu rak.",
+        medals:[["ti-flame","7 hari"],["ti-barbell","Rekor"],["ti-walk","Banyak jalan"],["ti-heart","100 dukungan"]],
+        fitAxis:"Kualitas kekuatan",lifeAxis:"Volume hidup",runBadge:"Segera hadir",
+        runSoon:"Saat revo running hadir, jarak·pace·tanjakan muncul di sini.",
+        praise:"Latihan dan gerak keseharian, semua usahamu. Tersusun dengan baik.",
+        foot:"Tiap app menyimpan datanya. Ini jendela yang menjumlahkan. Tidak dihitung dua kali."}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function itemRow(it, t){
+      return '<div style="display:flex; align-items:center; gap:10px;"><i class="ti '+it[0]+'" style="font-size:16px; color:'+t.sub+'; flex-shrink:0; width:18px; text-align:center;"></i><span style="font-size:13px; color:'+t.txt+'; flex:1;">'+it[1]+'</span><span style="font-size:12px; color:'+t.sub+'; font-family:Jost;">'+it[2]+'</span></div>';
+    }
+    function renderLists(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('fitList2').innerHTML=d.fitList.map(function(it){return itemRow(it,t);}).join("");
+      $('lifeList2').innerHTML=d.lifeList.map(function(it){return itemRow(it,t);}).join("");
+    }
+    function renderWeek(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('weekRow').innerHTML="";
+      var intensity=[2,3,0,2,3,1,2];
+      d.week.forEach(function(day,i){
+        var lv=intensity[i];
+        var colors=[t.cardBd, dark?"#4A4028":"#EAD9B0", dark?"#A88A3E":"#D9B657", "#E3C56A"];
+        var fill=colors[lv];
+        var cell=document.createElement('div');
+        cell.style.cssText="flex:1; text-align:center;";
+        cell.innerHTML='<div style="height:32px; border-radius:7px; background:'+fill+'; margin:0 0 5px;"></div><span style="font-size:10px; color:'+t.sub+';">'+day+'</span>';
+        $('weekRow').appendChild(cell);
+      });
+    }
+    function renderMedals(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('medalRow').innerHTML="";
+      d.medals.forEach(function(m){
+        var el=document.createElement('div');
+        el.style.cssText="flex:1; text-align:center; background:"+t.cellBg+"; border:0.5px solid "+t.cardBd+"; border-radius:11px; padding:11px 4px;";
+        el.innerHTML='<i class="ti '+m[0]+'" style="font-size:19px; color:'+t.accent+';"></i><p style="font-size:9px; color:'+t.sub+'; margin:5px 0 0; line-height:1.3;">'+m[1]+'</p>';
+        $('medalRow').appendChild(el);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead;
+      $('tabTotalBtn').textContent=d.tabTotal; $('tabSplitBtn').textContent=d.tabSplit;
+      $('rankBadge').textContent=d.rank; $('rankNote').textContent=d.rankNote;
+      $('ringLbl').textContent=d.ringLbl; $('ringTime').textContent=d.ringTime; $('ringUnit').textContent=d.ringUnit;
+      $('ringFit').textContent=d.ringFit; $('ringLife').textContent=d.ringLife; $('ringRun').textContent=d.ringRun;
+      $('weekLbl').textContent=d.weekLbl;
+      $('fitHead').textContent=d.fitHead; $('fitSum').textContent=d.fitSum;
+      $('lifeHead').textContent=d.lifeHead; $('lifeSum').textContent=d.lifeSum;
+      $('storySumTxt').textContent=d.storySum;
+      $('achieveTtl').textContent=d.achieveTtl; $('medalLead').textContent=d.medalLead;
+      $('fitAxis').textContent=d.fitAxis; $('lifeAxis').textContent=d.lifeAxis;
+      $('runBadge').textContent=d.runBadge; $('runSoon').textContent=d.runSoon;
+      $('praiseTxt').textContent=d.praise; $('foot').textContent=d.foot;
+      renderLists(); renderWeek(); renderMedals();
+    }
+    function setMode(m){
+      mode=m; var t=dark?T.dark:T.light;
+      $('totalView').style.display = m==="total"?"block":"none";
+      $('splitView').style.display = m==="split"?"block":"none";
+      var tb=$('tabTotalBtn'), sb=$('tabSplitBtn');
+      tb.style.background = m==="total"?t.toggleOn:"transparent"; tb.style.color = m==="total"?t.accent:t.sub; tb.style.fontWeight = m==="total"?"600":"500";
+      sb.style.background = m==="split"?t.toggleOn:"transparent"; sb.style.color = m==="split"?t.accent:t.sub; sb.style.fontWeight = m==="split"?"600":"500";
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor=t.cardBd; $('hdrTtl').style.color=t.title;
+      $('lead').style.color=t.sub;
+      $('modeToggle').style.background=t.card; $('modeToggle').style.borderColor=t.cardBd;
+      $('titleCard').style.background= dark?"linear-gradient(150deg,#2A2416,#1A1814)":"linear-gradient(150deg,#FBF3E0,#FBF7F1)";
+      $('titleCard').style.borderColor= dark?"#3A352A":"#EAD9B0";
+      $('rankNote').style.color=t.item;
+      $('rankBadge').style.color=t.accent; $('rankBadge').style.borderColor=t.accent;
+      ['ringCard','weekCard','cardFit','cardLife','cardRun'].forEach(function(id){ $(id).style.background=t.card; $(id).style.borderColor=t.cardBd; });
+      $('ringLbl').style.color=t.lbl; $('ringTime').setAttribute('fill',t.title); $('ringUnit').setAttribute('fill',t.sub);
+      ['ringFit','ringLife','ringRun'].forEach(function(id){ $(id).style.color=t.item; });
+      $('weekLbl').style.color=t.lbl;
+      $('fitHead').style.color=t.title; $('lifeHead').style.color=t.title;
+      $('fitSum').style.color=t.sub; $('lifeSum').style.color=t.sub;
+      $('sumCard').style.background= dark?"linear-gradient(140deg,#221E14,#1A1814)":"linear-gradient(140deg,#FBF3E0,#FBF7F1)";
+      $('sumCard').style.borderColor= dark?"#3A352A":"#EAD9B0";
+      $('storySumTxt').style.color=t.title;
+      $('sumCard').querySelector('.ti-arrow-up-right').style.color=t.accent;
+      $('achieveTtl').style.color=t.lbl;
+      $('medalWrap').style.background=t.card; $('medalWrap').style.borderColor=t.cardBd; $('medalLead').style.color=t.sub;
+      $('praiseCard').style.background= dark?"linear-gradient(140deg,#1D2320,#1A1814)":"#EAF6F1";
+      $('praiseCard').style.borderColor= dark?"#243A30":"#D6EAE0";
+      $('praiseTxt').style.color= dark?"#C9D6C9":"#3E6B58";
+      $('fitAxis').style.color=t.sub; $('lifeAxis').style.color=t.sub; $('runSoon').style.color=t.sub;
+      $('foot').style.color=t.muted;
+      $('arcFit').setAttribute('stroke',t.accent);
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI(); setMode(mode);
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    $('tabTotalBtn').onclick=function(){ setMode("total"); };
+    $('tabSplitBtn').onclick=function(){ setMode("split"); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

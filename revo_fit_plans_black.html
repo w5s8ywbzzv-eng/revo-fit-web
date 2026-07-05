@@ -1,0 +1,214 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">クリエイターの公開プロフィール。アバター・名前・肩書き・自己紹介、フォロワーや実績、フォローと応援のボタン、トレーニングとレシピの投稿。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">プロフィール</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- プロフィール -->
+  <div style="padding:22px 18px 0; text-align:center;">
+    <div style="width:76px; height:76px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#3A3226,#221E14); border:2px solid #E3C56A; display:flex; align-items:center; justify-content:center; color:#E3C56A; font-size:30px; font-weight:400; margin:0 auto 12px; font-family:Jost;">K</div>
+    <p id="name" style="font-size:19px; color:#F0EBE2; margin:0 0 3px; font-weight:600;">Kai</p>
+    <p id="role" style="font-size:12px; color:#E3C56A; margin:0 0 10px;">トレーニー歴6年・増量とレシピ</p>
+    <p id="bio" style="font-size:12px; color:#A89C84; margin:0 auto; max-width:280px; line-height:1.7;">仕事と両立しながら宅トレ中心で。鶏むねに飽きた人へ、世界の筋肉飯を分けています。一緒に続けましょう。</p>
+  </div>
+
+  <!-- 実績サマリー -->
+  <div style="padding:20px 18px 0;">
+    <div id="statCard" style="display:flex; background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; overflow:hidden;">
+      <div class="statCol" style="flex:1; padding:13px; text-align:center; border-right:0.5px solid #2A2620;">
+        <p id="s0n" style="font-size:18px; color:#F0EBE2; margin:0 0 2px; font-weight:600; font-family:Jost;">2,140</p>
+        <p id="s0l" style="font-size:10px; color:#8A7E68; margin:0;">フォロワー</p>
+      </div>
+      <div class="statCol" style="flex:1; padding:13px; text-align:center; border-right:0.5px solid #2A2620;">
+        <p id="s1n" style="font-size:18px; color:#F0EBE2; margin:0 0 2px; font-weight:600; font-family:Jost;">184</p>
+        <p id="s1l" style="font-size:10px; color:#8A7E68; margin:0;">投稿</p>
+      </div>
+      <div class="statCol" style="flex:1; padding:13px; text-align:center; border-right:0.5px solid #2A2620;">
+        <p id="s2n" style="font-size:18px; color:#F0EBE2; margin:0 0 2px; font-weight:600; font-family:Jost;">1,286</p>
+        <p id="s2l" style="font-size:10px; color:#8A7E68; margin:0;">参考にされた</p>
+      </div>
+      <div class="statCol" style="flex:1; padding:13px; text-align:center;">
+        <p id="s3n" style="font-size:18px; color:#E3C56A; margin:0 0 2px; font-weight:600; font-family:Jost;">24</p>
+        <p id="s3l" style="font-size:10px; color:#8A7E68; margin:0;">メダル</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- フォロー＋応援ボタン -->
+  <div style="padding:16px 18px 0;">
+    <div style="display:flex; gap:10px;">
+      <button id="followBtn" style="flex:1; background:#E3C56A; border:none; color:#16140F; font-size:14px; font-weight:600; padding:13px; border-radius:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><i id="followIc" class="ti ti-plus" style="font-size:17px;"></i><span id="followLbl">フォロー</span></button>
+      <button id="cheerBtn" style="flex:1; background:transparent; border:1px solid #3A352A; color:#E3C56A; font-size:14px; font-weight:600; padding:13px; border-radius:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><i class="ti ti-heart" style="font-size:17px;"></i><span id="cheerLbl">応援する</span></button>
+    </div>
+  </div>
+
+  <!-- 投稿タブ -->
+  <div style="padding:22px 18px 0;">
+    <div id="tabRow" style="display:flex; gap:8px; border-bottom:0.5px solid #2A2620; padding:0 0 0;"></div>
+  </div>
+
+  <!-- 投稿グリッド -->
+  <div style="padding:14px 18px 0;">
+    <div id="grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;"></div>
+  </div>
+
+  <div style="height:22px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 投稿グリッド（トレーニング=barbell / レシピ=flame アイコンで表現）
+    var GRID={
+      training:[{ic:"ti-barbell"},{ic:"ti-barbell"},{ic:"ti-barbell"},{ic:"ti-barbell"},{ic:"ti-barbell"},{ic:"ti-barbell"}],
+      recipe:[{ic:"ti-flame"},{ic:"ti-flame"},{ic:"ti-flame"},{ic:"ti-flame"},{ic:"ti-flame"},{ic:"ti-flame"}]
+    };
+    var gridGrad=["#2A2418","#26221C","#222630","#2A2224","#1F2624","#242019"];
+    var D={
+      "日本語":{hdr:"プロフィール",role:"トレーニー歴6年・増量とレシピ",bio:"仕事と両立しながら宅トレ中心で。鶏むねに飽きた人へ、世界の筋肉飯を分けています。一緒に続けましょう。",
+        stats:["フォロワー","投稿","参考にされた","メダル"],follow:"フォロー",following:"フォロー中",cheer:"応援する",
+        tabs:["トレーニング","レシピ"]},
+      "English":{hdr:"Profile",role:"6 yrs training・bulking & recipes",bio:"Home workouts while balancing work. For those bored of chicken breast, I share muscle meals from around the world. Let's keep going.",
+        stats:["Followers","Posts","Referenced","Medals"],follow:"Follow",following:"Following",cheer:"Support",
+        tabs:["Training","Recipes"]},
+      "简体中文":{hdr:"个人主页",role:"训练6年·增肌与食谱",bio:"边工作边以居家训练为主。给吃腻鸡胸的你，分享世界各地的增肌餐。一起坚持吧。",
+        stats:["粉丝","投稿","被参考","奖章"],follow:"关注",following:"已关注",cheer:"应援",
+        tabs:["训练","食谱"]},
+      "繁體中文":{hdr:"個人主頁",role:"訓練6年·增肌與食譜",bio:"邊工作邊以居家訓練為主。給吃膩雞胸的你，分享世界各地的增肌餐。一起堅持吧。",
+        stats:["粉絲","投稿","被參考","獎章"],follow:"關注",following:"已關注",cheer:"應援",
+        tabs:["訓練","食譜"]},
+      "한국어":{hdr:"프로필",role:"운동 6년·벌크업과 레시피",bio:"일과 병행하며 홈트 중심으로. 닭가슴살에 질린 분께 세계의 근육밥을 나눠요. 함께 계속해요.",
+        stats:["팔로워","게시물","참고됨","메달"],follow:"팔로우",following:"팔로잉",cheer:"응원하기",
+        tabs:["운동","레시피"]},
+      "ภาษาไทย":{hdr:"โปรไฟล์",role:"เทรน 6 ปี·เพิ่มกล้ามและสูตรอาหาร",bio:"เทรนที่บ้านเป็นหลักควบคู่กับงาน สำหรับคนเบื่ออกไก่ ฉันแบ่งปันเมนูสร้างกล้ามจากทั่วโลก มาไปต่อด้วยกัน",
+        stats:["ผู้ติดตาม","โพสต์","ถูกอ้างอิง","เหรียญ"],follow:"ติดตาม",following:"กำลังติดตาม",cheer:"ให้กำลังใจ",
+        tabs:["เทรน","สูตร"]},
+      "Français":{hdr:"Profil",role:"6 ans d'entraînement・masse & recettes",bio:"Entraînement à la maison tout en travaillant. Pour ceux lassés du blanc de poulet, je partage des plats muscle du monde entier. Continuons ensemble.",
+        stats:["Abonnés","Publications","Référencé","Médailles"],follow:"Suivre",following:"Abonné",cheer:"Soutenir",
+        tabs:["Entraînement","Recettes"]},
+      "Español":{hdr:"Perfil",role:"6 años entrenando・volumen y recetas",bio:"Entreno en casa mientras trabajo. Para quienes se cansaron del pollo, comparto comidas de músculo del mundo. Sigamos juntos.",
+        stats:["Seguidores","Posts","Referenciado","Medallas"],follow:"Seguir",following:"Siguiendo",cheer:"Apoyar",
+        tabs:["Entreno","Recetas"]},
+      "Deutsch":{hdr:"Profil",role:"6 Jahre Training・Masse & Rezepte",bio:"Home-Workouts neben der Arbeit. Für alle, die genug von Hähnchenbrust haben, teile ich Muskel-Essen aus aller Welt. Machen wir weiter.",
+        stats:["Follower","Beiträge","Referenziert","Medaillen"],follow:"Folgen",following:"Folge ich",cheer:"Unterstützen",
+        tabs:["Training","Rezepte"]},
+      "Italiano":{hdr:"Profilo",role:"6 anni di allenamento・massa e ricette",bio:"Allenamenti a casa conciliando il lavoro. Per chi è stanco del petto di pollo, condivido piatti muscolo da tutto il mondo. Continuiamo insieme.",
+        stats:["Follower","Post","Consultato","Medaglie"],follow:"Segui",following:"Segui già",cheer:"Sostieni",
+        tabs:["Allenamento","Ricette"]},
+      "Português":{hdr:"Perfil",role:"6 anos treinando・volume e receitas",bio:"Treinos em casa conciliando o trabalho. Para quem enjoou do frango, compartilho comidas de músculo do mundo. Vamos continuar juntos.",
+        stats:["Seguidores","Posts","Referenciado","Medalhas"],follow:"Seguir",following:"Seguindo",cheer:"Apoiar",
+        tabs:["Treino","Receitas"]},
+      "हिन्दी":{hdr:"प्रोफ़ाइल",role:"6 साल ट्रेनिंग·बल्किंग और रेसिपी",bio:"काम के साथ घर पर ट्रेनिंग। चिकन ब्रेस्ट से ऊबे लोगों के लिए, दुनिया भर के मसल फूड बाँटता हूँ। साथ चलते रहें।",
+        stats:["फॉलोअर","पोस्ट","संदर्भित","मेडल"],follow:"फॉलो",following:"फॉलोइंग",cheer:"सहयोग करें",
+        tabs:["ट्रेनिंग","रेसिपी"]},
+      "Tiếng Việt":{hdr:"Hồ sơ",role:"6 năm tập・tăng cơ & công thức",bio:"Tập tại nhà song song với công việc. Cho những ai chán ức gà, tôi chia sẻ món cơ bắp khắp thế giới. Cùng tiếp tục nhé.",
+        stats:["Người theo dõi","Bài đăng","Được tham khảo","Huy chương"],follow:"Theo dõi",following:"Đang theo dõi",cheer:"Ủng hộ",
+        tabs:["Tập luyện","Công thức"]},
+      "Bahasa Indonesia":{hdr:"Profil",role:"6 thn latihan・bulking & resep",bio:"Latihan di rumah sambil kerja. Untuk yang bosan dada ayam, aku bagikan menu otot sedunia. Ayo lanjut bersama.",
+        stats:["Pengikut","Postingan","Dijadikan acuan","Medali"],follow:"Ikuti",following:"Mengikuti",cheer:"Dukung",
+        tabs:["Latihan","Resep"]}
+    };
+    var cur="日本語", dark=true, activeTab=0, isFollowing=false;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderTabs(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('tabRow').innerHTML="";
+      d.tabs.forEach(function(tb,i){
+        var on=(activeTab===i);
+        var el=document.createElement('div');
+        el.style.cssText="padding:10px 4px; margin-right:18px; cursor:pointer; font-size:13px; font-weight:"+(on?"600":"400")+"; color:"+(on?t.accent:t.sub)+"; border-bottom:2px solid "+(on?t.accent:"transparent")+"; margin-bottom:-0.5px;";
+        el.textContent=tb;
+        el.onclick=function(){ activeTab=i; renderTabs(); renderGrid(); };
+        $('tabRow').appendChild(el);
+      });
+    }
+    function renderGrid(){
+      var t=dark?T.dark:T.light;
+      var items=(activeTab===0)?GRID.training:GRID.recipe;
+      $('grid').innerHTML="";
+      items.forEach(function(it,i){
+        var cell=document.createElement('div');
+        cell.style.cssText="aspect-ratio:1; border-radius:11px; background:linear-gradient(140deg,"+gridGrad[i%gridGrad.length]+",#16140F); display:flex; align-items:center; justify-content:center; cursor:pointer;";
+        cell.innerHTML='<i class="ti '+it.ic+'" style="font-size:24px; color:'+(dark?"#8A7E68":"#B7A98F")+';"></i>';
+        $('grid').appendChild(cell);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('role').textContent=d.role; $('bio').textContent=d.bio;
+      ["s0l","s1l","s2l","s3l"].forEach(function(id,i){ $(id).textContent=d.stats[i]; });
+      $('followLbl').textContent= isFollowing? d.following : d.follow;
+      $('cheerLbl').textContent=d.cheer;
+      renderTabs(); renderGrid();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('name').style.color=t.txt; $('bio').style.color=t.sub;
+      $('statCard').style.background=t.card; $('statCard').style.borderColor=t.cardBd;
+      document.querySelectorAll('.statCol').forEach(function(el){ if(el.style.borderRight) el.style.borderRightColor=t.cardBd; });
+      ["s0n","s1n","s2n"].forEach(function(id){ $(id).style.color=t.txt; });
+      $('tabRow').style.borderColor=t.cardBd;
+      updateFollowBtn();
+      $('cheerBtn').style.borderColor= dark?"#3A352A":"#E0DACE"; $('cheerBtn').style.color=t.accent;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function updateFollowBtn(){
+      var t=dark?T.dark:T.light;
+      if(isFollowing){
+        $('followBtn').style.background="transparent"; $('followBtn').style.border="1px solid "+(dark?"#3A352A":"#E0DACE"); $('followBtn').style.color=t.sub;
+        $('followIc').className="ti ti-check";
+      } else {
+        $('followBtn').style.background=t.accent; $('followBtn').style.border="none"; $('followBtn').style.color= dark?"#16140F":"#FFFFFF";
+        $('followIc').className="ti ti-plus";
+      }
+    }
+    $('followBtn').onclick=function(){ isFollowing=!isFollowing; updateFollowBtn(); applyUI(); };
+    $('cheerBtn').onclick=function(){ /* 応援・贈り物画面へ */ };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>

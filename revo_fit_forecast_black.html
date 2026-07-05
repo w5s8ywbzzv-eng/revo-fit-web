@@ -1,0 +1,237 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">お問い合わせとよくある質問。解約、無料の範囲、データの引き継ぎと削除、応援の受け取りと手数料、数値の正確さ、通知について。解決しないときはメールで。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">お問い合わせ</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 16px 24px; max-height:600px; overflow-y:auto;">
+    <p id="faqLbl" style="font-size:11px; color:#8A7E68; margin:0 0 12px; padding:0 2px; font-weight:500;">よくある質問</p>
+    <div id="faqList" style="display:flex; flex-direction:column; gap:8px;"></div>
+
+    <!-- メール導線 -->
+    <div id="mailCard" style="margin:22px 0 0; background:linear-gradient(140deg,#221E12,#1A1813); border:0.5px solid #3A3220; border-radius:16px; padding:18px;">
+      <p id="stillLbl" style="font-size:13px; color:#F0EBE2; margin:0 0 5px; font-weight:600;">解決しませんでしたか？</p>
+      <p id="stillSub" style="font-size:12px; color:#A89C84; margin:0 0 14px; line-height:1.6;">いつでもお問い合わせください。数営業日以内にお返事します。</p>
+      <a id="mailBtn" href="mailto:support@revo-app.jp" style="display:flex; align-items:center; justify-content:center; gap:8px; background:#E3C56A; color:#16140F; font-size:14px; font-weight:600; padding:13px; border-radius:12px; text-decoration:none;"><i class="ti ti-mail" style="font-size:17px;"></i><span id="mailBtnLbl">メールで問い合わせる</span></a>
+      <p id="mailAddr" style="text-align:center; font-size:11px; color:#8A7E68; margin:10px 0 0;">support@revo-app.jp</p>
+    </div>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var FAQ=["cancel","free","transfer","delete","payout","fee","accuracy","notif"];
+    var D={
+      "日本語":{hdr:"お問い合わせ",faqLbl:"よくある質問",still:"解決しませんでしたか？",stillSub:"いつでもお問い合わせください。数営業日以内にお返事します。",mailBtn:"メールで問い合わせる",
+        q:{cancel:["解約はどうすればいいですか？","スタンダードはいつでも解約できます。設定 → プラン、または契約管理ページから手続きできます。解約後も、期間の終わりまではご利用いただけます。"],
+          free:["無料でどこまで使えますか？","記録・スコア・メダル・基本の提案・レシピの閲覧と投稿は、無料でずっとお使いいただけます。より深い分析や全機能の開放が、スタンダードです。"],
+          transfer:["機種変更したらデータは引き継がれますか？","同じアカウントでログインすれば、記録はそのまま引き継がれます。ご心配な点があればお問い合わせください。"],
+          delete:["データを削除したいです","設定からアカウントとデータの削除を申請できます。削除後の復元はできませんので、ご確認のうえお進みください。"],
+          payout:["応援（投げ銭）はどう受け取れますか？","受け取った応援は、クリエイター画面でご確認いただけます。一定額に達すると、登録の口座へお振込みできます。"],
+          fee:["手数料はかかりますか？","応援の75%があなたに届きます（手数料25%）。金額は目安として表示しています。"],
+          accuracy:["カロリーや数値はどのくらい正確ですか？","表示される数値は、あくまで目安です。特に写真からのカロリー推定には誤差があります。厳密な管理が必要な場合は、専門家にご相談ください。数値は、あなたの判断を助けるためのものです。"],
+          notif:["通知が多い／来ません","設定 → 通知 で、種類ごとにオン・オフを選べます。端末側の通知許可もあわせてご確認ください。"]}},
+      "English":{hdr:"Contact",faqLbl:"Frequently asked",still:"Didn't find your answer?",stillSub:"Reach out anytime. We'll reply within a few business days.",mailBtn:"Contact by email",
+        q:{cancel:["How do I cancel?","You can cancel Standard anytime, from Settings → Plan or the billing management page. You can keep using it until the period ends."],
+          free:["What can I use for free?","Logging, scores, medals, basic suggestions, and viewing/posting recipes are free forever. Deeper analysis and full features are Standard."],
+          transfer:["Is my data kept when I change devices?","Log in with the same account and your records carry over. Contact us if anything worries you."],
+          delete:["I want to delete my data","You can request account and data deletion in Settings. Deletion can't be undone, so please confirm before proceeding."],
+          payout:["How do I receive support (tips)?","Support you receive is shown on your Creator page. Once it reaches a set amount, it can be transferred to your registered account."],
+          fee:["Are there fees?","75% of support reaches you (25% fee). Amounts are shown as estimates."],
+          accuracy:["How accurate are calories and numbers?","The numbers shown are estimates only. Calorie estimates from photos especially carry error. If you need strict management, please consult a professional. The numbers are here to support your own judgment."],
+          notif:["Too many / no notifications","In Settings → Notifications, you can toggle each type. Please also check your device's notification permission."]}},
+      "简体中文":{hdr:"联系我们",faqLbl:"常见问题",still:"没有解决吗？",stillSub:"随时联系我们。我们会在几个工作日内回复。",mailBtn:"用邮件咨询",
+        q:{cancel:["如何解约？","标准版可随时解约，从设置 → 套餐，或账单管理页面办理。解约后到期前仍可使用。"],
+          free:["免费能用到什么程度？","记录、评分、奖章、基本建议、食谱的浏览和投稿，永久免费。更深入的分析和全功能开放即标准版。"],
+          transfer:["换机后数据会保留吗？","用同一账户登录，记录即原样保留。有疑问请联系我们。"],
+          delete:["我想删除数据","可在设置中申请删除账户和数据。删除后无法恢复，请确认后再进行。"],
+          payout:["应援（打赏）如何收取？","收到的应援可在创作者页面查看。达到一定金额后，可转账至登记的账户。"],
+          fee:["会收手续费吗？","应援的75%送达你（手续费25%）。金额作为参考显示。"],
+          accuracy:["卡路里和数值有多准确？","显示的数值仅供参考。尤其从照片估算卡路里存在误差。如需严格管理，请咨询专业人士。数值是为了帮助你判断。"],
+          notif:["通知太多／收不到","在设置 → 通知，可按类型开关。也请一并确认设备的通知权限。"]}},
+      "繁體中文":{hdr:"聯絡我們",faqLbl:"常見問題",still:"沒有解決嗎？",stillSub:"隨時聯絡我們。我們會在幾個工作日內回覆。",mailBtn:"用郵件諮詢",
+        q:{cancel:["如何解約？","標準版可隨時解約，從設定 → 方案，或帳單管理頁面辦理。解約後到期前仍可使用。"],
+          free:["免費能用到什麼程度？","記錄、評分、獎章、基本建議、食譜的瀏覽和投稿，永久免費。更深入的分析和全功能開放即標準版。"],
+          transfer:["換機後資料會保留嗎？","用同一帳戶登入，記錄即原樣保留。有疑問請聯絡我們。"],
+          delete:["我想刪除資料","可在設定中申請刪除帳戶和資料。刪除後無法復原，請確認後再進行。"],
+          payout:["應援（打賞）如何收取？","收到的應援可在創作者頁面查看。達到一定金額後，可轉帳至登記的帳戶。"],
+          fee:["會收手續費嗎？","應援的75%送達你（手續費25%）。金額作為參考顯示。"],
+          accuracy:["卡路里和數值有多準確？","顯示的數值僅供參考。尤其從照片估算卡路里存在誤差。如需嚴格管理，請諮詢專業人士。數值是為了幫助你判斷。"],
+          notif:["通知太多／收不到","在設定 → 通知，可按類型開關。也請一併確認裝置的通知權限。"]}},
+      "한국어":{hdr:"문의",faqLbl:"자주 묻는 질문",still:"해결되지 않았나요？",stillSub:"언제든 문의하세요. 며칠 이내에 답변드립니다.",mailBtn:"이메일로 문의하기",
+        q:{cancel:["해지는 어떻게 하나요？","스탠다드는 언제든 해지할 수 있어요. 설정 → 플랜, 또는 결제 관리 페이지에서 진행하세요. 해지 후에도 기간 끝까지 이용할 수 있어요."],
+          free:["무료로 어디까지 쓸 수 있나요？","기록·점수·메달·기본 제안·레시피 열람과 게시는 계속 무료예요. 더 깊은 분석과 전 기능 개방이 스탠다드예요."],
+          transfer:["기기를 바꾸면 데이터가 이어지나요？","같은 계정으로 로그인하면 기록이 그대로 이어져요. 걱정되는 점이 있으면 문의하세요."],
+          delete:["데이터를 삭제하고 싶어요","설정에서 계정과 데이터 삭제를 신청할 수 있어요. 삭제 후 복원은 안 되니 확인 후 진행하세요."],
+          payout:["응원(후원)은 어떻게 받나요？","받은 응원은 크리에이터 화면에서 확인할 수 있어요. 일정 금액에 도달하면 등록한 계좌로 이체할 수 있어요."],
+          fee:["수수료가 있나요？","응원의 75%가 당신에게 닿아요(수수료 25%). 금액은 예상치로 표시돼요."],
+          accuracy:["칼로리나 수치는 얼마나 정확한가요？","표시되는 수치는 어디까지나 예상치예요. 특히 사진에서의 칼로리 추정에는 오차가 있어요. 엄밀한 관리가 필요하면 전문가와 상담하세요. 수치는 당신의 판단을 돕기 위한 거예요."],
+          notif:["알림이 많아요／오지 않아요","설정 → 알림에서 종류별로 켜고 끌 수 있어요. 기기의 알림 권한도 함께 확인해 주세요."]}},
+      "ภาษาไทย":{hdr:"ติดต่อ",faqLbl:"คำถามที่พบบ่อย",still:"ยังไม่ได้คำตอบ？",stillSub:"ติดต่อเราได้ทุกเมื่อ เราจะตอบภายในไม่กี่วันทำการ",mailBtn:"สอบถามทางอีเมล",
+        q:{cancel:["ยกเลิกอย่างไร？","สแตนดาร์ดยกเลิกได้ทุกเมื่อ จากการตั้งค่า → แพ็กเกจ หรือหน้าจัดการการชำระเงิน หลังยกเลิกยังใช้ได้จนจบรอบ"],
+          free:["ใช้ฟรีได้แค่ไหน？","การบันทึก คะแนน เหรียญ คำแนะนำพื้นฐาน การดูและโพสต์สูตร ใช้ฟรีตลอด การวิเคราะห์ที่ลึกกว่าและเปิดทุกฟีเจอร์คือสแตนดาร์ด"],
+          transfer:["เปลี่ยนเครื่องแล้วข้อมูลอยู่ไหม？","ล็อกอินด้วยบัญชีเดิม บันทึกจะอยู่ครบ หากกังวลโปรดติดต่อเรา"],
+          delete:["อยากลบข้อมูล","ขอลบบัญชีและข้อมูลได้จากการตั้งค่า ลบแล้วกู้คืนไม่ได้ โปรดยืนยันก่อนดำเนินการ"],
+          payout:["รับกำลังใจ (ทิป) อย่างไร？","กำลังใจที่ได้รับดูได้ในหน้าครีเอเตอร์ เมื่อถึงยอดที่กำหนด โอนเข้าบัญชีที่ลงทะเบียนได้"],
+          fee:["มีค่าธรรมเนียมไหม？","75% ของกำลังใจถึงคุณ (ค่าธรรมเนียม 25%) จำนวนแสดงเป็นค่าประมาณ"],
+          accuracy:["แคลอรีและตัวเลขแม่นแค่ไหน？","ตัวเลขที่แสดงเป็นเพียงค่าประมาณ โดยเฉพาะการประเมินแคลอรีจากภาพมีความคลาดเคลื่อน หากต้องจัดการอย่างเคร่งครัด โปรดปรึกษาผู้เชี่ยวชาญ ตัวเลขมีไว้ช่วยการตัดสินใจของคุณ"],
+          notif:["แจ้งเตือนเยอะ／ไม่มา","ที่ตั้งค่า → การแจ้งเตือน เปิดปิดแต่ละประเภทได้ โปรดตรวจสอบสิทธิ์การแจ้งเตือนของเครื่องด้วย"]}},
+      "Français":{hdr:"Contact",faqLbl:"Questions fréquentes",still:"Pas trouvé votre réponse ?",stillSub:"Écrivez-nous à tout moment. Nous répondons sous quelques jours ouvrés.",mailBtn:"Contacter par e-mail",
+        q:{cancel:["Comment résilier ?","Vous pouvez résilier Standard à tout moment, via Réglages → Abonnement ou la page de gestion de facturation. Vous en profitez jusqu'à la fin de la période."],
+          free:["Que puis-je utiliser gratuitement ?","Journal, scores, médailles, suggestions de base, consultation et publication de recettes sont gratuits pour toujours. L'analyse approfondie et toutes les fonctions sont dans Standard."],
+          transfer:["Mes données sont-elles conservées en changeant d'appareil ?","Connectez-vous avec le même compte et vos données suivent. Contactez-nous en cas de doute."],
+          delete:["Je veux supprimer mes données","Vous pouvez demander la suppression du compte et des données dans les Réglages. La suppression est irréversible, confirmez avant."],
+          payout:["Comment recevoir le soutien (pourboires) ?","Le soutien reçu apparaît sur votre page Créateur. À partir d'un certain montant, il peut être viré sur votre compte enregistré."],
+          fee:["Y a-t-il des frais ?","75 % du soutien vous parvient (frais 25 %). Les montants sont indicatifs."],
+          accuracy:["Quelle précision pour les calories et chiffres ?","Les chiffres affichés sont indicatifs. L'estimation des calories par photo comporte des écarts. Pour un suivi strict, consultez un professionnel. Les chiffres sont là pour éclairer votre jugement."],
+          notif:["Trop / pas de notifications","Dans Réglages → Notifications, activez chaque type. Vérifiez aussi l'autorisation de notifications de l'appareil."]}},
+      "Español":{hdr:"Contacto",faqLbl:"Preguntas frecuentes",still:"¿No encontraste tu respuesta?",stillSub:"Escríbenos cuando quieras. Respondemos en unos días hábiles.",mailBtn:"Contactar por correo",
+        q:{cancel:["¿Cómo cancelo?","Puedes cancelar Estándar cuando quieras, desde Ajustes → Plan o la página de gestión de facturación. Lo usas hasta que acabe el periodo."],
+          free:["¿Qué puedo usar gratis?","Registro, puntuaciones, medallas, sugerencias básicas, ver y publicar recetas son gratis para siempre. El análisis profundo y todas las funciones son Estándar."],
+          transfer:["¿Se conservan mis datos al cambiar de dispositivo?","Inicia sesión con la misma cuenta y tus datos continúan. Contáctanos si algo te preocupa."],
+          delete:["Quiero eliminar mis datos","Puedes solicitar eliminar cuenta y datos en Ajustes. No se puede deshacer, confirma antes de continuar."],
+          payout:["¿Cómo recibo el apoyo (propinas)?","El apoyo recibido aparece en tu página de Creador. Al llegar a cierto monto, se transfiere a tu cuenta registrada."],
+          fee:["¿Hay comisiones?","El 75% del apoyo llega a ti (comisión 25%). Los montos se muestran como estimaciones."],
+          accuracy:["¿Qué tan precisas son las calorías y cifras?","Las cifras mostradas son solo estimaciones. Estimar calorías por foto tiene error. Si necesitas un control estricto, consulta a un profesional. Las cifras están para apoyar tu criterio."],
+          notif:["Demasiadas / sin notificaciones","En Ajustes → Notificaciones puedes activar cada tipo. Revisa también el permiso de notificaciones del dispositivo."]}},
+      "Deutsch":{hdr:"Kontakt",faqLbl:"Häufige Fragen",still:"Keine Antwort gefunden?",stillSub:"Schreib uns jederzeit. Wir antworten innerhalb weniger Werktage.",mailBtn:"Per E-Mail kontaktieren",
+        q:{cancel:["Wie kündige ich?","Du kannst Standard jederzeit kündigen, über Einstellungen → Plan oder die Zahlungsverwaltung. Bis zum Periodenende nutzbar."],
+          free:["Was kann ich kostenlos nutzen?","Protokoll, Werte, Medaillen, Basis-Vorschläge sowie Ansehen und Posten von Rezepten sind für immer kostenlos. Tiefere Analyse und alle Funktionen sind Standard."],
+          transfer:["Bleiben meine Daten beim Gerätewechsel?","Mit demselben Konto anmelden, dann bleiben deine Daten erhalten. Melde dich bei Fragen."],
+          delete:["Ich möchte meine Daten löschen","Du kannst Konto- und Datenlöschung in den Einstellungen beantragen. Nicht umkehrbar, bitte vorher bestätigen."],
+          payout:["Wie erhalte ich Unterstützung (Trinkgeld)?","Erhaltene Unterstützung siehst du auf deiner Creator-Seite. Ab einem bestimmten Betrag Überweisung auf dein hinterlegtes Konto."],
+          fee:["Fallen Gebühren an?","75% der Unterstützung erreichen dich (25% Gebühr). Beträge sind Schätzungen."],
+          accuracy:["Wie genau sind Kalorien und Zahlen?","Die Zahlen sind nur Schätzungen. Besonders Kalorienschätzung per Foto ist fehlerbehaftet. Bei striktem Management konsultiere eine Fachperson. Die Zahlen unterstützen dein eigenes Urteil."],
+          notif:["Zu viele / keine Mitteilungen","Unter Einstellungen → Mitteilungen jeden Typ schalten. Prüfe auch die Mitteilungserlaubnis des Geräts."]}},
+      "Italiano":{hdr:"Contatto",faqLbl:"Domande frequenti",still:"Non hai trovato risposta?",stillSub:"Scrivici quando vuoi. Rispondiamo entro pochi giorni lavorativi.",mailBtn:"Contatta via email",
+        q:{cancel:["Come disdico?","Puoi disdire Standard quando vuoi, da Impostazioni → Piano o dalla pagina di gestione pagamenti. Lo usi fino a fine periodo."],
+          free:["Cosa posso usare gratis?","Diario, punteggi, medaglie, suggerimenti base, visione e pubblicazione ricette sono gratis per sempre. Analisi approfondita e tutte le funzioni sono Standard."],
+          transfer:["I dati restano cambiando dispositivo?","Accedi con lo stesso account e i dati proseguono. Scrivici per qualsiasi dubbio."],
+          delete:["Voglio eliminare i miei dati","Puoi richiedere l'eliminazione di account e dati nelle Impostazioni. Irreversibile, conferma prima di procedere."],
+          payout:["Come ricevo il sostegno (mance)?","Il sostegno ricevuto è nella tua pagina Creator. Raggiunto un certo importo, si trasferisce sul conto registrato."],
+          fee:["Ci sono commissioni?","Il 75% del sostegno ti arriva (commissione 25%). Gli importi sono stime."],
+          accuracy:["Quanto sono precisi calorie e numeri?","I numeri mostrati sono solo stime. La stima delle calorie da foto ha margini d'errore. Per una gestione rigorosa consulta un professionista. I numeri sostengono il tuo giudizio."],
+          notif:["Troppe / nessuna notifica","In Impostazioni → Notifiche attivi ogni tipo. Controlla anche il permesso notifiche del dispositivo."]}},
+      "Português":{hdr:"Contato",faqLbl:"Perguntas frequentes",still:"Não encontrou sua resposta?",stillSub:"Fale conosco quando quiser. Respondemos em poucos dias úteis.",mailBtn:"Contatar por e-mail",
+        q:{cancel:["Como cancelo?","Você pode cancelar o Padrão quando quiser, em Configurações → Plano ou na página de gestão de cobrança. Usa até o fim do período."],
+          free:["O que posso usar de graça?","Registro, pontuações, medalhas, sugestões básicas, ver e publicar receitas são grátis para sempre. Análise profunda e todas as funções são Padrão."],
+          transfer:["Meus dados ficam ao trocar de aparelho?","Entre com a mesma conta e seus dados continuam. Fale conosco se algo preocupar."],
+          delete:["Quero excluir meus dados","Você pode solicitar exclusão de conta e dados em Configurações. Não pode ser desfeito, confirme antes."],
+          payout:["Como recebo apoio (gorjetas)?","O apoio recebido aparece na sua página de Criador. Ao atingir certo valor, transfere para a conta registrada."],
+          fee:["Há taxas?","75% do apoio chega a você (taxa 25%). Os valores são estimativas."],
+          accuracy:["Quão precisas são calorias e números?","Os números são apenas estimativas. Estimar calorias por foto tem erro. Para controle rigoroso, consulte um profissional. Os números apoiam seu próprio julgamento."],
+          notif:["Muitas / nenhuma notificação","Em Configurações → Notificações, ative cada tipo. Verifique também a permissão de notificações do aparelho."]}},
+      "हिन्दी":{hdr:"संपर्क",faqLbl:"अक्सर पूछे जाने वाले",still:"जवाब नहीं मिला？",stillSub:"कभी भी संपर्क करें। हम कुछ कार्यदिवसों में जवाब देंगे।",mailBtn:"ईमेल से संपर्क करें",
+        q:{cancel:["रद्द कैसे करें？","स्टैंडर्ड कभी भी रद्द कर सकते हैं, सेटिंग्स → प्लान, या बिलिंग प्रबंधन पेज से। रद्द के बाद भी अवधि के अंत तक उपयोग कर सकते हैं।"],
+          free:["मुफ्त में कहाँ तक？","रिकॉर्ड, स्कोर, मेडल, बुनियादी सुझाव, रेसिपी देखना और पोस्ट करना हमेशा मुफ्त। गहरा विश्लेषण और सभी फीचर स्टैंडर्ड में।"],
+          transfer:["डिवाइस बदलने पर डेटा रहेगा？","उसी खाते से लॉगिन करें, रिकॉर्ड वैसे ही रहेंगे। चिंता हो तो संपर्क करें।"],
+          delete:["मैं डेटा हटाना चाहता हूँ","सेटिंग्स से खाता और डेटा हटाने का अनुरोध कर सकते हैं। हटाना अपरिवर्तनीय है, पुष्टि के बाद आगे बढ़ें।"],
+          payout:["सहयोग (टिप) कैसे मिलेगा？","मिला सहयोग क्रिएटर पेज पर दिखता है। एक राशि पर पहुँचने पर पंजीकृत खाते में भेजा जा सकता है।"],
+          fee:["शुल्क लगता है？","सहयोग का 75% आप तक पहुँचता है (शुल्क 25%)। राशि अनुमान के रूप में दिखती है।"],
+          accuracy:["कैलोरी और आँकड़े कितने सटीक？","दिखाए आँकड़े केवल अनुमान हैं। खासकर फोटो से कैलोरी अनुमान में त्रुटि होती है। सख्त प्रबंधन चाहिए तो विशेषज्ञ से सलाह लें। आँकड़े आपके निर्णय में मदद के लिए हैं।"],
+          notif:["सूचनाएँ ज़्यादा／नहीं आतीं","सेटिंग्स → सूचनाएँ में हर प्रकार चालू-बंद कर सकते हैं। डिवाइस की सूचना अनुमति भी जाँचें।"]}},
+      "Tiếng Việt":{hdr:"Liên hệ",faqLbl:"Câu hỏi thường gặp",still:"Chưa tìm được câu trả lời？",stillSub:"Liên hệ bất cứ lúc nào. Chúng tôi trả lời trong vài ngày làm việc.",mailBtn:"Liên hệ qua email",
+        q:{cancel:["Hủy thế nào？","Bạn có thể hủy Tiêu chuẩn bất cứ lúc nào, từ Cài đặt → Gói hoặc trang quản lý thanh toán. Sau khi hủy vẫn dùng đến hết kỳ."],
+          free:["Dùng miễn phí đến đâu？","Ghi chép, điểm số, huy chương, gợi ý cơ bản, xem và đăng công thức miễn phí mãi. Phân tích sâu và toàn bộ tính năng là Tiêu chuẩn."],
+          transfer:["Đổi máy dữ liệu có giữ không？","Đăng nhập cùng tài khoản, bản ghi được giữ nguyên. Có gì lo lắng hãy liên hệ."],
+          delete:["Tôi muốn xóa dữ liệu","Bạn có thể yêu cầu xóa tài khoản và dữ liệu trong Cài đặt. Không thể hoàn tác, hãy xác nhận trước."],
+          payout:["Nhận ủng hộ (tip) thế nào？","Ủng hộ nhận được hiển thị ở trang Nhà sáng tạo. Khi đạt mức nhất định, chuyển vào tài khoản đã đăng ký."],
+          fee:["Có phí không？","75% ủng hộ đến với bạn (phí 25%). Số tiền hiển thị là ước tính."],
+          accuracy:["Calo và con số chính xác đến đâu？","Các con số chỉ là ước tính. Ước tính calo từ ảnh có sai số. Nếu cần quản lý nghiêm ngặt, hãy hỏi chuyên gia. Con số để hỗ trợ phán đoán của bạn."],
+          notif:["Quá nhiều／không có thông báo","Ở Cài đặt → Thông báo, bật tắt từng loại. Hãy kiểm tra cả quyền thông báo của thiết bị."]}},
+      "Bahasa Indonesia":{hdr:"Kontak",faqLbl:"Pertanyaan umum",still:"Belum menemukan jawaban？",stillSub:"Hubungi kami kapan saja. Kami balas dalam beberapa hari kerja.",mailBtn:"Hubungi via email",
+        q:{cancel:["Bagaimana membatalkan?","Standar bisa dibatalkan kapan saja, dari Pengaturan → Paket atau halaman manajemen tagihan. Setelah batal tetap bisa dipakai sampai periode berakhir."],
+          free:["Gratisnya sampai mana?","Pencatatan, skor, medali, saran dasar, melihat dan memposting resep gratis selamanya. Analisis lebih dalam dan semua fitur ada di Standar."],
+          transfer:["Data tersimpan saat ganti perangkat?","Masuk dengan akun sama, catatan tetap ada. Hubungi kami jika ada kekhawatiran."],
+          delete:["Saya ingin menghapus data","Kamu bisa minta hapus akun dan data di Pengaturan. Tak bisa dibatalkan, konfirmasi dulu sebelum lanjut."],
+          payout:["Bagaimana menerima dukungan (tip)?","Dukungan yang diterima tampil di halaman Kreator. Saat mencapai jumlah tertentu, bisa ditransfer ke rekening terdaftar."],
+          fee:["Ada biaya?","75% dukungan sampai kepadamu (biaya 25%). Jumlah ditampilkan sebagai perkiraan."],
+          accuracy:["Seberapa akurat kalori dan angka?","Angka yang tampil hanya perkiraan. Estimasi kalori dari foto punya galat. Jika perlu manajemen ketat, konsultasikan ke profesional. Angka untuk membantu penilaianmu."],
+          notif:["Notifikasi banyak／tidak datang","Di Pengaturan → Notifikasi, nyalakan tiap jenis. Periksa juga izin notifikasi perangkat."]}}
+    };
+    var cur="日本語", dark=true, openIdx=-1;
+    var T={
+      dark:{bg:"#16140F",txt:"#E8E2D6",sub:"#8A7E68",muted:"#6E6555",head:"#F0EBE2",card:"#1A1814",cardBd:"#2A2620",accent:"#E3C56A",mailBg:"linear-gradient(140deg,#221E12,#1A1813)",mailBd:"#3A3220",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488"},
+      light:{bg:"#FFFFFF",txt:"#4A453B",sub:"#8A7E68",muted:"#B7A98F",head:"#2E2A24",card:"#FBF7F1",cardBd:"#F0EAE0",accent:"#BA7517",mailBg:"linear-gradient(140deg,#FBF3E0,#FBF7F1)",mailBd:"#EADCBE",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderFaq(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('faqList').innerHTML="";
+      FAQ.forEach(function(k,i){
+        var qa=d.q[k], open=(openIdx===i);
+        var card=document.createElement('div');
+        card.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:13px; overflow:hidden;";
+        var head=document.createElement('div');
+        head.style.cssText="display:flex; align-items:center; gap:10px; padding:14px 15px; cursor:pointer;";
+        head.innerHTML='<span style="flex:1; font-size:13px; color:'+t.head+'; font-weight:500; line-height:1.4;">'+qa[0]+'</span><i class="ti '+(open?"ti-chevron-up":"ti-chevron-down")+'" style="font-size:17px; color:'+t.sub+'; flex-shrink:0;"></i>';
+        head.onclick=function(){ openIdx= open? -1 : i; renderFaq(); };
+        card.appendChild(head);
+        if(open){
+          var body=document.createElement('div');
+          body.style.cssText="padding:0 15px 15px; ";
+          body.innerHTML='<p style="font-size:12px; color:'+t.txt+'; margin:0; line-height:1.75; padding-top:2px; border-top:0.5px solid '+t.cardBd+'; padding-top:12px;">'+qa[1]+'</p>';
+          card.appendChild(body);
+        }
+        $('faqList').appendChild(card);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('faqLbl').textContent=d.faqLbl;
+      $('stillLbl').textContent=d.still; $('stillSub').textContent=d.stillSub; $('mailBtnLbl').textContent=d.mailBtn;
+      renderFaq();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.head;
+      $('faqLbl').style.color=t.sub;
+      $('mailCard').style.background=t.mailBg; $('mailCard').style.borderColor=t.mailBd;
+      $('stillLbl').style.color=t.head; $('stillSub').style.color=t.sub; $('mailAddr').style.color=t.sub;
+      $('mailBtn').style.background=t.accent; $('mailBtn').style.color= dark?"#16140F":"#FFFFFF";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
