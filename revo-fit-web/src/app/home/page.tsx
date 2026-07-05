@@ -13,15 +13,15 @@ import { homeDict, FACTORS, EMPTY_STATE_FALLBACK } from "@/lib/i18n/dictionaries
 /**
  * Home screen ("revo_fit_home_black.html" in the mockups).
  *
- * IMPORTANT (roadmap §13 — empty state): the mockup hardcodes sample numbers
+ * IMPORTANT (roadmap section 13 - empty state): the mockup hardcodes sample numbers
  * (score 78, sleep 82, etc.) for visual review purposes. A brand-new account
  * has none of that yet, so this page currently renders the zero/empty state
- * by design — wire `useHomeSummary()` (TODO below) up to Supabase and this
+ * by design - wire useHomeSummary() (TODO below) up to Supabase and this
  * will start showing real numbers once a user has logged at least one day.
  */
 
 // TODO: replace with a real hook that reads today's score + factor breakdown
-// from Supabase once daily_logs / scores tables exist. Returning `null` here
+// from Supabase once daily_logs / scores tables exist. Returning null here
 // is what makes this page render the correct empty state for new users.
 function useHomeSummary(): { score: number; factorScores: Record<string, number> } | null {
   return null;
@@ -132,11 +132,21 @@ export default function HomePage() {
           <span>{d.record}</span>
         </button>
 
-        <button style={{ margin: "13px 0 6px", background: "transparent", border: "none", color: "var(--text-sub)", fontSize: 12, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }} onClick={() => show(d.more + " 🚧")}>
+        <button style={{ margin: "13px 0 6px", background: "transparent", border: "none", color: "var(--text-sub)", fontSize: 12, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }} onClick={() => show(d.more + " ")}>
           <span>{d.more}</span>
           <IconChevronDown size={15} />
         </button>
       </div>
 
       <BottomNav
-        labels={d
+        labels={d.nav}
+        activeIndex={0}
+        onSelect={(i) => {
+          if (i === 3) router.push("/log");
+          else if (i !== 0) show(d.nav[i] + " ");
+        }}
+      />
+      {ToastView}
+    </div>
+  );
+}
