@@ -1,0 +1,248 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">きょうのトレーニング記録。部位と時間、種目ごとのセット・重量・回数、総ボリュームと前回比。労いのひとことと、投稿するボタン。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">きょうの記録</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- 見出し（部位・日付・時間） -->
+  <div style="padding:18px 18px 0;">
+    <div style="display:flex; align-items:center; gap:13px;">
+      <div style="width:48px; height:48px; border-radius:13px; background:#221E14; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti ti-barbell" style="font-size:24px; color:#E3C56A;"></i></div>
+      <div>
+        <p id="wTitle" style="font-size:17px; color:#F0EBE2; margin:0 0 3px; font-weight:600;">胸・三頭を鍛えた</p>
+        <p id="wMeta" style="font-size:12px; color:#8A7E68; margin:0;">6月30日・45分</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- サマリー -->
+  <div style="padding:16px 18px 0;">
+    <div id="sumCard" style="display:flex; background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; overflow:hidden;">
+      <div style="flex:1; padding:14px; text-align:center; border-right:0.5px solid #2A2620;">
+        <p id="sumVolLbl" style="font-size:10px; color:#8A7E68; margin:0 0 4px;">総ボリューム</p>
+        <p style="margin:0;"><span id="sumVol" style="font-size:20px; color:#E3C56A; font-weight:600; font-family:Jost;">4,820</span><span style="font-size:11px; color:#8A7E68;"> kg</span></p>
+        <p id="sumVolDiff" style="font-size:10px; color:#5DCAA5; margin:3px 0 0;">前回 +240</p>
+      </div>
+      <div style="flex:1; padding:14px; text-align:center; border-right:0.5px solid #2A2620;">
+        <p id="sumSetLbl" style="font-size:10px; color:#8A7E68; margin:0 0 4px;">セット</p>
+        <p style="margin:0;"><span id="sumSet" style="font-size:20px; color:#F0EBE2; font-weight:600; font-family:Jost;">12</span></p>
+        <p id="sumExLbl" style="font-size:10px; color:#8A7E68; margin:3px 0 0;">種目5</p>
+      </div>
+      <div style="flex:1; padding:14px; text-align:center;">
+        <p id="sumTimeLbl" style="font-size:10px; color:#8A7E68; margin:0 0 4px;">時間</p>
+        <p style="margin:0;"><span id="sumTime" style="font-size:20px; color:#F0EBE2; font-weight:600; font-family:Jost;">45</span><span id="sumTimeUnit" style="font-size:11px; color:#8A7E68;"> 分</span></p>
+        <p id="sumPrLbl" style="font-size:10px; color:#E3C56A; margin:3px 0 0;">自己ベスト1</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 種目リスト -->
+  <div style="padding:20px 18px 0;">
+    <p id="exLbl" style="font-size:12px; color:#8A7E68; margin:0 0 12px; font-weight:500;">種目ごとの記録</p>
+    <div id="exList" style="display:flex; flex-direction:column; gap:12px;"></div>
+  </div>
+
+  <!-- 労いコメント -->
+  <div style="padding:18px 18px 0;">
+    <div id="msgCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:14px 16px; display:flex; align-items:flex-start; gap:10px;">
+      <i class="ti ti-heart" style="font-size:17px; color:#5DCAA5; margin-top:1px;"></i>
+      <p id="msg" style="font-size:13px; color:#C9E3D8; margin:0; line-height:1.65;">前回よりボリュームが伸びました。着実に前へ進んでいます。この一日を、記録に残しましょう。</p>
+    </div>
+  </div>
+
+  <!-- 投稿する -->
+  <div style="padding:16px 18px 22px;">
+    <button id="postBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="ti ti-photo" style="font-size:18px;"></i><span id="postLbl">この記録を投稿する</span></button>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 種目データ（言語共通の数値、種目名は言語別）
+    var EX=[
+      {sets:[{w:60,r:10},{w:65,r:8},{w:65,r:7}], pr:false},
+      {sets:[{w:14,r:12},{w:16,r:10}], pr:false},
+      {sets:[{w:0,r:15},{w:0,r:12}], pr:true, body:true},
+      {sets:[{w:25,r:12},{w:25,r:12},{w:30,r:10}], pr:false},
+      {sets:[{w:12,r:15},{w:12,r:13}], pr:false}
+    ];
+    var D={
+      "日本語":{hdr:"きょうの記録",wTitle:"胸・三頭を鍛えた",wMeta:"6月30日・45分",
+        sumVolLbl:"総ボリューム",sumVolDiff:"前回 +240",sumSetLbl:"セット",sumExLbl:"種目5",sumTimeLbl:"時間",min:"分",sumPrLbl:"自己ベスト1",
+        exLbl:"種目ごとの記録",exNames:["ベンチプレス","ダンベルフライ","ディップス","プレスダウン","キックバック"],
+        setW:"kg",setR:"回",bodyW:"自重",prBadge:"自己ベスト",
+        msg:"前回よりボリュームが伸びました。着実に前へ進んでいます。この一日を、記録に残しましょう。",
+        post:"この記録を投稿する"},
+      "English":{hdr:"Today's log",wTitle:"Trained chest & triceps",wMeta:"Jun 30・45 min",
+        sumVolLbl:"Total volume",sumVolDiff:"+240 vs last",sumSetLbl:"Sets",sumExLbl:"5 exercises",sumTimeLbl:"Time",min:"min",sumPrLbl:"1 PR",
+        exLbl:"Per-exercise log",exNames:["Bench press","Dumbbell fly","Dips","Pushdown","Kickback"],
+        setW:"kg",setR:"reps",bodyW:"Bodyweight",prBadge:"PR",
+        msg:"Your volume went up from last time. Steady progress. Let's keep this day on record.",
+        post:"Post this log"},
+      "简体中文":{hdr:"今天的记录",wTitle:"练了胸·三头",wMeta:"6月30日·45分钟",
+        sumVolLbl:"总容量",sumVolDiff:"比上次 +240",sumSetLbl:"组数",sumExLbl:"5个动作",sumTimeLbl:"时间",min:"分",sumPrLbl:"1个自己最佳",
+        exLbl:"各动作记录",exNames:["卧推","哑铃飞鸟","双杠臂屈伸","下压","后踢"],
+        setW:"kg",setR:"次",bodyW:"自重",prBadge:"自己最佳",
+        msg:"容量比上次提升了。稳步向前。把今天留在记录里吧。",
+        post:"发布这条记录"},
+      "繁體中文":{hdr:"今天的記錄",wTitle:"練了胸·三頭",wMeta:"6月30日·45分鐘",
+        sumVolLbl:"總容量",sumVolDiff:"比上次 +240",sumSetLbl:"組數",sumExLbl:"5個動作",sumTimeLbl:"時間",min:"分",sumPrLbl:"1個自己最佳",
+        exLbl:"各動作記錄",exNames:["臥推","啞鈴飛鳥","雙槓臂屈伸","下壓","後踢"],
+        setW:"kg",setR:"次",bodyW:"自重",prBadge:"自己最佳",
+        msg:"容量比上次提升了。穩步向前。把今天留在記錄裡吧。",
+        post:"發布這條記錄"},
+      "한국어":{hdr:"오늘의 기록",wTitle:"가슴·삼두 운동",wMeta:"6월 30일·45분",
+        sumVolLbl:"총 볼륨",sumVolDiff:"지난번 +240",sumSetLbl:"세트",sumExLbl:"종목 5",sumTimeLbl:"시간",min:"분",sumPrLbl:"자기최고 1",
+        exLbl:"종목별 기록",exNames:["벤치프레스","덤벨 플라이","딥스","푸시다운","킥백"],
+        setW:"kg",setR:"회",bodyW:"자중",prBadge:"자기최고",
+        msg:"지난번보다 볼륨이 늘었어요. 착실히 나아가고 있어요. 오늘 하루를 기록으로 남겨요.",
+        post:"이 기록 올리기"},
+      "ภาษาไทย":{hdr:"บันทึกวันนี้",wTitle:"เล่นอก·หลังแขน",wMeta:"30 มิ.ย.·45 นาที",
+        sumVolLbl:"ปริมาณรวม",sumVolDiff:"ครั้งก่อน +240",sumSetLbl:"เซ็ต",sumExLbl:"5 ท่า",sumTimeLbl:"เวลา",min:"นาที",sumPrLbl:"สถิติใหม่ 1",
+        exLbl:"บันทึกแต่ละท่า",exNames:["เบนช์เพรส","ดัมเบลล์ฟลาย","ดิพส์","พุชดาวน์","คิกแบ็ก"],
+        setW:"กก.",setR:"ครั้ง",bodyW:"น้ำหนักตัว",prBadge:"สถิติใหม่",
+        msg:"ปริมาณเพิ่มจากครั้งก่อน ก้าวหน้าอย่างมั่นคง เก็บวันนี้ไว้ในบันทึกกันเถอะ",
+        post:"โพสต์บันทึกนี้"},
+      "Français":{hdr:"Journal du jour",wTitle:"Pecs & triceps travaillés",wMeta:"30 juin・45 min",
+        sumVolLbl:"Volume total",sumVolDiff:"+240 vs dernier",sumSetLbl:"Séries",sumExLbl:"5 exos",sumTimeLbl:"Temps",min:"min",sumPrLbl:"1 record",
+        exLbl:"Journal par exercice",exNames:["Développé couché","Écarté haltères","Dips","Extension poulie","Kickback"],
+        setW:"kg",setR:"reps",bodyW:"Poids du corps",prBadge:"Record",
+        msg:"Votre volume a augmenté depuis la dernière fois. Progrès régulier. Gardons cette journée en mémoire.",
+        post:"Publier ce journal"},
+      "Español":{hdr:"Registro de hoy",wTitle:"Pecho y tríceps trabajados",wMeta:"30 jun・45 min",
+        sumVolLbl:"Volumen total",sumVolDiff:"+240 vs anterior",sumSetLbl:"Series",sumExLbl:"5 ejercicios",sumTimeLbl:"Tiempo",min:"min",sumPrLbl:"1 récord",
+        exLbl:"Registro por ejercicio",exNames:["Press banca","Aperturas","Fondos","Jalón tríceps","Patada trasera"],
+        setW:"kg",setR:"reps",bodyW:"Peso corporal",prBadge:"Récord",
+        msg:"Tu volumen subió desde la última vez. Progreso constante. Dejemos este día registrado.",
+        post:"Publicar este registro"},
+      "Deutsch":{hdr:"Heutiges Log",wTitle:"Brust & Trizeps trainiert",wMeta:"30. Juni・45 Min",
+        sumVolLbl:"Gesamtvolumen",sumVolDiff:"+240 vs letztes",sumSetLbl:"Sätze",sumExLbl:"5 Übungen",sumTimeLbl:"Zeit",min:"Min",sumPrLbl:"1 Rekord",
+        exLbl:"Log pro Übung",exNames:["Bankdrücken","Kurzhantel-Fly","Dips","Pushdown","Kickback"],
+        setW:"kg",setR:"Wdh",bodyW:"Körpergewicht",prBadge:"Rekord",
+        msg:"Dein Volumen ist seit letztem Mal gestiegen. Stetiger Fortschritt. Halten wir diesen Tag fest.",
+        post:"Dieses Log posten"},
+      "Italiano":{hdr:"Diario di oggi",wTitle:"Petto e tricipiti allenati",wMeta:"30 giu・45 min",
+        sumVolLbl:"Volume totale",sumVolDiff:"+240 vs scorso",sumSetLbl:"Serie",sumExLbl:"5 esercizi",sumTimeLbl:"Tempo",min:"min",sumPrLbl:"1 record",
+        exLbl:"Diario per esercizio",exNames:["Panca piana","Croci manubri","Dip","Pushdown","Kickback"],
+        setW:"kg",setR:"rip",bodyW:"Peso corporeo",prBadge:"Record",
+        msg:"Il tuo volume è salito dall'ultima volta. Progresso costante. Teniamo questo giorno nel registro.",
+        post:"Pubblica questo diario"},
+      "Português":{hdr:"Registro de hoje",wTitle:"Peito e tríceps treinados",wMeta:"30 jun・45 min",
+        sumVolLbl:"Volume total",sumVolDiff:"+240 vs último",sumSetLbl:"Séries",sumExLbl:"5 exercícios",sumTimeLbl:"Tempo",min:"min",sumPrLbl:"1 recorde",
+        exLbl:"Registro por exercício",exNames:["Supino","Crucifixo","Paralelas","Tríceps pulley","Kickback"],
+        setW:"kg",setR:"reps",bodyW:"Peso corporal",prBadge:"Recorde",
+        msg:"Seu volume subiu desde a última vez. Progresso constante. Vamos guardar este dia no registro.",
+        post:"Publicar este registro"},
+      "हिन्दी":{hdr:"आज का रिकॉर्ड",wTitle:"चेस्ट·ट्राइसेप्स किया",wMeta:"30 जून·45 मिनट",
+        sumVolLbl:"कुल वॉल्यूम",sumVolDiff:"पिछली बार +240",sumSetLbl:"सेट",sumExLbl:"5 एक्सरसाइज",sumTimeLbl:"समय",min:"मिनट",sumPrLbl:"1 सर्वश्रेष्ठ",
+        exLbl:"हर एक्सरसाइज का रिकॉर्ड",exNames:["बेंच प्रेस","डम्बल फ्लाई","डिप्स","पुशडाउन","किकबैक"],
+        setW:"kg",setR:"बार",bodyW:"बॉडीवेट",prBadge:"सर्वश्रेष्ठ",
+        msg:"पिछली बार से वॉल्यूम बढ़ा। स्थिर प्रगति। आज के दिन को रिकॉर्ड में रखें।",
+        post:"यह रिकॉर्ड पोस्ट करें"},
+      "Tiếng Việt":{hdr:"Nhật ký hôm nay",wTitle:"Tập ngực & tay sau",wMeta:"30/6・45 phút",
+        sumVolLbl:"Tổng khối lượng",sumVolDiff:"+240 so lần trước",sumSetLbl:"Hiệp",sumExLbl:"5 bài",sumTimeLbl:"Thời gian",min:"phút",sumPrLbl:"1 kỷ lục",
+        exLbl:"Nhật ký từng bài",exNames:["Đẩy ngực","Bay tạ đơn","Hít xà kép","Đạp tay sau","Đá tay sau"],
+        setW:"kg",setR:"lần",bodyW:"Tự trọng",prBadge:"Kỷ lục",
+        msg:"Khối lượng tăng so với lần trước. Tiến bộ đều đặn. Hãy giữ ngày này trong nhật ký.",
+        post:"Đăng nhật ký này"},
+      "Bahasa Indonesia":{hdr:"Catatan hari ini",wTitle:"Latih dada & trisep",wMeta:"30 Jun・45 menit",
+        sumVolLbl:"Total volume",sumVolDiff:"+240 vs terakhir",sumSetLbl:"Set",sumExLbl:"5 gerakan",sumTimeLbl:"Waktu",min:"menit",sumPrLbl:"1 rekor",
+        exLbl:"Catatan per gerakan",exNames:["Bench press","Dumbbell fly","Dips","Pushdown","Kickback"],
+        setW:"kg",setR:"rep",bodyW:"Berat badan",prBadge:"Rekor",
+        msg:"Volumemu naik dari terakhir kali. Kemajuan stabil. Simpan hari ini dalam catatan.",
+        post:"Posting catatan ini"}
+    };
+    var cur="日本語", dark=true;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",setBg:"#16140F",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",setBg:"#FFFFFF",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);};
+    function renderEx(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('exList').innerHTML="";
+      EX.forEach(function(ex,i){
+        var card=document.createElement('div');
+        card.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:14px; padding:14px 15px;";
+        var head='<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 10px;">'+
+          '<span style="font-size:14px; color:'+t.txt+'; font-weight:600;">'+d.exNames[i]+'</span>'+
+          (ex.pr?'<span style="font-size:10px; color:'+(dark?"#16140F":"#FFFFFF")+'; background:'+t.accent+'; padding:3px 9px; border-radius:999px; font-weight:600;">'+d.prBadge+'</span>':'')+'</div>';
+        var sets='<div style="display:flex; flex-direction:column; gap:6px;">';
+        ex.sets.forEach(function(st,si){
+          var wtxt = ex.body ? d.bodyW : (st.w+" "+d.setW);
+          sets+='<div style="display:flex; align-items:center; gap:10px;">'+
+            '<span style="width:20px; font-size:11px; color:'+t.muted+'; font-family:Jost;">'+(si+1)+'</span>'+
+            '<span style="flex:1; font-size:13px; color:'+t.txt+';">'+wtxt+'</span>'+
+            '<span style="font-size:13px; color:'+t.sub+';">'+st.r+' '+d.setR+'</span></div>';
+        });
+        sets+='</div>';
+        card.innerHTML=head+sets;
+        $('exList').appendChild(card);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('wTitle').textContent=d.wTitle; $('wMeta').textContent=d.wMeta;
+      $('sumVolLbl').textContent=d.sumVolLbl; $('sumVolDiff').textContent=d.sumVolDiff;
+      $('sumSetLbl').textContent=d.sumSetLbl; $('sumExLbl').textContent=d.sumExLbl;
+      $('sumTimeLbl').textContent=d.sumTimeLbl; $('sumPrLbl').textContent=d.sumPrLbl;
+      $('sumTime').nextSibling; $('sumTimeUnit').textContent=" "+d.min;
+      $('exLbl').textContent=d.exLbl; $('msg').textContent=d.msg; $('postLbl').textContent=d.post;
+      renderEx();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('wTitle').style.color=t.txt;
+      $('sumCard').style.background=t.card; $('sumCard').style.borderColor=t.cardBd;
+      $('sumCard').querySelectorAll('div').forEach(function(el){ if(el.style.borderRight) el.style.borderRightColor=t.cardBd; });
+      $('exLbl').style.color=t.sub;
+      $('msgCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('msgCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('msg').style.color= dark?"#C9E3D8":"#2E5D4E";
+      $('postBtn').style.background=t.accent; $('postBtn').style.color= dark?"#16140F":"#FFFFFF";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; applyTheme(); };
+    $('postBtn').onclick=function(){ /* トレーニング投稿画面へ（記録を引き継いで遷移） */ };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
