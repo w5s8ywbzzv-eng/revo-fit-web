@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { IconChevronRight, IconChevronDown, IconPlus } from "@tabler/icons-react";
 import { HeaderControls } from "@/components/HeaderControls";
 import { WordmarkSmall } from "@/components/Logo";
@@ -32,6 +33,7 @@ export default function HomePage() {
   const empty = d.empty ?? EMPTY_STATE_FALLBACK;
   const { show, ToastView } = useToast();
   const summary = useHomeSummary();
+  const router = useRouter();
 
   const score = summary?.score ?? 0;
   const stateText = summary ? d.state : empty.state;
@@ -125,7 +127,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <button className="rf-btn-primary" style={{ marginTop: 14 }} onClick={() => show(empty.recordHint + " — /log 🚧")}>
+        <button className="rf-btn-primary" style={{ marginTop: 14 }} onClick={() => router.push("/log")}>
           <IconPlus size={18} />
           <span>{d.record}</span>
         </button>
@@ -136,8 +138,5 @@ export default function HomePage() {
         </button>
       </div>
 
-      <BottomNav labels={d.nav} activeIndex={0} />
-      {ToastView}
-    </div>
-  );
-}
+      <BottomNav
+        labels={d

@@ -1,11 +1,16 @@
 -- revo fit — starter Supabase schema
 -- ---------------------------------------------------------------------------
 -- Scope: only what the screens implemented so far need
--- (signup/login, onboarding language+region, goal_setup, home).
+-- (signup/login, onboarding language+region, goal_setup, home, log).
 -- The original design references ~25 tables (profiles, goals, daily_logs,
 -- meals, training_logs, subscriptions, etc.) — add those incrementally as
--- each screen (log, nutrition, recipes, ranking, medals, billing, ...) gets
+-- each screen (nutrition, recipes, ranking, medals, billing, ...) gets
 -- implemented. This file is a foundation, not the final schema.
+--
+-- NOTE: policy names below are plain snake_case identifiers (no quotes/
+-- colons/spaces). An earlier draft used quoted names like "profiles: read
+-- own" — those broke when pasted into the Supabase SQL Editor (colons got
+-- mangled), so every policy here uses a quote-free name instead.
 --
 -- How to apply: Supabase dashboard → SQL Editor → paste and run.
 -- Or via CLI: supabase db push (after `supabase link`).
@@ -33,11 +38,11 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
-create policy "profiles: read own" on public.profiles
+create policy profiles_read_own on public.profiles
   for select using (auth.uid() = id);
-create policy "profiles: update own" on public.profiles
+create policy profiles_update_own on public.profiles
   for update using (auth.uid() = id);
-create policy "profiles: insert own" on public.profiles
+create policy profiles_insert_own on public.profiles
   for insert with check (auth.uid() = id);
 
 -- ---------------------------------------------------------------------------
@@ -53,17 +58,18 @@ create table if not exists public.user_goals (
 
 alter table public.user_goals enable row level security;
 
-create policy "user_goals: read own" on public.user_goals
+create policy user_goals_read_own on public.user_goals
   for select using (auth.uid() = user_id);
-create policy "user_goals: write own" on public.user_goals
+create policy user_goals_write_own on public.user_goals
   for insert with check (auth.uid() = user_id);
-create policy "user_goals: delete own" on public.user_goals
+create policy user_goals_delete_own on public.user_goals
   for delete using (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------------------
--- body_metrics: point-in-time entries from goal_setup's sliders, and later
--- from any "update my weight" flow. Keeping this as a time series (rather
--- than columns on profiles) lets the analysis/forecast screens chart trends.
+-- body_metrics: point-in-time entries from goal_setup's sliders and from the
+-- "body" category on the /log screen. Keeping this as a time series (rather
+-- than columns on profiles) lets the analysis/forecast screens chart trends,
+-- and lets /log pre-fill weight/body fat/muscle from the most recent row.
 -- ---------------------------------------------------------------------------
 create table if not exists public.body_metrics (
   id uuid primary key default uuid_generate_v4(),
@@ -78,11 +84,11 @@ create table if not exists public.body_metrics (
 
 alter table public.body_metrics enable row level security;
 
-create policy "body_metrics: read own" on public.body_metrics
+create policy body_metrics_read_own on public.body_metrics
   for select using (auth.uid() = user_id);
-create policy "body_metrics: write own" on public.body_metrics
+create policy body_metrics_write_own on public.body_metrics
   for insert with check (auth.uid() = user_id);
-create policy "body_metrics: update own" on public.body_metrics
+create policy body_metrics_update_own on public.body_metrics
   for update using (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------------------
@@ -108,11 +114,11 @@ create table if not exists public.daily_scores (
 
 alter table public.daily_scores enable row level security;
 
-create policy "daily_scores: read own" on public.daily_scores
+create policy daily_scores_read_own on public.daily_scores
   for select using (auth.uid() = user_id);
-create policy "daily_scores: write own" on public.daily_scores
+create policy daily_scores_write_own on public.daily_scores
   for insert with check (auth.uid() = user_id);
-create policy "daily_scores: update own" on public.daily_scores
+create policy daily_scores_update_own on public.daily_scores
   for update using (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------------------
@@ -136,7 +142,7 @@ create table if not exists public.subscriptions (
 
 alter table public.subscriptions enable row level security;
 
-create policy "subscriptions: read own" on public.subscriptions
+create policy subscriptions_read_own on public.subscriptions
   for select using (auth.uid() = user_id);
 -- No client insert/update policy on purpose: only the Stripe webhook
 -- (using the service role key, which bypasses RLS) should write here.
@@ -151,13 +157,4 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id) values (new.id);
-  insert into public.subscriptions (user_id, plan) values (new.id, 'free');
-  return new;
-end;
-$$;
-
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+ 
