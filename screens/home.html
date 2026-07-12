@@ -61,7 +61,7 @@ body{background:#F1EFEA;}
     <p style="font-size:14px; color:#8A7E68; margin:0; text-align:center; letter-spacing:0.08em; font-weight:300; animation:revoTagFade 3.0s ease both;">revo in your life</p>
   </div>
 
-  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">Revo Fit のホーム。総合スコアと、睡眠・食事・運動・回復の内訳。そこから導かれた今日の一手。考えなくていい。言語と明暗を切り替えられる</h2>
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">Revo Fit のホーム。総合スコアと、睡眠・食事・運動・回復の内訳。そこから導かれた次の行動。考えなくていい。言語と明暗を切り替えられる</h2>
 
   <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:18px 18px 10px;">
     <div style="display:flex; align-items:center; gap:9px;">
@@ -95,9 +95,9 @@ body{background:#F1EFEA;}
     <!-- 要素別スコア（色とゲージで直感的） -->
     <div id="factors" style="display:flex; gap:8px; margin:20px 0 0;"></div>
 
-    <!-- 今日の一手（弱点と繋がる） -->
+    <!-- 次の行動（弱点と繋がる） -->
     <div style="margin:22px 0 0;">
-      <p id="nextLbl" style="font-size:12px; color:#8A7E68; margin:0 0 9px; font-weight:500; letter-spacing:0.03em;">だから、きょうの一手</p>
+      <p id="nextLbl" style="font-size:12px; color:#8A7E68; margin:0 0 9px; font-weight:500; letter-spacing:0.03em;">だから、次の行動</p>
       <div id="nextCard" style="background:linear-gradient(135deg,#1F1B12,#46412F); border:0.5px solid #4A4230; border-radius:18px; padding:17px; display:flex; align-items:center; gap:14px; transition:all 0.35s;">
         <div style="width:48px; height:48px; border-radius:13px; background:rgba(227,197,106,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i id="nextIcon" class="ti ti-salad" style="font-size:25px; color:#E3C56A;" aria-hidden="true"></i></div>
         <div style="flex:1;">
@@ -116,7 +116,7 @@ body{background:#F1EFEA;}
 
   <div id="nav" style="display:none; align-items:center; justify-content:space-around; padding:10px 8px 14px; border-top:0.5px solid #2A2620; background:#16140F; transition:all 0.35s;">
     <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-home-2" style="font-size:21px; color:#E3C56A;" aria-hidden="true"></i><span id="nav0" style="font-size:9px; color:#E3C56A;">ホーム</span></div>
-    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-arrow-guide" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav1" style="font-size:9px; color:#6E6555;">次の一手</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-arrow-guide" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav1" style="font-size:9px; color:#6E6555;">次の行動</span></div>
     <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-chart-line" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav2" style="font-size:9px; color:#6E6555;">未来予測</span></div>
     <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-pencil-plus" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav3" style="font-size:9px; color:#6E6555;">記録</span></div>
     <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-award" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav4" style="font-size:9px; color:#6E6555;">メダル</span></div>
@@ -139,8 +139,8 @@ body{background:#F1EFEA;}
     var D={
       "日本語":{greet:"おはようございます",ringLbl:"rf score",state:"いい調子です。食事だけ、あと一歩。",
         factors:{sleep:"睡眠",food:"食事",move:"運動",recover:"回復"},
-        nextLbl:"だから、きょうの一手",nextTtl:"夜は、たんぱく質を少し多めに",nextSub:"食事スコアが低め。あと卵2個ぶん（たんぱく質 約14g）で、今日は整います。",
-        record:"記録する",more:"くわしい分析を見る",nav:["ホーム","次の一手","未来予測","記録","メダル"]},
+        nextLbl:"だから、次の行動",nextTtl:"夜は、たんぱく質を少し多めに",nextSub:"食事スコアが低め。あと卵2個ぶん（たんぱく質 約14g）で、今日は整います。",
+        record:"記録する",more:"くわしい分析を見る",nav:["ホーム","次の行動","未来予測","記録","メダル"]},
       "English":{greet:"Good morning",ringLbl:"rf score",state:"You're doing well. Just food, one more step.",
         factors:{sleep:"Sleep",food:"Food",move:"Exercise",recover:"Recovery"},
         nextLbl:"So, today's one step",nextTtl:"A bit more protein tonight",nextSub:"Food score is low. About 2 eggs (≈14g protein) and today balances out.",
@@ -156,7 +156,7 @@ body{background:#F1EFEA;}
       "한국어":{greet:"좋은 아침이에요",ringLbl:"rf score",state:"좋은 흐름이에요. 식사만 한 걸음 더.",
         factors:{sleep:"수면",food:"식사",move:"운동",recover:"회복"},
         nextLbl:"그래서, 오늘의 한 걸음",nextTtl:"저녁엔 단백질을 조금 더",nextSub:"식사 점수가 낮아요. 달걀 2개(단백질 약 14g)면 오늘은 균형이 맞아요.",
-        record:"기록하기",more:"자세한 분석 보기",nav:["홈","다음 한 수","미래 예측","기록","메달"]},
+        record:"기록하기",more:"자세한 분석 보기",nav:["홈","다음 행동","미래 예측","기록","메달"]},
       "ภาษาไทย":{greet:"อรุณสวัสดิ์",ringLbl:"rf score",state:"กำลังดีเลย ขาดแค่มื้ออาหารอีกนิด",
         factors:{sleep:"การนอน",food:"อาหาร",move:"ออกกำลัง",recover:"ฟื้นตัว"},
         nextLbl:"ดังนั้น ก้าวของวันนี้",nextTtl:"มื้อเย็นเพิ่มโปรตีนอีกหน่อย",nextSub:"คะแนนอาหารต่ำ เพิ่มประมาณไข่ 2 ฟอง (โปรตีน ~14 ก.) วันนี้ก็สมดุล",

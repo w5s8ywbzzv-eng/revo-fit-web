@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>チャレンジ — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s; min-height:600px;">
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">チャレンジ</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:18px 18px 8px;">
+    <p id="lead" style="font-size:12px; color:#8A7E68; margin:0 0 14px; line-height:1.6;"></p>
+    <button id="createBtn" style="width:100%; background:transparent; border:0.5px dashed #3A352A; border-radius:13px; padding:13px; color:#B0A488; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; margin:0 0 16px;"><i class="ti ti-plus" style="font-size:16px;"></i><span id="createLbl"></span></button>
+    <div id="createPanel" style="display:none; border-radius:16px; padding:16px; margin:0 0 16px;"></div>
+    <div id="listWrap"></div>
+  </div>
+  <div style="height:12px;"></div>
+
+</div>
+</div>
+<script>
+(function(){
+  var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+  var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+  var D={"日本語": {"hdr": "チャレンジ", "lead": "7日・30日・90日。続けるほど、あなたが変わります。", "create": "チャレンジを作る", "periodLbl": "期間をえらぶ", "themeLbl": "テーマをえらぶ", "start": "はじめる", "activeLbl": "挑戦中", "doneLbl": "これまでのチャレンジ", "empty": "最初のチャレンジを作ってみましょう。7日から始めるのがおすすめです。", "left": "残り{d}日", "achieved": "達成 {n}/{t}日", "rate": "達成率 {p}%", "any": "毎日記録", "del": "削除", "delMsg": "このチャレンジを削除しますか？", "fin": "完了", "day": "日", "max": "同時に挑戦できるのは3つまでです"}, "English": {"hdr": "Challenges", "lead": "7, 30, or 90 days. The longer you keep going, the more you change.", "create": "Create a challenge", "periodLbl": "Choose a period", "themeLbl": "Choose a theme", "start": "Start", "activeLbl": "In progress", "doneLbl": "Past challenges", "empty": "Create your first challenge. Starting with 7 days is a good idea.", "left": "{d} days left", "achieved": "Done {n}/{t} days", "rate": "{p}% achieved", "any": "Log daily", "del": "Delete", "delMsg": "Delete this challenge?", "fin": "Finished", "day": "days", "max": "You can run up to 3 challenges at once"}, "简体中文": {"hdr": "挑战", "lead": "7天·30天·90天。坚持越久，改变越大。", "create": "创建挑战", "periodLbl": "选择周期", "themeLbl": "选择主题", "start": "开始", "activeLbl": "进行中", "doneLbl": "过去的挑战", "empty": "创建第一个挑战吧。建议从7天开始。", "left": "剩余{d}天", "achieved": "完成 {n}/{t}天", "rate": "达成率 {p}%", "any": "每天记录", "del": "删除", "delMsg": "要删除这个挑战吗？", "fin": "已结束", "day": "天", "max": "最多同时进行3个挑战"}, "繁體中文": {"hdr": "挑戰", "lead": "7天·30天·90天。堅持越久，改變越大。", "create": "建立挑戰", "periodLbl": "選擇週期", "themeLbl": "選擇主題", "start": "開始", "activeLbl": "進行中", "doneLbl": "過去的挑戰", "empty": "建立第一個挑戰吧。建議從7天開始。", "left": "剩餘{d}天", "achieved": "完成 {n}/{t}天", "rate": "達成率 {p}%", "any": "每天記錄", "del": "刪除", "delMsg": "要刪除這個挑戰嗎？", "fin": "已結束", "day": "天", "max": "最多同時進行3個挑戰"}, "한국어": {"hdr": "챌린지", "lead": "7일·30일·90일. 이어갈수록 달라져요.", "create": "챌린지 만들기", "periodLbl": "기간 선택", "themeLbl": "테마 선택", "start": "시작", "activeLbl": "도전 중", "doneLbl": "지난 챌린지", "empty": "첫 챌린지를 만들어 보세요. 7일부터가 좋아요.", "left": "남은 {d}일", "achieved": "달성 {n}/{t}일", "rate": "달성률 {p}%", "any": "매일 기록", "del": "삭제", "delMsg": "이 챌린지를 삭제할까요?", "fin": "종료", "day": "일", "max": "동시에 3개까지 도전할 수 있어요"}, "Français": {"hdr": "Défis", "lead": "7, 30 ou 90 jours. Plus vous tenez, plus vous changez.", "create": "Créer un défi", "periodLbl": "Choisir la durée", "themeLbl": "Choisir le thème", "start": "Commencer", "activeLbl": "En cours", "doneLbl": "Défis passés", "empty": "Créez votre premier défi. 7 jours, c'est un bon début.", "left": "{d} j restants", "achieved": "Fait {n}/{t} j", "rate": "{p} % réussi", "any": "Journal quotidien", "del": "Supprimer", "delMsg": "Supprimer ce défi ?", "fin": "Terminé", "day": "jours", "max": "3 défis simultanés maximum"}, "Español": {"hdr": "Retos", "lead": "7, 30 o 90 días. Cuanto más sigas, más cambias.", "create": "Crear un reto", "periodLbl": "Elige la duración", "themeLbl": "Elige el tema", "start": "Empezar", "activeLbl": "En curso", "doneLbl": "Retos pasados", "empty": "Crea tu primer reto. Empezar con 7 días va bien.", "left": "Quedan {d} días", "achieved": "Hecho {n}/{t} días", "rate": "{p}% logrado", "any": "Registro diario", "del": "Eliminar", "delMsg": "¿Eliminar este reto?", "fin": "Terminado", "day": "días", "max": "Hasta 3 retos a la vez"}, "Deutsch": {"hdr": "Challenges", "lead": "7, 30 oder 90 Tage. Je länger du dranbleibst, desto mehr veränderst du dich.", "create": "Challenge erstellen", "periodLbl": "Zeitraum wählen", "themeLbl": "Thema wählen", "start": "Starten", "activeLbl": "Läuft", "doneLbl": "Frühere Challenges", "empty": "Erstelle deine erste Challenge. 7 Tage sind ein guter Start.", "left": "Noch {d} Tage", "achieved": "Geschafft {n}/{t} Tage", "rate": "{p} % erreicht", "any": "Täglich loggen", "del": "Löschen", "delMsg": "Diese Challenge löschen?", "fin": "Beendet", "day": "Tage", "max": "Maximal 3 Challenges gleichzeitig"}, "Italiano": {"hdr": "Sfide", "lead": "7, 30 o 90 giorni. Più continui, più cambi.", "create": "Crea una sfida", "periodLbl": "Scegli la durata", "themeLbl": "Scegli il tema", "start": "Inizia", "activeLbl": "In corso", "doneLbl": "Sfide passate", "empty": "Crea la tua prima sfida. Iniziare con 7 giorni va benissimo.", "left": "{d} giorni rimasti", "achieved": "Fatto {n}/{t} giorni", "rate": "{p}% raggiunto", "any": "Registra ogni giorno", "del": "Elimina", "delMsg": "Eliminare questa sfida?", "fin": "Conclusa", "day": "giorni", "max": "Massimo 3 sfide alla volta"}, "Português": {"hdr": "Desafios", "lead": "7, 30 ou 90 dias. Quanto mais você continua, mais você muda.", "create": "Criar desafio", "periodLbl": "Escolha o período", "themeLbl": "Escolha o tema", "start": "Começar", "activeLbl": "Em andamento", "doneLbl": "Desafios anteriores", "empty": "Crie seu primeiro desafio. Começar com 7 dias é uma boa.", "left": "Faltam {d} dias", "achieved": "Feito {n}/{t} dias", "rate": "{p}% alcançado", "any": "Registrar todo dia", "del": "Excluir", "delMsg": "Excluir este desafio?", "fin": "Encerrado", "day": "dias", "max": "Até 3 desafios ao mesmo tempo"}, "ภาษาไทย": {"hdr": "ชาเลนจ์", "lead": "7·30·90 วัน ยิ่งทำต่อ ยิ่งเปลี่ยน", "create": "สร้างชาเลนจ์", "periodLbl": "เลือกช่วงเวลา", "themeLbl": "เลือกธีม", "start": "เริ่ม", "activeLbl": "กำลังท้าทาย", "doneLbl": "ชาเลนจ์ที่ผ่านมา", "empty": "สร้างชาเลนจ์แรกกันเถอะ เริ่มที่ 7 วันกำลังดี", "left": "เหลือ {d} วัน", "achieved": "ทำได้ {n}/{t} วัน", "rate": "สำเร็จ {p}%", "any": "บันทึกทุกวัน", "del": "ลบ", "delMsg": "ลบชาเลนจ์นี้?", "fin": "จบแล้ว", "day": "วัน", "max": "ท้าทายพร้อมกันได้สูงสุด 3 รายการ"}, "हिन्दी": {"hdr": "चैलेंज", "lead": "7·30·90 दिन। जितना जारी रखेंगे, उतना बदलेंगे।", "create": "चैलेंज बनाएँ", "periodLbl": "अवधि चुनें", "themeLbl": "थीम चुनें", "start": "शुरू करें", "activeLbl": "जारी", "doneLbl": "पिछले चैलेंज", "empty": "पहला चैलेंज बनाएँ। 7 दिन से शुरुआत अच्छी है।", "left": "{d} दिन बाक़ी", "achieved": "पूरा {n}/{t} दिन", "rate": "{p}% हासिल", "any": "रोज़ रिकॉर्ड", "del": "हटाएँ", "delMsg": "यह चैलेंज हटाएँ?", "fin": "समाप्त", "day": "दिन", "max": "एक साथ अधिकतम 3 चैलेंज"}, "Tiếng Việt": {"hdr": "Thử thách", "lead": "7, 30 hay 90 ngày. Càng duy trì, bạn càng thay đổi.", "create": "Tạo thử thách", "periodLbl": "Chọn thời gian", "themeLbl": "Chọn chủ đề", "start": "Bắt đầu", "activeLbl": "Đang diễn ra", "doneLbl": "Thử thách đã qua", "empty": "Hãy tạo thử thách đầu tiên. Bắt đầu với 7 ngày là hợp lý.", "left": "Còn {d} ngày", "achieved": "Đạt {n}/{t} ngày", "rate": "Hoàn thành {p}%", "any": "Ghi mỗi ngày", "del": "Xóa", "delMsg": "Xóa thử thách này?", "fin": "Kết thúc", "day": "ngày", "max": "Tối đa 3 thử thách cùng lúc"}, "Bahasa Indonesia": {"hdr": "Tantangan", "lead": "7, 30, atau 90 hari. Makin lanjut, makin berubah.", "create": "Buat tantangan", "periodLbl": "Pilih periode", "themeLbl": "Pilih tema", "start": "Mulai", "activeLbl": "Berjalan", "doneLbl": "Tantangan sebelumnya", "empty": "Buat tantangan pertamamu. Mulai dari 7 hari itu pas.", "left": "Sisa {d} hari", "achieved": "Tercapai {n}/{t} hari", "rate": "{p}% tercapai", "any": "Catat tiap hari", "del": "Hapus", "delMsg": "Hapus tantangan ini?", "fin": "Selesai", "day": "hari", "max": "Maksimal 3 tantangan sekaligus"}};
+  var FN={"日本語": {"sleep": "睡眠", "food": "食事", "move": "運動", "recover": "回復"}, "English": {"sleep": "Sleep", "food": "Food", "move": "Exercise", "recover": "Recovery"}, "简体中文": {"sleep": "睡眠", "food": "饮食", "move": "运动", "recover": "恢复"}, "繁體中文": {"sleep": "睡眠", "food": "飲食", "move": "運動", "recover": "恢復"}, "한국어": {"sleep": "수면", "food": "식사", "move": "운동", "recover": "회복"}, "Français": {"sleep": "Sommeil", "food": "Repas", "move": "Sport", "recover": "Récup"}, "Español": {"sleep": "Sueño", "food": "Comida", "move": "Ejercicio", "recover": "Recup."}, "Deutsch": {"sleep": "Schlaf", "food": "Essen", "move": "Sport", "recover": "Erholung"}, "Italiano": {"sleep": "Sonno", "food": "Cibo", "move": "Sport", "recover": "Recupero"}, "Português": {"sleep": "Sono", "food": "Comida", "move": "Exercício", "recover": "Recup."}, "ภาษาไทย": {"sleep": "การนอน", "food": "อาหาร", "move": "ออกกำลัง", "recover": "ฟื้นตัว"}, "हिन्दी": {"sleep": "नींद", "food": "खाना", "move": "कसरत", "recover": "रिकवरी"}, "Tiếng Việt": {"sleep": "Giấc ngủ", "food": "Ăn uống", "move": "Vận động", "recover": "Phục hồi"}, "Bahasa Indonesia": {"sleep": "Tidur", "food": "Makan", "move": "Olahraga", "recover": "Pemulihan"}};
+  var THEME_ICON={any:"ti-pencil-plus",sleep:"ti-moon",food:"ti-salad",move:"ti-flame",recover:"ti-heart"};
+  var THEME_COL={any:"#E3C56A",sleep:"#8A9AE0",food:"#5DCAA5",move:"#E0936A",recover:"#E89BB8"};
+  var cur=REVO.lang(), dark=REVO.dark();
+  var T={
+    dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",chip:"#1F1C16",chipBd:"#2A2620",panel:"#1A1814",panelBd:"#2A2620",bar:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+    light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",chip:"#FBF7F1",chipBd:"#F0EAE0",panel:"#FBF7F1",panelBd:"#F0EAE0",bar:"#EDE6D8",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+  };
+  var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+  function dd(){ return D[cur]||D["English"]; }
+  function fname(k){ return k==="any" ? dd().any : ((FN[cur]||FN["English"])[k]||k); }
+  function fmt(t2,v){ return String(t2).replace(/\{(\w+)\}/g,function(_,k){ return v[k]!=null?v[k]:""; }); }
+
+  /* チャレンジ作成はベーシック以上の特典（Lifeと同一ルール・オーナー決定 2026-07-12） */
+  function paidEntitled(){
+    try{ var sb2=JSON.parse(localStorage.getItem('revo.sub')||'null');
+      return sb2 && (sb2.plan==='basic'||sb2.plan==='standard'||sb2.plan==='cross') && (sb2.status==null||sb2.status==='active'||sb2.status==='trialing');
+    }catch(e){ return false; }
+  }
+  var creating=false, selDays=7, selType="any";
+  function renderCreate(){
+    var t=dark?T.dark:T.light, d=dd();
+    var p=$('createPanel');
+    if(!creating){ p.style.display="none"; return; }
+    p.style.display="block";
+    p.style.background=t.panel; p.style.border="0.5px solid "+t.panelBd;
+    var days=[7,30,90].map(function(n){
+      var on=(selDays===n);
+      return '<span class="chDay" data-n="'+n+'" style="font-size:13px; padding:8px 16px; border-radius:999px; cursor:pointer; font-weight:600; '+(on?'background:'+t.accent+'; color:'+(dark?'#16140F':'#FFFFFF')+'; border:0.5px solid '+t.accent+';':'background:'+t.chip+'; color:'+t.sub+'; border:0.5px solid '+t.chipBd+';')+'">'+n+d.day+'</span>';
+    }).join("");
+    var ths=["any","sleep","food","move","recover"].map(function(k){
+      var on=(selType===k), c=THEME_COL[k];
+      return '<span class="chTheme" data-k="'+k+'" style="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; '+(on?'background:'+c+'22; color:'+c+'; border:1.5px solid '+c+';':'background:'+t.chip+'; color:'+t.sub+'; border:0.5px solid '+t.chipBd+';')+'"><i class="ti '+THEME_ICON[k]+'" style="font-size:13px;"></i>'+fname(k)+'</span>';
+    }).join("");
+    p.innerHTML='<p style="font-size:11px; color:'+t.sub+'; margin:0 0 9px; font-weight:500;">'+d.periodLbl+'</p>'+
+      '<div style="display:flex; gap:8px; margin:0 0 14px;">'+days+'</div>'+
+      '<p style="font-size:11px; color:'+t.sub+'; margin:0 0 9px; font-weight:500;">'+d.themeLbl+'</p>'+
+      '<div style="display:flex; flex-wrap:wrap; gap:7px; margin:0 0 16px;">'+ths+'</div>'+
+      '<button id="chStart" style="width:100%; background:'+t.accent+'; border:none; color:'+(dark?'#16140F':'#FFFFFF')+'; font-size:14px; font-weight:600; padding:13px; border-radius:12px; cursor:pointer;">'+d.start+'</button>';
+    p.querySelectorAll('.chDay').forEach(function(c2){ c2.onclick=function(){ selDays=+c2.getAttribute('data-n'); renderCreate(); }; });
+    p.querySelectorAll('.chTheme').forEach(function(c2){ c2.onclick=function(){ selType=c2.getAttribute('data-k'); renderCreate(); }; });
+    $('chStart').onclick=function(){
+      if(!paidEntitled()){ REVO.go('plans'); return; }
+      var ch=REVO.addChallenge(selType, selDays);
+      if(!ch){ alert(dd().max); return; }
+      creating=false; renderCreate(); renderList();
+    };
+  }
+  function card(ch){
+    var t=dark?T.dark:T.light, d=dd();
+    var pr=REVO.challengeProgress(ch);
+    var c=THEME_COL[ch.type]||t.accent;
+    var pct=Math.round(pr.achieved/pr.target*100);
+    var meta = pr.over
+      ? '<span style="font-size:11px; color:'+c+'; font-weight:600;">'+fmt(d.rate,{p:pr.rate})+'</span><span style="font-size:10px; color:'+t.muted+'; background:'+t.chip+'; padding:2px 9px; border-radius:999px; border:0.5px solid '+t.chipBd+';">'+d.fin+'</span>'
+      : '<span style="font-size:11px; color:'+t.sub+';">'+fmt(d.achieved,{n:pr.achieved,t:pr.target})+'</span><span style="font-size:11px; color:'+t.sub+';">'+fmt(d.left,{d:pr.left})+'</span>';
+    return '<div style="background:'+t.card+'; border:0.5px solid '+t.cardBd+'; border-radius:15px; padding:14px 15px; margin:0 0 9px;">'+
+      '<div style="display:flex; align-items:center; gap:10px; margin:0 0 10px;">'+
+        '<div style="width:34px; height:34px; border-radius:10px; background:'+c+'22; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+(THEME_ICON[ch.type]||"ti-flag")+'" style="font-size:17px; color:'+c+';"></i></div>'+
+        '<div style="flex:1;"><p style="font-size:13px; color:'+t.txt+'; margin:0; font-weight:600;">'+fname(ch.type)+' · '+ch.days+d.day+'</p></div>'+
+        '<i class="ti ti-x chDel" data-id="'+ch.id+'" style="font-size:15px; color:'+t.muted+'; cursor:pointer; padding:4px;"></i>'+
+      '</div>'+
+      '<div style="width:100%; height:6px; background:'+t.bar+'; border-radius:3px; overflow:hidden; margin:0 0 8px;"><div style="width:'+pct+'%; height:6px; background:'+c+'; border-radius:3px; transition:width 0.4s;"></div></div>'+
+      '<div style="display:flex; align-items:center; justify-content:space-between;">'+meta+'</div>'+
+    '</div>';
+  }
+  function renderList(){
+    var t=dark?T.dark:T.light, d=dd();
+    var all=REVO.challenges();
+    var act=[], done=[];
+    all.forEach(function(ch){ (REVO.challengeProgress(ch).over?done:act).push(ch); });
+    var h="";
+    if(!all.length){
+      h='<div style="background:'+t.card+'; border:0.5px solid '+t.cardBd+'; border-radius:15px; padding:22px 18px; text-align:center;">'+
+        '<i class="ti ti-flag" style="font-size:26px; color:'+t.muted+';"></i>'+
+        '<p style="font-size:12px; color:'+t.sub+'; margin:10px 0 0; line-height:1.7;">'+d.empty+'</p></div>';
+    } else {
+      if(act.length){ h+='<p style="font-size:11px; color:'+t.sub+'; margin:0 0 9px; font-weight:500;">'+d.activeLbl+'</p>'+act.map(card).join(""); }
+      if(done.length){ h+='<p style="font-size:11px; color:'+t.sub+'; margin:14px 0 9px; font-weight:500;">'+d.doneLbl+'</p>'+done.map(card).join(""); }
+    }
+    $('listWrap').innerHTML=h;
+    document.querySelectorAll('.chDel').forEach(function(x){
+      x.onclick=function(e){ e.stopPropagation();
+        if(!confirm(dd().delMsg)) return;
+        REVO.removeChallenge(x.getAttribute('data-id')); renderList();
+      };
+    });
+  }
+  function applyUI(){
+    var d=dd();
+    $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead;
+    $('createLbl').innerHTML=d.create+(paidEntitled()?'':' <i class="ti ti-lock" style="font-size:12px; vertical-align:-1px;"></i>');
+    document.title=d.hdr+" — revo fit";
+    renderCreate(); renderList();
+  }
+  function applyTheme(){
+    var t=dark?T.dark:T.light;
+    $('screen').style.background=t.bg;
+    $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+    $('lead').style.color=t.sub;
+    $('createBtn').style.borderColor= dark?"#3A352A":"#E0DACE"; $('createBtn').style.color=t.sub;
+    [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+    $('langBtn').querySelector('i').style.color=t.iconCol;
+    $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+    $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+    renderCreate(); renderList();
+  }
+  function renderMenu(){
+    var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+    $('langMenu').innerHTML="";
+    langs.forEach(function(l){
+      var on=(l===cur);
+      var row=document.createElement('div');
+      row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+      row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+      row.onmouseleave=function(){ row.style.background="transparent"; };
+      row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+      row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+      $('langMenu').appendChild(row);
+    });
+  }
+  $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+  $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+  document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+  $('langMenu').onclick=function(e){ e.stopPropagation(); };
+  $('createBtn').onclick=function(e){ e.stopPropagation();
+    if(!paidEntitled()){ REVO.go('plans'); return; }
+    creating=!creating; renderCreate(); };
+  applyUI(); applyTheme();
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(bk){ bk.style.cursor='pointer'; bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } }; }
+})();
+</script>
+</body>
+</html>

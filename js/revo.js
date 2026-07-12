@@ -19,7 +19,8 @@
     auth: "revo.auth",
     sub: "revo.sub",          // 課金プラン（ローカル・プレビュー）
     posts: "revo.posts",      // SNS投稿（クラウド同期はrevo-cloud）
-    bgTheme: "revo.bgTheme"   // 背景テーマ（null=通常 / 5色キー=パステル背景）
+    bgTheme: "revo.bgTheme",  // 背景テーマ（null=通常 / 5色キー=パステル背景）
+    challenges: "revo.challenges" // 7/30/90日チャレンジ（ユーザー作成）
   };
 
   function get(k, dflt){
@@ -460,6 +461,45 @@
     out.text = A.recoverLow; return out;
   }
 
+
+  /* ---------- 7/30/90日チャレンジ（オーナー承認 2026-07-12：ユーザー自身が作成） ---------- */
+  function keyOfDate(d){
+    var m=("0"+(d.getMonth()+1)).slice(-2), dd=("0"+d.getDate()).slice(-2);
+    return d.getFullYear()+"-"+m+"-"+dd;
+  }
+  function challenges(){ return get(K.challenges, []); }
+  function addChallenge(type, days){
+    var arr=get(K.challenges, []);
+    if(arr.filter(function(c){ return !challengeProgress(c).over; }).length>=3) return null;  // 同時挑戦は3つまで
+    var ch={ id:"ch-"+Date.now(), type:type, days:days, start:todayKey(), created_at:new Date().toISOString() };
+    arr.unshift(ch); set(K.challenges, arr);
+    return ch;
+  }
+  function removeChallenge(id){
+    set(K.challenges, get(K.challenges, []).filter(function(c){ return c.id!==id; }));
+  }
+  function chQualifies(lg, type){
+    if(!lg) return false;
+    if(type==="sleep")   return lg.sleep && lg.sleep.minutes!=null;
+    if(type==="food")    return mealsLogged(lg.food)>0;
+    if(type==="move")    return lg.move && (lg.move.totalMin>0 || (lg.move.exercises||[]).length>0);
+    if(type==="recover") return lg.condition && (lg.condition.mood!=null || lg.condition.bowel!=null);
+    return true;  // any＝何かひとつでも記録
+  }
+  function challengeProgress(ch){
+    var logs=allLogs(), n=0;
+    var start=dateOf(ch.start);
+    var elapsed=daysBetween(ch.start, todayKey())+1;
+    for(var i=0;i<ch.days && i<elapsed;i++){
+      var d=new Date(start); d.setDate(d.getDate()+i);
+      var k2=keyOfDate(d);
+      if(logs[k2] && chQualifies(normalizeLog(logs[k2]), ch.type)) n++;
+    }
+    var over = elapsed>=ch.days;
+    return { achieved:n, target:ch.days, left:Math.max(0, ch.days-elapsed), over:over,
+             rate:Math.round(n/ch.days*100), elapsed:Math.min(elapsed, ch.days) };
+  }
+
   /* ---------- SNS投稿（training/recipe） ---------- */
   function posts(){ return get(K.posts, []); }
   function addPost(p){
@@ -778,6 +818,10 @@
     allLogs: allLogs,
     stats: stats,
     advice: advice,
+    challenges: challenges,
+    addChallenge: addChallenge,
+    removeChallenge: removeChallenge,
+    challengeProgress: challengeProgress,
     lang: function(){ return get(K.lang, "日本語"); },
     setLang: function(l){ set(K.lang, l); },
     dark: function(){ return get(K.dark, true); },
