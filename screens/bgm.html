@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BGM — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; min-height:660px; display:flex; flex-direction:column; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">revo fit のBGMプレイヤー。運動に合うテンポの曲を聴きながら体を動かせる。再生・停止・シーク・音量。曲は差し替えできる。明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">BGM</p>
+    </div>
+    <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+  </div>
+
+  <p id="lead" style="font-size:12px; color:#8A7E68; margin:0; padding:16px 22px 0; line-height:1.6; text-align:center;">運動に合うテンポで。聴きながら、体を動かしましょう。</p>
+
+  <!-- アートワーク／ビジュアライザー -->
+  <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 22px;">
+    <div id="art" style="width:200px; height:200px; border-radius:24px; background:linear-gradient(145deg,#2A2418,#1A1814); border:0.5px solid #3A352A; display:flex; align-items:flex-end; justify-content:center; gap:5px; padding:30px 24px; position:relative; overflow:hidden; box-shadow:0 18px 50px -18px rgba(227,197,106,0.3);">
+      <div class="bar" style="width:7px; background:#E3C56A; border-radius:3px; height:30%;"></div>
+      <div class="bar" style="width:7px; background:#E3C56A; border-radius:3px; height:60%;"></div>
+      <div class="bar" style="width:7px; background:#E3C56A; border-radius:3px; height:85%;"></div>
+      <div class="bar" style="width:7px; background:#E3C56A; border-radius:3px; height:45%;"></div>
+      <div class="bar" style="width:7px; background:#E3C56A; border-radius:3px; height:70%;"></div>
+      <div class="bar" style="width:7px; background:#E3C56A; border-radius:3px; height:35%;"></div>
+      <div class="bar" style="width:7px; background:#E3C56A; border-radius:3px; height:55%;"></div>
+    </div>
+
+    <!-- 曲情報 -->
+    <p id="trackTitle" style="font-size:20px; font-weight:600; color:#F0EBE2; margin:26px 0 4px; text-align:center;">City Pulse</p>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <p id="trackArtist" style="font-size:12px; color:#8A7E68; margin:0;">Revo Original</p>
+      <span id="bpmBadge" style="font-size:10px; color:#E3C56A; border:0.5px solid #E3C56A; padding:2px 8px; border-radius:999px;">124 BPM</span>
+    </div>
+
+    <!-- シークバー -->
+    <div style="width:100%; margin:24px 0 0;">
+      <div id="seekTrack" style="width:100%; height:5px; background:#2A2620; border-radius:3px; cursor:pointer; position:relative;">
+        <div id="seekFill" style="width:0%; height:5px; background:#E3C56A; border-radius:3px;"></div>
+        <div id="seekKnob" style="width:13px; height:13px; border-radius:50%; background:#E3C56A; position:absolute; top:-4px; left:0%; transform:translateX(-50%); box-shadow:0 2px 6px rgba(0,0,0,0.4);"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin:8px 0 0;">
+        <span id="curTime" style="font-size:11px; color:#6E6555;">0:00</span>
+        <span id="durTime" style="font-size:11px; color:#6E6555;">0:00</span>
+      </div>
+    </div>
+
+    <!-- コントロール -->
+    <div style="display:flex; align-items:center; justify-content:center; gap:26px; margin:24px 0 0;">
+      <button id="prevBtn" style="background:transparent; border:none; cursor:pointer;"><i class="ti ti-player-skip-back-filled" style="font-size:26px; color:#8A7E68;"></i></button>
+      <button id="playBtn" style="width:64px; height:64px; border-radius:50%; background:#E3C56A; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 24px -6px rgba(227,197,106,0.5);"><i id="playIcon" class="ti ti-player-play-filled" style="font-size:28px; color:#16140F;"></i></button>
+      <button id="nextBtn" style="background:transparent; border:none; cursor:pointer;"><i class="ti ti-player-skip-forward-filled" style="font-size:26px; color:#8A7E68;"></i></button>
+    </div>
+
+    <!-- 音量 -->
+    <div style="display:flex; align-items:center; gap:10px; width:100%; margin:24px 0 0;">
+      <i class="ti ti-volume" style="font-size:17px; color:#6E6555;"></i>
+      <div id="volTrack" style="flex:1; height:4px; background:#2A2620; border-radius:2px; cursor:pointer; position:relative;">
+        <div id="volFill" style="width:80%; height:4px; background:#8A7E68; border-radius:2px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audio" preload="metadata"></audio>
+
+</div>
+</div>
+<style>
+@keyframes barPulse{0%,100%{transform:scaleY(0.4);}50%{transform:scaleY(1);}}
+.playing .bar{animation:barPulse 0.6s ease-in-out infinite; transform-origin:bottom;}
+.playing .bar:nth-child(1){animation-delay:0s;}
+.playing .bar:nth-child(2){animation-delay:0.12s;}
+.playing .bar:nth-child(3){animation-delay:0.24s;}
+.playing .bar:nth-child(4){animation-delay:0.36s;}
+.playing .bar:nth-child(5){animation-delay:0.18s;}
+.playing .bar:nth-child(6){animation-delay:0.3s;}
+.playing .bar:nth-child(7){animation-delay:0.42s;}
+</style>
+<script>
+  (function(){
+    // ===== 曲リスト（ここを差し替えれば曲が変わる・将来プレイリスト化可能） =====
+    var TRACKS=[
+      { title:"City Pulse", artist:"Revo Original", bpm:124, src:"../assets/audio/City_Pulse.mp3" }
+      // 追加曲はここに { title, artist, bpm, src } を足すだけ
+    ];
+    // =====================================================================
+    var cur=0, dark=true;
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    var audio=$('audio');
+    function loadTrack(i){
+      cur=(i+TRACKS.length)%TRACKS.length;
+      var tr=TRACKS[cur];
+      $('trackTitle').textContent=tr.title; $('trackArtist').textContent=tr.artist;
+      $('bpmBadge').textContent=tr.bpm+" BPM";
+      audio.src=tr.src;
+      // 複数曲のときだけスキップボタンを有効に見せる
+      var multi=TRACKS.length>1;
+      $('prevBtn').style.opacity=multi?"1":"0.35"; $('nextBtn').style.opacity=multi?"1":"0.35";
+    }
+    function fmt(s){ s=Math.floor(s||0); var m=Math.floor(s/60); var ss=s%60; return m+":"+(ss<10?"0":"")+ss; }
+    function togglePlay(){
+      if(audio.paused){ audio.play(); } else { audio.pause(); }
+    }
+    audio.addEventListener('play', function(){ $('playIcon').className="ti ti-player-pause-filled"; $('art').classList.add('playing'); });
+    audio.addEventListener('pause', function(){ $('playIcon').className="ti ti-player-play-filled"; $('art').classList.remove('playing'); });
+    audio.addEventListener('loadedmetadata', function(){ $('durTime').textContent=fmt(audio.duration); });
+    audio.addEventListener('timeupdate', function(){
+      var p= audio.duration ? (audio.currentTime/audio.duration*100) : 0;
+      $('seekFill').style.width=p+"%"; $('seekKnob').style.left=p+"%"; $('curTime').textContent=fmt(audio.currentTime);
+    });
+    audio.addEventListener('ended', function(){ if(TRACKS.length>1){ loadTrack(cur+1); audio.play(); } });
+    $('playBtn').onclick=togglePlay;
+    $('prevBtn').onclick=function(){ if(TRACKS.length>1){ loadTrack(cur-1); audio.play(); } };
+    $('nextBtn').onclick=function(){ if(TRACKS.length>1){ loadTrack(cur+1); audio.play(); } };
+    $('seekTrack').onclick=function(e){ var r=this.getBoundingClientRect(); var p=(e.clientX-r.left)/r.width; if(audio.duration) audio.currentTime=p*audio.duration; };
+    $('volTrack').onclick=function(e){ var r=this.getBoundingClientRect(); var p=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); audio.volume=p; $('volFill').style.width=(p*100)+"%"; };
+    audio.volume=0.8;
+    // テーマ
+    var T={dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",hdrBd:"#2A2620",art1:"#2A2418",art2:"#1A1814",artBd:"#3A352A",track:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",accent:"#E3C56A"},
+             light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",hdrBd:"#F0EAE0",art1:"#FBF3E0",art2:"#F4EFE6",artBd:"#F0EAE0",track:"#EDE6D8",iconBg:"#FFFFFF",iconBd:"#E8E0CE",accent:"#BA7517"}};
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor=t.hdrBd; $('hdrTtl').style.color=t.txt; $('lead').style.color=t.sub;
+      $('art').style.background="linear-gradient(145deg,"+t.art1+","+t.art2+")"; $('art').style.borderColor=t.artBd;
+      document.querySelectorAll('.bar').forEach(function(b){ b.style.background=t.accent; });
+      $('trackTitle').style.color=t.txt; $('trackArtist').style.color=t.sub;
+      $('bpmBadge').style.color=t.accent; $('bpmBadge').style.borderColor=t.accent;
+      $('seekTrack').style.background=t.track; $('seekFill').style.background=t.accent; $('seekKnob').style.background=t.accent;
+      $('curTime').style.color=t.muted; $('durTime').style.color=t.muted;
+      $('playBtn').style.background=t.accent; $('playIcon').style.color= dark?"#16140F":"#FFFFFF";
+      $('prevBtn').querySelector('i').style.color=t.sub; $('nextBtn').querySelector('i').style.color=t.sub;
+      $('volTrack').style.background=t.track; $('volFill').style.background=t.sub;
+      $('themeBtn').style.background=t.iconBg; $('themeBtn').style.borderColor=t.iconBd;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+    }
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    loadTrack(0); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+<script>
+(function(){
+  /* BGM状態をアプリ全体と共有（再生位置・ON/OFF を localStorage revo.bgm に保存） */
+  function findAudio(){
+    var a=document.getElementById('audio');
+    if(a && a.tagName!=='AUDIO'){ a=a.querySelector && a.querySelector('audio'); }
+    return (a && a.tagName==='AUDIO') ? a : document.querySelector('audio');
+  }
+  var a=findAudio(); if(!a) return;
+  function save(playing){
+    try{ localStorage.setItem('revo.bgm', JSON.stringify({playing:playing, t:a.currentTime||0, vol:(a.volume!=null?a.volume:1), track:'City_Pulse', at:Date.now()})); }catch(e){}
+  }
+  try{
+    var st=JSON.parse(localStorage.getItem('revo.bgm')||'null');
+    if(st && st.playing){
+      try{ a.currentTime=st.t||0; }catch(e){}
+      if(st.vol!=null) a.volume=st.vol;
+      var kick=function(){ a.play().then(function(){ document.removeEventListener('pointerdown',kick); }).catch(function(){}); };
+      a.play().catch(function(){ document.addEventListener('pointerdown',kick); });
+    }
+  }catch(e){}
+  a.addEventListener('play', function(){ save(true); });
+  a.addEventListener('pause', function(){ save(false); });
+  setInterval(function(){ if(!a.paused) save(true); }, 2000);
+  window.addEventListener('pagehide', function(){ save(!a.paused); });
+})();
+</script>
+</body>
+</html>

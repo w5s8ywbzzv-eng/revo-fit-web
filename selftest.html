@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>revo fit — Supabase 接続セルフテスト（開発用）</title>
+<style>
+  body{font-family:-apple-system,"Segoe UI",sans-serif;background:#16140F;color:#F0EBE2;margin:0;padding:24px;line-height:1.6;}
+  .wrap{max-width:680px;margin:0 auto;}
+  h1{font-size:18px;font-weight:600;} h1 small{color:#8A7E68;font-weight:400;font-size:12px;display:block;margin-top:4px;}
+  .test{display:flex;gap:10px;align-items:flex-start;background:#1F1C16;border:1px solid #3A352A;border-radius:12px;padding:12px 14px;margin:8px 0;}
+  .st{width:22px;flex-shrink:0;text-align:center;}
+  .ok{color:#5DCAA5;} .ng{color:#E0605D;} .wait{color:#8A7E68;} .warn{color:#E3C56A;}
+  .name{font-size:14px;font-weight:600;} .msg{font-size:12px;color:#B0A488;margin-top:2px;white-space:pre-wrap;}
+  input{background:#16140F;border:1px solid #3A352A;border-radius:9px;color:#F0EBE2;padding:10px 12px;font-size:14px;width:240px;}
+  button{background:#E3C56A;border:none;color:#16140F;font-weight:600;border-radius:9px;padding:10px 16px;font-size:13px;cursor:pointer;margin-left:8px;}
+  .box{background:#1A1814;border:1px solid #2A2620;border-radius:12px;padding:14px;margin:14px 0;}
+  .note{font-size:11px;color:#6E6555;}
+  code{background:#26221B;padding:1px 6px;border-radius:5px;font-size:12px;}
+</style>
+<script src="js/config.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>Supabase 接続セルフテスト<small>revo fit 開発用ページ（アプリ本体には影響しません）。SETUP_SUPABASE.md のチェックリストを自動実行します。</small></h1>
+  <div id="tests"></div>
+
+  <div class="box" id="authBox" style="display:none;">
+    <p class="name" style="margin:0 0 8px;">メール認証テスト（あなたのメールアドレスで）</p>
+    <input id="email" type="email" placeholder="you@example.com">
+    <button id="sendBtn">Magic Link を送信</button>
+    <p class="note" style="margin-top:8px;">送信後、届いたメールのリンクをクリック → このページに戻ると、ログイン後のテスト（書込・RLS・復元）が自動で続行します。</p>
+  </div>
+
+  <p class="note">すべて緑になれば本番同期の準備完了です。このページ（selftest.html）は公開前に削除しても構いません。</p>
+</div>
+
+<script>
+(function(){
+  var cfg = window.REVO_CONFIG||{};
+  var box = document.getElementById('tests');
+  var tests = [];
+  function T(name){
+    var el=document.createElement('div'); el.className='test';
+    el.innerHTML='<div class="st wait">…</div><div><div class="name">'+name+'</div><div class="msg"></div></div>';
+    box.appendChild(el);
+    return {
+      ok:function(m){ el.querySelector('.st').textContent='✔'; el.querySelector('.st').className='st ok'; el.querySelector('.msg').textContent=m||''; },
+      ng:function(m){ el.querySelector('.st').textContent='✘'; el.querySelector('.st').className='st ng'; el.querySelector('.msg').textContent=m||''; },
+      warn:function(m){ el.querySelector('.st').textContent='△'; el.querySelector('.st').className='st warn'; el.querySelector('.msg').textContent=m||''; }
+    };
+  }
+
+  var t1=T('1. config.js にキーが設定されている');
+  if(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY){ t1.ok(cfg.SUPABASE_URL); } else { t1.ng('js/config.js を設定してください'); return; }
+
+  var t2=T('2. supabase-js（CDN）の読み込み');
+  var t3=T('3. プロジェクトへの疎通');
+  var t4=T('4. スキーマ適用（6テーブル）');
+  var t5=T('5. RLS：未ログインでの書き込みが拒否される');
+  var t6=T('6. Storage バケット avatars（任意）');
+  var t7=T('7. ログイン（メール Magic Link）');
+  var t8=T('8. ログイン後：profile / daily_log / daily_score の書込→読出');
+
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+  s.onerror=function(){ t2.ng('CDN に到達できません（オフライン？）'); };
+  s.onload=function(){
+    t2.ok();
+    var sb=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);
+
+    // 3+4: テーブル存在確認
+    var tables=['profile','daily_log','daily_score','workout_set','meal_entry','water_intake'];
+    var missing=[], reached=false;
+    var chain=Promise.resolve();
+    tables.forEach(function(tb){
+      chain=chain.then(function(){
+        return sb.from(tb).select('*',{head:true,count:'exact'}).limit(1).then(function(r){
+          reached=true;
+          if(r.error){
+            if(/does not exist|relation|schema cache/i.test(r.error.message)) missing.push(tb);
+            // RLSによる拒否はテーブル存在の証拠なのでOK扱い
+          }
+        });
+      });
+    });
+    chain.then(function(){
+      t3.ok();
+      if(missing.length){ t4.ng('未作成: '+missing.join(', ')+'\nSQL Editor で supabase/schema.sql を実行してください'); }
+      else { t4.ok('profile / daily_log / daily_score / workout_set / meal_entry / water_intake'); }
+    }).catch(function(e){ t3.ng('接続失敗: '+(e&&e.message||e)); });
+
+    // 5: 未ログイン書込がRLSで拒否されること
+    sb.from('profile').insert({user_id:'00000000-0000-0000-0000-000000000000',nickname:'rls-test'}).then(function(r){
+      if(r.error){ t5.ok('拒否を確認: '+r.error.code); }
+      else { t5.ng('⚠ 未ログインで書き込めてしまいました。RLS設定を確認してください'); }
+    });
+
+    // 6: avatars バケット
+    sb.storage.from('avatars').list('',{limit:1}).then(function(r){
+      if(r.error){ t6.warn('未作成（任意）。作成する場合は Storage → New bucket "avatars"（Public）'); }
+      else { t6.ok(); }
+    });
+
+    // 7+8: 認証
+    function afterLogin(session){
+      t7.ok(session.user.email||session.user.id);
+      var uid=session.user.id;
+      var today=(function(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);})();
+      sb.from('profile').upsert({user_id:uid,nickname:'selftest',onboarded:false},{onConflict:'user_id'}).then(function(r1){
+        if(r1.error){ t8.ng('profile 書込失敗: '+r1.error.message); return; }
+        return sb.from('daily_log').upsert({user_id:uid,log_date:today,body_weight:65.0,payload:null},{onConflict:'user_id,log_date'}).then(function(r2){
+          if(r2.error){ t8.ng('daily_log 書込失敗: '+r2.error.message); return; }
+          return sb.from('daily_score').upsert({user_id:uid,log_date:today,total_score:1},{onConflict:'user_id,log_date'}).then(function(r3){
+            if(r3.error){ t8.ng('daily_score 書込失敗: '+r3.error.message); return; }
+            return sb.from('daily_log').select('body_weight,payload').eq('user_id',uid).eq('log_date',today).single().then(function(r4){
+              if(r4.error || !r4.data || r4.data.body_weight!==65){ t8.ng('読出検証失敗'); return; }
+              t8.ok('書込→読出 OK（このテスト行はそのまま残ります。削除する場合は Table Editor から）');
+            });
+          });
+        });
+      });
+    }
+    sb.auth.getSession().then(function(r){
+      var ses=r.data&&r.data.session;
+      if(ses){ afterLogin(ses); }
+      else{
+        t7.warn('未ログイン。下のフォームからメール認証を実行してください');
+        t8.warn('ログイン後に自動実行されます');
+        document.getElementById('authBox').style.display='block';
+        document.getElementById('sendBtn').onclick=function(){
+          var em=document.getElementById('email').value.trim();
+          if(!em) return;
+          sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.href.split('#')[0]}}).then(function(r2){
+            if(r2.error){ t7.ng('送信失敗: '+r2.error.message+'\nAuthentication → URL Configuration の Redirect URLs にこのページのURLを追加してください'); }
+            else { t7.warn('送信しました。メールのリンクをクリックしてこのページに戻ってください'); }
+          });
+        };
+        sb.auth.onAuthStateChange(function(_e,ses2){ if(ses2){ document.getElementById('authBox').style.display='none'; afterLogin(ses2); } });
+      }
+    });
+  };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

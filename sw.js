@@ -1,11 +1,37 @@
-<svg width="512" height="512" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <clipPath id="ic"><rect width="180" height="180" rx="40"/></clipPath>
-  </defs>
-  <g clip-path="url(#ic)">
-    <rect width="180" height="180" fill="#16140F"/>
-    <text x="90" y="70" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-weight="300" font-size="42" letter-spacing="1.5" fill="#F0EBE2">revo</text>
-    <rect x="0" y="116" width="180" height="64" fill="#E3C56A"/>
-    <text x="90" y="149" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-weight="700" font-size="32" letter-spacing="1" fill="#16140F">fit</text>
-  </g>
-</svg>
+/* revo fit — Service Worker（オフラインキャッシュ / ホーム追加要件） */
+var CACHE = "revo-fit-v1";
+var CORE = [
+  "./index.html",
+  "./manifest.webmanifest",
+  "./js/revo.js",
+  "./assets/icon-192.png",
+  "./assets/icon-512.png"
+];
+
+self.addEventListener("install", function(e){
+  e.waitUntil(
+    caches.open(CACHE).then(function(c){ return c.addAll(CORE); }).then(function(){ return self.skipWaiting(); })
+  );
+});
+
+self.addEventListener("activate", function(e){
+  e.waitUntil(
+    caches.keys().then(function(keys){
+      return Promise.all(keys.filter(function(k){ return k !== CACHE; }).map(function(k){ return caches.delete(k); }));
+    }).then(function(){ return self.clients.claim(); })
+  );
+});
+
+/* ネットワーク優先・失敗時キャッシュ（更新を素直に反映しつつオフラインでも動く） */
+self.addEventListener("fetch", function(e){
+  if(e.request.method !== "GET") return;
+  e.respondWith(
+    fetch(e.request).then(function(res){
+      var copy = res.clone();
+      caches.open(CACHE).then(function(c){ c.put(e.request, copy); });
+      return res;
+    }).catch(function(){
+      return caches.match(e.request);
+    })
+  );
+});

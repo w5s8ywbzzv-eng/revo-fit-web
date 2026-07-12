@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>フィード — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">フィード。仲間のトレーニング投稿や筋肉飯レシピが流れる。応援やフォローの入り口。ときどきスポンサーの紹介も。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:17px; font-weight:600; color:#F0EBE2; margin:0; transition:color 0.35s;">フィード</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- タブ -->
+  <div style="padding:12px 16px 0;">
+    <div id="tabRow" style="display:flex; gap:8px;"></div>
+  </div>
+
+  <div style="padding:14px 16px 20px; max-height:580px; overflow-y:auto;">
+    <div id="cards" style="display:flex; flex-direction:column; gap:12px;"></div>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // フィード項目。type: training/recipe/ad。数件ごとにad（ネイティブ広告）
+    var FEED=[
+      {type:"training", ini:"K", ac:"#2A2418", at:"#E3C56A", key:"p1", cheer:24, reply:5, ic:"ti-barbell", photo:"training"},
+      {type:"recipe", ini:"M", ac:"#26221C", at:"#D8A24E", key:"p2", cheer:38, reply:9, ic:"ti-flame", photo:"recipe"},
+      {type:"ad", adKind:"ranking", key:"rk1", ic:"ti-trophy", tab:"training"},
+      {type:"training", ini:"R", ac:"#222630", at:"#8A9AE0", key:"p3", cheer:17, reply:3, ic:"ti-barbell", photo:"training"},
+      {type:"ad", adKind:"sponsor", key:"ad1", ic:"ti-bolt", tab:"all"},
+      {type:"recipe", ini:"S", ac:"#2A2224", at:"#E08AA8", key:"p4", cheer:52, reply:14, ic:"ti-flame", photo:"recipe"},
+      {type:"ad", adKind:"recommend", key:"rc1", ic:"ti-leaf", tab:"recipe"},
+      {type:"training", ini:"Y", ac:"#1F2624", at:"#5DCAA5", key:"p5", cheer:31, reply:7, ic:"ti-barbell", photo:"training"},
+      {type:"ad", adKind:"sponsor", key:"ad2", ic:"ti-leaf", tab:"all"}
+    ];
+    /* ===== 実投稿（ローカル＋クラウド同期分）。実投稿があればサンプル投稿は表示しない ===== */
+    var _rp=(window.REVO&&REVO.posts)?REVO.posts():[];
+    var REAL=_rp.filter(function(p){ return p.kind==="training"||p.kind==="recipe"; }).map(function(p){
+      return {type:p.kind, real:true, post:p,
+        ini:(String(p.author_name||"?").trim().charAt(0)||"?").toUpperCase(),
+        ac:"#2A2418", at:"#E3C56A", key:"real:"+p.id, cheer:p.cheer_count||0, reply:0,
+        ic:(p.kind==="recipe"?"ti-flame":"ti-barbell"), photo:p.kind};
+    });
+    var _cloudMode = !!(window.REVO_CLOUD && REVO_CLOUD.enabled);
+    if(REAL.length){ FEED = REAL.concat(FEED.filter(function(f){ return f.type==="ad"; })); }
+    else if(_cloudMode){ FEED = FEED.filter(function(f){ return f.type==="ad"; }); }  /* 本番：他人のサンプルは出さない */
+    var D={
+      "日本語":{hdr:"フィード",tabs:["すべて","トレーニング","レシピ"],sponsor:"スポンサー",recommend:"revoのおすすめ",ranking:"人気ランキング",seeMore:"ランキングをもっと見る",cheer:"応援",reply:"返信",cheerBtn:"応援する",follow:"フォロー",adCta:"詳しく見る",
+        posts:{
+          p1:["Kai","胸・三頭を鍛えた","2時間前","今日は自己ベスト更新。ベンチ65kg×8、やっと上がった。継続は力ですね。"],
+          p2:["Mika","レンジ蒸し鶏のピリ辛だれ","4時間前","洗い物ゼロで高たんぱく。増量中の人におすすめです。#ズボラ飯"],
+          p3:["Ren","背中の日","6時間前","懸垂まだ5回だけど、先月は3回だった。ちょっとずつ。"],
+          p4:["Sara","オートミールお好み焼き","昨日","炭水化物とたんぱく質を一皿で。減量中でも罪悪感なし。#減量中"],
+          p5:["Yuki","脚トレやりきった","昨日","一番きらいな脚の日を、今日は逃げずにやれた。自分えらい。"]},
+        ads:{rk1:{t:"人気プロテイン",items:[["ホエイ プレーン","23g/食・溶けやすい"],["ソイ ココア","植物性・腹持ち◎"],["EAA オレンジ","トレ中の一杯に"]]},rc1:["さくら鶏むね","revoのおすすめ","柔らかいサラダチキン。1袋28g。コンビニでも。"],
+          ad1:["revoProtein","国産ホエイプロテイン","人工甘味料不使用・1食たんぱく質23g。トレーニーのために。"],
+          ad2:["GreenMeal","冷凍宅配の高たんぱく弁当","管理栄養士監修・PFC計算ずみ。忙しい日の一皿に。"]}},
+      "English":{hdr:"Feed",tabs:["All","Training","Recipes"],sponsor:"Sponsored",recommend:"revo picks",ranking:"Popular ranking",seeMore:"See full ranking",cheer:"Cheer",reply:"Reply",cheerBtn:"Support",follow:"Follow",adCta:"Learn more",
+        posts:{
+          p1:["Kai","Trained chest & triceps","2h ago","New PR today. Bench 65kg×8, finally got it up. Consistency really is strength."],
+          p2:["Mika","Microwave chicken, spicy sauce","4h ago","High protein, zero dishes. Great for anyone bulking. #lazymeal"],
+          p3:["Ren","Back day","6h ago","Only 5 pull-ups still, but last month it was 3. Bit by bit."],
+          p4:["Sara","Oatmeal okonomiyaki","Yesterday","Carbs and protein in one plate. No guilt even when cutting. #cutting"],
+          p5:["Yuki","Finished leg day","Yesterday","Leg day, the one I hate most — did it today without running. Proud of myself."]},
+        ads:{rk1:{t:"Popular protein",items:[["Whey plain","23g/serving, mixes easily"],["Soy cocoa","Plant-based, filling"],["EAA orange","A cup during training"]]},rc1:["Sakura chicken breast","revo picks","Tender salad chicken. 28g per pack. At convenience stores too."],
+          ad1:["revoProtein","Domestic whey protein","No artificial sweeteners · 23g protein per serving. Made for lifters."],
+          ad2:["GreenMeal","Frozen high-protein meal delivery","Dietitian-designed · PFC calculated. For your busy days."]}},
+      "简体中文":{hdr:"动态",tabs:["全部","训练","食谱"],sponsor:"赞助",recommend:"revo推荐",ranking:"人气排行",seeMore:"查看完整排行",cheer:"应援",reply:"回复",cheerBtn:"应援",follow:"关注",adCta:"了解更多",
+        posts:{
+          p1:["Kai","练了胸·三头","2小时前","今天刷新自己最佳。卧推65kg×8，终于推上去了。坚持就是力量。"],
+          p2:["Mika","微波蒸鸡配香辣酱","4小时前","零洗碗高蛋白。推荐给增肌中的人。#懒人餐"],
+          p3:["Ren","背部日","6小时前","引体还是只有5个，但上月才3个。一点一点来。"],
+          p4:["Sara","燕麦大阪烧","昨天","碳水和蛋白一盘搞定。减脂也没有负罪感。#减脂中"],
+          p5:["Yuki","练完腿了","昨天","最讨厌的腿日，今天没逃避做完了。我真棒。"]},
+        ads:{rk1:{t:"人气蛋白粉",items:[["乳清 原味","每份23g·易溶"],["大豆 可可","植物性·耐饿"],["EAA 橙味","训练中一杯"]]},rc1:["樱花鸡胸","revo推荐","柔嫩沙拉鸡。每袋28g。便利店也有。"],
+          ad1:["revoProtein","国产乳清蛋白","无人工甜味剂·每份蛋白质23g。为健身者而生。"],
+          ad2:["GreenMeal","冷冻高蛋白便当配送","营养师监制·PFC已计算。给忙碌的一天。"]}},
+      "繁體中文":{hdr:"動態",tabs:["全部","訓練","食譜"],sponsor:"贊助",recommend:"revo推薦",ranking:"人氣排行",seeMore:"查看完整排行",cheer:"應援",reply:"回覆",cheerBtn:"應援",follow:"關注",adCta:"了解更多",
+        posts:{
+          p1:["Kai","練了胸·三頭","2小時前","今天刷新自己最佳。臥推65kg×8，終於推上去了。堅持就是力量。"],
+          p2:["Mika","微波蒸雞配香辣醬","4小時前","零洗碗高蛋白。推薦給增肌中的人。#懶人餐"],
+          p3:["Ren","背部日","6小時前","引體還是只有5個，但上月才3個。一點一點來。"],
+          p4:["Sara","燕麥大阪燒","昨天","碳水和蛋白一盤搞定。減脂也沒有負罪感。#減脂中"],
+          p5:["Yuki","練完腿了","昨天","最討厭的腿日，今天沒逃避做完了。我真棒。"]},
+        ads:{rk1:{t:"人氣蛋白粉",items:[["乳清 原味","每份23g·易溶"],["大豆 可可","植物性·耐餓"],["EAA 橙味","訓練中一杯"]]},rc1:["櫻花雞胸","revo推薦","柔嫩沙拉雞。每袋28g。便利店也有。"],
+          ad1:["revoProtein","國產乳清蛋白","無人工甜味劑·每份蛋白質23g。為健身者而生。"],
+          ad2:["GreenMeal","冷凍高蛋白便當配送","營養師監製·PFC已計算。給忙碌的一天。"]}},
+      "한국어":{hdr:"피드",tabs:["전체","트레이닝","레시피"],sponsor:"스폰서",recommend:"revo 추천",ranking:"인기 랭킹",seeMore:"랭킹 더 보기",cheer:"응원",reply:"댓글",cheerBtn:"응원하기",follow:"팔로우",adCta:"자세히 보기",
+        posts:{
+          p1:["Kai","가슴·삼두 운동","2시간 전","오늘 자기최고 갱신. 벤치 65kg×8, 드디어 올렸어요. 꾸준함이 힘이네요."],
+          p2:["Mika","전자레인지 닭찜 매콤소스","4시간 전","설거지 없이 고단백. 벌크업 중인 분께 추천해요. #대충밥"],
+          p3:["Ren","등 하는 날","6시간 전","턱걸이 아직 5개지만 지난달엔 3개였어요. 조금씩."],
+          p4:["Sara","오트밀 오코노미야키","어제","탄수화물과 단백질을 한 접시에. 다이어트 중에도 죄책감 없이. #감량중"],
+          p5:["Yuki","다리 운동 끝","어제","제일 싫은 다리 날, 오늘은 도망 안 치고 했어요. 나 대단해."]},
+        ads:{rk1:{t:"인기 프로틴",items:[["웨이 플레인","23g/회·잘 녹음"],["소이 코코아","식물성·든든"],["EAA 오렌지","운동 중 한 잔"]]},rc1:["사쿠라 닭가슴살","revo 추천","부드러운 샐러드 치킨. 1팩 28g. 편의점에서도."],
+          ad1:["revoProtein","국산 웨이 프로틴","인공감미료 무첨가·1회 단백질 23g. 트레이니를 위해."],
+          ad2:["GreenMeal","냉동 고단백 도시락 배송","영양사 감수·PFC 계산 완료. 바쁜 날의 한 끼로."]}},
+      "ภาษาไทย":{hdr:"ฟีด",tabs:["ทั้งหมด","เทรน","สูตร"],sponsor:"สปอนเซอร์",recommend:"revo แนะนำ",ranking:"อันดับยอดนิยม",seeMore:"ดูอันดับทั้งหมด",cheer:"กำลังใจ",reply:"ตอบ",cheerBtn:"ให้กำลังใจ",follow:"ติดตาม",adCta:"ดูเพิ่มเติม",
+        posts:{
+          p1:["Kai","เล่นอก·หลังแขน","2 ชม.ที่แล้ว","วันนี้ทำสถิติใหม่ เบนช์ 65kg×8 ในที่สุดก็ดันขึ้น ความสม่ำเสมอคือพลัง"],
+          p2:["Mika","ไก่นึ่งไมโครเวฟซอสเผ็ด","4 ชม.ที่แล้ว","โปรตีนสูง ไม่ต้องล้างจาน แนะนำสำหรับคนเพิ่มกล้าม #อาหารขี้เกียจ"],
+          p3:["Ren","วันหลัง","6 ชม.ที่แล้ว","ดึงข้อยังได้แค่ 5 ครั้ง แต่เดือนก่อนได้ 3 ครั้ง ค่อยเป็นค่อยไป"],
+          p4:["Sara","โอโคโนมิยากิข้าวโอ๊ต","เมื่อวาน","คาร์บกับโปรตีนในจานเดียว ลดน้ำหนักก็ไม่รู้สึกผิด #กำลังลด"],
+          p5:["Yuki","เล่นขาเสร็จแล้ว","เมื่อวาน","วันขาที่เกลียดที่สุด วันนี้ไม่หนี ทำจนจบ ภูมิใจในตัวเอง"]},
+        ads:{rk1:{t:"โปรตีนยอดนิยม",items:[["เวย์ รสธรรมชาติ","23g/มื้อ·ละลายง่าย"],["ถั่วเหลือง โกโก้","พืช·อยู่ท้อง"],["EAA ส้ม","ดื่มระหว่างเทรน"]]},rc1:["อกไก่ซากุระ","revo แนะนำ","สลัดไก่นุ่ม 28g ต่อซอง มีที่ร้านสะดวกซื้อ"],
+          ad1:["revoProtein","เวย์โปรตีนในประเทศ","ไม่มีสารให้ความหวานเทียม·โปรตีน 23g ต่อมื้อ เพื่อคนออกกำลัง"],
+          ad2:["GreenMeal","ส่งข้าวกล่องโปรตีนสูงแช่แข็ง","นักโภชนาการออกแบบ·คำนวณ PFC แล้ว สำหรับวันที่ยุ่ง"]}},
+      "Français":{hdr:"Fil",tabs:["Tout","Entraînement","Recettes"],sponsor:"Sponsorisé",recommend:"Choix revo",ranking:"Classement populaire",seeMore:"Voir le classement",cheer:"Soutien",reply:"Répondre",cheerBtn:"Soutenir",follow:"Suivre",adCta:"En savoir plus",
+        posts:{
+          p1:["Kai","Pecs & triceps travaillés","Il y a 2h","Nouveau record. Développé 65kg×8, enfin réussi. La régularité, c'est la force."],
+          p2:["Mika","Poulet vapeur, sauce épicée","Il y a 4h","Riche en protéines, zéro vaisselle. Parfait en prise de masse. #reposfacile"],
+          p3:["Ren","Jour du dos","Il y a 6h","Encore 5 tractions, mais le mois dernier c'était 3. Petit à petit."],
+          p4:["Sara","Okonomiyaki à l'avoine","Hier","Glucides et protéines dans une assiette. Sans culpabilité en sèche. #sèche"],
+          p5:["Yuki","Jour des jambes terminé","Hier","Le jour des jambes, celui que je déteste — fait sans fuir aujourd'hui. Fière de moi."]},
+        ads:{rk1:{t:"Protéines populaires",items:[["Whey nature","23g/portion, se dissout bien"],["Soja cacao","Vegetal, rassasiant"],["EAA orange","Un verre a l'entrainement"]]},rc1:["Poulet sakura","Choix revo","Blanc de poulet tendre. 28g par sachet. Aussi en superette."],
+          ad1:["revoProtein","Whey d'origine locale","Sans édulcorants · 23g de protéines par portion. Pour les pratiquants."],
+          ad2:["GreenMeal","Repas surgelés riches en protéines","Conçu par des diététiciens · PFC calculé. Pour vos journées chargées."]}},
+      "Español":{hdr:"Feed",tabs:["Todo","Entreno","Recetas"],sponsor:"Patrocinado",recommend:"Elección revo",ranking:"Ranking popular",seeMore:"Ver el ranking",cheer:"Apoyo",reply:"Responder",cheerBtn:"Apoyar",follow:"Seguir",adCta:"Saber más",
+        posts:{
+          p1:["Kai","Pecho y tríceps trabajados","Hace 2h","Nuevo récord. Press 65kg×8, por fin subió. La constancia es fuerza."],
+          p2:["Mika","Pollo al microondas, salsa picante","Hace 4h","Alto en proteína, cero platos. Ideal en volumen. #comidafácil"],
+          p3:["Ren","Día de espalda","Hace 6h","Solo 5 dominadas aún, pero el mes pasado eran 3. Poco a poco."],
+          p4:["Sara","Okonomiyaki de avena","Ayer","Carbohidratos y proteína en un plato. Sin culpa en definición. #definición"],
+          p5:["Yuki","Día de pierna terminado","Ayer","El día de pierna, el que más odio — hoy lo hice sin huir. Orgullosa de mí."]},
+        ads:{rk1:{t:"Proteínas populares",items:[["Whey natural","23g/toma, se disuelve bien"],["Soja cacao","Vegetal, saciante"],["EAA naranja","Un vaso al entrenar"]]},rc1:["Pollo sakura","Elección revo","Pechuga tierna. 28g por paquete. También en tiendas."],
+          ad1:["revoProtein","Proteína de suero nacional","Sin edulcorantes · 23g de proteína por toma. Para quienes entrenan."],
+          ad2:["GreenMeal","Comida congelada alta en proteína","Diseñada por nutricionistas · PFC calculado. Para tus días ocupados."]}},
+      "Deutsch":{hdr:"Feed",tabs:["Alle","Training","Rezepte"],sponsor:"Gesponsert",recommend:"revo-Tipps",ranking:"Beliebtes Ranking",seeMore:"Ranking ansehen",cheer:"Anfeuern",reply:"Antworten",cheerBtn:"Unterstützen",follow:"Folgen",adCta:"Mehr erfahren",
+        posts:{
+          p1:["Kai","Brust & Trizeps trainiert","Vor 2 Std.","Neuer Rekord. Bankdrücken 65kg×8, endlich geschafft. Beständigkeit ist Stärke."],
+          p2:["Mika","Mikrowellen-Hähnchen, scharf","Vor 4 Std.","Proteinreich, kein Abwasch. Top beim Masseaufbau. #faulesEssen"],
+          p3:["Ren","Rückentag","Vor 6 Std.","Noch nur 5 Klimmzüge, letzten Monat waren es 3. Stück für Stück."],
+          p4:["Sara","Haferflocken-Okonomiyaki","Gestern","Kohlenhydrate und Protein auf einem Teller. Ohne Reue in der Diät. #Definition"],
+          p5:["Yuki","Beintag geschafft","Gestern","Beintag, den ich am meisten hasse — heute ohne Ausrede gemacht. Stolz auf mich."]},
+        ads:{rk1:{t:"Beliebtes Protein",items:[["Whey neutral","23g/Portion, lost sich gut"],["Soja Kakao","Pflanzlich, sattigend"],["EAA Orange","Ein Glas beim Training"]]},rc1:["Sakura-Hahnchen","revo-Tipps","Zartes Salat-Hahnchen. 28g pro Packung. Auch im Kiosk."],
+          ad1:["revoProtein","Heimisches Whey-Protein","Ohne künstliche Süßstoffe · 23g Protein pro Portion. Für Trainierende."],
+          ad2:["GreenMeal","Tiefkühl-Mahlzeiten, proteinreich","Von Ernährungsberatern · PFC berechnet. Für deine vollen Tage."]}},
+      "Italiano":{hdr:"Feed",tabs:["Tutto","Allenamento","Ricette"],sponsor:"Sponsorizzato",recommend:"Scelti da revo",ranking:"Classifica popolare",seeMore:"Vedi la classifica",cheer:"Sostieni",reply:"Rispondi",cheerBtn:"Sostieni",follow:"Segui",adCta:"Scopri di più",
+        posts:{
+          p1:["Kai","Petto e tricipiti allenati","2h fa","Nuovo record. Panca 65kg×8, finalmente su. La costanza è forza."],
+          p2:["Mika","Pollo al microonde, salsa piccante","4h fa","Proteico, zero piatti da lavare. Ottimo in massa. #pastofacile"],
+          p3:["Ren","Giorno schiena","6h fa","Ancora solo 5 trazioni, ma il mese scorso erano 3. Poco a poco."],
+          p4:["Sara","Okonomiyaki di avena","Ieri","Carboidrati e proteine in un piatto. Senza sensi di colpa in definizione. #definizione"],
+          p5:["Yuki","Giorno gambe finito","Ieri","Il giorno gambe, quello che odio di più — fatto senza scappare oggi. Fiera di me."]},
+        ads:{rk1:{t:"Proteine popolari",items:[["Whey neutro","23g/porzione, si scioglie bene"],["Soia cacao","Vegetale, saziante"],["EAA arancia","Un bicchiere in allenamento"]]},rc1:["Pollo sakura","Scelti da revo","Petto tenero. 28g a confezione. Anche al minimarket."],
+          ad1:["revoProtein","Whey di produzione locale","Senza dolcificanti · 23g di proteine a porzione. Per chi si allena."],
+          ad2:["GreenMeal","Pasti surgelati ad alto contenuto proteico","Progettati da nutrizionisti · PFC calcolato. Per i giorni impegnati."]}},
+      "Português":{hdr:"Feed",tabs:["Tudo","Treino","Receitas"],sponsor:"Patrocinado",recommend:"Escolhas revo",ranking:"Ranking popular",seeMore:"Ver ranking",cheer:"Apoio",reply:"Responder",cheerBtn:"Apoiar",follow:"Seguir",adCta:"Saiba mais",
+        posts:{
+          p1:["Kai","Peito e tríceps treinados","2h atrás","Novo recorde. Supino 65kg×8, enfim subiu. Constância é força."],
+          p2:["Mika","Frango na micro-ondas, picante","4h atrás","Rico em proteína, zero louça. Ótimo em bulking. #comidafácil"],
+          p3:["Ren","Dia de costas","6h atrás","Ainda só 5 barras, mas mês passado eram 3. Aos poucos."],
+          p4:["Sara","Okonomiyaki de aveia","Ontem","Carboidrato e proteína num prato. Sem culpa no cutting. #cutting"],
+          p5:["Yuki","Dia de perna concluído","Ontem","Dia de perna, o que mais odeio — fiz hoje sem fugir. Orgulhosa de mim."]},
+        ads:{rk1:{t:"Proteínas populares",items:[["Whey natural","23g/porcao, dissolve bem"],["Soja cacau","Vegetal, saciante"],["EAA laranja","Um copo no treino"]]},rc1:["Frango sakura","Escolhas revo","Peito macio. 28g por pacote. Também em lojas."],
+          ad1:["revoProtein","Whey de produção nacional","Sem adoçantes · 23g de proteína por porção. Para quem treina."],
+          ad2:["GreenMeal","Refeições congeladas ricas em proteína","Criadas por nutricionistas · PFC calculado. Para seus dias corridos."]}},
+      "हिन्दी":{hdr:"फ़ीड",tabs:["सभी","ट्रेनिंग","रेसिपी"],sponsor:"प्रायोजित",recommend:"revo की पसंद",ranking:"लोकप्रिय रैंकिंग",seeMore:"पूरी रैंकिंग देखें",cheer:"सहयोग",reply:"जवाब",cheerBtn:"सहयोग करें",follow:"फॉलो",adCta:"और जानें",
+        posts:{
+          p1:["Kai","चेस्ट·ट्राइसेप्स किया","2 घंटे पहले","आज नया रिकॉर्ड। बेंच 65kg×8, आखिरकार ऊपर गया। निरंतरता ही ताकत है।"],
+          p2:["Mika","माइक्रोवेव चिकन, तीखी चटनी","4 घंटे पहले","हाई प्रोटीन, बर्तन नहीं। बल्किंग वालों के लिए बढ़िया। #आलसीखाना"],
+          p3:["Ren","बैक डे","6 घंटे पहले","अभी सिर्फ 5 पुलअप, पर पिछले महीने 3 थे। थोड़ा-थोड़ा।"],
+          p4:["Sara","ओटमील ओकोनोमियाकी","कल","कार्ब और प्रोटीन एक थाली में। कटिंग में भी बिना अपराधबोध। #कटिंग"],
+          p5:["Yuki","लेग डे पूरा किया","कल","सबसे नापसंद लेग डे, आज बिना भागे किया। खुद पर गर्व।"]},
+        ads:{rk1:{t:"लोकप्रिय प्रोटीन",items:[["व्हे प्लेन","23g/सर्विंग·आसानी से घुले"],["सोया कोको","पौध·पेट भरे"],["EAA ऑरेंज","ट्रेनिंग में एक गिलास"]]},rc1:["साकुरा चिकन ब्रेस्ट","revo की पसंद","मुलायम सलाद चिकन। 28g प्रति पैक। स्टोर में भी।"],
+          ad1:["revoProtein","देसी व्हे प्रोटीन","कृत्रिम मिठास नहीं·प्रति सर्विंग 23g प्रोटीन। ट्रेनियों के लिए।"],
+          ad2:["GreenMeal","फ्रोज़न हाई-प्रोटीन मील डिलीवरी","पोषण विशेषज्ञ द्वारा·PFC गणना। व्यस्त दिनों के लिए।"]}},
+      "Tiếng Việt":{hdr:"Bảng tin",tabs:["Tất cả","Tập luyện","Công thức"],sponsor:"Được tài trợ",recommend:"revo gợi ý",ranking:"Xếp hạng phổ biến",seeMore:"Xem xếp hạng",cheer:"Ủng hộ",reply:"Trả lời",cheerBtn:"Ủng hộ",follow:"Theo dõi",adCta:"Tìm hiểu thêm",
+        posts:{
+          p1:["Kai","Tập ngực & tay sau","2 giờ trước","Hôm nay lập kỷ lục. Đẩy ngực 65kg×8, cuối cùng cũng lên. Kiên trì là sức mạnh."],
+          p2:["Mika","Gà hấp lò vi sóng, sốt cay","4 giờ trước","Nhiều đạm, không rửa bát. Tuyệt cho người tăng cơ. #ănlười"],
+          p3:["Ren","Ngày tập lưng","6 giờ trước","Vẫn chỉ 5 cái hít xà, nhưng tháng trước là 3. Từ từ thôi."],
+          p4:["Sara","Okonomiyaki yến mạch","Hôm qua","Tinh bột và đạm trong một đĩa. Không tội lỗi khi giảm mỡ. #giảmmỡ"],
+          p5:["Yuki","Xong ngày tập chân","Hôm qua","Ngày tập chân tôi ghét nhất — hôm nay làm mà không trốn. Tự hào về mình."]},
+        ads:{rk1:{t:"Protein phổ biến",items:[["Whey vị nhạt","23g/phần, dễ tan"],["Đậu nành cacao","Thực vật, no lâu"],["EAA cam","Một ly khi tập"]]},rc1:["Ức gà sakura","revo gợi ý","Ức gà mềm. 28g mỗi gói. Có ở cửa hàng tiện lợi."],
+          ad1:["revoProtein","Whey sản xuất trong nước","Không chất tạo ngọt · 23g đạm mỗi phần. Dành cho người tập."],
+          ad2:["GreenMeal","Giao suất ăn giàu đạm đông lạnh","Chuyên gia dinh dưỡng thiết kế · đã tính PFC. Cho ngày bận rộn."]}},
+      "Bahasa Indonesia":{hdr:"Beranda",tabs:["Semua","Latihan","Resep"],sponsor:"Bersponsor",recommend:"Pilihan revo",ranking:"Peringkat populer",seeMore:"Lihat peringkat",cheer:"Dukung",reply:"Balas",cheerBtn:"Dukung",follow:"Ikuti",adCta:"Selengkapnya",
+        posts:{
+          p1:["Kai","Latih dada & trisep","2 jam lalu","Hari ini rekor baru. Bench 65kg×8, akhirnya naik. Konsistensi memang kekuatan."],
+          p2:["Mika","Ayam kukus microwave, pedas","4 jam lalu","Tinggi protein, tanpa cuci piring. Bagus buat yang bulking. #makanmalas"],
+          p3:["Ren","Hari punggung","6 jam lalu","Masih 5 pull-up, tapi bulan lalu 3. Sedikit demi sedikit."],
+          p4:["Sara","Okonomiyaki oatmeal","Kemarin","Karbo dan protein dalam satu piring. Tanpa rasa bersalah saat cutting. #cutting"],
+          p5:["Yuki","Selesai hari kaki","Kemarin","Hari kaki, yang paling kubenci — hari ini kulakukan tanpa lari. Bangga pada diriku."]},
+        ads:{rk1:{t:"Protein populer",items:[["Whey polos","23g/porsi, mudah larut"],["Soya cokelat","Nabati, mengenyangkan"],["EAA jeruk","Segelas saat latihan"]]},rc1:["Dada ayam sakura","Pilihan revo","Dada ayam lembut. 28g per bungkus. Ada di minimarket."],
+          ad1:["revoProtein","Whey protein lokal","Tanpa pemanis buatan · 23g protein per sajian. Untuk para pelatih."],
+          ad2:["GreenMeal","Pengiriman makanan beku tinggi protein","Dirancang ahli gizi · PFC terhitung. Untuk hari sibukmu."]}}
+    };
+    var cur=REVO.lang(), dark=REVO.dark(), activeTab=0;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",title:"#F0EBE2",sub:"#8A7E68",meta:"#6E6555",card:"#1A1814",cardBd:"#2A2620",adCard:"#191712",adBd:"#332B1A",accent:"#E3C56A",cheer:"#E89BB8",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",title:"#2E2A24",sub:"#8A7E68",meta:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",adCard:"#FBF6EC",adBd:"#EADCBE",accent:"#BA7517",cheer:"#C86E96",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderTabs(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('tabRow').innerHTML="";
+      d.tabs.forEach(function(tb,i){
+        var on=(activeTab===i);
+        var el=document.createElement('span');
+        el.style.cssText="font-size:12px; padding:7px 15px; border-radius:999px; cursor:pointer; "+(on?"background:"+t.accent+"; color:"+(dark?"#16140F":"#FFFFFF")+"; font-weight:600;":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        el.textContent=tb;
+        el.onclick=function(){ activeTab=i; renderTabs(); renderCards(); };
+        $('tabRow').appendChild(el);
+      });
+    }
+    function renderCards(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('cards').innerHTML="";
+      if(_cloudMode && !REAL.length){
+        var E2=(REVO.EMPTY2[cur]||REVO.EMPTY2["English"]);
+        var ec=document.createElement('div');
+        ec.style.cssText="border:0.5px solid "+t.cardBd+"; border-radius:15px; padding:22px 14px; background:"+t.card+"; text-align:center;";
+        ec.innerHTML='<i class="ti ti-users" style="font-size:26px; color:'+t.meta+';"></i><p style="font-size:13px; color:'+t.sub+'; margin:10px 0 0; line-height:1.6;">'+E2.feed+'</p>';
+        $('cards').appendChild(ec);
+      }
+      FEED.forEach(function(f){
+        if(f.type==="ad"){
+          // 広告のタブ制御：all=すべてタブ, training=トレ+すべて, recipe=レシピ+すべて
+          var show=false;
+          if(activeTab===0) show=(f.tab==="all"||f.tab==="training"||f.tab==="recipe"); // すべてに全種
+          else if(activeTab===1) show=(f.tab==="training");
+          else if(activeTab===2) show=(f.tab==="recipe");
+          if(!show) return;
+          $('cards').appendChild(adCard(f,d,t));
+        } else {
+          if(activeTab===1 && f.type!=="training") return;
+          if(activeTab===2 && f.type!=="recipe") return;
+          $('cards').appendChild(postCard(f,d,t));
+        }
+      });
+    }
+    function postCard(f,d,t){
+      var p = f.real
+        ? [ (f.post.author_name||"—"), (f.post.title||""), new Date(f.post.created_at).toLocaleString(), (f.post.body||"") ]
+        : d.posts[f.key];
+      var card=document.createElement('div');
+      card.style.cssText="border:0.5px solid "+t.cardBd+"; border-radius:15px; padding:14px; background:"+t.card+";";
+      // 写真プレースホルダー（トレ=風景/体, レシピ=料理）
+      var photoIcon = f.photo==="recipe" ? "ti-flame" : "ti-barbell";
+      var photoBg = dark ? "linear-gradient(135deg,#221E17,#1B1813)" : "linear-gradient(135deg,#F2ECE0,#EDE6D8)";
+      var photo = (f.real && f.post.photos && f.post.photos[0])
+        ? '<div style="width:100%; height:150px; border-radius:11px; background-image:url('+f.post.photos[0]+'); background-size:cover; background-position:center; margin:0 0 12px; border:0.5px solid '+t.cardBd+';"></div>'
+        : '<div style="width:100%; height:150px; border-radius:11px; background:'+photoBg+'; display:flex; align-items:center; justify-content:center; margin:0 0 12px; border:0.5px solid '+t.cardBd+';"><i class="ti '+photoIcon+'" style="font-size:34px; color:'+(dark?"#3A352A":"#D8CDBA")+';"></i></div>';
+      card.innerHTML=
+        '<div style="display:flex; align-items:center; gap:9px; margin:0 0 11px;">'+
+          '<div style="width:34px; height:34px; border-radius:50%; background:'+f.ac+'; display:flex; align-items:center; justify-content:center; color:'+f.at+'; font-size:13px; font-weight:500; font-family:Jost;">'+f.ini+'</div>'+
+          '<div style="flex:1;"><p style="font-size:13px; color:'+t.title+'; margin:0; font-weight:600;">'+p[0]+'</p><p style="font-size:10px; color:'+t.meta+'; margin:0;">'+p[2]+'</p></div>'+
+          (function(){
+            var fid = f.real ? (f.post.user_id||"") : "";
+            var on = fid && window.REVO_CLOUD && REVO_CLOUD.isFollowing && REVO_CLOUD.isFollowing(fid);
+            return '<span class="followBtn" data-uid="'+fid+'" style="font-size:11px; color:'+(on? t.meta : t.accent)+'; font-weight:500; cursor:pointer;">'+d.follow+(on?' ✓':'')+'</span>';
+          })()+
+        '</div>'+
+        '<div style="display:flex; align-items:center; gap:7px; margin:0 0 10px;"><i class="ti '+f.ic+'" style="font-size:15px; color:'+t.accent+';"></i><span style="font-size:13px; color:'+t.txt+'; font-weight:500;">'+p[1]+'</span></div>'+
+        photo+
+        '<p style="font-size:13px; color:'+t.txt+'; margin:0 0 12px; line-height:1.6;">'+p[3]+'</p>'+
+        '<div style="display:flex; align-items:center; gap:18px;">'+
+          '<span class="cheerBtn" data-id="'+(f.real?f.post.id:"")+'" style="font-size:12px; color:'+t.cheer+'; font-weight:500; cursor:pointer;"><i class="ti ti-heart" style="font-size:15px; vertical-align:-2px;"></i> '+d.cheer+' '+f.cheer+'</span>'+
+          '<span style="font-size:12px; color:'+t.meta+';"><i class="ti ti-message-circle" style="font-size:15px; vertical-align:-2px;"></i> '+d.reply+' '+f.reply+'</span>'+
+        '</div>';
+      return card;
+    }
+    function adCard(f,d,t){
+      var card=document.createElement('div');
+      card.style.cssText="border:0.5px solid "+t.adBd+"; border-radius:15px; padding:14px; background:"+t.adCard+";";
+      // ラベル（種類で変わる）
+      var label = f.adKind==="sponsor" ? d.sponsor : (f.adKind==="ranking" ? d.ranking : d.recommend);
+      if(f.adKind==="ranking"){
+        // 人気ランキング枠（TOP3）
+        var rk=d.ads[f.key];
+        var rows=rk.items.map(function(it,i){
+          var medal = ["#E3C56A","#B8B0A0","#C08A5A"][i];
+          return '<div style="display:flex; align-items:center; gap:10px; padding:9px 0; '+(i<2?"border-bottom:0.5px solid "+t.cardBd+";":"")+'">'+
+            '<span style="width:20px; height:20px; border-radius:50%; background:'+medal+'; color:'+(dark?"#16140F":"#FFFFFF")+'; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; font-family:Jost; flex-shrink:0;">'+(i+1)+'</span>'+
+            '<div style="width:38px; height:38px; border-radius:8px; background:'+(dark?"#221E17":"#F2ECE0")+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti ti-bolt" style="font-size:17px; color:'+t.accent+';"></i></div>'+
+            '<div style="flex:1;"><p style="font-size:12px; color:'+t.title+'; margin:0; font-weight:500;">'+it[0]+'</p><p style="font-size:10px; color:'+t.meta+'; margin:1px 0 0;">'+it[1]+'</p></div>'+
+            '<i class="ti ti-chevron-right" style="font-size:15px; color:'+t.meta+';"></i>'+
+          '</div>';
+        }).join("");
+        card.innerHTML=
+          '<div style="display:flex; align-items:center; gap:8px; margin:0 0 10px;">'+
+            '<i class="ti ti-trophy" style="font-size:17px; color:'+t.accent+';"></i>'+
+            '<span style="font-size:13px; color:'+t.title+'; font-weight:600;">'+rk.t+'</span>'+
+            '<span style="flex:1;"></span>'+
+            '<span style="font-size:10px; color:'+t.meta+';">'+label+'</span>'+
+          '</div>'+
+          rows+
+          '<button class="seeMoreBtn" style="width:100%; background:transparent; border:1px solid '+t.accent+'; color:'+t.accent+'; font-size:12px; font-weight:600; padding:10px; border-radius:11px; cursor:pointer; margin-top:11px;">'+d.seeMore+'</button>';
+      } else {
+        // スポンサー or おすすめ（商品写真つき）
+        var a=d.ads[f.key];
+        var photoBg = dark ? "linear-gradient(135deg,#221E17,#1B1813)" : "linear-gradient(135deg,#F2ECE0,#EDE6D8)";
+        card.innerHTML=
+          '<div style="display:flex; align-items:center; gap:9px; margin:0 0 10px;">'+
+            '<div style="width:34px; height:34px; border-radius:9px; background:'+(dark?"#2A2418":"#F3E9D2")+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+f.ic+'" style="font-size:18px; color:'+t.accent+';"></i></div>'+
+            '<div style="flex:1;"><p style="font-size:13px; color:'+t.title+'; margin:0; font-weight:600;">'+a[0]+'</p><p style="font-size:10px; color:'+t.meta+'; margin:0;">'+label+'</p></div>'+
+          '</div>'+
+          '<div style="width:100%; height:130px; border-radius:11px; background:'+photoBg+'; display:flex; align-items:center; justify-content:center; margin:0 0 11px; border:0.5px solid '+t.adBd+';"><i class="ti '+f.ic+'" style="font-size:30px; color:'+(dark?"#3A352A":"#D8CDBA")+';"></i></div>'+
+          '<p style="font-size:13px; color:'+t.txt+'; margin:0 0 5px; font-weight:500;">'+a[1]+'</p>'+
+          '<p style="font-size:12px; color:'+t.sub+'; margin:0 0 12px; line-height:1.55;">'+a[2]+'</p>'+
+          '<button style="width:100%; background:transparent; border:1px solid '+t.accent+'; color:'+t.accent+'; font-size:13px; font-weight:600; padding:10px; border-radius:11px; cursor:pointer;">'+d.adCta+'</button>';
+      }
+      return card;
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr;
+      renderTabs(); renderCards();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.title;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    var b=e.target.closest && e.target.closest('.seeMoreBtn');
+    if(b){ REVO.go('ranking'); return; }
+    var fb=e.target.closest && e.target.closest('.followBtn');
+    if(fb && fb.getAttribute('data-uid') && window.REVO_CLOUD && REVO_CLOUD.follow){
+      REVO_CLOUD.follow(fb.getAttribute('data-uid')).then(function(on){
+        fb.textContent = fb.textContent.replace(' ✓','') + (on?' ✓':'');
+        fb.style.color = on ? '#8A7E68' : '';
+      });
+      return;
+    }
+    var c=e.target.closest && e.target.closest('.cheerBtn');
+    if(c && c.getAttribute('data-id')){
+      _openCheerSheet(c.getAttribute('data-id'), c);
+    }
+  });
+})();
+</script>
+<script>
+(function(){
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(bk){ bk.style.cursor='pointer'; bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } }; }
+})();
+</script>
+<script>
+/* ===== 応援（投げ銭）シート v2：¥100/300/500/1000＋その他（自由入力）＋確認ステップ
+   （オーナー要望 2026-07-09：収益の柱のため誤入力防止の確認画面つき） ===== */
+(function(){
+  var L={"btn": {"日本語": "応援する", "English": "Support", "简体中文": "应援", "繁體中文": "應援", "한국어": "응원하기", "Français": "Soutenir", "Español": "Apoyar", "Deutsch": "Unterstützen", "Italiano": "Sostieni", "Português": "Apoiar", "ภาษาไทย": "ให้กำลังใจ", "हिन्दी": "सहयोग करें", "Tiếng Việt": "Ủng hộ", "Bahasa Indonesia": "Dukung"}, "cheer": {"日本語": "応援", "English": "Cheer", "简体中文": "应援", "繁體中文": "應援", "한국어": "응원", "Français": "Soutien", "Español": "Apoyo", "Deutsch": "Anfeuern", "Italiano": "Sostieni", "Português": "Apoio", "ภาษาไทย": "กำลังใจ", "हिन्दी": "सहयोग", "Tiếng Việt": "Ủng hộ", "Bahasa Indonesia": "Dukung"}, "close": {"日本語": "とじる", "English": "Close", "简体中文": "关闭", "繁體中文": "關閉", "한국어": "닫기", "Français": "Fermer", "Español": "Cerrar", "Deutsch": "Schließen", "Italiano": "Chiudi", "Português": "Fechar", "ภาษาไทย": "ปิด", "हिन्दी": "बंद करें", "Tiếng Việt": "Đóng", "Bahasa Indonesia": "Tutup"}, "other": {"日本語": "その他", "English": "Other", "简体中文": "Other", "繁體中文": "Other", "한국어": "Other", "Français": "Other", "Español": "Other", "Deutsch": "Other", "Italiano": "Other", "Português": "Other", "ภาษาไทย": "Other", "हिन्दी": "Other", "Tiếng Việt": "Other", "Bahasa Indonesia": "Other"}};
+  var PRESET=[100,300,500,1000];
+  var MIN=50, MAX=100000;
+  window._openCheerSheet=function(postId, btnEl){
+    var dark=REVO.dark(), lang=REVO.lang();
+    var acc=REVO.colorObj(); var accHex=dark?acc.hex:acc.light;
+    var t=dark? {bg:"#1F1C16",bd:"#3A352A",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",chip:"#211D16",chipBd:"#3A352A"}
+              : {bg:"#FFFFFF",bd:"#E0DACE",txt:"#2E2A24",sub:"#8A7E68",muted:"#9A9284",chip:"#FBF7F1",chipBd:"#E0DACE"};
+    function T(k){ return L[k][lang]||L[k]["English"]; }
+    var ov=document.createElement('div');
+    ov.style.cssText="position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:80; display:flex; align-items:flex-end; justify-content:center;";
+    var sh=document.createElement('div');
+    sh.style.cssText="width:100%; max-width:390px; background:"+t.bg+"; border:0.5px solid "+t.bd+"; border-bottom:none; border-radius:20px 20px 0 0; padding:20px 18px 26px; box-shadow:0 -18px 40px -12px rgba(0,0,0,0.6);";
+    var sel=0;            // 0..3=プリセット, 4=その他, -1=無料♥
+    var custom="";        // その他の入力値
+    var step=1;           // 1=金額選択, 2=確認
+
+    function amount(){
+      if(sel===-1) return 0;
+      if(sel===4){ var v=parseInt(String(custom).replace(/[^0-9]/g,""),10); return isNaN(v)?0:v; }
+      return PRESET[sel];
+    }
+    function chipHtml(on, inner, cls, di){
+      return '<button class="'+cls+'" data-i="'+di+'" style="flex:1; min-width:0; padding:12px 4px; border-radius:13px; cursor:pointer; font-size:13px; font-weight:600; font-family:inherit; transition:all .2s; '+
+        (on ? "background:"+accHex+"22; color:"+accHex+"; border:1.5px solid "+accHex+";"
+            : "background:"+t.chip+"; color:"+t.sub+"; border:0.5px solid "+t.chipBd+";")+'">'+inner+'</button>';
+    }
+    function paintSelect(){
+      var chips = PRESET.map(function(a,i){ return chipHtml(sel===i, "¥"+a.toLocaleString(), "cheerAmt", i); }).join("")
+        + chipHtml(sel===4, T("other"), "cheerAmt", 4);
+      var freeChip = chipHtml(sel===-1, '<i class="ti ti-heart" style="font-size:14px; vertical-align:-2px;"></i> '+T("cheer"), "cheerAmt", -1);
+      var customRow = sel===4
+        ? '<div style="display:flex; align-items:baseline; justify-content:center; gap:4px; margin:0 0 14px;">'+
+            '<span style="font-size:18px; color:'+t.sub+';">¥</span>'+
+            '<input id="cheerCustom" type="text" inputmode="numeric" value="'+custom+'" placeholder="0" style="width:120px; text-align:center; font-size:26px; font-weight:600; color:'+accHex+'; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; padding:2px 4px; outline:none; font-family:inherit;">'+
+          '</div>'+
+          '<p style="font-size:10px; color:'+t.muted+'; margin:-8px 0 12px; text-align:center;">¥'+MIN+' – ¥'+MAX.toLocaleString()+'</p>'
+        : '';
+      var amt=amount();
+      var ok = sel===-1 || (amt>=MIN && amt<=MAX);
+      sh.innerHTML=
+        '<div style="width:36px; height:4px; border-radius:2px; background:'+t.bd+'; margin:0 auto 16px;"></div>'+
+        '<p style="font-size:15px; font-weight:600; color:'+t.txt+'; margin:0 0 14px; text-align:center;"><i class="ti ti-heart" style="color:#E89BB8; font-size:16px; vertical-align:-2px;"></i> '+T("btn")+'</p>'+
+        '<div style="display:flex; gap:7px; margin:0 0 10px;">'+chips+'</div>'+
+        '<div style="display:flex; gap:7px; margin:0 0 14px;">'+freeChip+'</div>'+
+        customRow+
+        '<button id="cheerNext" style="width:100%; background:'+(ok?accHex:t.chip)+'; border:'+(ok?"none":"0.5px solid "+t.chipBd)+'; color:'+(ok?(dark?"#16140F":"#FFFFFF"):t.muted)+'; font-size:15px; font-weight:600; padding:15px; border-radius:13px; cursor:'+(ok?"pointer":"default")+';">'+T("btn")+'</button>';
+      sh.querySelectorAll('.cheerAmt').forEach(function(b){
+        b.onclick=function(e){ e.stopPropagation(); sel=+b.getAttribute('data-i'); paintSelect();
+          var ci=sh.querySelector('#cheerCustom'); if(ci){ ci.focus(); } };
+      });
+      var ci=sh.querySelector('#cheerCustom');
+      if(ci){
+        ci.onclick=function(e){ e.stopPropagation(); };
+        ci.oninput=function(){ custom=this.value.replace(/[^0-9]/g,""); this.value=custom;
+          var nx=sh.querySelector('#cheerNext'); var a=amount(); var ok2=(a>=MIN&&a<=MAX);
+          nx.style.background=ok2?accHex:t.chip; nx.style.border=ok2?"none":"0.5px solid "+t.chipBd;
+          nx.style.color=ok2?(dark?"#16140F":"#FFFFFF"):t.muted; nx.style.cursor=ok2?"pointer":"default"; };
+        ci.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); goNext(); } };
+      }
+      function goNext(){
+        var a=amount();
+        if(sel===-1){ doSend(0); return; }         // 無料♥は確認不要で即送信
+        if(a<MIN||a>MAX) return;
+        step=2; paintConfirm();
+      }
+      sh.querySelector('#cheerNext').onclick=function(e){ e.stopPropagation(); goNext(); };
+    }
+    function paintConfirm(){
+      var a=amount();
+      sh.innerHTML=
+        '<div style="width:36px; height:4px; border-radius:2px; background:'+t.bd+'; margin:0 auto 16px;"></div>'+
+        '<p style="font-size:13px; color:'+t.sub+'; margin:0 0 6px; text-align:center;">'+T("btn")+'</p>'+
+        '<p style="font-size:38px; font-weight:600; color:'+accHex+'; margin:0 0 4px; text-align:center; font-family:Jost;">¥'+a.toLocaleString()+'</p>'+
+        '<p style="font-size:11px; color:'+t.muted+'; margin:0 0 18px; text-align:center;"><i class="ti ti-heart" style="color:#E89BB8; font-size:13px; vertical-align:-2px;"></i></p>'+
+        '<button id="cheerGo" style="width:100%; background:'+accHex+'; border:none; color:'+(dark?"#16140F":"#FFFFFF")+'; font-size:15px; font-weight:600; padding:15px; border-radius:13px; cursor:pointer; margin:0 0 10px;">'+T("btn")+'</button>'+
+        '<button id="cheerBack" style="width:100%; background:transparent; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:14px; font-weight:500; padding:14px; border-radius:13px; cursor:pointer;">'+T("close")+'</button>';
+      sh.querySelector('#cheerGo').onclick=function(e){ e.stopPropagation(); doSend(a); };
+      sh.querySelector('#cheerBack').onclick=function(e){ e.stopPropagation(); step=1; paintSelect(); };
+    }
+    function bump(){
+      var r=REVO.cheerPost(postId);
+      if(r && btnEl){ btnEl.innerHTML=btnEl.innerHTML.replace(/(\d+)(\s*)$/, function(_m,n,sp){ return (parseInt(n,10)+1)+sp; }); }
+    }
+    function doSend(a){
+      if(a===0){ bump(); close(); return; }
+      if(window.REVO_CLOUD && REVO_CLOUD.signedIn() && REVO_CLOUD.tip){
+        REVO_CLOUD.tip(postId, a).then(null, function(){ close(); });
+      } else {
+        try{
+          var tips=JSON.parse(localStorage.getItem('revo.tips')||'[]');
+          tips.unshift({post_id:postId, amount:a, at:new Date().toISOString(), preview:true});
+          localStorage.setItem('revo.tips', JSON.stringify(tips.slice(0,200)));
+        }catch(e2){}
+        bump(); close();
+      }
+    }
+    function close(){ ov.remove(); }
+    ov.onclick=function(e){ if(e.target===ov) close(); };
+    paintSelect();
+    ov.appendChild(sh);
+    document.body.appendChild(ov);
+  };
+})();
+</script>
+</body>
+</html>

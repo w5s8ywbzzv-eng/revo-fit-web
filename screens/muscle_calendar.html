@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>筋トレカレンダー — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">筋トレ経過カレンダー。週と月で、いつどこを鍛えたかを部位名で表示。最後に鍛えてから何日経ったか。筋肉痛が治る日数は自分で設定。今日のポイントで初心者にもやさしく提案。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">トレーニング履歴</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- 今日のポイント（初心者にもやさしく・先に見せる） -->
+  <div style="padding:14px 18px 0;">
+    <div id="pointCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:15px 16px;">
+      <p id="pointTtl" style="font-size:13px; color:#7FCBAE; margin:0 0 9px; font-weight:600;">今日のポイント</p>
+      <div id="pointRows" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </div>
+
+  <!-- カレンダー（プルダウン） -->
+  <div style="padding:14px 18px 0;">
+    <button id="calToggle" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:13px 15px; cursor:pointer; transition:all 0.35s;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <i class="ti ti-calendar-month" style="font-size:18px; color:#E3C56A;" aria-hidden="true"></i>
+        <span id="calToggleLbl" style="font-size:14px; color:#F0EBE2; font-weight:500;">カレンダーで見る</span>
+      </div>
+      <i id="calChevron" class="ti ti-chevron-down" style="font-size:17px; color:#6E6555;" aria-hidden="true"></i>
+    </button>
+
+    <div id="calBody" style="display:none; margin:10px 0 0;">
+      <!-- 週/月 タブ -->
+      <div id="tabBar" style="display:flex; gap:8px; margin:0 0 12px;">
+        <button id="weekTab" style="flex:1; padding:10px; border-radius:11px; border:none; background:#E3C56A; color:#16140F; font-size:13px; font-weight:600; cursor:pointer;">週</button>
+        <button id="monthTab" style="flex:1; padding:10px; border-radius:11px; border:0.5px solid #2A2620; background:transparent; color:#8A7E68; font-size:13px; font-weight:500; cursor:pointer;">月</button>
+      </div>
+      <!-- 週カレンダー -->
+      <div id="weekView">
+        <div id="weekStrip" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+      <!-- 月カレンダー -->
+      <div id="monthView" style="display:none;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 12px;">
+          <i class="ti ti-chevron-left" style="font-size:18px; color:#8A7E68; cursor:pointer;" aria-hidden="true"></i>
+          <span id="monthLabel" style="font-size:14px; color:#F0EBE2; font-weight:500;">6月</span>
+          <i class="ti ti-chevron-right" style="font-size:18px; color:#8A7E68; cursor:pointer;" aria-hidden="true"></i>
+        </div>
+        <div id="calWeekHdr" style="display:grid; grid-template-columns:repeat(7,1fr); margin:0 0 6px;"></div>
+        <div id="calGrid" style="display:grid; grid-template-columns:repeat(7,1fr);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 部位ごとの経過日数 -->
+  <div style="padding:18px 18px 0;">
+    <p id="elapsedLbl" style="font-size:12px; color:#8A7E68; margin:0 0 11px; font-weight:500;">最後に鍛えてから</p>
+    <div id="elapsedList" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+
+  <!-- 設定：筋肉痛が治る日数 -->
+  <div style="padding:18px 18px 0;">
+    <div id="setCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:14px 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="flex:1; padding-right:12px;">
+          <p id="setTtl" style="font-size:13px; color:#F0EBE2; margin:0 0 3px; font-weight:500;">筋肉痛が治るまで</p>
+          <p id="setSub" style="font-size:11px; color:#8A7E68; margin:0; line-height:1.5;">人によって違います。あなたの目安を決めましょう。</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button id="setMinus" style="width:30px; height:30px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; color:#8A7E68; font-size:17px; cursor:pointer; line-height:1;">−</button>
+          <span id="setVal" style="font-size:17px; font-weight:600; color:#E3C56A; min-width:50px; text-align:center;">2 日</span>
+          <button id="setPlus" style="width:30px; height:30px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; color:#8A7E68; font-size:17px; cursor:pointer; line-height:1;">＋</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:16px 18px 20px;">
+    <button id="actionBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:15px; cursor:pointer;">今日のトレーニングを記録</button>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var soreDays=2; // 設定：筋肉痛が治るまでの日数
+    /* ===== 実データ（ローカル記録）から算出 ===== */
+    var _PK=["chest","back","legs","shoulder","arms","core"];   // log.moveParts: 胸/背中/脚/肩/腕/お腹
+    var _logs=REVO.allLogs();
+    function _partsOf(k){
+      var lg=_logs[k], out={};
+      if(lg && lg.move) (lg.move.exercises||[]).forEach(function(ex){ out[_PK[Math.min(ex.part||0,5)]]=true; });
+      return Object.keys(out);
+    }
+    function _key(dt){ var m=("0"+(dt.getMonth()+1)).slice(-2), dd=("0"+dt.getDate()).slice(-2); return dt.getFullYear()+"-"+m+"-"+dd; }
+    // 今週（月曜はじまり）
+    var _now=new Date(); var _dow=(_now.getDay()+6)%7;   // 月=0
+    var WEEK=[], _todayIdx=_dow;
+    for(var wi=0; wi<7; wi++){
+      var dt=new Date(_now); dt.setDate(_now.getDate()-_dow+wi);
+      WEEK.push(wi<=_dow ? _partsOf(_key(dt)) : []);
+    }
+    // 部位ごとの経過日数（記録がある部位のみ）
+    var ELAPSED=[];
+    _PK.forEach(function(pk){
+      var last=null;
+      Object.keys(_logs).sort().forEach(function(k){ if(_partsOf(k).indexOf(pk)>=0) last=k; });
+      if(last!=null){
+        var days=Math.round((_now-new Date(last+"T00:00:00"))/86400000);
+        ELAPSED.push({key:pk, days:days});
+      }
+    });
+    // 当月カレンダー（日→その日の主部位）
+    var TRAINED={};
+    Object.keys(_logs).forEach(function(k){
+      var dt=new Date(k+"T00:00:00");
+      if(dt.getFullYear()===_now.getFullYear() && dt.getMonth()===_now.getMonth()){
+        var ps=_partsOf(k); if(ps.length) TRAINED[dt.getDate()]=ps[0];
+      }
+    });
+    var D={
+      "日本語":{hdr:"トレーニング履歴",elapsedLbl:"最後に鍛えてから",pointTtl:"今日のポイント",
+        calToggleLbl:"カレンダーで見る",week:"週",month:"月",days:["月","火","水","木","金","土","日"],
+        m:{chest:"胸",back:"背中",legs:"脚",arms:"腕",shoulder:"肩",triceps:"三頭",biceps:"二頭",walk:"ウォーキング"},
+        dayUnit:"日",todayWord:"今日",
+        elapsedToday:"今日",elapsedDays:"{n}日前",
+        setTtl:"筋肉痛が治るまで",setSub:"人によって違います。あなたの目安を決めましょう。",
+        pointReady:"胸は{n}日たちました。よく回復しているはず。今日の狙いどきです。",
+        pointWait:"脚は今日鍛えたばかり。{s}日くらいは休ませてあげましょう。",
+        pointWalk:"昨日歩いたので、脚はもう少し休ませて。",
+        monthLabel:"6月",action:"今日のトレーニングを記録"},
+      "English":{hdr:"Training history",elapsedLbl:"Since last trained",pointTtl:"Today's point",
+        calToggleLbl:"See calendar",week:"Week",month:"Month",days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+        m:{chest:"Chest",back:"Back",legs:"Legs",arms:"Arms",shoulder:"Shoulders",triceps:"Triceps",biceps:"Biceps",walk:"Walking"},
+        dayUnit:"d",todayWord:"Today",
+        elapsedToday:"Today",elapsedDays:"{n}d ago",
+        setTtl:"Days to recover from soreness",setSub:"It varies by person. Set your own guide.",
+        pointReady:"It's been {n} days for chest — likely recovered. Today's a good day for it.",
+        pointWait:"Legs were trained today. Give them about {s} days to rest.",
+        pointWalk:"You walked yesterday, so rest the legs a bit more.",
+        monthLabel:"June",action:"Log today's training"},
+      "简体中文":{hdr:"训练记录",elapsedLbl:"距上次训练",pointTtl:"今日要点",
+        calToggleLbl:"查看日历",week:"周",month:"月",days:["一","二","三","四","五","六","日"],
+        m:{chest:"胸",back:"背",legs:"腿",arms:"臂",shoulder:"肩",triceps:"三头",biceps:"二头",walk:"快走"},
+        dayUnit:"天",todayWord:"今天",
+        elapsedToday:"今天",elapsedDays:"{n}天前",
+        setTtl:"酸痛恢复天数",setSub:"因人而异，设定你的参考值。",
+        pointReady:"胸已过{n}天，应该恢复了，今天正合适。",
+        pointWait:"腿今天刚练，让它休息约{s}天吧。",
+        pointWalk:"昨天走了路，腿再多休息一下。",
+        monthLabel:"6月",action:"记录今天的训练"},
+      "繁體中文":{hdr:"訓練記錄",elapsedLbl:"距上次訓練",pointTtl:"今日要點",
+        calToggleLbl:"查看日曆",week:"週",month:"月",days:["一","二","三","四","五","六","日"],
+        m:{chest:"胸",back:"背",legs:"腿",arms:"臂",shoulder:"肩",triceps:"三頭",biceps:"二頭",walk:"快走"},
+        dayUnit:"天",todayWord:"今天",
+        elapsedToday:"今天",elapsedDays:"{n}天前",
+        setTtl:"痠痛恢復天數",setSub:"因人而異，設定你的參考值。",
+        pointReady:"胸已過{n}天，應該恢復了，今天正合適。",
+        pointWait:"腿今天剛練，讓它休息約{s}天吧。",
+        pointWalk:"昨天走了路，腿再多休息一下。",
+        monthLabel:"6月",action:"記錄今天的訓練"},
+      "한국어":{hdr:"운동 기록",elapsedLbl:"마지막 운동 후",pointTtl:"오늘의 포인트",
+        calToggleLbl:"캘린더 보기",week:"주",month:"월",days:["월","화","수","목","금","토","일"],
+        m:{chest:"가슴",back:"등",legs:"다리",arms:"팔",shoulder:"어깨",triceps:"삼두",biceps:"이두",walk:"워킹"},
+        dayUnit:"일",todayWord:"오늘",
+        elapsedToday:"오늘",elapsedDays:"{n}일 전",
+        setTtl:"근육통이 낫기까지",setSub:"사람마다 달라요. 나만의 기준을 정하세요.",
+        pointReady:"가슴은 {n}일 지났어요. 회복됐을 거예요. 오늘이 적기예요.",
+        pointWait:"다리는 오늘 했어요. {s}일 정도 쉬게 해주세요.",
+        pointWalk:"어제 걸어서 다리는 조금 더 쉬게.",
+        monthLabel:"6월",action:"오늘 운동 기록"},
+      "ภาษาไทย":{hdr:"ประวัติการเทรน",elapsedLbl:"นับจากครั้งล่าสุด",pointTtl:"จุดสำคัญวันนี้",
+        calToggleLbl:"ดูปฏิทิน",week:"สัปดาห์",month:"เดือน",days:["จ","อ","พ","พฤ","ศ","ส","อา"],
+        m:{chest:"อก",back:"หลัง",legs:"ขา",arms:"แขน",shoulder:"ไหล่",triceps:"ไตรเซป",biceps:"ไบเซป",walk:"เดิน"},
+        dayUnit:"วัน",todayWord:"วันนี้",
+        elapsedToday:"วันนี้",elapsedDays:"{n}วันก่อน",
+        setTtl:"กี่วันหายปวดกล้าม",setSub:"แต่ละคนต่างกัน ตั้งค่าของคุณเอง",
+        pointReady:"อกผ่านมา{n}วันแล้ว น่าจะฟื้น วันนี้เหมาะเลย",
+        pointWait:"ขาเพิ่งเล่นวันนี้ พักสัก{s}วันนะ",
+        pointWalk:"เมื่อวานเดินมา พักขาอีกหน่อย",
+        monthLabel:"มิ.ย.",action:"บันทึกการเทรนวันนี้"},
+      "Français":{hdr:"Historique",elapsedLbl:"Depuis la dernière fois",pointTtl:"Le point du jour",
+        calToggleLbl:"Voir le calendrier",week:"Semaine",month:"Mois",days:["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"],
+        m:{chest:"Pecs",back:"Dos",legs:"Jambes",arms:"Bras",shoulder:"Épaules",triceps:"Triceps",biceps:"Biceps",walk:"Marche"},
+        dayUnit:"j",todayWord:"Auj.",
+        elapsedToday:"Aujourd'hui",elapsedDays:"il y a {n}j",
+        setTtl:"Jours pour récupérer",setSub:"Ça varie selon les personnes. Définissez votre repère.",
+        pointReady:"Pecs : {n} jours passés, sans doute récupérés. Bon jour pour ça.",
+        pointWait:"Jambes faites aujourd'hui. Laissez ~{s} jours de repos.",
+        pointWalk:"Vous avez marché hier, reposez encore les jambes.",
+        monthLabel:"Juin",action:"Enregistrer la séance"},
+      "Español":{hdr:"Historial",elapsedLbl:"Desde la última vez",pointTtl:"Punto de hoy",
+        calToggleLbl:"Ver calendario",week:"Semana",month:"Mes",days:["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"],
+        m:{chest:"Pecho",back:"Espalda",legs:"Piernas",arms:"Brazos",shoulder:"Hombros",triceps:"Tríceps",biceps:"Bíceps",walk:"Caminata"},
+        dayUnit:"d",todayWord:"Hoy",
+        elapsedToday:"Hoy",elapsedDays:"hace {n}d",
+        setTtl:"Días para recuperar",setSub:"Varía según la persona. Define tu referencia.",
+        pointReady:"Pecho: {n} días, seguramente recuperado. Buen día para ello.",
+        pointWait:"Piernas hechas hoy. Déjalas descansar ~{s} días.",
+        pointWalk:"Caminaste ayer, descansa más las piernas.",
+        monthLabel:"Junio",action:"Registrar entrenamiento"},
+      "Deutsch":{hdr:"Verlauf",elapsedLbl:"Seit letztem Mal",pointTtl:"Heutiger Punkt",
+        calToggleLbl:"Kalender ansehen",week:"Woche",month:"Monat",days:["Mo","Di","Mi","Do","Fr","Sa","So"],
+        m:{chest:"Brust",back:"Rücken",legs:"Beine",arms:"Arme",shoulder:"Schultern",triceps:"Trizeps",biceps:"Bizeps",walk:"Walking"},
+        dayUnit:"T",todayWord:"Heute",
+        elapsedToday:"Heute",elapsedDays:"vor {n}T",
+        setTtl:"Tage bis erholt",setSub:"Das ist individuell. Lege deinen Richtwert fest.",
+        pointReady:"Brust: {n} Tage her, wohl erholt. Heute ein guter Tag.",
+        pointWait:"Beine heute trainiert. Gib ~{s} Tage Ruhe.",
+        pointWalk:"Du bist gestern gelaufen, ruh die Beine noch.",
+        monthLabel:"Juni",action:"Training eintragen"},
+      "Italiano":{hdr:"Cronologia",elapsedLbl:"Dall'ultima volta",pointTtl:"Punto di oggi",
+        calToggleLbl:"Vedi calendario",week:"Settimana",month:"Mese",days:["Lun","Mar","Mer","Gio","Ven","Sab","Dom"],
+        m:{chest:"Petto",back:"Schiena",legs:"Gambe",arms:"Braccia",shoulder:"Spalle",triceps:"Tricipiti",biceps:"Bicipiti",walk:"Camminata"},
+        dayUnit:"g",todayWord:"Oggi",
+        elapsedToday:"Oggi",elapsedDays:"{n}g fa",
+        setTtl:"Giorni per recuperare",setSub:"Varia da persona a persona. Imposta il tuo riferimento.",
+        pointReady:"Petto: {n} giorni fa, probabilmente recuperato. Oggi è il giorno.",
+        pointWait:"Gambe fatte oggi. Falle riposare ~{s} giorni.",
+        pointWalk:"Hai camminato ieri, fai riposare ancora le gambe.",
+        monthLabel:"Giugno",action:"Registra l'allenamento"},
+      "Português":{hdr:"Histórico",elapsedLbl:"Desde a última vez",pointTtl:"Ponto de hoje",
+        calToggleLbl:"Ver calendário",week:"Semana",month:"Mês",days:["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"],
+        m:{chest:"Peito",back:"Costas",legs:"Pernas",arms:"Braços",shoulder:"Ombros",triceps:"Tríceps",biceps:"Bíceps",walk:"Caminhada"},
+        dayUnit:"d",todayWord:"Hoje",
+        elapsedToday:"Hoje",elapsedDays:"há {n}d",
+        setTtl:"Dias para recuperar",setSub:"Varia de pessoa para pessoa. Defina sua referência.",
+        pointReady:"Peito: {n} dias, provavelmente recuperado. Bom dia para isso.",
+        pointWait:"Pernas feitas hoje. Deixe descansar ~{s} dias.",
+        pointWalk:"Você caminhou ontem, descanse mais as pernas.",
+        monthLabel:"Junho",action:"Registrar treino"},
+      "हिन्दी":{hdr:"ट्रेनिंग इतिहास",elapsedLbl:"पिछली बार से",pointTtl:"आज की बात",
+        calToggleLbl:"कैलेंडर देखें",week:"सप्ताह",month:"माह",days:["सोम","मंगल","बुध","गुरु","शुक्र","शनि","रवि"],
+        m:{chest:"छाती",back:"पीठ",legs:"टांगें",arms:"बाँहें",shoulder:"कंधे",triceps:"ट्राइसेप्स",biceps:"बाइसेप्स",walk:"वॉकिंग"},
+        dayUnit:"दिन",todayWord:"आज",
+        elapsedToday:"आज",elapsedDays:"{n} दिन पहले",
+        setTtl:"दर्द ठीक होने के दिन",setSub:"हर किसी का अलग। अपना मानक तय करें।",
+        pointReady:"छाती को {n} दिन हुए, शायद रिकवर। आज सही दिन है।",
+        pointWait:"टांगें आज कीं। लगभग {s} दिन आराम दें।",
+        pointWalk:"कल चले थे, टांगें और आराम दें।",
+        monthLabel:"जून",action:"आज की ट्रेनिंग दर्ज करें"},
+      "Tiếng Việt":{hdr:"Lịch sử tập",elapsedLbl:"Từ lần tập cuối",pointTtl:"Điểm hôm nay",
+        calToggleLbl:"Xem lịch",week:"Tuần",month:"Tháng",days:["T2","T3","T4","T5","T6","T7","CN"],
+        m:{chest:"Ngực",back:"Lưng",legs:"Chân",arms:"Tay",shoulder:"Vai",triceps:"Tay sau",biceps:"Tay trước",walk:"Đi bộ"},
+        dayUnit:"ngày",todayWord:"Hôm nay",
+        elapsedToday:"Hôm nay",elapsedDays:"{n} ngày trước",
+        setTtl:"Số ngày hết đau cơ",setSub:"Mỗi người mỗi khác. Đặt mốc của bạn.",
+        pointReady:"Ngực đã {n} ngày, chắc đã hồi phục. Hôm nay là lúc.",
+        pointWait:"Chân mới tập hôm nay. Cho nghỉ khoảng {s} ngày.",
+        pointWalk:"Hôm qua bạn đi bộ, cho chân nghỉ thêm chút.",
+        monthLabel:"Tháng 6",action:"Ghi buổi tập hôm nay"},
+      "Bahasa Indonesia":{hdr:"Riwayat latihan",elapsedLbl:"Sejak terakhir",pointTtl:"Poin hari ini",
+        calToggleLbl:"Lihat kalender",week:"Minggu",month:"Bulan",days:["Sen","Sel","Rab","Kam","Jum","Sab","Min"],
+        m:{chest:"Dada",back:"Punggung",legs:"Kaki",arms:"Lengan",shoulder:"Bahu",triceps:"Trisep",biceps:"Bisep",walk:"Jalan kaki"},
+        dayUnit:"hari",todayWord:"Hari ini",
+        elapsedToday:"Hari ini",elapsedDays:"{n} hari lalu",
+        setTtl:"Hari sampai pulih nyeri",setSub:"Beda tiap orang. Tentukan patokanmu.",
+        pointReady:"Dada sudah {n} hari, mungkin pulih. Hari ini saatnya.",
+        pointWait:"Kaki dilatih hari ini. Istirahatkan sekitar {s} hari.",
+        pointWalk:"Kemarin kamu jalan, istirahatkan kaki lagi.",
+        monthLabel:"Juni",action:"Catat latihan hari ini"}
+    };
+    var cur=REVO.lang(), dark=REVO.dark(), tab="week";
+    var partColors={chest:"#3B6FE0",back:"#3B6FE0",legs:"#3B6FE0",arms:"#14B8A6",shoulder:"#14B8A6",triceps:"#F5C518",biceps:"#14B8A6",walk:"#E0A86A"};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",body:"#C9C0AE",card:"#1A1814",cardBd:"#2A2620",cell:"#1F1C16",cellBd:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A",chip:"#211D16"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",body:"#5F5E5A",card:"#FBF7F1",cardBd:"#F0EAE0",cell:"#FBF7F1",cellBd:"#F0EAE0",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517",chip:"#F4EFE6"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderPoint(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('pointTtl').textContent=d.pointTtl;
+      $('pointRows').innerHTML="";
+      if(!ELAPSED.length){
+        var E2=(REVO.EMPTY2[cur]||REVO.EMPTY2["English"]);
+        var er=document.createElement('p');
+        er.style.cssText="font-size:12px; color:"+t.body+"; margin:0; line-height:1.6;";
+        er.textContent=E2.grow;
+        $('pointRows').appendChild(er);
+        return;
+      }
+      var rested=ELAPSED.slice().sort(function(a,b){ return b.days-a.days; })[0];
+      var pts=[
+        {ic:"ti-bulb",col:"#5DCAA5",tx:d.pointReady.replace("{n}",rested.days)},
+        {ic:"ti-alert-triangle",col:"#E0A86A",tx:d.pointWait.replace("{s}",soreDays)}
+      ];
+      pts.forEach(function(p){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:flex-start; gap:9px;";
+        row.innerHTML='<i class="ti '+p.ic+'" style="font-size:15px; color:'+p.col+'; margin-top:1px;"></i><p style="font-size:12px; color:'+t.body+'; margin:0; line-height:1.6;">'+p.tx+'</p>';
+        $('pointRows').appendChild(row);
+      });
+    }
+    function renderElapsed(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('elapsedLbl').textContent=d.elapsedLbl;
+      $('elapsedList').innerHTML="";
+      var sorted=ELAPSED.slice().sort(function(a,b){ return b.days-a.days; });
+      sorted.forEach(function(e){
+        var txt = e.days===0 ? d.elapsedToday : d.elapsedDays.replace("{n}",e.days);
+        // 設定日数を超えていれば緑、未満は金、当日は橙
+        var col = e.days===0 ? "#E0A86A" : (e.days>=soreDays ? "#5DCAA5" : "#E3C56A");
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:11px; padding:11px 14px;";
+        row.innerHTML=
+          '<span style="display:flex; align-items:center; gap:8px;"><span style="width:8px; height:8px; border-radius:50%; background:'+(partColors[e.key]||t.accent)+';"></span><span style="font-size:13px; color:'+t.txt+';">'+(d.m[e.key]||e.key)+'</span></span>'+
+          '<span style="font-size:13px; color:'+col+'; font-weight:600;">'+txt+'</span>';
+        $('elapsedList').appendChild(row);
+      });
+    }
+    function renderWeek(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('weekStrip').innerHTML="";
+      WEEK.forEach(function(parts,i){
+        var today=(i===_todayIdx);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:11px; padding:9px 4px; border-bottom:0.5px solid "+t.cellBd+";";
+        var label='<span style="font-size:12px; color:'+(today?t.accent:t.sub)+'; font-weight:'+(today?"600":"400")+'; width:30px;">'+d.days[i]+'</span>';
+        var tags = parts.length ? parts.map(function(p){
+          return '<span style="font-size:12px; color:'+(partColors[p]||t.txt)+';">'+(d.m[p]||p)+'</span>';
+        }).join('<span style="color:'+t.muted+'; font-size:11px;">・</span>') : '<span style="font-size:12px; color:'+t.muted+';">—</span>';
+        row.innerHTML=label+'<div style="display:flex; gap:6px; flex-wrap:wrap; flex:1; align-items:center;">'+tags+'</div>';
+        $('weekStrip').appendChild(row);
+      });
+    }
+    function renderMonth(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var _loc={"日本語":"ja","English":"en","简体中文":"zh-CN","繁體中文":"zh-TW","한국어":"ko","Français":"fr","Español":"es","Deutsch":"de","Italiano":"it","Português":"pt","ภาษาไทย":"th","हिन्दी":"hi","Tiếng Việt":"vi","Bahasa Indonesia":"id"};
+      try{ $('monthLabel').textContent=new Date().toLocaleDateString(_loc[cur]||"en",{month:"long"}); }
+      catch(e){ $('monthLabel').textContent=d.monthLabel; }
+      var trained=TRAINED;
+      var line=t.cellBd, cellBg=t.bg;
+      // 曜日ヘッダー
+      $('calWeekHdr').innerHTML="";
+      d.days.forEach(function(dn){ var h=document.createElement('div'); h.style.cssText="text-align:center; font-size:9px; color:"+t.muted+";"; h.textContent=dn; $('calWeekHdr').appendChild(h); });
+      // gap罫線方式：コンテナ背景=罫線色、gap=1px、セル背景=下地。継ぎ目のない格子に
+      var g=$('calGrid');
+      g.style.background=line; g.style.gap="1px"; g.style.border="1px solid "+line; g.style.borderRadius="8px"; g.style.overflow="hidden";
+      g.innerHTML="";
+      var _n=new Date();
+      var offset=(new Date(_n.getFullYear(),_n.getMonth(),1).getDay()+6)%7;  // 月曜はじまり
+      var daysInMonth=new Date(_n.getFullYear(),_n.getMonth()+1,0).getDate();
+      var total=offset+daysInMonth;
+      var rows=Math.ceil(total/7);
+      var cells=rows*7;
+      for(var i=0;i<cells;i++){
+        var day=i-offset+1;
+        var valid=(day>=1 && day<=daysInMonth);
+        var p=valid?trained[day]:null;
+        var today=(day===_n.getDate());
+        var cell=document.createElement('div');
+        cell.style.cssText="aspect-ratio:1; background:"+(today?(dark?"#211D16":"#FBF3E0"):cellBg)+"; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:4px 1px; gap:2px; overflow:hidden;";
+        if(valid){
+          var dayNum = today
+            ? '<span style="font-size:8.5px; color:#16140F; background:'+t.accent+'; width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center;">'+day+'</span>'
+            : '<span style="font-size:9px; color:'+t.sub+';">'+day+'</span>';
+          var tag = p ? '<span style="font-size:7.5px; line-height:1.1; color:'+(partColors[p]||t.txt)+'; font-weight:600;">'+(d.m[p]||p)+'</span>' : '';
+          cell.innerHTML=dayNum+tag;
+        }
+        g.appendChild(cell);
+      }
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('weekTab').textContent=d.week; $('monthTab').textContent=d.month;
+      $('calToggleLbl').textContent=d.calToggleLbl||'Calendar';
+      $('setTtl').textContent=d.setTtl; $('setSub').textContent=d.setSub; $('setVal').textContent=soreDays+" "+d.dayUnit;
+      $('actionBtn').textContent=d.action;
+      renderPoint(); renderElapsed(); renderWeek(); renderMonth();
+    }
+    var calOpen=false;
+    function setTab(tb){ tab=tb; $('weekView').style.display=tb==="week"?"block":"none"; $('monthView').style.display=tb==="month"?"block":"none"; applyTheme(); }
+    function toggleCal(){ calOpen=!calOpen; $('calBody').style.display=calOpen?"block":"none"; $('calChevron').className=calOpen?"ti ti-chevron-up":"ti ti-chevron-down"; }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      var wOn=(tab==="week");
+      $('weekTab').style.background=wOn?t.accent:"transparent"; $('weekTab').style.color=wOn?(dark?"#16140F":"#FFFFFF"):t.sub; $('weekTab').style.border=wOn?"none":"0.5px solid "+t.cardBd;
+      $('monthTab').style.background=!wOn?t.accent:"transparent"; $('monthTab').style.color=!wOn?(dark?"#16140F":"#FFFFFF"):t.sub; $('monthTab').style.border=!wOn?"none":"0.5px solid "+t.cardBd;
+      $('elapsedLbl').style.color=t.sub; $('monthLabel').style.color=t.txt;
+      $('pointCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('pointCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('pointTtl').style.color= dark?"#7FCBAE":"#0F6E56";
+      $('calToggle').style.background=t.card; $('calToggle').style.borderColor=t.cardBd; $('calToggleLbl').style.color=t.txt;
+      $('setCard').style.background=t.card; $('setCard').style.borderColor=t.cardBd; $('setTtl').style.color=t.txt; $('setSub').style.color=t.sub; $('setVal').style.color=t.accent;
+      [$('setMinus'),$('setPlus')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; b.style.color=t.sub; });
+      $('actionBtn').style.background=t.accent; $('actionBtn').style.color= dark?"#16140F":"#FFFFFF";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderPoint(); renderElapsed(); renderWeek(); renderMonth();
+    }
+    $('weekTab').onclick=function(){ setTab("week"); };
+    $('monthTab').onclick=function(){ setTab("month"); };
+    $('calToggle').onclick=function(){ toggleCal(); };
+    $('setMinus').onclick=function(){ if(soreDays>1){ soreDays--; applyUI(); } };
+    $('setPlus').onclick=function(){ if(soreDays<7){ soreDays++; applyUI(); } };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+</body>
+</html>

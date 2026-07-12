@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>記録 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s; min-height:740px; display:flex; flex-direction:column;">
+  <style>
+    @keyframes revoIntroUp{0%{opacity:0; transform:translateY(14px) scale(0.96);}100%{opacity:1; transform:translateY(0) scale(1);}}
+    @keyframes revoIntroGlow{0%,100%{filter:drop-shadow(0 0 5px rgba(227,197,106,0.22));}50%{filter:drop-shadow(0 0 13px rgba(227,197,106,0.42));}}
+    @keyframes revoIntroOut{0%{opacity:1; visibility:visible;}100%{opacity:0; visibility:hidden;}}
+    /* ロゴがゆっくり現れ → 余韻 → 滑らかに拡大して抜ける（段差なし） */
+    @keyframes revoLogoZoom{
+      0%{opacity:0; transform:scale(0.96);}
+      20%{opacity:1; transform:scale(1);}
+      55%{opacity:1; transform:scale(1.02);}
+      100%{opacity:0; transform:scale(2.4);}
+    }
+    @keyframes revoTagFade{
+      0%,18%{opacity:0;}
+      34%{opacity:0.85;}
+      58%{opacity:0.85;}
+      72%,100%{opacity:0;}
+    }
+  </style>
+  <div class="revoIntro" style="position:absolute; inset:0; z-index:60; background:#16140F; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:15px; animation:revoIntroOut 0.5s ease 2.6s forwards;">
+    <div style="transform-origin:center center; animation:revoLogoZoom 3.1s cubic-bezier(0.45,0,0.15,1) both, revoIntroGlow 2.8s ease-in-out infinite;">
+      <svg viewBox="0 0 232 58" width="212" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="revo fit" style="display:block;">
+        <text x="116" y="40" text-anchor="middle" dominant-baseline="middle" font-family="Jost,sans-serif" font-weight="200" font-size="50" letter-spacing="1" fill="#F0EBE2"><tspan fill="#F0EBE2">revo </tspan><tspan fill="#E3C56A">fit</tspan></text>
+      </svg>
+    </div>
+    <p style="font-size:13px; color:#8A7E68; margin:0; text-align:center; letter-spacing:0.08em; font-weight:300; animation:revoTagFade 3.1s ease both;">revo in your life</p>
+  </div>
+
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">Revo Fit の記録。睡眠・食事・運動・からだ。タップしてその場で入れる。からだは体重・体脂肪・筋肉量と前回比。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s; position:sticky; top:0; z-index:20; background:#16140F;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">きょうの記録</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="flex:1; padding:16px 18px 0;">
+    <p id="lead" style="font-size:13px; color:#8A7E68; margin:0 0 16px; line-height:1.6;">きょうの分を、タップして入れるだけ。あとからでも直せます。</p>
+    <div id="groups" style="display:flex; flex-direction:column; gap:11px;"></div>
+  </div>
+
+  <div style="padding:4px 18px 0;">
+    <div id="teaseCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:16px; overflow:hidden;">
+      <div id="teaseHead" style="display:flex; align-items:center; gap:11px; padding:15px 16px; cursor:pointer;">
+        <div style="width:36px; height:36px; border-radius:10px; background:#221E14; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti ti-chart-dots" style="font-size:19px; color:#E3C56A;"></i></div>
+        <div style="flex:1;">
+          <p id="teaseTtl" style="font-size:13px; color:#F0EBE2; margin:0 0 2px; font-weight:600;">本格的に記録・分析したい方へ</p>
+          <p id="teaseSub" style="font-size:11px; color:#8A7E68; margin:0;">スタンダードで見られるもの</p>
+        </div>
+        <i id="teaseChev" class="ti ti-chevron-down" style="font-size:18px; color:#8A7E68; transition:transform 0.3s;"></i>
+      </div>
+      <div id="teaseBody" style="display:none; padding:0 16px 16px;">
+        <!-- プレビュー画像（実際のスタンダード画面イメージ） -->
+        <div style="display:flex; flex-direction:column; gap:10px; margin:4px 0 14px;">
+          <!-- 推移グラフのプレビュー -->
+          <div style="background:#16140F; border:0.5px solid #2A2620; border-radius:12px; padding:12px;">
+            <p id="pv1Lbl" style="font-size:10px; color:#8A7E68; margin:0 0 8px;">ボリューム推移（12週）</p>
+            <svg viewBox="0 0 280 70" style="width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <polyline points="6,58 30,52 54,54 78,44 102,46 126,36 150,38 174,28 198,30 222,20 246,22 270,12" fill="none" stroke="#E3C56A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polygon points="6,58 30,52 54,54 78,44 102,46 126,36 150,38 174,28 198,30 222,20 246,22 270,12 270,66 6,66" fill="#E3C56A" opacity="0.08"/>
+              <circle cx="270" cy="12" r="3" fill="#E3C56A"/>
+            </svg>
+          </div>
+          <!-- 部位別ヒートマップのプレビュー -->
+          <div style="background:#16140F; border:0.5px solid #2A2620; border-radius:12px; padding:12px;">
+            <p id="pv2Lbl" style="font-size:10px; color:#8A7E68; margin:0 0 8px;">部位ごとの負荷バランス</p>
+            <div style="display:flex; gap:6px; align-items:flex-end; height:44px;">
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;"><div style="width:100%; height:38px; background:linear-gradient(180deg,#E3C56A,#9A7B16); border-radius:4px;"></div></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;"><div style="width:100%; height:26px; background:linear-gradient(180deg,#E3C56A,#9A7B16); border-radius:4px; opacity:0.75;"></div></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;"><div style="width:100%; height:32px; background:linear-gradient(180deg,#E3C56A,#9A7B16); border-radius:4px; opacity:0.85;"></div></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;"><div style="width:100%; height:18px; background:linear-gradient(180deg,#E3C56A,#9A7B16); border-radius:4px; opacity:0.6;"></div></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;"><div style="width:100%; height:30px; background:linear-gradient(180deg,#E3C56A,#9A7B16); border-radius:4px; opacity:0.8;"></div></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;"><div style="width:100%; height:22px; background:linear-gradient(180deg,#E3C56A,#9A7B16); border-radius:4px; opacity:0.7;"></div></div>
+            </div>
+          </div>
+          <!-- 自己ベスト履歴のプレビュー -->
+          <div style="background:#16140F; border:0.5px solid #2A2620; border-radius:12px; padding:12px;">
+            <p id="pv3Lbl" style="font-size:10px; color:#8A7E68; margin:0 0 8px;">自己ベストの履歴</p>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+              <div style="display:flex; align-items:center; gap:8px;"><i class="ti ti-trophy" style="font-size:13px; color:#E3C56A;"></i><span id="pv3a" style="font-size:11px; color:#C9C0AE;">ベンチプレス 65kg</span><span style="flex:1;"></span><span style="font-size:10px; color:#5DCAA5;">+5kg</span></div>
+              <div style="display:flex; align-items:center; gap:8px;"><i class="ti ti-trophy" style="font-size:13px; color:#8A7E68;"></i><span id="pv3b" style="font-size:11px; color:#8A7E68;">スクワット 80kg</span><span style="flex:1;"></span><span style="font-size:10px; color:#5DCAA5;">+2.5kg</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- 解放ボタン -->
+        <button id="unlockBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:14px; font-weight:600; padding:13px; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><i class="ti ti-star" style="font-size:16px;"></i><span id="unlockLbl">スタンダードで解放する</span></button>
+        <p id="unlockSub" style="text-align:center; font-size:10px; color:#8A7E68; margin:9px 0 0;">いつでも解約できます</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:16px 18px 22px;">
+    <button id="saveBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:15px; cursor:pointer;">記録する</button>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 記録項目 [key, icon, color, done(初期)]
+    var ITEMS=[
+      {key:"sleep", icon:"ti-moon", col:"#B4ABE8", done:true},
+      {key:"food", icon:"ti-salad", col:"#5DCAA5", done:true},
+      {key:"move", icon:"ti-barbell", col:"#E3C56A", done:false},
+      {key:"body", icon:"ti-scale", col:"#6FA8DC", done:false},
+      {key:"water", icon:"ti-droplet", col:"#6FA8DC", done:true},
+      {key:"condition", icon:"ti-heart-rate-monitor", col:"#E89BB8", done:false}
+    ];
+    /* ===== 当日レコード（docs/03）：daily_log を読み込み・S に集約 ===== */
+    var S = REVO.getLog(REVO.todayKey()) || REVO.emptyLog();
+    /* ===== 食品名からのカロリー推定（表記ゆれ対応。値は目安＝文部科学省食品成分表ベースの概算） ===== */
+    var FOOD_DB=[
+      /* ご飯もの */
+      {a:["ご飯","ごはん","白米","米","ライス","rice"], p:[["茶碗 小 (100g)",156],["茶碗 1杯 (150g)",234],["大盛 (200g)",312],["1合 (炊上り330g)",515]]},
+      {a:["玄米"], p:[["茶碗 1杯 (150g)",228]]},
+      {a:["おにぎり","おむすび"], p:[["1個",180],["2個",360]]},
+      {a:["チャーハン","炒飯","fried rice"], p:[["1皿",700]]},
+      {a:["牛丼"], p:[["並",700],["大盛",900]]},
+      {a:["親子丼"], p:[["1杯",680]]},
+      {a:["カツ丼","かつ丼"], p:[["1杯",900]]},
+      {a:["天丼"], p:[["1杯",800]]},
+      {a:["海鮮丼"], p:[["1杯",650]]},
+      {a:["オムライス"], p:[["1皿",750]]},
+      {a:["カレー","カレーライス","curry"], p:[["1皿",750],["大盛",950]]},
+      {a:["ハヤシライス"], p:[["1皿",750]]},
+      {a:["炊き込みご飯"], p:[["茶碗 1杯",240]]},
+      {a:["お粥","おかゆ","粥"], p:[["1杯",140]]},
+      {a:["雑炊"], p:[["1杯",250]]},
+      {a:["卵かけご飯","TKG"], p:[["1杯",330]]},
+      /* 汁物・スープ */
+      {a:["豚汁","とん汁","ぶた汁"], p:[["1杯",150]]},
+      {a:["味噌汁","みそ汁","みそしる"], p:[["1杯",40],["具だくさん",70]]},
+      {a:["けんちん汁"], p:[["1杯",120]]},
+      {a:["コーンスープ"], p:[["1杯",130]]},
+      {a:["スープ","soup"], p:[["1杯",80]]},
+      {a:["シチュー","stew"], p:[["1皿",400]]},
+      {a:["鍋","なべ"], p:[["1人前",450]]},
+      /* 麺類 */
+      {a:["ラーメン","ramen"], p:[["1杯 (醤油/塩)",500],["1杯 (とんこつ)",600]]},
+      {a:["つけ麺"], p:[["1人前",700]]},
+      {a:["ちゃんぽん"], p:[["1杯",650]]},
+      {a:["冷やし中華"], p:[["1皿",550]]},
+      {a:["うどん","udon"], p:[["1杯",320]]},
+      {a:["そば","蕎麦","soba"], p:[["1杯",300]]},
+      {a:["そうめん","素麺"], p:[["1人前",340]]},
+      {a:["パスタ","スパゲッティ","pasta","spaghetti"], p:[["1皿",550]]},
+      {a:["焼きそば","焼そば"], p:[["1皿",570]]},
+      {a:["フォー","pho"], p:[["1杯",400]]},
+      {a:["パッタイ","pad thai"], p:[["1皿",600]]},
+      /* パン・粉もの */
+      {a:["パン","食パン","トースト","bread","toast"], p:[["6枚切 1枚",156],["4枚切 1枚",238]]},
+      {a:["クロワッサン","croissant"], p:[["1個",200]]},
+      {a:["菓子パン"], p:[["1個",350]]},
+      {a:["サンドイッチ","sandwich"], p:[["1個",300]]},
+      {a:["ハンバーガー","バーガー","burger"], p:[["1個",500],["セット",1100]]},
+      {a:["ホットドッグ","hot dog"], p:[["1個",400]]},
+      {a:["ピザ","pizza"], p:[["1切",200],["1枚 (M)",800]]},
+      {a:["ベーグル","bagel"], p:[["1個",250]]},
+      {a:["パンケーキ","ホットケーキ","pancake"], p:[["2枚",350]]},
+      {a:["ワッフル","waffle"], p:[["1枚",250]]},
+      {a:["お好み焼き"], p:[["1枚",550]]},
+      {a:["たこ焼き"], p:[["6個",330]]},
+      /* 肉料理 */
+      {a:["鶏むね","鶏胸","むね肉","サラダチキン","chicken breast","chicken"], p:[["100g",108],["1枚 (250g)",270]]},
+      {a:["鶏もも","もも肉"], p:[["100g",190]]},
+      {a:["唐揚げ","からあげ","竜田揚げ"], p:[["1個",70],["5個",350]]},
+      {a:["焼き鳥","やきとり"], p:[["1本",80],["5本",400]]},
+      {a:["とんかつ","トンカツ","豚カツ"], p:[["1枚",450]]},
+      {a:["生姜焼き","しょうが焼き"], p:[["1人前",350]]},
+      {a:["ハンバーグ"], p:[["1個",400]]},
+      {a:["餃子","ぎょうざ","gyoza"], p:[["1個",40],["6個",240]]},
+      {a:["焼肉","焼き肉"], p:[["1人前",600]]},
+      {a:["ステーキ","牛肉","steak","beef"], p:[["150g",400],["250g",670]]},
+      {a:["豚バラ","豚ばら"], p:[["100g",395]]},
+      {a:["ソーセージ","ウインナー","sausage"], p:[["1本",80],["3本",240]]},
+      {a:["ベーコン","bacon"], p:[["1枚",40]]},
+      {a:["ハム","ham"], p:[["1枚",20]]},
+      {a:["ケバブ","kebab"], p:[["1個",550]]},
+      {a:["タコス","taco"], p:[["1個",170]]},
+      {a:["ブリトー","burrito"], p:[["1個",600]]},
+      /* 魚介 */
+      {a:["サーモン","鮭","しゃけ","salmon"], p:[["1切れ",180]]},
+      {a:["さば","サバ","鯖"], p:[["1切れ",200]]},
+      {a:["さんま","サンマ","秋刀魚"], p:[["1尾",300]]},
+      {a:["刺身","さしみ","sashimi"], p:[["1人前",150]]},
+      {a:["寿司","すし","sushi"], p:[["1貫",40],["10貫",400]]},
+      {a:["まぐろ","マグロ","鮪","tuna"], p:[["100g",108]]},
+      {a:["うなぎ","鰻"], p:[["蒲焼 1串",350]]},
+      {a:["えび","エビ","海老","shrimp"], p:[["5尾",60]]},
+      /* 卵・大豆 */
+      {a:["卵","たまご","玉子","ゆで卵","egg"], p:[["1個",76],["2個",152]]},
+      {a:["目玉焼き"], p:[["1個",90]]},
+      {a:["卵焼き","だし巻き"], p:[["1切",50],["3切",150]]},
+      {a:["豆腐","tofu"], p:[["半丁 (150g)",84]]},
+      {a:["冷奴"], p:[["1皿",80]]},
+      {a:["納豆"], p:[["1パック",95]]},
+      {a:["厚揚げ"], p:[["1枚",150]]},
+      {a:["豆乳"], p:[["コップ1杯 (200ml)",100]]},
+      /* 副菜・野菜 */
+      {a:["サラダ","salad"], p:[["1皿",50],["チキンサラダ",180]]},
+      {a:["お浸し","おひたし","ほうれん草"], p:[["小鉢",25]]},
+      {a:["きんぴら"], p:[["小鉢",70]]},
+      {a:["ひじき"], p:[["小鉢",60]]},
+      {a:["ポテトサラダ"], p:[["小鉢",120]]},
+      {a:["枝豆"], p:[["1皿",120]]},
+      {a:["キムチ"], p:[["小鉢",20]]},
+      {a:["もずく"], p:[["1パック",10]]},
+      {a:["漬物","つけもの"], p:[["小鉢",10]]},
+      {a:["アボカド","avocado"], p:[["1個",230]]},
+      {a:["ブロッコリー","broccoli"], p:[["1/2株",50]]},
+      /* 乳製品・果物 */
+      {a:["牛乳","ミルク","milk"], p:[["コップ1杯 (200ml)",126]]},
+      {a:["ヨーグルト","yogurt"], p:[["1個 (100g)",61],["ギリシャ",90]]},
+      {a:["チーズ","cheese"], p:[["1個",60]]},
+      {a:["バナナ","banana"], p:[["1本",86]]},
+      {a:["りんご","リンゴ","林檎","apple"], p:[["1個",140]]},
+      {a:["みかん","ミカン"], p:[["1個",45]]},
+      {a:["いちご","イチゴ","苺"], p:[["5粒",30]]},
+      {a:["ぶどう","ブドウ","葡萄"], p:[["1房",160]]},
+      {a:["キウイ","kiwi"], p:[["1個",45]]},
+      {a:["オレンジ","orange"], p:[["1個",70]]},
+      /* 中華・洋食 */
+      {a:["麻婆豆腐","マーボー"], p:[["1人前",400]]},
+      {a:["回鍋肉","ホイコーロー"], p:[["1人前",450]]},
+      {a:["青椒肉絲","チンジャオ"], p:[["1人前",350]]},
+      {a:["エビチリ","海老チリ"], p:[["1人前",300]]},
+      {a:["春巻き","春巻"], p:[["1本",120]]},
+      {a:["シュウマイ","焼売"], p:[["1個",50],["4個",200]]},
+      {a:["天ぷら","天麩羅","tempura"], p:[["えび1本",60],["盛合せ",400]]},
+      {a:["グラタン"], p:[["1皿",600]]},
+      {a:["ドリア"], p:[["1皿",700]]},
+      {a:["リゾット","risotto"], p:[["1皿",500]]},
+      {a:["ビビンバ","bibimbap"], p:[["1皿",650]]},
+      /* 間食・スイーツ */
+      {a:["プロテイン","protein"], p:[["1杯",120]]},
+      {a:["プロテインバー","protein bar"], p:[["1本",180]]},
+      {a:["チョコ","チョコレート","chocolate"], p:[["1かけ",30],["1枚",280]]},
+      {a:["クッキー","ビスケット","cookie"], p:[["1枚",50],["3枚",150]]},
+      {a:["ポテチ","ポテトチップス","chips"], p:[["1袋 (60g)",330]]},
+      {a:["アイス","アイスクリーム","ice cream"], p:[["1個",200]]},
+      {a:["ケーキ","cake"], p:[["1切",350]]},
+      {a:["シュークリーム"], p:[["1個",230]]},
+      {a:["プリン","pudding"], p:[["1個",130]]},
+      {a:["大福"], p:[["1個",160]]},
+      {a:["団子","だんご"], p:[["1本",120]]},
+      {a:["せんべい","煎餅"], p:[["1枚",60]]},
+      {a:["ナッツ","アーモンド","nuts"], p:[["ひとつかみ (25g)",150]]},
+      {a:["グラノーラ","granola"], p:[["1食 (50g)",220]]},
+      {a:["オートミール","oatmeal"], p:[["1食 (30g)",114]]},
+      {a:["スムージー","smoothie"], p:[["1杯",180]]},
+      /* 飲料・アルコール */
+      {a:["ビール","beer"], p:[["350ml",140],["500ml",200]]},
+      {a:["ハイボール","highball"], p:[["1杯",70]]},
+      {a:["ワイン","wine"], p:[["グラス1杯",90]]},
+      {a:["日本酒","酒"], p:[["1合",200]]},
+      {a:["酎ハイ","チューハイ","サワー"], p:[["350ml",150]]},
+      {a:["コーラ","cola"], p:[["500ml",225]]},
+      {a:["ジュース","juice"], p:[["コップ1杯",90]]},
+      {a:["カフェラテ","ラテ","latte"], p:[["1杯",120]]},
+      {a:["エナジードリンク","モンスター","レッドブル"], p:[["1本",110]]}
+    ];
+    function aiEntitled(){
+      try{ var sb2=JSON.parse(localStorage.getItem('revo.sub')||'null');
+        return sb2 && (sb2.plan==='standard'||sb2.plan==='cross') && (sb2.status==null||sb2.status==='active'||sb2.status==='trialing');
+      }catch(e){ return false; }
+    }
+    function foodMatch(name){
+      var n=(name||"").toLowerCase().trim();
+      if(!n) return null;
+      var best=null, bestLen=0;
+      for(var i=0;i<FOOD_DB.length;i++){
+        for(var j=0;j<FOOD_DB[i].a.length;j++){
+          var al=FOOD_DB[i].a[j].toLowerCase();
+          if(n.indexOf(al)>=0 && al.length>bestLen){ best=FOOD_DB[i]; bestLen=al.length; }
+        }
+      }
+      return best;   /* 最長一致（部分語の誤マッチ防止） */
+    }
+    var PREV = REVO.getLog(REVO.prevKey(REVO.todayKey()));
+    function doneOf(key){
+      if(key==="sleep") return S.sleep.minutes!=null;
+      if(key==="food") return (S.food.meals||[]).some(function(m){ return m && ((+m.kcal||0)>0 || (m.name||"").trim()); });
+      if(key==="move") return (S.move.totalMin>0)||((S.move.exercises||[]).length>0);
+      if(key==="body") return S.body.weight!=null||S.body.fat!=null||S.body.muscle!=null;
+      if(key==="water") return REVO.waterTotal(S.water)>0;
+      if(key==="condition") return S.condition.mood!=null||S.condition.bowel!=null;
+      return false;
+    }
+    /* 状態のみ即時反映（再描画なし）。入力のたびに呼ばれるので、以降どんな操作をしても値は失われない */
+    function syncVal(key, v){
+      if(key==="bodyW") S.body.weight=v;
+      else if(key==="bodyF") S.body.fat=v;
+      else if(key==="bodyM") S.body.muscle=v;
+      else if(key==="pfcP") S.food.pfc.p=v;
+      else if(key==="pfcF") S.food.pfc.f=v;
+      else if(key==="pfcC") S.food.pfc.c=v;
+      else if(key==="nutSugar") S.food.nut.sugar=v;
+      else if(key==="nutFiber") S.food.nut.fiber=v;
+      else if(key==="nutSalt") S.food.nut.salt=v;
+      else if(key && key.indexOf("mealK")===0){ var i=+key.slice(5); if(!S.food.meals[i]) S.food.meals[i]={name:"",kcal:0}; S.food.meals[i].kcal=(v==null?0:Math.round(v)); }
+      else if(key && key.indexOf("wrow")===0){ var j=key.slice(4); if(j==="S") S.water.supp=(v==null?0:Math.round(v)); else S.water.types[+j]=(v==null?0:Math.round(v)); }
+    }
+    function syncNum(key, v){
+      syncVal(key, v);
+      if(key && (key.indexOf("pfc")===0 || key.indexOf("mealK")===0 || key.indexOf("wrow")===0)) renderGroups();
+    }
+    var D={
+      "日本語":{hdr:"きょうの記録",lead:"きょうの分を、タップして入れるだけ。あとからでも直せます。",save:"記録する",tease:{ttl:"本格的に記録・分析したい方へ",sub:"スタンダードで見られるもの",pv1:"ボリューム推移（12週）",pv2:"部位ごとの負荷バランス",pv3:"自己ベストの履歴",pv3a:"ベンチプレス 65kg",pv3b:"スクワット 80kg",unlock:"スタンダードで解放する",unlockSub:"いつでも解約できます"},
+        done:"入力ずみ",yet:"まだ",
+        names:{sleep:"睡眠",food:"食事",move:"運動・トレーニング",body:"からだ",water:"水分",condition:"コンディション"},
+        sleepVal:"7時間30分・ぐっすり",foodVal:"860 kcal・2食",moveVal:"胸・15分",
+        bodyW:"体重",bodyF:"体脂肪",bodyM:"筋肉量",bodyDelta:"前回より",
+        sleepH:"時間",sleepQ:["ぐっすり","ふつう","あさい"],
+        foodHint:"写真でかんたん記録もできます",foodPhoto:"写真でかんたん",foodPhotoSub:"目安",foodWrite:"書いて記録",foodWriteSub:"正確",foodLogged:"きょう食べたもの",foodTotal:"合計",foodApprox:"目安",foodBalance:"あと食べてOK",foodBmr:"基礎代謝",foodMove:"運動ぶん",foodEaten:"食べたぶん",foodWhy:"計算のしくみを見る",foodEgg:"卵2個ぶんで整います",mealEx:["朝・トースト＆卵","昼・鶏むね定食","夜（まだ）","間食（まだ）"],pfc:{p:"たんぱく質",f:"脂質",c:"炭水化物"},nutMore:"栄養をくわしく",nutClose:"とじる",sugar:"糖質",fiber:"食物繊維",salt:"塩分",dietLbl:"ダイエット方式",diets:["バランス","糖質制限","脂質制限"],dietSel:1,watchSugar:"糖質 残り",watchFat:"脂質 残り",gutHint:"糖質を抑える日は、食物繊維と水分を忘れずに。",moveParts:["胸","背中","脚","肩","腕","お腹"],moveMin:"分",moveLogLbl:"きょうのメニュー",moveSet:"セット",moveRep:"回",moveAdd:"種目を追加",
+        nextHint:"記録すると、スコアが今日のぶん動きます。",condBowel:"お通じ",condBowelStates:["快調","ふつう","便秘ぎみ","ゆるい"],condWater:"水分",condWaterUnit:"杯",waterTypes:["白湯","水","お茶"],waterSuppTag:"サプリドリンク",waterSuppToggle:"サプリドリンクも水分に含める",waterCups:"杯ぶん",waterBreak:"種類ごとの内訳",condMood:"気分",condMoods:["good","ふつう","だるい"],condGut:"水分と食物繊維が、お通じを助けます。"},
+      "English":{hdr:"Today's log",lead:"Just tap to enter today's. You can fix it later.",save:"Save",tease:{ttl:"For deeper logging & analysis",sub:"What you'll see with Standard",pv1:"Volume trend (12 weeks)",pv2:"Load balance by muscle",pv3:"Personal record history",pv3a:"Bench press 65kg",pv3b:"Squat 80kg",unlock:"Unlock with Standard",unlockSub:"Cancel anytime"},
+        done:"Logged",yet:"Not yet",
+        names:{sleep:"Sleep",food:"Meals",move:"Exercise / training",body:"Body",water:"Water",condition:"Condition"},
+        sleepVal:"7h 30m · slept well",foodVal:"860 kcal · 2 meals",moveVal:"Chest · 15 min",
+        bodyW:"Weight",bodyF:"Body fat",bodyM:"Muscle",bodyDelta:"vs last time",
+        sleepH:"h",sleepQ:["Well","Okay","Light"],
+        foodHint:"You can also log easily by photo",foodPhoto:"Quick photo",foodPhotoSub:"estimate",foodWrite:"Write it down",foodWriteSub:"precise",foodLogged:"Eaten today",foodTotal:"Total",foodApprox:"est.",foodBalance:"Room to eat",foodBmr:"BMR",foodMove:"Exercise",foodEaten:"Eaten",foodWhy:"See how it’s calculated",foodEgg:"about 2 eggs to balance",mealEx:["AM · Toast & eggs","Noon · Chicken set","PM (not yet)","Snack (not yet)"],pfc:{p:"Protein",f:"Fat",c:"Carbs"},nutMore:"Nutrition details",nutClose:"Close",sugar:"Sugar",fiber:"Fiber",salt:"Salt",dietLbl:"Diet style",diets:["Balanced","Low-carb","Low-fat"],dietSel:1,watchSugar:"Sugar left",watchFat:"Fat left",gutHint:"On low-carb days, don’t forget fiber and water.",moveParts:["Chest","Back","Legs","Shoulders","Arms","Core"],moveMin:"min",moveLogLbl:"Today's menu",moveSet:"sets",moveRep:"reps",moveAdd:"Add exercise",
+        nextHint:"Once logged, today's score updates.",condBowel:"Bowel",condBowelStates:["Great","Normal","A bit constipated","Loose"],condWater:"Water",condWaterUnit:"cups",waterTypes:["Warm water","Water","Tea"],waterSuppTag:"Supplement drink",waterSuppToggle:"Count supplement drinks as water",waterCups:"cups",waterBreak:"By type",condMood:"Mood",condMoods:["Good","Okay","Sluggish"],condGut:"Water and fiber help your bowel."},
+      "简体中文":{hdr:"今天的记录",lead:"点一下填今天的就行，之后也能改。",save:"记录",tease:{ttl:"想要更专业地记录·分析",sub:"标准版可查看",pv1:"容量推移（12周）",pv2:"各部位负荷平衡",pv3:"自己最佳记录",pv3a:"卧推 65kg",pv3b:"深蹲 80kg",unlock:"用标准版解锁",unlockSub:"可随时解约"},
+        done:"已填",yet:"未填",
+        names:{sleep:"睡眠",food:"饮食",move:"运动·训练",body:"身体",water:"水分",condition:"身体状态"},
+        sleepVal:"7小时30分·睡得好",foodVal:"860 kcal·两餐",moveVal:"胸·15分钟",
+        bodyW:"体重",bodyF:"体脂",bodyM:"肌肉量",bodyDelta:"较上次",
+        sleepH:"小时",sleepQ:["香甜","一般","浅"],
+        foodHint:"也能用照片轻松记录",foodPhoto:"拍照快速",foodPhotoSub:"估算",foodWrite:"手动记录",foodWriteSub:"精确",foodLogged:"今天吃的",foodTotal:"合计",foodApprox:"估",foodBalance:"还能吃",foodBmr:"基础代谢",foodMove:"运动",foodEaten:"已吃",foodWhy:"查看计算方式",foodEgg:"约2个鸡蛋即可平衡",mealEx:["早·吐司鸡蛋","午·鸡胸套餐","晚（未填）","加餐（未填）"],pfc:{p:"蛋白质",f:"脂肪",c:"碳水"},nutMore:"营养详情",nutClose:"收起",sugar:"糖",fiber:"膳食纤维",salt:"盐分",dietLbl:"减脂方式",diets:["均衡","控糖","控脂"],dietSel:1,watchSugar:"糖 还剩",watchFat:"脂肪 还剩",gutHint:"控糖的日子，别忘了膳食纤维和水分。",moveParts:["胸","背","腿","肩","臂","核心"],moveMin:"分",moveLogLbl:"今日的菜单",moveSet:"组",moveRep:"次",moveAdd:"添加动作",
+        nextHint:"记录后，今天的评分会更新。",condBowel:"排便",condBowelStates:["顺畅","一般","偏便秘","偏稀"],condWater:"水分",condWaterUnit:"杯",waterTypes:["温水","水","茶"],waterSuppTag:"补剂饮料",waterSuppToggle:"补剂饮料也算入水分",waterCups:"杯",waterBreak:"各类明细",condMood:"心情",condMoods:["好","一般","乏力"],condGut:"水分和膳食纤维有助于排便。"},
+      "繁體中文":{hdr:"今天的記錄",lead:"點一下填今天的就行，之後也能改。",save:"記錄",tease:{ttl:"想要更專業地記錄·分析",sub:"標準版可查看",pv1:"容量推移（12週）",pv2:"各部位負荷平衡",pv3:"自己最佳記錄",pv3a:"臥推 65kg",pv3b:"深蹲 80kg",unlock:"用標準版解鎖",unlockSub:"可隨時解約"},
+        done:"已填",yet:"未填",
+        names:{sleep:"睡眠",food:"飲食",move:"運動·訓練",body:"身體",water:"水分",condition:"身體狀態"},
+        sleepVal:"7小時30分·睡得好",foodVal:"860 kcal·两餐",moveVal:"胸·15分鐘",
+        bodyW:"體重",bodyF:"體脂",bodyM:"肌肉量",bodyDelta:"較上次",
+        sleepH:"小時",sleepQ:["香甜","一般","淺"],
+        foodHint:"也能用照片輕鬆記錄",foodPhoto:"拍照快速",foodPhotoSub:"估算",foodWrite:"手動記錄",foodWriteSub:"精確",foodLogged:"今天吃的",foodTotal:"合計",foodApprox:"估",foodBalance:"還能吃",foodBmr:"基礎代謝",foodMove:"運動",foodEaten:"已吃",foodWhy:"查看計算方式",foodEgg:"約2顆蛋即可平衡",mealEx:["早·吐司雞蛋","午·雞胸套餐","晚（未填）","加餐（未填）"],pfc:{p:"蛋白質",f:"脂肪",c:"碳水"},nutMore:"營養詳情",nutClose:"收起",sugar:"糖",fiber:"膳食纖維",salt:"鹽分",dietLbl:"減脂方式",diets:["均衡","控糖","控脂"],dietSel:1,watchSugar:"糖 還剩",watchFat:"脂肪 還剩",gutHint:"控糖的日子，別忘了膳食纖維和水分。",moveParts:["胸","背","腿","肩","臂","核心"],moveMin:"分",moveLogLbl:"今日的菜單",moveSet:"組",moveRep:"次",moveAdd:"新增動作",
+        nextHint:"記錄後，今天的評分會更新。",condBowel:"排便",condBowelStates:["順暢","一般","偏便秘","偏稀"],condWater:"水分",condWaterUnit:"杯",waterTypes:["温水","水","茶"],waterSuppTag:"补剂饮料",waterSuppToggle:"补剂饮料也算入水分",waterCups:"杯",waterBreak:"各類明細",condMood:"心情",condMoods:["好","一般","乏力"],condGut:"水分和膳食纖維有助於排便。"},
+      "한국어":{hdr:"오늘의 기록",lead:"오늘 분을 탭해서 넣기만. 나중에 고칠 수 있어요.",save:"기록하기",tease:{ttl:"더 본격적으로 기록·분석하고 싶다면",sub:"스탠다드에서 볼 수 있는 것",pv1:"볼륨 추이(12주)",pv2:"부위별 부하 밸런스",pv3:"자기최고 이력",pv3a:"벤치프레스 65kg",pv3b:"스쿼트 80kg",unlock:"스탠다드로 해제",unlockSub:"언제든 해지 가능"},
+        done:"입력됨",yet:"아직",
+        names:{sleep:"수면",food:"식사",move:"운동·트레이닝",body:"몸",water:"수분",condition:"컨디션"},
+        sleepVal:"7시간 30분·푹 잠",foodVal:"860 kcal·두 끼",moveVal:"가슴·15분",
+        bodyW:"체중",bodyF:"체지방",bodyM:"근육량",bodyDelta:"지난번 대비",
+        sleepH:"시간",sleepQ:["푹","보통","얕음"],
+        foodHint:"사진으로 간편 기록도 돼요",foodPhoto:"사진으로 간편",foodPhotoSub:"어림",foodWrite:"적어서 기록",foodWriteSub:"정확",foodLogged:"오늘 먹은 것",foodTotal:"합계",foodApprox:"어림",foodBalance:"더 먹어도 OK",foodBmr:"기초대사",foodMove:"운동분",foodEaten:"먹은 분",foodWhy:"계산 방식 보기",foodEgg:"달걀 2개면 균형",mealEx:["아침·토스트＆달걀","점심·닭가슴 정식","저녁（아직）","간식（아직）"],pfc:{p:"단백질",f:"지방",c:"탄수화물"},nutMore:"영양 자세히",nutClose:"닫기",sugar:"당질",fiber:"식이섬유",salt:"염분",dietLbl:"다이어트 방식",diets:["균형","저탄수","저지방"],dietSel:1,watchSugar:"당질 남음",watchFat:"지방 남음",gutHint:"저탄수 하는 날은 식이섬유와 수분을 잊지 마세요.",moveParts:["가슴","등","다리","어깨","팔","코어"],moveMin:"분",moveLogLbl:"오늘의 메뉴",moveSet:"세트",moveRep:"회",moveAdd:"종목 추가",
+        nextHint:"기록하면 오늘 점수가 반영돼요.",condBowel:"배변",condBowelStates:["쾌변","보통","변비 기미","무름"],condWater:"수분",condWaterUnit:"잔",waterTypes:["따뜻한 물","물","차"],waterSuppTag:"보충제 음료",waterSuppToggle:"보충제 음료도 수분에 포함",waterCups:"잔",waterBreak:"종류별 내역",condMood:"기분",condMoods:["좋음","보통","나른"],condGut:"수분과 식이섬유가 배변을 도와요."},
+      "ภาษาไทย":{hdr:"บันทึกวันนี้",lead:"แค่แตะใส่ของวันนี้ แก้ทีหลังได้",save:"บันทึก",tease:{ttl:"สำหรับบันทึก·วิเคราะห์เชิงลึก",sub:"สิ่งที่เห็นได้ในสแตนดาร์ด",pv1:"แนวโน้มปริมาณ (12 สัปดาห์)",pv2:"สมดุลภาระแต่ละส่วน",pv3:"ประวัติสถิติส่วนตัว",pv3a:"เบนช์เพรส 65kg",pv3b:"สควอต 80kg",unlock:"ปลดล็อกด้วยสแตนดาร์ด",unlockSub:"ยกเลิกได้ทุกเมื่อ"},
+        done:"ใส่แล้ว",yet:"ยัง",
+        names:{sleep:"การนอน",food:"อาหาร",move:"ออกกำลัง·เทรน",body:"ร่างกาย",water:"น้ำ",condition:"สภาพร่างกาย"},
+        sleepVal:"7 ชม. 30 น.·หลับสบาย",foodVal:"860 kcal·2 มื้อ",moveVal:"อก·15 นาที",
+        bodyW:"น้ำหนัก",bodyF:"ไขมัน",bodyM:"กล้ามเนื้อ",bodyDelta:"เทียบครั้งก่อน",
+        sleepH:"ชม.",sleepQ:["หลับสนิท","ปกติ","ตื้น"],
+        foodHint:"บันทึกด้วยรูปก็ได้ง่ายๆ",foodPhoto:"ถ่ายรูปเร็วๆ",foodPhotoSub:"ประมาณ",foodWrite:"พิมพ์บันทึก",foodWriteSub:"แม่นยำ",foodLogged:"วันนี้กินอะไร",foodTotal:"รวม",foodApprox:"ปย.",foodBalance:"กินเพิ่มได้",foodBmr:"เผาผลาญพื้นฐาน",foodMove:"ออกกำลัง",foodEaten:"กินไป",foodWhy:"ดูวิธีคำนวณ",foodEgg:"ราวไข่ 2 ฟองก็สมดุล",mealEx:["เช้า·ขนมปังไข่","เที่ยง·อกไก่เซ็ต","เย็น（ยัง）","ของว่าง（ยัง）"],pfc:{p:"โปรตีน",f:"ไขมัน",c:"คาร์บ"},nutMore:"โภชนาการละเอียด",nutClose:"ปิด",sugar:"น้ำตาล",fiber:"ใยอาหาร",salt:"โซเดียม",dietLbl:"แนวลดน้ำหนัก",diets:["สมดุล","คุมคาร์บ","คุมไขมัน"],dietSel:1,watchSugar:"น้ำตาลเหลือ",watchFat:"ไขมันเหลือ",gutHint:"วันคุมคาร์บ อย่าลืมใยอาหารและน้ำ",moveParts:["อก","หลัง","ขา","ไหล่","แขน","แกนกลาง"],moveMin:"นาที",moveLogLbl:"เมนูวันนี้",moveSet:"เซต",moveRep:"ครั้ง",moveAdd:"เพิ่มท่า",
+        nextHint:"พอบันทึก คะแนนวันนี้จะอัปเดต",condBowel:"การขับถ่าย",condBowelStates:["คล่อง","ปกติ","ท้องผูก","เหลว"],condWater:"น้ำ",condWaterUnit:"แก้ว",waterTypes:["น้ำอุ่น","น้ำ","ชา"],waterSuppTag:"เครื่องดื่มเสริม",waterSuppToggle:"นับเครื่องดื่มเสริมเป็นน้ำด้วย",waterCups:"แก้ว",waterBreak:"แยกตามชนิด",condMood:"อารมณ์",condMoods:["ดี","ปกติ","เพลีย"],condGut:"น้ำและใยอาหารช่วยการขับถ่าย"},
+      "Français":{hdr:"Journal du jour",lead:"Touchez pour saisir le jour. Modifiable plus tard.",save:"Enregistrer",tease:{ttl:"Pour un suivi & une analyse approfondis",sub:"Ce que vous verrez avec Standard",pv1:"Tendance du volume (12 sem.)",pv2:"Équilibre de charge par muscle",pv3:"Historique des records",pv3a:"Développé couché 65kg",pv3b:"Squat 80kg",unlock:"Débloquer avec Standard",unlockSub:"Résiliable à tout moment"},
+        done:"Saisi",yet:"Pas encore",
+        names:{sleep:"Sommeil",food:"Repas",move:"Sport / entraînement",body:"Corps",water:"Eau",condition:"Forme"},
+        sleepVal:"7h30 · bien dormi",foodVal:"860 kcal · 2 repas",moveVal:"Pectoraux · 15 min",
+        bodyW:"Poids",bodyF:"Masse grasse",bodyM:"Muscle",bodyDelta:"vs dernière fois",
+        sleepH:"h",sleepQ:["Profond","Correct","Léger"],
+        foodHint:"Enregistrement facile par photo aussi",foodPhoto:"Photo rapide",foodPhotoSub:"estim.",foodWrite:"Saisir à la main",foodWriteSub:"précis",foodLogged:"Mangé aujourd’hui",foodTotal:"Total",foodApprox:"est.",foodBalance:"Marge à manger",foodBmr:"Métab. base",foodMove:"Sport",foodEaten:"Mangé",foodWhy:"Voir le calcul",foodEgg:"environ 2 œufs pour équilibrer",mealEx:["Matin · Pain & œufs","Midi · Poulet","Soir (à venir)","Collation (à venir)"],pfc:{p:"Protéines",f:"Lipides",c:"Glucides"},nutMore:"Détail nutrition",nutClose:"Fermer",sugar:"Sucres",fiber:"Fibres",salt:"Sel",dietLbl:"Type de régime",diets:["Équilibré","Low-carb","Low-fat"],dietSel:1,watchSugar:"Sucres restants",watchFat:"Lipides restants",gutHint:"Les jours low-carb, n’oubliez pas fibres et eau.",moveParts:["Pecto","Dos","Jambes","Épaules","Bras","Abdos"],moveMin:"min",moveLogLbl:"Menu du jour",moveSet:"séries",moveRep:"reps",moveAdd:"Ajouter",
+        nextHint:"Une fois saisi, le score du jour évolue.",condBowel:"Transit",condBowelStates:["Top","Normal","Constipation","Mou"],condWater:"Eau",condWaterUnit:"verres",waterTypes:["Eau chaude","Eau","Thé"],waterSuppTag:"Boisson suppl.",waterSuppToggle:"Compter les boissons suppléments comme eau",waterCups:"verres",waterBreak:"Par type",condMood:"Humeur",condMoods:["Bien","Correct","Mou"],condGut:"Eau et fibres aident le transit."},
+      "Español":{hdr:"Registro de hoy",lead:"Toca para anotar lo de hoy. Se corrige luego.",save:"Guardar",tease:{ttl:"Para registro y análisis profundos",sub:"Lo que verás con Estándar",pv1:"Tendencia de volumen (12 sem.)",pv2:"Equilibrio de carga por músculo",pv3:"Historial de récords",pv3a:"Press banca 65kg",pv3b:"Sentadilla 80kg",unlock:"Desbloquear con Estándar",unlockSub:"Cancela cuando quieras"},
+        done:"Anotado",yet:"Aún no",
+        names:{sleep:"Sueño",food:"Comidas",move:"Ejercicio / entreno",body:"Cuerpo",water:"Agua",condition:"Estado"},
+        sleepVal:"7h 30m · dormí bien",foodVal:"860 kcal · 2 comidas",moveVal:"Pecho · 15 min",
+        bodyW:"Peso",bodyF:"Grasa",bodyM:"Músculo",bodyDelta:"vs la última vez",
+        sleepH:"h",sleepQ:["Profundo","Normal","Ligero"],
+        foodHint:"También puedes registrar por foto",foodPhoto:"Foto rápida",foodPhotoSub:"estim.",foodWrite:"Escribir a mano",foodWriteSub:"preciso",foodLogged:"Comido hoy",foodTotal:"Total",foodApprox:"est.",foodBalance:"Margen para comer",foodBmr:"Metab. basal",foodMove:"Ejercicio",foodEaten:"Comido",foodWhy:"Ver cómo se calcula",foodEgg:"unos 2 huevos para equilibrar",mealEx:["Mañana · Tostada y huevo","Mediodía · Pollo","Noche (aún no)","Snack (aún no)"],pfc:{p:"Proteína",f:"Grasa",c:"Carbos"},nutMore:"Detalle nutrición",nutClose:"Cerrar",sugar:"Azúcar",fiber:"Fibra",salt:"Sal",dietLbl:"Tipo de dieta",diets:["Equilibrada","Baja en carbos","Baja en grasa"],dietSel:1,watchSugar:"Azúcar restante",watchFat:"Grasa restante",gutHint:"En días bajos en carbos, no olvides fibra y agua.",moveParts:["Pecho","Espalda","Piernas","Hombros","Brazos","Core"],moveMin:"min",moveLogLbl:"Menú de hoy",moveSet:"series",moveRep:"reps",moveAdd:"Añadir",
+        nextHint:"Al guardar, la puntuación de hoy cambia.",condBowel:"Tránsito",condBowelStates:["Genial","Normal","Estreñido","Suelto"],condWater:"Agua",condWaterUnit:"vasos",waterTypes:["Agua tibia","Agua","Té"],waterSuppTag:"Bebida suplem.",waterSuppToggle:"Contar bebidas de suplemento como agua",waterCups:"vasos",waterBreak:"Por tipo",condMood:"Ánimo",condMoods:["Bien","Normal","Flojo"],condGut:"Agua y fibra ayudan al tránsito."},
+      "Deutsch":{hdr:"Heutiges Log",lead:"Tippe, um Heutiges einzutragen. Später änderbar.",save:"Speichern",tease:{ttl:"Für tieferes Loggen & Analyse",sub:"Was du mit Standard siehst",pv1:"Volumenverlauf (12 Wochen)",pv2:"Lastverteilung pro Muskel",pv3:"Rekord-Verlauf",pv3a:"Bankdrücken 65kg",pv3b:"Kniebeuge 80kg",unlock:"Mit Standard freischalten",unlockSub:"Jederzeit kündbar"},
+        done:"Erfasst",yet:"Noch nicht",
+        names:{sleep:"Schlaf",food:"Mahlzeiten",move:"Sport / Training",body:"Körper",water:"Wasser",condition:"Verfassung"},
+        sleepVal:"7 Std 30 · gut geschlafen",foodVal:"860 kcal · 2 Mahlzeiten",moveVal:"Brust · 15 Min",
+        bodyW:"Gewicht",bodyF:"Körperfett",bodyM:"Muskeln",bodyDelta:"vs letztes Mal",
+        sleepH:"Std",sleepQ:["Tief","Okay","Leicht"],
+        foodHint:"Auch per Foto einfach erfassbar",foodPhoto:"Schnell per Foto",foodPhotoSub:"Schätzung",foodWrite:"Eintippen",foodWriteSub:"genau",foodLogged:"Heute gegessen",foodTotal:"Gesamt",foodApprox:"ca.",foodBalance:"Spielraum",foodBmr:"Grundumsatz",foodMove:"Sport",foodEaten:"Gegessen",foodWhy:"Berechnung ansehen",foodEgg:"etwa 2 Eier zum Ausgleich",mealEx:["Morgens · Toast & Ei","Mittags · Hähnchen","Abends (offen)","Snack (offen)"],pfc:{p:"Protein",f:"Fett",c:"Kohlenhyd."},nutMore:"Nährwert-Details",nutClose:"Zu",sugar:"Zucker",fiber:"Ballaststoffe",salt:"Salz",dietLbl:"Diät-Art",diets:["Ausgewogen","Low-Carb","Low-Fat"],dietSel:1,watchSugar:"Zucker übrig",watchFat:"Fett übrig",gutHint:"An Low-Carb-Tagen Ballaststoffe und Wasser nicht vergessen.",moveParts:["Brust","Rücken","Beine","Schultern","Arme","Core"],moveMin:"Min",moveLogLbl:"Heutiges Menü",moveSet:"Sätze",moveRep:"Whd.",moveAdd:"Übung hinzufügen",
+        nextHint:"Nach dem Speichern ändert sich der heutige Score.",condBowel:"Verdauung",condBowelStates:["Top","Normal","Verstopft","Locker"],condWater:"Wasser",condWaterUnit:"Gläser",waterTypes:["Warmes Wasser","Wasser","Tee"],waterSuppTag:"Supplement-Drink",waterSuppToggle:"Supplement-Drinks als Wasser zählen",waterCups:"Gläser",waterBreak:"Nach Art",condMood:"Stimmung",condMoods:["Gut","Okay","Träge"],condGut:"Wasser und Ballaststoffe helfen der Verdauung."},
+      "Italiano":{hdr:"Diario di oggi",lead:"Tocca per inserire oggi. Modificabile dopo.",save:"Salva",tease:{ttl:"Per log e analisi approfonditi",sub:"Cosa vedrai con Standard",pv1:"Andamento volume (12 sett.)",pv2:"Bilancio del carico per muscolo",pv3:"Cronologia record",pv3a:"Panca 65kg",pv3b:"Squat 80kg",unlock:"Sblocca con Standard",unlockSub:"Disdici quando vuoi"},
+        done:"Inserito",yet:"Non ancora",
+        names:{sleep:"Sonno",food:"Pasti",move:"Sport / allenamento",body:"Corpo",water:"Acqua",condition:"Condizione"},
+        sleepVal:"7h 30m · dormito bene",foodVal:"860 kcal · 2 pasti",moveVal:"Petto · 15 min",
+        bodyW:"Peso",bodyF:"Grasso",bodyM:"Muscolo",bodyDelta:"vs ultima volta",
+        sleepH:"h",sleepQ:["Profondo","Normale","Leggero"],
+        foodHint:"Puoi registrare facilmente anche con foto",foodPhoto:"Foto veloce",foodPhotoSub:"stima",foodWrite:"Scrivi a mano",foodWriteSub:"preciso",foodLogged:"Mangiato oggi",foodTotal:"Totale",foodApprox:"stima",foodBalance:"Margine",foodBmr:"Metab. base",foodMove:"Sport",foodEaten:"Mangiato",foodWhy:"Vedi il calcolo",foodEgg:"circa 2 uova per bilanciare",mealEx:["Mattina · Pane e uova","Pranzo · Pollo","Sera (non ancora)","Spuntino (non ancora)"],pfc:{p:"Proteine",f:"Grassi",c:"Carboidrati"},nutMore:"Dettaglio nutrizione",nutClose:"Chiudi",sugar:"Zuccheri",fiber:"Fibre",salt:"Sale",dietLbl:"Tipo di dieta",diets:["Bilanciata","Low-carb","Low-fat"],dietSel:1,watchSugar:"Zuccheri rimasti",watchFat:"Grassi rimasti",gutHint:"Nei giorni low-carb, non dimenticare fibre e acqua.",moveParts:["Petto","Schiena","Gambe","Spalle","Braccia","Core"],moveMin:"min",moveLogLbl:"Menu di oggi",moveSet:"serie",moveRep:"rip",moveAdd:"Aggiungi",
+        nextHint:"Una volta salvato, il punteggio di oggi cambia.",condBowel:"Intestino",condBowelStates:["Ottimo","Normale","Stitico","Molle"],condWater:"Acqua",condWaterUnit:"bicchieri",waterTypes:["Acqua calda","Acqua","Tè"],waterSuppTag:"Bevanda integr.",waterSuppToggle:"Conta le bevande integratori come acqua",waterCups:"bicchieri",waterBreak:"Per tipo",condMood:"Umore",condMoods:["Bene","Normale","Fiacco"],condGut:"Acqua e fibre aiutano l’intestino."},
+      "Português":{hdr:"Registro de hoje",lead:"Toque para inserir o de hoje. Dá para ajustar depois.",save:"Salvar",tease:{ttl:"Para registro e análise profundos",sub:"O que você verá com o Padrão",pv1:"Tendência de volume (12 sem.)",pv2:"Equilíbrio de carga por músculo",pv3:"Histórico de recordes",pv3a:"Supino 65kg",pv3b:"Agachamento 80kg",unlock:"Desbloquear com Padrão",unlockSub:"Cancele quando quiser"},
+        done:"Inserido",yet:"Ainda não",
+        names:{sleep:"Sono",food:"Refeições",move:"Exercício / treino",body:"Corpo",water:"Água",condition:"Condição"},
+        sleepVal:"7h30 · dormi bem",foodVal:"860 kcal · 2 refeições",moveVal:"Peito · 15 min",
+        bodyW:"Peso",bodyF:"Gordura",bodyM:"Músculo",bodyDelta:"vs última vez",
+        sleepH:"h",sleepQ:["Profundo","Normal","Leve"],
+        foodHint:"Também dá para registrar por foto",foodPhoto:"Foto rápida",foodPhotoSub:"estim.",foodWrite:"Escrever à mão",foodWriteSub:"preciso",foodLogged:"Comido hoje",foodTotal:"Total",foodApprox:"est.",foodBalance:"Margem",foodBmr:"Metab. basal",foodMove:"Exercício",foodEaten:"Comido",foodWhy:"Ver como é calculado",foodEgg:"cerca de 2 ovos para equilibrar",mealEx:["Manhã · Torrada e ovo","Almoço · Frango","Noite (ainda não)","Lanche (ainda não)"],pfc:{p:"Proteína",f:"Gordura",c:"Carbos"},nutMore:"Detalhe nutrição",nutClose:"Fechar",sugar:"Açúcar",fiber:"Fibra",salt:"Sal",dietLbl:"Tipo de dieta",diets:["Equilibrada","Low-carb","Low-fat"],dietSel:1,watchSugar:"Açúcar restante",watchFat:"Gordura restante",gutHint:"Em dias low-carb, não esqueça fibra e água.",moveParts:["Peito","Costas","Pernas","Ombros","Braços","Core"],moveMin:"min",moveLogLbl:"Menu de hoje",moveSet:"séries",moveRep:"reps",moveAdd:"Adicionar",
+        nextHint:"Ao salvar, a pontuação de hoje muda.",condBowel:"Intestino",condBowelStates:["Ótimo","Normal","Preso","Solto"],condWater:"Água",condWaterUnit:"copos",waterTypes:["Água morna","Água","Chá"],waterSuppTag:"Bebida suplem.",waterSuppToggle:"Contar bebidas de suplemento como água",waterCups:"copos",waterBreak:"Por tipo",condMood:"Humor",condMoods:["Bem","Normal","Lento"],condGut:"Água e fibras ajudam o intestino."},
+      "हिन्दी":{hdr:"आज का रिकॉर्ड",lead:"आज का टैप करके भरें। बाद में ठीक कर सकते हैं।",save:"दर्ज करें",tease:{ttl:"गहरे रिकॉर्ड·विश्लेषण के लिए",sub:"स्टैंडर्ड में जो दिखेगा",pv1:"वॉल्यूम रुझान (12 सप्ताह)",pv2:"हर हिस्से का भार संतुलन",pv3:"सर्वश्रेष्ठ का इतिहास",pv3a:"बेंच प्रेस 65kg",pv3b:"स्क्वाट 80kg",unlock:"स्टैंडर्ड से अनलॉक करें",unlockSub:"कभी भी रद्द करें"},
+        done:"भरा",yet:"अभी नहीं",
+        names:{sleep:"नींद",food:"भोजन",move:"कसरत·ट्रेनिंग",body:"शरीर",water:"पानी",condition:"हालत"},
+        sleepVal:"7 घं 30 मि·गहरी",foodVal:"860 kcal·2 बार",moveVal:"छाती·15 मिनट",
+        bodyW:"वज़न",bodyF:"बॉडी फैट",bodyM:"मांसपेशी",bodyDelta:"पिछली बार से",
+        sleepH:"घंटा",sleepQ:["गहरी","ठीक","हल्की"],
+        foodHint:"फ़ोटो से आसान रिकॉर्ड भी",foodPhoto:"फ़ोटो से झट",foodPhotoSub:"अनुमान",foodWrite:"लिखकर दर्ज",foodWriteSub:"सटीक",foodLogged:"आज खाया",foodTotal:"कुल",foodApprox:"अनु.",foodBalance:"और खा सकते हैं",foodBmr:"बेसल मेटाबॉलिज़्म",foodMove:"कसरत",foodEaten:"खाया",foodWhy:"गणना कैसे होती है देखें",foodEgg:"क़रीब 2 अंडे से संतुलन",mealEx:["सुबह·टोस्ट＆अंडा","दोपहर·चिकन","रात（अभी नहीं）","नाश्ता（अभी नहीं）"],pfc:{p:"प्रोटीन",f:"वसा",c:"कार्ब्स"},nutMore:"पोषण विवरण",nutClose:"बंद",sugar:"शर्करा",fiber:"फ़ाइबर",salt:"नमक",dietLbl:"डाइट तरीका",diets:["संतुलित","लो-कार्ब","लो-फैट"],dietSel:1,watchSugar:"शर्करा शेष",watchFat:"वसा शेष",gutHint:"लो-कार्ब के दिन फ़ाइबर और पानी न भूलें।",moveParts:["छाती","पीठ","पैर","कंधे","बाँह","कोर"],moveMin:"मिनट",moveLogLbl:"आज का मेनू",moveSet:"सेट",moveRep:"बार",moveAdd:"व्यायाम जोड़ें",
+        nextHint:"दर्ज करते ही आज का स्कोर बदलता है।",condBowel:"मलत्याग",condBowelStates:["बढ़िया","सामान्य","कब्ज़","ढीला"],condWater:"पानी",condWaterUnit:"गिलास",waterTypes:["गुनगुना पानी","पानी","चाय"],waterSuppTag:"सप्लिमेंट ड्रिंक",waterSuppToggle:"सप्लिमेंट ड्रिंक को भी पानी में गिनें",waterCups:"गिलास",waterBreak:"प्रकार अनुसार",condMood:"मूड",condMoods:["अच्छा","ठीक","सुस्त"],condGut:"पानी और फ़ाइबर मलत्याग में मदद करते हैं।"},
+      "Tiếng Việt":{hdr:"Ghi chép hôm nay",lead:"Chạm để nhập hôm nay. Sửa sau cũng được.",save:"Lưu lại",tease:{ttl:"Để ghi chép & phân tích sâu hơn",sub:"Những gì bạn thấy với Tiêu chuẩn",pv1:"Xu hướng khối lượng (12 tuần)",pv2:"Cân bằng tải theo cơ",pv3:"Lịch sử kỷ lục",pv3a:"Đẩy ngực 65kg",pv3b:"Squat 80kg",unlock:"Mở khóa với Tiêu chuẩn",unlockSub:"Hủy bất cứ lúc nào"},
+        done:"Đã nhập",yet:"Chưa",
+        names:{sleep:"Giấc ngủ",food:"Bữa ăn",move:"Vận động / tập",body:"Cơ thể",water:"Nước",condition:"Thể trạng"},
+        sleepVal:"7h 30 · ngủ ngon",foodVal:"860 kcal · 2 bữa",moveVal:"Ngực · 15 phút",
+        bodyW:"Cân nặng",bodyF:"Mỡ",bodyM:"Cơ",bodyDelta:"so lần trước",
+        sleepH:"giờ",sleepQ:["Ngon","Bình thường","Chập chờn"],
+        foodHint:"Cũng có thể ghi nhanh bằng ảnh",foodPhoto:"Chụp nhanh",foodPhotoSub:"ước lượng",foodWrite:"Ghi tay",foodWriteSub:"chính xác",foodLogged:"Đã ăn hôm nay",foodTotal:"Tổng",foodApprox:"ƯL",foodBalance:"Còn ăn được",foodBmr:"Chuyển hóa cơ bản",foodMove:"Vận động",foodEaten:"Đã ăn",foodWhy:"Xem cách tính",foodEgg:"khoảng 2 quả trứng là cân bằng",mealEx:["Sáng · Bánh mì trứng","Trưa · Ức gà","Tối (chưa)","Ăn vặt (chưa)"],pfc:{p:"Đạm",f:"Béo",c:"Tinh bột"},nutMore:"Chi tiết dinh dưỡng",nutClose:"Đóng",sugar:"Đường",fiber:"Chất xơ",salt:"Muối",dietLbl:"Kiểu ăn kiêng",diets:["Cân bằng","Ít tinh bột","Ít béo"],dietSel:1,watchSugar:"Đường còn lại",watchFat:"Béo còn lại",gutHint:"Ngày ít tinh bột, đừng quên chất xơ và nước.",moveParts:["Ngực","Lưng","Chân","Vai","Tay","Bụng"],moveMin:"phút",moveLogLbl:"Thực đơn hôm nay",moveSet:"hiệp",moveRep:"lần",moveAdd:"Thêm bài",
+        nextHint:"Khi lưu, điểm hôm nay sẽ cập nhật.",condBowel:"Tiêu hóa",condBowelStates:["Tốt","Bình thường","Hơi táo","Lỏng"],condWater:"Nước",condWaterUnit:"ly",waterTypes:["Nước ấm","Nước","Trà"],waterSuppTag:"Đồ uống bổ sung",waterSuppToggle:"Tính đồ uống bổ sung là nước",waterCups:"ly",waterBreak:"Theo loại",condMood:"Tâm trạng",condMoods:["Tốt","Bình thường","Uể oải"],condGut:"Nước và chất xơ giúp tiêu hóa."},
+      "Bahasa Indonesia":{hdr:"Catatan hari ini",lead:"Ketuk untuk isi hari ini. Bisa diperbaiki nanti.",save:"Simpan",tease:{ttl:"Untuk catatan & analisis mendalam",sub:"Yang kamu lihat dengan Standar",pv1:"Tren volume (12 minggu)",pv2:"Keseimbangan beban per otot",pv3:"Riwayat rekor",pv3a:"Bench press 65kg",pv3b:"Squat 80kg",unlock:"Buka dengan Standar",unlockSub:"Batalkan kapan saja"},
+        done:"Terisi",yet:"Belum",
+        names:{sleep:"Tidur",food:"Makan",move:"Olahraga / latihan",body:"Tubuh",water:"Air",condition:"Kondisi"},
+        sleepVal:"7j 30m · nyenyak",foodVal:"860 kkal · 2 kali",moveVal:"Dada · 15 menit",
+        bodyW:"Berat",bodyF:"Lemak",bodyM:"Otot",bodyDelta:"vs terakhir",
+        sleepH:"jam",sleepQ:["Nyenyak","Biasa","Ringan"],
+        foodHint:"Bisa juga catat mudah lewat foto",foodPhoto:"Foto cepat",foodPhotoSub:"perkiraan",foodWrite:"Tulis manual",foodWriteSub:"akurat",foodLogged:"Dimakan hari ini",foodTotal:"Total",foodApprox:"perk.",foodBalance:"Masih boleh makan",foodBmr:"Metabolisme basal",foodMove:"Olahraga",foodEaten:"Dimakan",foodWhy:"Lihat cara hitung",foodEgg:"sekitar 2 telur untuk seimbang",mealEx:["Pagi · Roti & telur","Siang · Dada ayam","Malam (belum)","Camilan (belum)"],pfc:{p:"Protein",f:"Lemak",c:"Karbo"},nutMore:"Detail nutrisi",nutClose:"Tutup",sugar:"Gula",fiber:"Serat",salt:"Garam",dietLbl:"Gaya diet",diets:["Seimbang","Rendah karbo","Rendah lemak"],dietSel:1,watchSugar:"Gula sisa",watchFat:"Lemak sisa",gutHint:"Di hari rendah karbo, jangan lupa serat dan air.",moveParts:["Dada","Punggung","Kaki","Bahu","Lengan","Inti"],moveMin:"menit",moveLogLbl:"Menu hari ini",moveSet:"set",moveRep:"kali",moveAdd:"Tambah",
+        nextHint:"Begitu disimpan, skor hari ini berubah.",condBowel:"BAB",condBowelStates:["Lancar","Normal","Agak sembelit","Encer"],condWater:"Air",condWaterUnit:"gelas",waterTypes:["Air hangat","Air","Teh"],waterSuppTag:"Minuman suplemen",waterSuppToggle:"Hitung minuman suplemen sebagai air",waterCups:"gelas",waterBreak:"Per jenis",condMood:"Suasana",condMoods:["Baik","Biasa","Lesu"],condGut:"Air dan serat membantu pencernaan."}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var open={}; // 開いている項目
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",cardName:"#F0EBE2",open:"#1F1C16",openBd:"#3A352A",chip:"#211D16",chipBd:"#3A352A",chipTx:"#A89C84",navBg:"#16140F",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A",doneCol:"#5DCAA5",doneBg:"#16241E",yetBg:"#211D16"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",cardName:"#2E2A24",open:"#FBF7F1",openBd:"#E0DACE",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",navBg:"#FFFFFF",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#1D9E75",doneCol:"#0F9E84",doneBg:"#EAF6F1",yetBg:"#F0EAE0"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function valOf(key){
+      var d=D[cur]||D["English"];
+      if(key==="sleep"){ var m=S.sleep.minutes||0; return Math.floor(m/60)+d.sleepH+" "+("0"+(m%60)).slice(-2)+(cur==="日本語"?"分":"m"); }
+      if(key==="food") return REVO.foodEaten(S.food).toLocaleString()+" kcal";
+      if(key==="move"){ var n=(S.move.exercises||[]).length; return (S.move.totalMin||0)+d.moveMin+(n?" ・ "+n:""); }
+      if(key==="water"){ var w=REVO.waterTotal(S.water); return w.toLocaleString()+" ml ≈ "+Math.round(w/200)+" "+(d.waterCups||"cups"); }
+      return "";
+    }
+    function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+    function bodyInner(t){
+      var d=D[cur]||D["English"];
+      function row(lbl,val,unit,delta,deltaCol,step,key){
+        step=step||0.1; key=key||('bw_'+Math.random().toString(36).slice(2,7));
+        return '<div style="display:flex; align-items:center; justify-content:space-between; padding:9px 0;">'+
+          '<span style="font-size:13px; color:'+t.sub+';">'+lbl+'</span>'+
+          '<div style="display:flex; align-items:center; gap:10px;">'+
+            '<span style="font-size:11px; color:'+deltaCol+';">'+delta+'</span>'+
+            '<div style="display:flex; align-items:center; gap:9px;">'+
+              '<button class="adjB" data-key="'+key+'" data-step="-'+step+'" style="width:26px; height:26px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:15px; cursor:pointer; line-height:1;">−</button>'+
+              '<span style="display:inline-flex; align-items:baseline; justify-content:center; min-width:58px;">'+
+                '<input class="numIn" id="'+key+'" type="text" inputmode="decimal" value="'+val+'" placeholder="0.0" style="width:42px; text-align:right; font-size:16px; font-weight:600; color:'+t.accent+'; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; padding:1px 2px; outline:none; font-family:inherit;">'+
+                '<span style="font-size:10px; color:'+t.sub+'; font-weight:400; margin-left:2px;">'+unit+'</span>'+
+              '</span>'+
+              '<button class="adjB" data-key="'+key+'" data-step="'+step+'" style="width:26px; height:26px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:15px; cursor:pointer; line-height:1;">＋</button>'+
+            '</div>'+
+          '</div>'+
+        '</div>';
+      }
+      var pv=(PREV&&PREV.body)||{};
+      function fmtv(v){ return v==null?"":(Math.round(v*10)/10).toFixed(1); }
+      function dtx(cv,pvv,unit,goodDown){
+        if(cv==null||pvv==null) return ["",t.sub];
+        var df=Math.round((cv-pvv)*10)/10;
+        var s2=(df>0?"+":"")+df+unit;
+        var good= goodDown ? df<=0 : df>=0;
+        return [s2, good?"#5DCAA5":t.sub];
+      }
+      var dW=dtx(S.body.weight,pv.weight,"kg",true), dF=dtx(S.body.fat,pv.fat,"%",true), dM=dtx(S.body.muscle,pv.muscle,"kg",false);
+      return '<div>'+
+        row(d.bodyW,fmtv(S.body.weight),"kg",dW[0],dW[1],0.1,"bodyW")+
+        '<div style="height:0.5px; background:'+t.openBd+';"></div>'+
+        row(d.bodyF,fmtv(S.body.fat),"%",dF[0],dF[1],0.1,"bodyF")+
+        '<div style="height:0.5px; background:'+t.openBd+';"></div>'+
+        row(d.bodyM,fmtv(S.body.muscle),"kg",dM[0],dM[1],0.1,"bodyM")+
+      '</div>';
+    }
+    function sleepInner(t){
+      var d=D[cur]||D["English"];
+      var q=d.sleepQ.map(function(x,i){ var on=(S.sleep.quality===i); return '<span class="sleepQChip" data-i="'+i+'" style="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; '+(on?"background:"+(dark?"#221E2E":"#F1ECFA")+"; color:#B4ABE8; border:1.5px solid #8A6FC4;":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";")+'">'+x+'</span>'; }).join("");
+      var mm=S.sleep.minutes, hh=(mm==null?0:Math.floor(mm/60)), m2=(mm==null?0:mm%60);
+      return '<div style="display:flex; align-items:center; justify-content:center; gap:12px; margin:0 0 12px;">'+
+          '<button class="adjB" data-act="sleepMin" data-step="-30" style="width:30px; height:30px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:17px; cursor:pointer; line-height:1;">−</button>'+
+          '<span style="font-size:18px; font-weight:600; color:'+t.accent+';">'+hh+'<span style="font-size:11px; color:'+t.sub+';">'+d.sleepH+'</span> '+("0"+m2).slice(-2)+'<span style="font-size:11px; color:'+t.sub+';">'+(cur==="日本語"?"分":"m")+'</span></span>'+
+          '<button class="adjB" data-act="sleepMin" data-step="30" style="width:30px; height:30px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:17px; cursor:pointer; line-height:1;">＋</button>'+
+        '</div>'+
+        '<div style="display:flex; gap:7px; justify-content:center;">'+q+'</div>';
+    }
+    function moveInner(t){
+      var d=D[cur]||D["English"];
+      var parts=d.moveParts.map(function(x,i){ var on=(i===(S.move.part||0)); return '<span class="movePartChip" data-i="'+i+'" style="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; '+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+t.accent+"; border:1.5px solid "+t.accent+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";")+'">'+x+'</span>'; }).join("");
+      // 本格筋トレ内訳：種目ごとに 部位・重量kg・回・セット
+      function exRow(part,name,kg,rep,set,idx){
+        return '<div class="exRowBtn" data-i="'+idx+'" style="background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; border-radius:11px; padding:10px 13px; margin:0 0 7px; cursor:pointer;">'+
+          '<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 6px;">'+
+            '<span style="font-size:12px; color:'+t.cardName+'; font-weight:600;">'+name+'</span>'+
+            '<span style="font-size:10px; color:'+t.accent+'; background:'+(dark?"#2A2418":"#FBF3E0")+'; padding:2px 9px; border-radius:999px;">'+part+'</span>'+
+          '</div>'+
+          '<div style="display:flex; align-items:center; gap:14px;">'+
+            '<span style="font-size:13px; color:'+t.accent+'; font-weight:600;">'+kg+'<span style="font-size:9px; color:'+t.sub+'; font-weight:400;"> kg</span></span>'+
+            '<span style="font-size:11px; color:'+t.sub+';">'+set+' '+d.moveSet+' × '+rep+' '+d.moveRep+'</span>'+
+          '</div>'+
+        '</div>';
+      }
+      function exRowEdit(ex,idx){
+        var inSty='background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; color:'+t.accent+'; font-size:13px; font-weight:600; outline:none; font-family:inherit; padding:1px 2px; text-align:right; width:34px;';
+        return '<div class="exEdit" data-i="'+idx+'" style="background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; border-radius:11px; padding:10px 13px; margin:0 0 7px;">'+
+          '<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 6px; gap:8px;">'+
+            '<input class="exIn" data-i="'+idx+'" data-f="name" value="'+esc(ex.name)+'" placeholder="Bench Press" style="flex:1; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; color:'+t.cardName+'; font-size:12px; font-weight:600; outline:none; font-family:inherit; padding:1px 2px;">'+
+            '<span class="exPart" data-i="'+idx+'" style="font-size:10px; color:'+t.accent+'; background:'+(dark?"#2A2418":"#FBF3E0")+'; padding:2px 9px; border-radius:999px; cursor:pointer;">'+d.moveParts[ex.part||0]+'</span>'+
+            '<span class="exDone" data-i="'+idx+'" style="font-size:12px; color:'+t.accent+'; cursor:pointer;"><i class="ti ti-check" style="font-size:15px;"></i></span>'+
+          '</div>'+
+          '<div style="display:flex; align-items:center; gap:14px;">'+
+            '<span style="font-size:13px; color:'+t.accent+'; font-weight:600;"><input class="exIn" data-i="'+idx+'" data-f="kg" inputmode="decimal" value="'+(ex.kg==null?"":ex.kg)+'" placeholder="0" style="'+inSty+'"><span style="font-size:9px; color:'+t.sub+'; font-weight:400;"> kg</span></span>'+
+            '<span style="font-size:11px; color:'+t.sub+';"><input class="exIn" data-i="'+idx+'" data-f="sets" inputmode="numeric" value="'+(ex.sets==null?"":ex.sets)+'" placeholder="0" style="'+inSty+'width:22px; font-size:11px; color:'+t.sub+';"> '+d.moveSet+' × <input class="exIn" data-i="'+idx+'" data-f="reps" inputmode="numeric" value="'+(ex.reps==null?"":ex.reps)+'" placeholder="0" style="'+inSty+'width:22px; font-size:11px; color:'+t.sub+';"> '+d.moveRep+'</span>'+
+          '</div>'+
+        '</div>';
+      }
+      var exRows='';
+      (S.move.exercises||[]).forEach(function(ex,i){
+        exRows += ex._edit ? exRowEdit(ex,i) : exRow(d.moveParts[ex.part||0], esc(ex.name), (ex.kg==null?0:ex.kg), (ex.reps==null?0:ex.reps), (ex.sets==null?0:ex.sets), i);
+      });
+      var exList=
+        '<p style="font-size:11px; color:'+t.sub+'; margin:2px 0 8px; font-weight:500;">'+d.moveLogLbl+'</p>'+
+        exRows+
+        '<button class="moveAddBtn" style="width:100%; background:transparent; border:0.5px dashed '+(dark?"#3A352A":"#E0DACE")+'; border-radius:11px; padding:10px; color:'+t.muted+'; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px; margin:0 0 14px;"><i class="ti ti-plus" style="font-size:13px;"></i>'+d.moveAdd+'</button>';
+      return '<div style="display:flex; flex-wrap:wrap; gap:7px; margin:0 0 13px;">'+parts+'</div>'+
+        exList+
+        '<div style="display:flex; align-items:center; justify-content:center; gap:12px; padding:4px 0 0; border-top:0.5px solid '+t.openBd+'; margin:2px 0 0; padding-top:14px;">'+
+          '<button class="adjB" data-act="moveMin" data-step="-5" style="width:30px; height:30px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:17px; cursor:pointer; line-height:1;">−</button>'+
+          '<span style="font-size:18px; font-weight:600; color:'+t.accent+';">'+(S.move.totalMin||0)+'<span style="font-size:11px; color:'+t.sub+';">'+d.moveMin+'</span></span>'+
+          '<button class="adjB" data-act="moveMin" data-step="5" style="width:30px; height:30px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:17px; cursor:pointer; line-height:1;">＋</button>'+
+        '</div>';
+    }
+    var foodOpen={nut:false};
+    function foodInner(t){
+      var d=D[cur]||D["English"];
+      var eaten=REVO.foodEaten(S.food);
+      var bmr=REVO.bmrOf(REVO.profile()), move=REVO.moveKcal(S);   /* BMRはプロフィール由来の簡易推定（要調整） */
+      var room=(bmr==null)?null:((bmr+move)-eaten);
+      var diets=d.diets||["Balanced","Low-carb","Low-fat"];
+      var dietSel=S.food.dietSel||0;
+      var P=S.food.pfc.p, F=S.food.pfc.f, C=S.food.pfc.c;
+      // 入口2方式
+      var entries=
+        '<div style="display:flex; gap:9px; margin:0 0 14px;">'+
+          '<button class="foodPhotoBtn" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; padding:12px 8px; border-radius:13px; cursor:pointer;">'+
+            '<i class="ti ti-camera" style="font-size:20px; color:'+t.accent+';" aria-hidden="true"></i>'+
+            '<span style="font-size:12px; color:'+t.cardName+'; font-weight:500;">'+d.foodPhoto+'</span>'+
+            '<span style="font-size:9px; color:'+t.muted+'; background:'+(dark?"#211D16":"#F0EAE0")+'; padding:2px 8px; border-radius:999px;">'+d.foodPhotoSub+'</span>'+
+          '</button>'+
+          '<button class="foodWriteBtn" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; padding:12px 8px; border-radius:13px; cursor:pointer;">'+
+            '<i class="ti ti-pencil" style="font-size:20px; color:'+t.accent+';" aria-hidden="true"></i>'+
+            '<span style="font-size:12px; color:'+t.cardName+'; font-weight:500;">'+d.foodWrite+'</span>'+
+            '<span style="font-size:9px; color:'+(dark?"#5DCAA5":"#0F9E84")+'; background:'+(dark?"#16241E":"#EAF6F1")+'; padding:2px 8px; border-radius:999px;">'+d.foodWriteSub+'</span>'+
+          '</button>'+
+        '</div>';
+      // 記録リスト
+      var meals=
+        '<p style="font-size:11px; color:'+t.sub+'; margin:0 0 8px; font-weight:500;">'+d.foodLogged+'</p>'+
+        '<div style="display:flex; flex-direction:column; gap:7px; margin:0 0 12px;">'+
+          (function(){
+            var rows='';
+            for(var mi=0; mi<4; mi++){
+              var m=S.food.meals[mi];
+              if(!m) rows+=mealRowEmpty(t,d.mealEx[mi],mi);
+              else if(m._edit) rows+=mealRowEdit(t,m,mi,d);
+              else rows+=mealRow(t,(m.name||d.mealEx[mi]),String(m.kcal||0),!!m.photo,d,mi);
+            }
+            return rows;
+          })()+
+        '</div>'+
+        '<div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0 12px; border-top:0.5px solid '+t.openBd+';">'+
+          '<span style="font-size:12px; color:'+t.sub+';">'+d.foodTotal+'</span>'+
+          '<span class="foodTotalNum" style="font-size:16px; font-weight:600; color:'+t.cardName+';">'+eaten.toLocaleString()+' <span style="font-size:11px; color:'+t.sub+'; font-weight:400;">kcal</span></span>'+
+        '</div>';
+      // PFCバー
+      function macroBar(lbl,g,gmax,col,key){
+        var pct=Math.min(100,Math.round(((g||0))/gmax*100));
+        return '<div style="flex:1;">'+
+          '<div style="display:flex; align-items:baseline; justify-content:space-between; margin:0 0 4px;"><span style="font-size:10px; color:'+t.sub+';">'+lbl+'</span><span style="font-size:12px; color:'+t.cardName+'; font-weight:600;"><input class="numIn" data-int="1" id="'+key+'" type="text" inputmode="numeric" value="'+(g==null?"":Math.round(g))+'" placeholder="0" style="width:26px; text-align:right; font-size:12px; font-weight:600; color:'+t.cardName+'; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; padding:0 1px; outline:none; font-family:inherit;"><span style="font-size:9px; color:'+t.sub+'; font-weight:400;">g</span></span></div>'+
+          '<div style="height:5px; background:'+(dark?"#2A2620":"#EDE6D8")+'; border-radius:3px; overflow:hidden;"><div style="width:'+pct+'%; height:5px; background:'+col+';"></div></div>'+
+        '</div>';
+      }
+      var pfc=
+        '<div style="display:flex; gap:10px; margin:0 0 12px;">'+
+          macroBar(d.pfc.p,P,120,"#6FA8DC","pfcP")+
+          macroBar(d.pfc.f,F,60,"#E0936A","pfcF")+
+          macroBar(d.pfc.c,C,200,"#E3C56A","pfcC")+
+        '</div>';
+      // ダイエット方式（注目栄養）
+      var watch = dietSel===1
+        ? '<span style="font-size:11px; color:'+(dark?"#5DCAA5":"#0F9E84")+';">'+d.watchSugar+' '+(S.food.nut.sugar==null?0:Math.round(S.food.nut.sugar))+'g</span>'
+        : (dietSel===2 ? '<span style="font-size:11px; color:'+(dark?"#5DCAA5":"#0F9E84")+';">'+d.watchFat+' '+(F==null?0:Math.round(F))+'g</span>' : '');
+      var dietChips=diets.map(function(x,i){ var on=(i===dietSel); return '<span class="dietChip" data-i="'+i+'" style="font-size:11px; padding:6px 12px; border-radius:999px; cursor:pointer; '+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+t.accent+"; border:1.5px solid "+t.accent+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";")+'">'+x+'</span>'; }).join("");
+      var dietRow=
+        '<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 9px;">'+
+          '<span style="font-size:11px; color:'+t.sub+'; font-weight:500;">'+d.dietLbl+'</span>'+watch+
+        '</div>'+
+        '<div style="display:flex; gap:7px; flex-wrap:wrap; margin:0 0 12px;">'+dietChips+'</div>';
+      // 栄養くわしく（展開）
+      var nutDetail = foodOpen.nut
+        ? '<div style="display:flex; flex-direction:column; gap:9px; margin:10px 0 0; padding:12px 0 0; border-top:0.5px solid '+t.openBd+';">'+
+            nutLineIn(t,d.sugar,S.food.nut.sugar,"nutSugar",1)+ nutLineIn(t,d.fiber,S.food.nut.fiber,"nutFiber",1)+ nutLineIn(t,d.salt,S.food.nut.salt,"nutSalt",0)+
+            '<p style="font-size:10px; color:'+(dark?"#7FB89E":"#4E8A72")+'; margin:4px 0 0; line-height:1.6;"><i class="ti ti-seeding" style="font-size:12px; vertical-align:-1px;"></i> '+d.gutHint+'</p>'+
+          '</div>'
+        : '';
+      var nutToggle='<button class="nutBtn" style="width:100%; background:transparent; border:none; color:'+t.sub+'; font-size:11px; cursor:pointer; padding:9px 0 2px; display:flex; align-items:center; justify-content:center; gap:5px;">'+(foodOpen.nut?d.nutClose:d.nutMore)+'<i class="ti ti-chevron-'+(foodOpen.nut?"up":"down")+'" style="font-size:14px;"></i></button>';
+      // 収支
+      var balance=
+        '<div style="background:'+(dark?"#16241E":"#EAF6F1")+'; border-radius:13px; padding:13px 15px; margin:6px 0 0;">'+
+          '<div style="display:flex; align-items:center; justify-content:space-between;">'+
+            '<span style="font-size:13px; color:'+(dark?"#7FCBAE":"#0F6E56")+'; font-weight:500;">'+d.foodBalance+'</span>'+
+            '<span style="font-size:20px; font-weight:600; color:'+(dark?"#5DCAA5":"#0F9E84")+';">'+(room==null?"—":((room>=0?"+":"")+room.toLocaleString()))+' <span style="font-size:11px; font-weight:400;">kcal</span></span>'+
+          '</div>'+
+          '<div style="display:flex; align-items:center; gap:5px; font-size:10px; color:'+(dark?"#5F8A78":"#4E8A72")+'; flex-wrap:wrap; margin:7px 0 0;">'+
+            '<span>'+d.foodBmr+' '+(bmr==null?"—":bmr.toLocaleString())+'</span><span>＋</span><span>'+d.foodMove+' '+move+'</span><span>−</span><span>'+d.foodEaten+' '+eaten.toLocaleString()+'</span>'+
+          '</div>'+
+        '</div>';
+      return entries+meals+pfc+dietRow+balance+nutToggle+nutDetail;
+    }
+    function nutLine(t,lbl,val){
+      return '<div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:12px; color:'+t.sub+';">'+lbl+'</span><span style="font-size:13px; color:'+t.cardName+'; font-weight:500;">'+val+'</span></div>';
+    }
+    function nutLineIn(t,lbl,val,key,isInt){
+      var v = val==null ? "" : (isInt? String(Math.round(val)) : (Math.round(val*10)/10).toFixed(1));
+      return '<div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:12px; color:'+t.sub+';">'+lbl+'</span><span style="font-size:13px; color:'+t.cardName+'; font-weight:500;"><input class="numIn"'+(isInt?' data-int="1"':'')+' id="'+key+'" type="text" inputmode="decimal" value="'+v+'" placeholder="0" style="width:34px; text-align:right; font-size:13px; font-weight:500; color:'+t.cardName+'; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; padding:0 1px; outline:none; font-family:inherit;">g</span></div>';
+    }
+    function mealRow(t,name,kcal,approx,d,idx){
+      var badge = approx ? '<span style="font-size:9px; color:'+(dark?"#B0A488":"#9A8E78")+'; background:'+(dark?"#211D16":"#F0EAE0")+'; padding:2px 7px; border-radius:999px; margin-left:6px;">'+d.foodApprox+'</span>' : '';
+      return '<div class="mealRowBtn" data-i="'+idx+'" style="display:flex; align-items:center; justify-content:space-between; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; border-radius:11px; padding:10px 13px; cursor:pointer;">'+
+        '<span style="font-size:12px; color:'+t.cardName+';">'+name+badge+'</span>'+
+        '<span style="font-size:13px; color:'+t.accent+'; font-weight:500;">'+kcal+'<span style="font-size:9px; color:'+t.sub+'; font-weight:400;"> kcal</span></span>'+
+      '</div>';
+    }
+    function mealRowEmpty(t,name,idx){
+      return '<div class="mealEmptyBtn" data-i="'+idx+'" style="display:flex; align-items:center; justify-content:space-between; background:transparent; border:0.5px dashed '+(dark?"#3A352A":"#E0DACE")+'; border-radius:11px; padding:10px 13px; cursor:pointer;">'+
+        '<span style="font-size:12px; color:'+t.muted+';">'+name+'</span>'+
+        '<i class="ti ti-plus" style="font-size:14px; color:'+t.muted+';" aria-hidden="true"></i>'+
+      '</div>';
+    }
+    function mealRowEdit(t,m,idx,d){
+      return '<div class="mealEdit" data-i="'+idx+'" style="display:flex; align-items:center; justify-content:space-between; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; border-radius:11px; padding:10px 13px; gap:10px;">'+
+        '<input class="mealIn" data-i="'+idx+'" value="'+esc(m.name)+'" placeholder="'+esc(d.mealEx[idx])+'" style="flex:1; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; font-size:12px; color:'+t.cardName+'; outline:none; font-family:inherit; padding:1px 2px;">'+
+        '<span style="font-size:13px; color:'+t.accent+'; font-weight:500;"><input class="numIn" data-int="1" id="mealK'+idx+'" type="text" inputmode="numeric" value="'+(m.kcal? String(m.kcal):"")+'" placeholder="0" style="width:38px; text-align:right; font-size:13px; font-weight:500; color:'+t.accent+'; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; padding:0 1px; outline:none; font-family:inherit;"><span style="font-size:9px; color:'+t.sub+'; font-weight:400;"> kcal</span></span>'+
+        '<span class="mealDone" data-i="'+idx+'" style="font-size:12px; color:'+t.accent+'; cursor:pointer;"><i class="ti ti-check" style="font-size:15px;"></i></span>'+
+      '</div>'+
+      '<div class="mealSug" data-i="'+idx+'" style="display:none; flex-wrap:wrap; gap:6px; margin:-1px 2px 0;"></div>';
+    }
+    function renderGroups(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('groups').innerHTML="";
+      ITEMS.forEach(function(it){
+        var key=it.key, isOpen=!!open[key];
+        var wrap=document.createElement('div');
+        var chip=document.createElement('button');
+        chip.style.cssText="width:100%; display:flex; align-items:center; gap:12px; background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:15px; padding:14px 15px; cursor:pointer; text-align:left;";
+        var isDone=doneOf(key);
+        var statusBadge = isDone
+          ? '<span style="font-size:10px; color:'+t.doneCol+'; background:'+t.doneBg+'; padding:4px 10px; border-radius:999px;"><i class="ti ti-check" style="font-size:11px; vertical-align:-1px;"></i> '+d.done+'</span>'
+          : '<span style="font-size:10px; color:'+t.muted+'; background:'+t.yetBg+'; padding:4px 10px; border-radius:999px;">'+d.yet+'</span>';
+        var sub = isDone ? '<p style="font-size:11px; color:'+t.sub+'; margin:2px 0 0;">'+valOf(key)+'</p>' : '';
+        chip.innerHTML=
+          '<div style="width:42px; height:42px; border-radius:12px; background:'+(dark?"#211D16":"#FFFFFF")+'; border:0.5px solid '+t.cardBd+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+it.icon+'" style="font-size:22px; color:'+it.col+';" aria-hidden="true"></i></div>'+
+          '<div style="flex:1;"><p style="font-size:14px; color:'+t.cardName+'; margin:0; font-weight:500;">'+d.names[key]+'</p>'+sub+'</div>'+
+          statusBadge+
+          '<i class="ti ti-chevron-'+(isOpen?"up":"down")+'" style="font-size:17px; color:'+t.muted+'; margin-left:4px;" aria-hidden="true"></i>';
+        chip.onclick=function(){ open[key]=!open[key]; renderGroups(); };
+        wrap.appendChild(chip);
+        if(isOpen){
+          var box=document.createElement('div');
+          box.style.cssText="background:"+t.open+"; border:0.5px solid "+t.openBd+"; border-top:none; border-radius:0 0 15px 15px; margin:-6px 7px 0; padding:16px 15px 14px;";
+          if(key==="sleep") box.innerHTML=sleepInner(t);
+          else if(key==="food") box.innerHTML=foodInner(t);
+          else if(key==="move") box.innerHTML=moveInner(t);
+          else if(key==="body") box.innerHTML=bodyInner(t);
+          else if(key==="water") box.innerHTML=waterInner(t);
+          else if(key==="condition") box.innerHTML=conditionInner(t);
+          wrap.appendChild(box);
+        }
+        $('groups').appendChild(wrap);
+      });
+      // 食事内インタラクション
+      document.querySelectorAll('.nutBtn').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); foodOpen.nut=!foodOpen.nut; renderGroups(); }; });
+      document.querySelectorAll('.dietChip').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S.food.dietSel=+b.getAttribute('data-i'); renderGroups(); }; });
+      document.querySelectorAll('.condBowelChip').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S.condition.bowel=+b.getAttribute('data-i'); renderGroups(); }; });
+      document.querySelectorAll('.condMoodChip').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S.condition.mood=+b.getAttribute('data-i'); renderGroups(); }; });
+      document.querySelectorAll('.waterChip').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S.water.sel=+b.getAttribute('data-i'); renderGroups(); }; });
+      var wst=document.getElementById('waterSuppToggleBtn'); if(wst){ wst.onclick=function(e){ e.stopPropagation(); S.water.includeSupp=!S.water.includeSupp; renderGroups(); }; }
+      // 体組成：＋−ボタンで微調整、数字は直接タップ入力も可能
+      document.querySelectorAll('.adjB[data-key]').forEach(function(b){
+        b.onclick=function(e){ e.stopPropagation();
+          var inp=document.getElementById(b.getAttribute('data-key')); if(!inp) return;
+          var step=parseFloat(b.getAttribute('data-step'))||0;
+          var cur=parseFloat((inp.value||'0').replace(/[^0-9.\-]/g,''))||0;
+          var nv=Math.round((cur+step)*10)/10; if(nv<0) nv=0;
+          inp.value= inp.getAttribute('data-int') ? String(Math.round(nv)) : nv.toFixed(1);
+          syncNum(b.getAttribute('data-key'), nv);
+        };
+      });
+      document.querySelectorAll('.numIn').forEach(function(inp){
+        inp.onclick=function(e){ e.stopPropagation(); inp.select(); };
+        inp.onblur=function(){
+          var raw=(inp.value||'').trim();
+          if(raw===''){ syncNum(inp.id, null); return; }  /* 空欄は未入力のまま（エンプティステート） */
+          var v=parseFloat(raw.replace(/[^0-9.\-]/g,''));
+          if(isNaN(v)||v<0){ v=0; }
+          if(inp.getAttribute('data-int')){ v=Math.round(v); inp.value=String(v); }
+          else inp.value=(Math.round(v*10)/10).toFixed(1);
+          syncNum(inp.id, v);
+        };
+        inp.oninput=function(){
+          var v=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,''));
+          syncVal(inp.id, isNaN(v)?null:v);
+          if(inp.id && inp.id.indexOf('mealK')===0){
+            /* 合計をその場で更新（再描画なし＝入力を邪魔しない） */
+            var tot=document.querySelector('.foodTotalNum');
+            if(tot){ var kc=tot.querySelector('span'); tot.textContent=REVO.foodEaten(S.food).toLocaleString()+' '; if(kc) tot.appendChild(kc); }
+          }
+        };
+        inp.onkeydown=function(e){ if(e.key==='Enter'){ inp.blur(); } };
+      });
+      bindExtra();
+    }
+    /* ===== 追加インタラクション（睡眠・運動・水分・食事の実データ化）===== */
+    function bindExtra(){
+      document.querySelectorAll('.sleepQChip').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S.sleep.quality=+b.getAttribute('data-i'); renderGroups(); }; });
+      document.querySelectorAll('.movePartChip').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S.move.part=+b.getAttribute('data-i'); renderGroups(); }; });
+      document.querySelectorAll('.adjB[data-act]').forEach(function(b){
+        b.onclick=function(e){ e.stopPropagation();
+          var act=b.getAttribute('data-act'), step=parseFloat(b.getAttribute('data-step'))||0;
+          if(act==='sleepMin'){ S.sleep.minutes=Math.max(0,(S.sleep.minutes||0)+step); }
+          else if(act==='moveMin'){ S.move.totalMin=Math.max(0,(S.move.totalMin||0)+step); }
+          else if(act==='water'){
+            var d2=D[cur]||D["English"]; var base=(d2.waterTypes||[]).length||3;
+            var sel=(S.water.sel==null?1:S.water.sel);
+            if(S.water.includeSupp && sel>=base){ S.water.supp=Math.max(0,(S.water.supp||0)+step); }
+            else { var si=Math.min(sel, S.water.types.length-1); S.water.types[si]=Math.max(0,(S.water.types[si]||0)+step); }
+          }
+          renderGroups();
+        };
+      });
+      var ab=document.querySelector('.moveAddBtn');
+      if(ab){ ab.onclick=function(e){ e.stopPropagation(); (S.move.exercises=S.move.exercises||[]).push({part:(S.move.part||0), name:"", kg:null, reps:null, sets:null, _edit:true}); renderGroups(); }; }
+      document.querySelectorAll('.exRowBtn').forEach(function(r){ r.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault(); var ex=S.move.exercises[+r.getAttribute('data-i')]; if(ex){ ex._edit=true; renderGroups(); } }; });
+      document.querySelectorAll('.exPart').forEach(function(p){ p.onclick=function(e){ e.stopPropagation(); var d2=D[cur]||D["English"]; var ex=S.move.exercises[+p.getAttribute('data-i')]; if(ex){ ex.part=((ex.part||0)+1)%d2.moveParts.length; renderGroups(); } }; });
+      document.querySelectorAll('.exDone').forEach(function(p){ p.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault();
+        var i=+p.getAttribute('data-i'); var ex=S.move.exercises[i]; if(!ex) return;
+        /* 入力値を直接読み取ってから確定（blurを待たない） */
+        var box=document.querySelector('.exEdit[data-i="'+i+'"]');
+        if(box){ box.querySelectorAll('.exIn').forEach(function(inp){
+          var f=inp.getAttribute('data-f');
+          if(f==='name'){ ex.name=(inp.value||'').trim(); }
+          else { var v=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,'')); ex[f]=isNaN(v)?null:v; }
+        }); }
+        if(!(ex.name||'').trim()){ S.move.exercises.splice(i,1); } else { ex._edit=false; }
+        renderGroups();
+      }; });
+      document.querySelectorAll('.exIn').forEach(function(inp){
+        inp.onclick=function(e){ e.stopPropagation(); };
+        inp.onblur=function(){ var ex=S.move.exercises[+inp.getAttribute('data-i')]; if(!ex) return; var f=inp.getAttribute('data-f');
+          if(f==='name'){ ex.name=(inp.value||'').trim(); }
+          else { var v=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,'')); ex[f]=isNaN(v)?null:v; } };
+        inp.onkeydown=function(e){ if(e.key==='Enter'){ inp.blur(); } };
+      });
+      document.querySelectorAll('.mealEmptyBtn').forEach(function(r){ r.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault(); var i=+r.getAttribute('data-i'); S.food.meals[i]={name:"",kcal:0,_edit:true}; renderGroups(); }; });
+      document.querySelectorAll('.mealRowBtn').forEach(function(r){ r.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault(); var m=S.food.meals[+r.getAttribute('data-i')]; if(m){ m._edit=true; renderGroups(); } }; });
+      document.querySelectorAll('.mealDone').forEach(function(p){ p.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault();
+        var i=+p.getAttribute('data-i'); var m=S.food.meals[i]; if(!m) return;
+        /* 入力値を直接読み取ってから確定（blurを待たない） */
+        var box=document.querySelector('.mealEdit[data-i="'+i+'"]');
+        if(box){
+          var nIn=box.querySelector('.mealIn'); if(nIn) m.name=(nIn.value||'').trim();
+          var kIn=box.querySelector('#mealK'+i);
+          if(kIn){ var v=parseInt((kIn.value||'').replace(/[^0-9]/g,''),10); m.kcal=isNaN(v)?0:v; }
+        }
+        if(!(m.name||'').trim() && !(+m.kcal)){ S.food.meals[i]=null; } else { m._edit=false; }
+        renderGroups();
+      }; });
+      function renderSug(i){
+        var box=document.querySelector('.mealSug[data-i="'+i+'"]');
+        if(!box) return;
+        var m=S.food.meals[i];
+        var hit=m ? foodMatch(m.name) : null;
+        var t2=dark?T.dark:T.light;
+        if(!hit){
+          /* 辞書に無い料理：AI推定（サーバ接続時のみ。結果は全ユーザー共有キャッシュ） */
+          var nm=(m && m.name || "").trim();
+          if(nm.length>=2 && window.REVO_CLOUD && REVO_CLOUD.signedIn && REVO_CLOUD.signedIn() && REVO_CLOUD.foodEstimate){
+            box.style.display="flex";
+            box.innerHTML='<span class="mealAiChip" data-i="'+i+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';"><i class="ti ti-sparkles" style="font-size:12px; vertical-align:-2px;"></i> AI</span>';
+            var ai=box.querySelector('.mealAiChip');
+            ai.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault();
+              if(!aiEntitled()){ REVO.go('plans'); return; }   /* スタンダード以上の特典（README価格設計） */
+              ai.style.opacity="0.5";
+              REVO_CLOUD.foodEstimate(nm).then(function(r){
+                if(r && r.portions && r.portions.length){
+                  box.innerHTML=r.portions.map(function(pp){
+                    return '<span class="mealSugChip" data-i="'+i+'" data-kcal="'+pp.kcal+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';">'+pp.label+' <span style="font-weight:600;">'+pp.kcal+'</span></span>';
+                  }).join("");
+                  box.querySelectorAll('.mealSugChip').forEach(function(ch){
+                    ch.onpointerdown=function(e2){ e2.stopPropagation(); e2.preventDefault();
+                      var ii=+ch.getAttribute('data-i'), kc=+ch.getAttribute('data-kcal');
+                      if(!S.food.meals[ii]) S.food.meals[ii]={name:"",kcal:0};
+                      S.food.meals[ii].kcal=kc;
+                      var kIn=document.getElementById('mealK'+ii); if(kIn) kIn.value=String(kc);
+                      var tot=document.querySelector('.foodTotalNum');
+                      if(tot){ var sp=tot.querySelector('span'); tot.textContent=REVO.foodEaten(S.food).toLocaleString()+' '; if(sp) tot.appendChild(sp); }
+                    };
+                  });
+                } else { box.style.display="none"; }
+              }).catch(function(err){
+                if(String(err&&err.message).indexOf('upgrade')>=0 || String(err&&err.message).indexOf('402')>=0){ REVO.go('plans'); return; }
+                ai.style.opacity="1";
+              });
+            };
+          } else { box.style.display="none"; box.innerHTML=""; }
+          return;
+        }
+        box.style.display="flex";
+        box.innerHTML=hit.p.map(function(pp){
+          return '<span class="mealSugChip" data-i="'+i+'" data-kcal="'+pp[1]+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';">'+pp[0]+' <span style="font-weight:600;">'+pp[1]+'</span></span>';
+        }).join("");
+        box.querySelectorAll('.mealSugChip').forEach(function(ch){
+          ch.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault();
+            var ii=+ch.getAttribute('data-i'), kc=+ch.getAttribute('data-kcal');
+            if(!S.food.meals[ii]) S.food.meals[ii]={name:"",kcal:0};
+            S.food.meals[ii].kcal=kc;
+            var kIn=document.getElementById('mealK'+ii); if(kIn) kIn.value=String(kc);
+            var tot=document.querySelector('.foodTotalNum');
+            if(tot){ var sp=tot.querySelector('span'); tot.textContent=REVO.foodEaten(S.food).toLocaleString()+' '; if(sp) tot.appendChild(sp); }
+          };
+        });
+      }
+      document.querySelectorAll('.mealIn').forEach(function(inp){
+        inp.onclick=function(e){ e.stopPropagation(); };
+        inp.oninput=function(){
+          var i=+inp.getAttribute('data-i');
+          if(!S.food.meals[i]) S.food.meals[i]={name:"",kcal:0,_edit:true};
+          S.food.meals[i].name=(inp.value||'').trim();   /* 1文字ごとに即保存 */
+          renderSug(i);
+        };
+        inp.onblur=function(){ var m=S.food.meals[+inp.getAttribute('data-i')]; if(m) m.name=(inp.value||'').trim(); };
+        inp.onkeydown=function(e){ if(e.key==='Enter'){ inp.blur(); } };
+        renderSug(+inp.getAttribute('data-i'));   /* 既に名前がある編集行は開いた時点で候補表示 */
+      });
+      var pb=document.querySelector('.foodPhotoBtn'), wb=document.querySelector('.foodWriteBtn');
+      function firstEmpty(){ for(var i=0;i<4;i++){ if(!S.food.meals[i]) return i; } return -1; }
+      if(wb){ wb.onclick=function(e){ e.stopPropagation(); var i=firstEmpty(); if(i<0) return; S.food.meals[i]={name:"",kcal:0,_edit:true}; renderGroups(); }; }
+      if(pb){ pb.onclick=function(e){ e.stopPropagation();
+        /* 写真AI解析はスタンダード特典。クラウド未接続時は従来の写真添付＋手入力 */
+        if(window.REVO_CLOUD && REVO_CLOUD.signedIn && REVO_CLOUD.signedIn() && REVO_CLOUD.foodPhoto && !aiEntitled()){ REVO.go('plans'); return; }
+        _mealFile.click();
+      }; }
+    }
+    var _mealFile=document.createElement('input'); _mealFile.type='file'; _mealFile.accept='image/*'; _mealFile.style.display='none';
+    document.addEventListener('DOMContentLoaded', function(){ document.body.appendChild(_mealFile); });
+    if(document.body) document.body.appendChild(_mealFile);
+    _mealFile.onchange=function(){
+      var f=_mealFile.files && _mealFile.files[0]; if(!f) return;
+      var img=new Image();
+      img.onload=function(){
+        var i=-1; for(var j=0;j<4;j++){ if(!S.food.meals[j]){ i=j; break; } }
+        if(i<0) return;
+        /* サムネイル（正方形256px） */
+        var s=Math.min(img.width,img.height), c=document.createElement('canvas'); c.width=c.height=256;
+        c.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,256,256);
+        var thumb=c.toDataURL('image/jpeg',0.8);
+        var canAI = window.REVO_CLOUD && REVO_CLOUD.signedIn && REVO_CLOUD.signedIn() && REVO_CLOUD.foodPhoto && aiEntitled();
+        if(!canAI){
+          S.food.meals[i]={name:"",kcal:0,_edit:true,photo:thumb};
+          renderGroups();
+          return;
+        }
+        /* AI解析用（512px・アスペクト維持） */
+        var mx=512, sc2=Math.min(1, mx/Math.max(img.width,img.height));
+        var c2=document.createElement('canvas'); c2.width=Math.round(img.width*sc2); c2.height=Math.round(img.height*sc2);
+        c2.getContext('2d').drawImage(img,0,0,c2.width,c2.height);
+        var aiImg=c2.toDataURL('image/jpeg',0.75);
+        /* 解析中の表示：スロットを確保して見せる */
+        S.food.meals[i]={name:"…", kcal:0, _edit:true, photo:thumb};
+        renderGroups();
+        REVO_CLOUD.foodPhoto(aiImg, REVO.lang()).then(function(r){
+          if(r && r.items && r.items.length){
+            S.food.meals[i]={
+              name: r.items.map(function(x){ return x.name; }).join("・"),
+              kcal: r.total || r.items.reduce(function(a,x){ return a+(x.kcal||0); },0),
+              _edit: true,     /* 自動入力後も編集可能な状態で確認してもらう */
+              photo: thumb
+            };
+          } else {
+            S.food.meals[i]={name:"",kcal:0,_edit:true,photo:thumb};
+          }
+          renderGroups();
+        }).catch(function(err){
+          if(String(err&&err.message).indexOf('upgrade')>=0 || String(err&&err.message).indexOf('402')>=0){ REVO.go('plans'); return; }
+          S.food.meals[i]={name:"",kcal:0,_edit:true,photo:thumb};
+          renderGroups();
+        });
+      };
+      img.src=URL.createObjectURL(f);
+    };
+    function waterBreakRow(t,name,ml,wkey){
+      return '<div style="display:flex; align-items:center; justify-content:space-between; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; border-radius:11px; padding:9px 13px;">'+
+        '<span style="font-size:12px; color:'+t.cardName+';"><i class="ti ti-droplet" style="font-size:13px; color:#6FA8DC; vertical-align:-1px; margin-right:6px;"></i>'+name+'</span>'+
+        '<span style="font-size:13px; color:'+t.accent+'; font-weight:500;"><input class="numIn" data-int="1" id="wrow'+wkey+'" type="text" inputmode="numeric" value="'+(ml? String(ml):"")+'" placeholder="0" style="width:42px; text-align:right; font-size:13px; font-weight:500; color:'+t.accent+'; background:transparent; border:0; border-bottom:1px dashed '+t.chipBd+'; padding:0 1px; outline:none; font-family:inherit;"><span style="font-size:9px; color:'+t.sub+'; font-weight:400;"> ml</span></span>'+
+      '</div>';
+    }
+    function waterInner(t){
+      var d=D[cur]||D["English"];
+      var ml=REVO.waterTotal(S.water), cups=Math.round(ml/200);
+      var baseTypes=(d.waterTypes||["Warm","Water","Tea"]).slice();
+      var typeList=baseTypes.slice();
+      if(S.water.includeSupp) typeList.push(d.waterSuppTag||"Supplement drink");
+      var types=typeList.map(function(w,i){
+        var on=(i===(S.water.sel==null?1:S.water.sel));
+        var isSupp=(S.water.includeSupp && i===typeList.length-1);
+        var onBg = isSupp ? (dark?"#1F2A1E":"#EAF6EE") : (dark?"#161E26":"#E6F1FB");
+        var onCol = isSupp ? "#5DCAA5" : "#6FA8DC";
+        var onBd = isSupp ? "#3E7E5E" : "#4E86BE";
+        return '<span class="waterChip" data-i="'+i+'" style="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; '+(on?"background:"+onBg+"; color:"+onCol+"; border:1.5px solid "+onBd+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";")+'">'+w+'</span>';
+      }).join("");
+      return '<div style="display:flex; flex-direction:column; align-items:center; gap:3px; margin:0 0 13px;">'+
+          '<div style="display:flex; align-items:center; justify-content:center; gap:14px;">'+
+            '<button class="adjB" data-act="water" data-step="-50" style="width:32px; height:32px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:18px; cursor:pointer; line-height:1;">−</button>'+
+            '<span style="font-size:22px; font-weight:600; color:'+t.accent+'; min-width:96px; text-align:center;">'+ml.toLocaleString()+'<span style="font-size:12px; color:'+t.sub+'; font-weight:400;"> ml</span></span>'+
+            '<button class="adjB" data-act="water" data-step="50" style="width:32px; height:32px; border-radius:50%; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; color:'+t.sub+'; font-size:18px; cursor:pointer; line-height:1;">＋</button>'+
+          '</div>'+
+          '<span style="font-size:11px; color:'+t.sub+';">≈ '+cups+' '+(d.waterCups||"cups")+'</span>'+
+        '</div>'+
+        '<div style="display:flex; gap:7px; justify-content:center; flex-wrap:wrap; margin:0 0 14px;">'+types+'</div>'+
+        // 種類ごとの内訳（何を何ml飲んだか）
+        '<p style="font-size:11px; color:'+t.sub+'; margin:0 0 8px; font-weight:500;">'+(d.waterBreak||"By type")+'</p>'+
+        '<div style="display:flex; flex-direction:column; gap:6px; margin:0 0 14px;">'+
+          waterBreakRow(t,baseTypes[0],(S.water.types[0]||0),0)+
+          waterBreakRow(t,baseTypes[1],(S.water.types[1]||0),1)+
+          waterBreakRow(t,baseTypes[2],(S.water.types[2]||0),2)+
+          (S.water.includeSupp ? waterBreakRow(t,(d.waterSuppTag||"Supplement drink"),(S.water.supp||0),"S") : '')+
+        '</div>'+
+        // サプリドリンク・トグル
+        '<div style="display:flex; align-items:center; justify-content:space-between; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; border-radius:11px; padding:11px 13px;">'+
+          '<span style="font-size:11px; color:'+t.sub+'; line-height:1.5; flex:1; padding-right:10px;">'+(d.waterSuppToggle||"Count supplement drinks as water")+'</span>'+
+          '<button id="waterSuppToggleBtn" style="width:42px; height:24px; border-radius:999px; border:none; cursor:pointer; position:relative; background:'+(S.water.includeSupp?(dark?"#5DCAA5":"#1D9E75"):(dark?"#3A352A":"#D8D2C6"))+'; transition:background 0.25s; flex-shrink:0;"><span style="position:absolute; top:2px; left:'+(S.water.includeSupp?"20px":"2px")+'; width:20px; height:20px; border-radius:50%; background:#fff; transition:left 0.25s;"></span></button>'+
+        '</div>';
+    }
+    function conditionInner(t){
+      var d=D[cur]||D["English"];
+      var bowelSel=S.condition.bowel, moodSel=S.condition.mood;
+      var bowel=(d.condBowelStates||["Great","Normal","Constipated","Loose"]).map(function(x,i){
+        var on=(i===bowelSel);
+        return '<span class="condBowelChip" data-i="'+i+'" style="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; '+(on?"background:"+(dark?"#2E1E26":"#FBEEF4")+"; color:#E89BB8; border:1.5px solid #C97AA0;":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";")+'">'+x+'</span>';
+      }).join("");
+      var moods=(d.condMoods||["Good","Okay","Sluggish"]).map(function(x,i){
+        var on=(i===moodSel);
+        return '<span class="condMoodChip" data-i="'+i+'" style="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; '+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+t.accent+"; border:1.5px solid "+t.accent+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";")+'">'+x+'</span>';
+      }).join("");
+      return '<div>'+
+        // お通じ
+        '<p style="font-size:12px; color:'+t.sub+'; margin:0 0 8px; font-weight:500;">'+d.condBowel+'</p>'+
+        '<div style="display:flex; gap:7px; flex-wrap:wrap; margin:0 0 16px;">'+bowel+'</div>'+
+        // 気分
+        '<p style="font-size:12px; color:'+t.sub+'; margin:0 0 8px; font-weight:500;">'+d.condMood+'</p>'+
+        '<div style="display:flex; gap:7px; flex-wrap:wrap; margin:0 0 12px;">'+moods+'</div>'+
+        // 腸を繋ぐ一言
+        '<p style="font-size:10px; color:'+(dark?"#7FB89E":"#4E8A72")+'; margin:0; line-height:1.6;"><i class="ti ti-seeding" style="font-size:12px; vertical-align:-1px;"></i> '+d.condGut+'</p>'+
+      '</div>';
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead; $('saveBtn').textContent=d.save;
+      if(d.tease){ var tz=d.tease; $('teaseTtl').textContent=tz.ttl; $('teaseSub').textContent=tz.sub; $('pv1Lbl').textContent=tz.pv1; $('pv2Lbl').textContent=tz.pv2; $('pv3Lbl').textContent=tz.pv3; $('pv3a').textContent=tz.pv3a; $('pv3b').textContent=tz.pv3b; $('unlockLbl').textContent=tz.unlock; $('unlockSub').textContent=tz.unlockSub; }
+      renderGroups();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdr').style.background=t.bg; $('hdrTtl').style.color=t.txt;
+      $('lead').style.color=t.sub;
+      $('teaseCard').style.background=t.card; $('teaseCard').style.borderColor=t.cardBd;
+      $('teaseTtl').style.color=t.txt;
+      $('unlockBtn').style.background=t.accent; $('unlockBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('saveBtn').style.background=t.accent; $('saveBtn').style.color= dark?"#16140F":"#FFFFFF";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderGroups();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    /* docs/02：保存 → daily_log upsert → スコア再計算 → ホームで既存アニメが増減を表現 */
+    $('saveBtn').onclick=function(){ REVO.saveLog(REVO.todayKey(), S); REVO.go('home'); };
+    (function(){ var bk=document.querySelector('#hdr .ti-arrow-left'); if(bk){ bk.style.cursor='pointer'; bk.onclick=function(){ REVO.go('home'); }; } })();
+    (function(){ var ub=$('unlockBtn'); if(ub){ ub.onclick=function(){ REVO.go('plans'); }; } })();
+    applyUI();     (function(){
+      var open=false;
+      var th=document.getElementById('teaseHead');
+      if(th){ th.onclick=function(){ open=!open; document.getElementById('teaseBody').style.display= open?'block':'none'; document.getElementById('teaseChev').style.transform= open?'rotate(180deg)':'rotate(0deg)'; }; }
+    })();
+    applyTheme();
+  })();
+</script>
+</div>
+
+</body>
+</html>

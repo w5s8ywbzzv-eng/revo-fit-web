@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ランキング投稿 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">おすすめを投稿する。ジャンルと国を選び、なければ新しく作れる。商品名、お店やメーカー、価格帯、ひとことを添えて。世界中のあなたの一票が、生きたランキングを育てます。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">おすすめを投稿</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 18px 24px; max-height:600px; overflow-y:auto;">
+    <p id="lead" style="font-size:12px; color:#8A7E68; margin:0 0 20px; line-height:1.6;">あなたの一票が、その国の生きたランキングを育てます。</p>
+
+    <!-- ジャンル -->
+    <div style="margin:0 0 18px;">
+      <label id="lblGenre" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 8px;">ジャンル</label>
+      <div style="position:relative;">
+        <button id="genreBtn" style="width:100%; display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:13px 14px; cursor:pointer;">
+          <i id="genreIc" class="ti ti-bolt" style="font-size:17px; color:#E3C56A;"></i>
+          <span id="genreVal" style="flex:1; text-align:left; font-size:13px; color:#F0EBE2;">プロテイン</span>
+          <i class="ti ti-chevron-down" style="font-size:16px; color:#8A7E68;"></i>
+        </button>
+        <div id="genreMenu" style="display:none; position:absolute; left:0; right:0; top:52px; background:#1F1C16; border:0.5px solid #3A352A; border-radius:12px; padding:6px; box-shadow:0 14px 34px -10px rgba(0,0,0,0.7); z-index:20;"></div>
+      </div>
+    </div>
+
+    <!-- 国 -->
+    <div style="margin:0 0 18px;">
+      <label id="lblCountry" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 8px;">国・地域</label>
+      <div style="position:relative;">
+        <button id="countryBtn" style="width:100%; display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:13px 14px; cursor:pointer;">
+          <i class="ti ti-world" style="font-size:17px; color:#E3C56A;"></i>
+          <span id="countryVal" style="flex:1; text-align:left; font-size:13px; color:#F0EBE2;">日本</span>
+          <i class="ti ti-chevron-down" style="font-size:16px; color:#8A7E68;"></i>
+        </button>
+        <div id="countryMenu" style="display:none; position:absolute; left:0; right:0; top:52px; max-height:260px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:12px; padding:6px; box-shadow:0 14px 34px -10px rgba(0,0,0,0.7); z-index:20;"></div>
+      </div>
+    </div>
+
+    <!-- 商品名／店名 -->
+    <div style="margin:0 0 18px;">
+      <label id="lblName" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 8px;">商品名・お店の名前</label>
+      <input id="inName" type="text" placeholder="例：サラダチキン プレーン" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:13px 14px; font-size:13px; color:#F0EBE2; font-family:inherit; outline:none;">
+    </div>
+
+    <!-- 店・メーカー／ブランド -->
+    <div style="margin:0 0 18px;">
+      <label id="lblBrand" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 8px;">お店・メーカー／ブランド</label>
+      <input id="inBrand" type="text" placeholder="例：セブン-イレブン、明治、Gymshark" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:13px 14px; font-size:13px; color:#F0EBE2; font-family:inherit; outline:none;">
+    </div>
+
+    <!-- 価格帯 -->
+    <div style="margin:0 0 18px;">
+      <label id="lblPrice" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 8px;">価格帯</label>
+      <div id="priceChips" style="display:flex; gap:8px;"></div>
+    </div>
+
+    <!-- 評価軸（ジャンル連動） -->
+    <div style="margin:0 0 18px;">
+      <label id="lblRate" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 4px;">評価（このジャンルの見どころ）</label>
+      <p id="rateHint" style="font-size:10px; color:#6E6555; margin:0 0 12px;">スライドして、あなたの評価を残せます。</p>
+      <div id="rateAxes" style="display:flex; flex-direction:column; gap:14px;"></div>
+    </div>
+
+    <!-- ひとこと -->
+    <div style="margin:0 0 18px;">
+      <label id="lblVoice" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 8px;">ひとこと（なぜおすすめ？）</label>
+      <textarea id="inVoice" rows="3" placeholder="例：新作、マジで柔らかい。高たんぱくで罪悪感なし。" style="width:100%; box-sizing:border-box; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:13px 14px; font-size:13px; color:#F0EBE2; font-family:inherit; outline:none; resize:none; line-height:1.55;"></textarea>
+    </div>
+
+    <!-- 写真 -->
+    <div style="margin:0 0 22px;">
+      <label id="lblPhoto" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 8px;">写真（任意）</label>
+      <button id="photoBtn" style="width:100%; background:#1A1814; border:1px dashed #3A352A; border-radius:12px; padding:22px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <i class="ti ti-camera-plus" style="font-size:24px; color:#8A7E68;"></i>
+        <span id="photoLbl" style="font-size:12px; color:#8A7E68;">写真を追加</span>
+      </button>
+    </div>
+
+    <!-- 投稿ボタン -->
+    <button id="submitBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><i class="ti ti-send" style="font-size:17px;"></i><span id="submitLbl">投稿する</span></button>
+    <p id="thanks" style="font-size:11px; color:#5DCAA5; text-align:center; margin:12px 0 0; display:none;">ありがとう。あなたの一票が、ランキングを育てます。</p>
+    <p id="foot" style="font-size:10px; color:#6E6555; margin:16px 0 0; line-height:1.65; text-align:center;">投稿は、同じ国・ジャンルの仲間の参考になります。事実にもとづく、正直なおすすめをお願いします。</p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var GENRES=[{k:"protein",ic:"ti-bolt"},{k:"store",ic:"ti-shopping-cart"},{k:"resto",ic:"ti-cup"},{k:"wear",ic:"ti-tag"},{k:"gear",ic:"ti-barbell"},{k:"meal",ic:"ti-leaf"},{k:"new",ic:"ti-plus"}];
+    var COUNTRIES=["jp","kr","th","id","us","vn","fr","it","es","gb","mx","au","new"];
+    var D={
+      "日本語":{hdr:"おすすめを投稿",lead:"あなたの一票が、世界各国のトレンドランキングを育てます。",
+        lblGenre:"ジャンル",lblCountry:"国・地域",lblName:"商品名・お店の名前",lblBrand:"お店・メーカー／ブランド",lblPrice:"価格帯",lblVoice:"ひとこと（なぜおすすめ？）",lblPhoto:"写真（任意）",
+        phName:"例：サラダチキン プレーン",phBrand:"例：セブン-イレブン、明治、Gymshark",phVoice:"例：新作、マジで柔らかい。高たんぱくで罪悪感なし。",
+        photo:"写真を追加",submit:"投稿する",thanks:"ありがとう。あなたの一票が、ランキングを育てます。",
+        foot:"投稿は、同じ国・ジャンルの仲間の参考になります。事実にもとづく、正直なおすすめをお願いします。",
+        genres:{protein:"プロテイン",store:"各国の市販品",resto:"外食",wear:"ウェア",gear:"器具",meal:"宅配",new:"＋ 新しいジャンルを作る"},
+        countries:{jp:"日本",kr:"韓国",th:"タイ",id:"インドネシア",us:"アメリカ",vn:"ベトナム",fr:"フランス",it:"イタリア",es:"スペイン",gb:"イギリス",mx:"メキシコ",au:"オーストラリア",new:"＋ 新しい国・地域を作る"},
+        prices:["安価","中","高価"],lblRate:"評価（このジャンルの見どころ）",rateHint:"スライドして、あなたの評価を残せます。",axes:{"protein":["溶けやすさ", "味", "コスパ"], "store":["手軽さ", "コスパ", "満足度"], "resto":["高たんぱく度", "通いやすさ", "コスパ"], "wear":["通気性", "ファッション度", "機能・サポート"], "gear":["省スペース", "耐久性", "コスパ"], "meal":["味", "栄養設計", "コスパ"], "new":["おすすめ度", "コスパ", "満足度"]}},
+      "English":{hdr:"Post a rec",lead:"Your vote grows the trend rankings across the world.",
+        lblGenre:"Genre",lblCountry:"Country / region",lblName:"Product or place name",lblBrand:"Store / maker / brand",lblPrice:"Price range",lblVoice:"A few words (why do you recommend it?)",lblPhoto:"Photo (optional)",
+        phName:"e.g. Salad chicken plain",phBrand:"e.g. 7-Eleven, Meiji, Gymshark",phVoice:"e.g. The new one is genuinely tender. High protein, zero guilt.",
+        photo:"Add a photo",submit:"Post",thanks:"Thank you. Your vote grows the ranking.",
+        foot:"Your post helps others in the same country and genre. Please keep it honest and fact-based.",
+        genres:{protein:"Protein",store:"Local goods",resto:"Eating out",wear:"Wear",gear:"Gear",meal:"Delivery",new:"+ Create a new genre"},
+        countries:{jp:"Japan",kr:"Korea",th:"Thailand",id:"Indonesia",us:"USA",vn:"Vietnam",fr:"France",it:"Italy",es:"Spain",gb:"UK",mx:"Mexico",au:"Australia",new:"+ Create a new country / region"},
+        prices:["Budget","Mid","Premium"],lblRate:"Ratings (what matters for this genre)",rateHint:"Slide to leave your rating.",axes:{"protein":["Mixability", "Taste", "Value"], "store":["Convenience", "Value", "Satisfaction"], "resto":["High-protein", "Easy to visit", "Value"], "wear":["Breathability", "Fashion", "Function/support"], "gear":["Space-saving", "Durability", "Value"], "meal":["Taste", "Nutrition design", "Value"], "new":["Recommend", "Value", "Satisfaction"]}},
+      "简体中文":{hdr:"发布推荐",lead:"你的一票，培育世界各国的趋势排行。",
+        lblGenre:"类别",lblCountry:"国家·地区",lblName:"商品·店名",lblBrand:"店铺·厂商／品牌",lblPrice:"价格带",lblVoice:"一句话（为什么推荐？）",lblPhoto:"照片（可选）",
+        phName:"例：沙拉鸡胸 原味",phBrand:"例：7-11、明治、Gymshark",phVoice:"例：新品真的很嫩。高蛋白无负罪感。",
+        photo:"添加照片",submit:"发布",thanks:"谢谢。你的一票在培育排行。",
+        foot:"你的投稿会帮助同国家·类别的伙伴。请基于事实、诚实推荐。",
+        genres:{protein:"蛋白粉",store:"各国市售",resto:"外食",wear:"服饰",gear:"器械",meal:"配送",new:"＋ 创建新类别"},
+        countries:{jp:"日本",kr:"韩国",th:"泰国",id:"印尼",us:"美国",vn:"越南",fr:"法国",it:"意大利",es:"西班牙",gb:"英国",mx:"墨西哥",au:"澳大利亚",new:"＋ 创建新国家·地区"},
+        prices:["平价","中档","高档"],lblRate:"评价（这个类别的看点）",rateHint:"滑动留下你的评价。",axes:{"protein":["易溶性", "口味", "性价比"], "store":["便利度", "性价比", "满意度"], "resto":["高蛋白度", "方便前往", "性价比"], "wear":["透气性", "时尚度", "功能·支撑"], "gear":["省空间", "耐用度", "性价比"], "meal":["口味", "营养设计", "性价比"], "new":["推荐度", "性价比", "满意度"]}},
+      "繁體中文":{hdr:"發布推薦",lead:"你的一票，培育世界各國的趨勢排行。",
+        lblGenre:"類別",lblCountry:"國家·地區",lblName:"商品·店名",lblBrand:"店鋪·廠商／品牌",lblPrice:"價格帶",lblVoice:"一句話（為什麼推薦？）",lblPhoto:"照片（可選）",
+        phName:"例：沙拉雞胸 原味",phBrand:"例：7-11、明治、Gymshark",phVoice:"例：新品真的很嫩。高蛋白無負罪感。",
+        photo:"新增照片",submit:"發布",thanks:"謝謝。你的一票在培育排行。",
+        foot:"你的投稿會幫助同國家·類別的夥伴。請基於事實、誠實推薦。",
+        genres:{protein:"蛋白粉",store:"各國市售",resto:"外食",wear:"服飾",gear:"器械",meal:"配送",new:"＋ 建立新類別"},
+        countries:{jp:"日本",kr:"韓國",th:"泰國",id:"印尼",us:"美國",vn:"越南",fr:"法國",it:"意大利",es:"西班牙",gb:"英國",mx:"墨西哥",au:"澳大利亞",new:"＋ 建立新國家·地區"},
+        prices:["平價","中檔","高檔"],lblRate:"評價（這個類別的看點）",rateHint:"滑動留下你的評價。",axes:{"protein":["易溶性", "口味", "性價比"], "store":["便利度", "性價比", "滿意度"], "resto":["高蛋白度", "方便前往", "性價比"], "wear":["透氣性", "時尚度", "功能·支撐"], "gear":["省空間", "耐用度", "性價比"], "meal":["口味", "營養設計", "性價比"], "new":["推薦度", "性價比", "滿意度"]}},
+      "한국어":{hdr:"추천 올리기",lead:"당신의 한 표가 세계 각국의 트렌드 랭킹을 키웁니다.",
+        lblGenre:"장르",lblCountry:"국가·지역",lblName:"상품·가게 이름",lblBrand:"가게·제조사／브랜드",lblPrice:"가격대",lblVoice:"한마디 (왜 추천하나요?)",lblPhoto:"사진 (선택)",
+        phName:"예: 샐러드 치킨 플레인",phBrand:"예: 세븐일레븐, 메이지, Gymshark",phVoice:"예: 신상 진짜 부드러워요. 고단백에 죄책감 없음.",
+        photo:"사진 추가",submit:"올리기",thanks:"고마워요. 당신의 한 표가 랭킹을 키웁니다.",
+        foot:"당신의 게시물은 같은 나라·장르의 동료에게 도움이 됩니다. 사실에 근거해 정직하게 추천해 주세요.",
+        genres:{protein:"프로틴",store:"각국 시판품",resto:"외식",wear:"웨어",gear:"기구",meal:"배송",new:"＋ 새 장르 만들기"},
+        countries:{jp:"일본",kr:"한국",th:"태국",id:"인도네시아",us:"미국",vn:"베트남",fr:"프랑스",it:"이탈리아",es:"스페인",gb:"영국",mx:"멕시코",au:"호주",new:"＋ 새 국가·지역 만들기"},
+        prices:["저가","중간","고가"],lblRate:"평가 (이 장르의 포인트)",rateHint:"슬라이드해서 평가를 남겨보세요.",axes:{"protein":["잘 녹음", "맛", "가성비"], "store":["간편함", "가성비", "만족도"], "resto":["고단백도", "가기 편함", "가성비"], "wear":["통기성", "패션도", "기능·지지력"], "gear":["공간 절약", "내구성", "가성비"], "meal":["맛", "영양 설계", "가성비"], "new":["추천도", "가성비", "만족도"]}},
+      "ภาษาไทย":{hdr:"โพสต์คำแนะนำ",lead:"หนึ่งเสียงของคุณช่วยสร้างอันดับเทรนด์ของทั่วโลก",
+        lblGenre:"หมวด",lblCountry:"ประเทศ·ภูมิภาค",lblName:"ชื่อสินค้า·ร้าน",lblBrand:"ร้าน·ผู้ผลิต／แบรนด์",lblPrice:"ช่วงราคา",lblVoice:"สักคำ (ทำไมถึงแนะนำ?)",lblPhoto:"รูปภาพ (ไม่บังคับ)",
+        phName:"เช่น สลัดไก่ รสธรรมดา",phBrand:"เช่น 7-Eleven, Meiji, Gymshark",phVoice:"เช่น ตัวใหม่นุ่มจริง โปรตีนสูง ไม่รู้สึกผิด",
+        photo:"เพิ่มรูป",submit:"โพสต์",thanks:"ขอบคุณ หนึ่งเสียงของคุณช่วยสร้างอันดับ",
+        foot:"โพสต์ของคุณช่วยเพื่อนในประเทศ·หมวดเดียวกัน โปรดแนะนำอย่างซื่อสัตย์ตามความจริง",
+        genres:{protein:"โปรตีน",store:"สินค้าแต่ละประเทศ",resto:"กินนอกบ้าน",wear:"เสื้อผ้า",gear:"อุปกรณ์",meal:"เดลิเวอรี",new:"＋ สร้างหมวดใหม่"},
+        countries:{jp:"ญี่ปุ่น",kr:"เกาหลี",th:"ไทย",id:"อินโดนีเซีย",us:"อเมริกา",vn:"เวียดนาม",fr:"ฝรั่งเศส",it:"อิตาลี",es:"สเปน",gb:"อังกฤษ",mx:"เม็กซิโก",au:"ออสเตรเลีย",new:"＋ สร้างประเทศ·ภูมิภาคใหม่"},
+        prices:["ราคาถูก","กลาง","พรีเมียม"],lblRate:"คะแนน (จุดเด่นของหมวดนี้)",rateHint:"เลื่อนเพื่อให้คะแนนของคุณ",axes:{"protein":["ละลายง่าย", "รสชาติ", "คุ้มค่า"], "store":["สะดวก", "คุ้มค่า", "ความพอใจ"], "resto":["โปรตีนสูง", "ไปง่าย", "คุ้มค่า"], "wear":["ระบายอากาศ", "ความแฟชั่น", "ฟังก์ชัน·รองรับ"], "gear":["ประหยัดพื้นที่", "ทนทาน", "คุ้มค่า"], "meal":["รสชาติ", "ออกแบบโภชนาการ", "คุ้มค่า"], "new":["น่าแนะนำ", "คุ้มค่า", "ความพอใจ"]}},
+      "Français":{hdr:"Publier une reco",lead:"Votre vote fait vivre les classements de tendance du monde entier.",
+        lblGenre:"Catégorie",lblCountry:"Pays / région",lblName:"Nom du produit ou du lieu",lblBrand:"Magasin / marque",lblPrice:"Gamme de prix",lblVoice:"Quelques mots (pourquoi le recommander ?)",lblPhoto:"Photo (facultatif)",
+        phName:"ex. Poulet salade nature",phBrand:"ex. 7-Eleven, Meiji, Gymshark",phVoice:"ex. Le nouveau est vraiment tendre. Riche en protéines, sans culpabilité.",
+        photo:"Ajouter une photo",submit:"Publier",thanks:"Merci. Votre vote fait grandir le classement.",
+        foot:"Votre publication aide les autres du même pays et de la même catégorie. Merci de rester honnête et factuel.",
+        genres:{protein:"Protéines",store:"Produits locaux",resto:"Restaurants",wear:"Vêtements",gear:"Matériel",meal:"Livraison",new:"+ Créer une catégorie"},
+        countries:{jp:"Japon",kr:"Corée",th:"Thaïlande",id:"Indonésie",us:"USA",vn:"Vietnam",fr:"France",it:"Italie",es:"Espagne",gb:"Royaume-Uni",mx:"Mexique",au:"Australie",new:"+ Créer un pays / une région"},
+        prices:["Éco","Moyen","Premium"],lblRate:"Notes (ce qui compte pour ce genre)",rateHint:"Glissez pour laisser votre note.",axes:{"protein":["Dissolution", "Goût", "Rapport qualité-prix"], "store":["Praticité", "Rapport Q-P", "Satisfaction"], "resto":["Riche en protéines", "Accessible", "Rapport Q-P"], "wear":["Respirabilité", "Style", "Fonction/maintien"], "gear":["Gain de place", "Durabilité", "Rapport Q-P"], "meal":["Goût", "Nutrition", "Rapport Q-P"], "new":["Recommandé", "Rapport Q-P", "Satisfaction"]}},
+      "Español":{hdr:"Publicar reco",lead:"Tu voto hace crecer los rankings de tendencias del mundo entero.",
+        lblGenre:"Categoría",lblCountry:"País / región",lblName:"Nombre del producto o lugar",lblBrand:"Tienda / marca",lblPrice:"Rango de precio",lblVoice:"Unas palabras (¿por qué lo recomiendas?)",lblPhoto:"Foto (opcional)",
+        phName:"ej. Pollo ensalada natural",phBrand:"ej. 7-Eleven, Meiji, Gymshark",phVoice:"ej. El nuevo es muy tierno. Alto en proteína, sin culpa.",
+        photo:"Añadir foto",submit:"Publicar",thanks:"Gracias. Tu voto hace crecer el ranking.",
+        foot:"Tu publicación ayuda a otros del mismo país y categoría. Sé honesto y basado en hechos.",
+        genres:{protein:"Proteína",store:"Productos locales",resto:"Restaurantes",wear:"Ropa",gear:"Equipo",meal:"Entrega",new:"+ Crear categoría"},
+        countries:{jp:"Japón",kr:"Corea",th:"Tailandia",id:"Indonesia",us:"EE.UU.",vn:"Vietnam",fr:"Francia",it:"Italia",es:"España",gb:"Reino Unido",mx:"México",au:"Australia",new:"+ Crear país / región"},
+        prices:["Económico","Medio","Premium"],lblRate:"Valoraciones (lo que importa aquí)",rateHint:"Desliza para dejar tu valoración.",axes:{"protein":["Disolución", "Sabor", "Relación calidad-precio"], "store":["Comodidad", "Calidad-precio", "Satisfacción"], "resto":["Alto en proteína", "Fácil de visitar", "Calidad-precio"], "wear":["Transpirabilidad", "Moda", "Función/soporte"], "gear":["Ahorra espacio", "Durabilidad", "Calidad-precio"], "meal":["Sabor", "Diseño nutricional", "Calidad-precio"], "new":["Recomendado", "Calidad-precio", "Satisfacción"]}},
+      "Deutsch":{hdr:"Empfehlung posten",lead:"Deine Stimme lässt die Trend-Rankings weltweit wachsen.",
+        lblGenre:"Kategorie",lblCountry:"Land / Region",lblName:"Produkt- oder Lokalname",lblBrand:"Laden / Marke",lblPrice:"Preisklasse",lblVoice:"Ein paar Worte (warum empfiehlst du es?)",lblPhoto:"Foto (optional)",
+        phName:"z.B. Salat-Hähnchen neutral",phBrand:"z.B. 7-Eleven, Meiji, Gymshark",phVoice:"z.B. Das neue ist echt zart. Proteinreich, ohne Reue.",
+        photo:"Foto hinzufügen",submit:"Posten",thanks:"Danke. Deine Stimme lässt das Ranking wachsen.",
+        foot:"Dein Beitrag hilft anderen im selben Land und in derselben Kategorie. Bitte ehrlich und faktenbasiert.",
+        genres:{protein:"Protein",store:"Lokale Produkte",resto:"Auswärts essen",wear:"Kleidung",gear:"Ausrüstung",meal:"Lieferung",new:"+ Neue Kategorie erstellen"},
+        countries:{jp:"Japan",kr:"Korea",th:"Thailand",id:"Indonesien",us:"USA",vn:"Vietnam",fr:"Frankreich",it:"Italien",es:"Spanien",gb:"UK",mx:"Mexiko",au:"Australien",new:"+ Land / Region erstellen"},
+        prices:["Günstig","Mittel","Premium"],lblRate:"Bewertungen (was hier zählt)",rateHint:"Schiebe, um deine Bewertung abzugeben.",axes:{"protein":["Löslichkeit", "Geschmack", "Preis-Leistung"], "store":["Bequemlichkeit", "Preis-Leistung", "Zufriedenheit"], "resto":["Proteinreich", "Gut erreichbar", "Preis-Leistung"], "wear":["Atmungsaktivität", "Mode", "Funktion/Halt"], "gear":["Platzsparend", "Haltbarkeit", "Preis-Leistung"], "meal":["Geschmack", "Nährstoffdesign", "Preis-Leistung"], "new":["Empfehlung", "Preis-Leistung", "Zufriedenheit"]}},
+      "Italiano":{hdr:"Pubblica un consiglio",lead:"Il tuo voto fa crescere le classifiche di tendenza di tutto il mondo.",
+        lblGenre:"Categoria",lblCountry:"Paese / regione",lblName:"Nome del prodotto o locale",lblBrand:"Negozio / marca",lblPrice:"Fascia di prezzo",lblVoice:"Due parole (perché lo consigli?)",lblPhoto:"Foto (facoltativo)",
+        phName:"es. Pollo insalata neutro",phBrand:"es. 7-Eleven, Meiji, Gymshark",phVoice:"es. Il nuovo è davvero tenero. Proteico, senza sensi di colpa.",
+        photo:"Aggiungi foto",submit:"Pubblica",thanks:"Grazie. Il tuo voto fa crescere la classifica.",
+        foot:"Il tuo post aiuta gli altri dello stesso paese e categoria. Sii onesto e basato sui fatti.",
+        genres:{protein:"Proteine",store:"Prodotti locali",resto:"Ristoranti",wear:"Abbigliamento",gear:"Attrezzi",meal:"Consegna",new:"+ Crea una categoria"},
+        countries:{jp:"Giappone",kr:"Corea",th:"Thailandia",id:"Indonesia",us:"USA",vn:"Vietnam",fr:"Francia",it:"Italia",es:"Spagna",gb:"Regno Unito",mx:"Messico",au:"Australia",new:"+ Crea paese / regione"},
+        prices:["Economico","Medio","Premium"],lblRate:"Valutazioni (cosa conta qui)",rateHint:"Scorri per lasciare la tua valutazione.",axes:{"protein":["Solubilità", "Gusto", "Rapporto qualità-prezzo"], "store":["Comodità", "Qualità-prezzo", "Soddisfazione"], "resto":["Ricco di proteine", "Facile da raggiungere", "Qualità-prezzo"], "wear":["Traspirabilità", "Moda", "Funzione/supporto"], "gear":["Salvaspazio", "Durata", "Qualità-prezzo"], "meal":["Gusto", "Design nutrizionale", "Qualità-prezzo"], "new":["Consigliato", "Qualità-prezzo", "Soddisfazione"]}},
+      "Português":{hdr:"Publicar dica",lead:"Seu voto faz crescer os rankings de tendências do mundo todo.",
+        lblGenre:"Categoria",lblCountry:"País / região",lblName:"Nome do produto ou lugar",lblBrand:"Loja / marca",lblPrice:"Faixa de preço",lblVoice:"Umas palavras (por que recomenda?)",lblPhoto:"Foto (opcional)",
+        phName:"ex. Frango salada natural",phBrand:"ex. 7-Eleven, Meiji, Gymshark",phVoice:"ex. O novo é bem macio. Rico em proteína, sem culpa.",
+        photo:"Adicionar foto",submit:"Publicar",thanks:"Obrigado. Seu voto faz crescer o ranking.",
+        foot:"Seu post ajuda outros do mesmo país e categoria. Seja honesto e baseado em fatos.",
+        genres:{protein:"Proteína",store:"Produtos locais",resto:"Restaurantes",wear:"Roupas",gear:"Equipamento",meal:"Entrega",new:"+ Criar categoria"},
+        countries:{jp:"Japão",kr:"Coreia",th:"Tailândia",id:"Indonésia",us:"EUA",vn:"Vietnã",fr:"França",it:"Itália",es:"Espanha",gb:"Reino Unido",mx:"México",au:"Austrália",new:"+ Criar país / região"},
+        prices:["Econômico","Médio","Premium"],lblRate:"Avaliações (o que importa aqui)",rateHint:"Deslize para deixar sua avaliação.",axes:{"protein":["Dissolução", "Sabor", "Custo-benefício"], "store":["Praticidade", "Custo-benefício", "Satisfação"], "resto":["Rico em proteína", "Fácil de ir", "Custo-benefício"], "wear":["Respirabilidade", "Moda", "Função/suporte"], "gear":["Economiza espaço", "Durabilidade", "Custo-benefício"], "meal":["Sabor", "Design nutricional", "Custo-benefício"], "new":["Recomendado", "Custo-benefício", "Satisfação"]}},
+      "हिन्दी":{hdr:"सिफ़ारिश पोस्ट करें",lead:"आपका एक वोट, दुनिया भर की ट्रेंड रैंकिंग को बढ़ाता है।",
+        lblGenre:"श्रेणी",lblCountry:"देश／क्षेत्र",lblName:"उत्पाद／दुकान का नाम",lblBrand:"दुकान／निर्माता／ब्रांड",lblPrice:"मूल्य श्रेणी",lblVoice:"कुछ शब्द (क्यों सुझाते हैं?)",lblPhoto:"फ़ोटो (वैकल्पिक)",
+        phName:"जैसे: सलाद चिकन प्लेन",phBrand:"जैसे: 7-Eleven, Meiji, Gymshark",phVoice:"जैसे: नया वाला सच में नरम। हाई प्रोटीन, बिना अपराधबोध।",
+        photo:"फ़ोटो जोड़ें",submit:"पोस्ट करें",thanks:"धन्यवाद। आपका वोट रैंकिंग बढ़ाता है।",
+        foot:"आपकी पोस्ट उसी देश·श्रेणी के साथियों की मदद करती है। कृपया तथ्य-आधारित, ईमानदार सुझाव दें।",
+        genres:{protein:"प्रोटीन",store:"देश-विशेष उत्पाद",resto:"बाहर खाना",wear:"वियर",gear:"उपकरण",meal:"डिलीवरी",new:"＋ नई श्रेणी बनाएँ"},
+        countries:{jp:"जापान",kr:"कोरिया",th:"थाईलैंड",id:"इंडोनेशिया",us:"अमेरिका",vn:"वियतनाम",fr:"फ्रांस",it:"इटली",es:"स्पेन",gb:"यूके",mx:"मेक्सिको",au:"ऑस्ट्रेलिया",new:"＋ नया देश／क्षेत्र बनाएँ"},
+        prices:["सस्ता","मध्यम","प्रीमियम"],lblRate:"रेटिंग (इस श्रेणी की खास बातें)",rateHint:"स्लाइड करके अपनी रेटिंग दें।",axes:{"protein":["घुलनशीलता", "स्वाद", "कीमत-लाभ"], "store":["सुविधा", "कीमत-लाभ", "संतुष्टि"], "resto":["हाई-प्रोटीन", "जाना आसान", "कीमत-लाभ"], "wear":["हवादार", "फैशन", "फंक्शन·सपोर्ट"], "gear":["जगह बचत", "टिकाऊपन", "कीमत-लाभ"], "meal":["स्वाद", "पोषण डिज़ाइन", "कीमत-लाभ"], "new":["अनुशंसा", "कीमत-लाभ", "संतुष्टि"]}},
+      "Tiếng Việt":{hdr:"Đăng gợi ý",lead:"Một phiếu của bạn nuôi lớn bảng xếp hạng xu hướng toàn thế giới.",
+        lblGenre:"Thể loại",lblCountry:"Quốc gia / khu vực",lblName:"Tên sản phẩm hoặc quán",lblBrand:"Cửa hàng / hãng / thương hiệu",lblPrice:"Khoảng giá",lblVoice:"Vài lời (vì sao bạn gợi ý?)",lblPhoto:"Ảnh (tùy chọn)",
+        phName:"vd: Ức gà salad vị nhạt",phBrand:"vd: 7-Eleven, Meiji, Gymshark",phVoice:"vd: Cái mới mềm thật. Nhiều đạm, không tội lỗi.",
+        photo:"Thêm ảnh",submit:"Đăng",thanks:"Cảm ơn. Phiếu của bạn nuôi lớn bảng xếp hạng.",
+        foot:"Bài của bạn giúp mọi người cùng nước và thể loại. Hãy trung thực và dựa trên sự thật.",
+        genres:{protein:"Protein",store:"Hàng nội địa",resto:"Ăn ngoài",wear:"Trang phục",gear:"Dụng cụ",meal:"Giao hàng",new:"+ Tạo thể loại mới"},
+        countries:{jp:"Nhật",kr:"Hàn",th:"Thái",id:"Indonesia",us:"Mỹ",vn:"Việt Nam",fr:"Pháp",it:"Ý",es:"Tây Ban Nha",gb:"Anh",mx:"Mexico",au:"Úc",new:"+ Tạo quốc gia / khu vực mới"},
+        prices:["Giá rẻ","Trung","Cao cấp"],lblRate:"Đánh giá (điểm đáng chú ý)",rateHint:"Trượt để để lại đánh giá của bạn.",axes:{"protein":["Dễ tan", "Vị", "Đáng tiền"], "store":["Tiện lợi", "Đáng tiền", "Hài lòng"], "resto":["Giàu đạm", "Dễ ghé", "Đáng tiền"], "wear":["Thoáng khí", "Thời trang", "Chức năng/hỗ trợ"], "gear":["Tiết kiệm chỗ", "Bền", "Đáng tiền"], "meal":["Vị", "Thiết kế dinh dưỡng", "Đáng tiền"], "new":["Nên dùng", "Đáng tiền", "Hài lòng"]}},
+      "Bahasa Indonesia":{hdr:"Posting rekomendasi",lead:"Satu suaramu menumbuhkan peringkat tren di seluruh dunia.",
+        lblGenre:"Kategori",lblCountry:"Negara / wilayah",lblName:"Nama produk atau tempat",lblBrand:"Toko / produsen / merek",lblPrice:"Kisaran harga",lblVoice:"Beberapa kata (kenapa direkomendasikan?)",lblPhoto:"Foto (opsional)",
+        phName:"mis. Salad ayam polos",phBrand:"mis. 7-Eleven, Meiji, Gymshark",phVoice:"mis. Yang baru benar-benar empuk. Tinggi protein, tanpa rasa bersalah.",
+        photo:"Tambah foto",submit:"Posting",thanks:"Terima kasih. Suaramu menumbuhkan peringkat.",
+        foot:"Postinganmu membantu yang lain di negara & kategori yang sama. Jujurlah dan berdasarkan fakta.",
+        genres:{protein:"Protein",store:"Produk lokal",resto:"Makan di luar",wear:"Pakaian",gear:"Alat",meal:"Pengiriman",new:"+ Buat kategori baru"},
+        countries:{jp:"Jepang",kr:"Korea",th:"Thailand",id:"Indonesia",us:"AS",vn:"Vietnam",fr:"Prancis",it:"Italia",es:"Spanyol",gb:"Inggris",mx:"Meksiko",au:"Australia",new:"+ Buat negara / wilayah baru"},
+        prices:["Hemat","Menengah","Premium"],lblRate:"Penilaian (yang penting di sini)",rateHint:"Geser untuk memberi penilaianmu.",axes:{"protein":["Mudah larut", "Rasa", "Nilai"], "store":["Kepraktisan", "Nilai", "Kepuasan"], "resto":["Tinggi protein", "Mudah dikunjungi", "Nilai"], "wear":["Sirkulasi udara", "Fashion", "Fungsi/dukungan"], "gear":["Hemat tempat", "Ketahanan", "Nilai"], "meal":["Rasa", "Desain nutrisi", "Nilai"], "new":["Rekomendasi", "Nilai", "Kepuasan"]}}
+    };
+    var cur=REVO.lang(), dark=REVO.dark(), selGenre=0, selCountry=0, selPrice=1;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",title:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",lbl:"#B0A488",field:"#1A1814",fieldBd:"#2A2620",accent:"#E3C56A",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84",menu:"#1F1C16",menuBd:"#3A352A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",ph:"#5E5647"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",title:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",lbl:"#7A7060",field:"#FBF7F1",fieldBd:"#F0EAE0",accent:"#BA7517",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",menu:"#FFFFFF",menuBd:"#E8E0CE",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",ph:"#B7A98F"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderGenreMenu(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('genreMenu').innerHTML="";
+      GENRES.forEach(function(g,i){
+        var on=(selGenre===i), isNew=(g.k==="new");
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:9px; padding:9px 11px; border-radius:9px; cursor:pointer; "+(isNew?"border-top:0.5px solid "+t.fieldBd+"; margin-top:3px; padding-top:11px;":"");
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<i class="ti '+g.ic+'" style="font-size:15px; color:'+(isNew?t.accent:(on?t.accent:t.sub))+';"></i><span style="flex:1; font-size:13px; color:'+(isNew?t.accent:(on?t.accent:t.title))+'; font-weight:'+((on||isNew)?"600":"400")+';">'+d.genres[g.k]+'</span>'+(on&&!isNew?'<i class="ti ti-check" style="font-size:15px; color:'+t.accent+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); selGenre=i; $('genreMenu').style.display="none"; applyUI(); };
+        $('genreMenu').appendChild(row);
+      });
+    }
+    function renderCountryMenu(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('countryMenu').innerHTML="";
+      COUNTRIES.forEach(function(cc,i){
+        var on=(selCountry===i), isNew=(cc==="new");
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:9px; padding:9px 11px; border-radius:9px; cursor:pointer; "+(isNew?"border-top:0.5px solid "+t.fieldBd+"; margin-top:3px; padding-top:11px;":"");
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML=(isNew?'<i class="ti ti-plus" style="font-size:15px; color:'+t.accent+';"></i>':'')+'<span style="flex:1; font-size:13px; color:'+(isNew?t.accent:(on?t.accent:t.title))+'; font-weight:'+((on||isNew)?"600":"400")+';">'+d.countries[cc]+'</span>'+(on&&!isNew?'<i class="ti ti-check" style="font-size:15px; color:'+t.accent+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); selCountry=i; $('countryMenu').style.display="none"; applyUI(); };
+        $('countryMenu').appendChild(row);
+      });
+    }
+    var rateVals={};
+    function renderAxes(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var g=GENRES[selGenre];
+      var axes=(d.axes&&d.axes[g.k])||d.axes["new"]||[];
+      $('rateAxes').innerHTML="";
+      axes.forEach(function(ax,ai){
+        var key=g.k+"_"+ai;
+        if(rateVals[key]===undefined) rateVals[key]=0; // 0=未評価
+        var row=document.createElement('div');
+        var dots="";
+        for(var v=1;v<=5;v++){
+          var on=(v<=rateVals[key]);
+          dots+='<span data-v="'+v+'" style="width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; background:'+(on?(dark?"#221E14":"#FBF3E0"):"transparent")+';"><i class="ti ti-circle-filled" style="font-size:'+(on?"13":"9")+'px; color:'+(on?t.accent:t.chipBd)+';"></i></span>';
+        }
+        row.innerHTML='<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 5px;"><span style="font-size:12px; color:'+t.txt+';">'+ax+'</span><span id="rv_'+key+'" style="font-size:11px; color:'+t.sub+'; font-family:Jost;">'+(rateVals[key]||"—")+'</span></div><div style="display:flex; gap:4px;">'+dots+'</div>';
+        // ドットクリック
+        var dotEls=row.querySelectorAll('span[data-v]');
+        dotEls.forEach(function(el){
+          el.onclick=function(){ rateVals[key]=parseInt(el.getAttribute('data-v')); renderAxes(); };
+        });
+        $('rateAxes').appendChild(row);
+      });
+    }
+    function renderPrice(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('priceChips').innerHTML="";
+      d.prices.forEach(function(pl,i){
+        var on=(selPrice===i);
+        var chip=document.createElement('span');
+        chip.style.cssText="flex:1; text-align:center; font-size:12px; padding:10px; border-radius:11px; cursor:pointer; "+(on?"background:"+(dark?"#221E14":"#FBF3E0")+"; color:"+t.accent+"; border:1px solid "+t.accent+"; font-weight:600;":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        chip.textContent=pl;
+        chip.onclick=function(){ selPrice=i; renderPrice(); };
+        $('priceChips').appendChild(chip);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      var g=GENRES[selGenre], cc=COUNTRIES[selCountry];
+      $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead;
+      $('lblGenre').textContent=d.lblGenre; $('lblCountry').textContent=d.lblCountry;
+      $('lblName').textContent=d.lblName; $('lblBrand').textContent=d.lblBrand;
+      $('lblPrice').textContent=d.lblPrice; $('lblVoice').textContent=d.lblVoice; $('lblPhoto').textContent=d.lblPhoto;
+      if($('lblRate')) $('lblRate').textContent=d.lblRate; if($('rateHint')) $('rateHint').textContent=d.rateHint;
+      $('genreIc').className="ti "+g.ic; $('genreVal').textContent=d.genres[g.k];
+      $('countryVal').textContent=d.countries[cc];
+      $('inName').placeholder=d.phName; $('inBrand').placeholder=d.phBrand; $('inVoice').placeholder=d.phVoice;
+      $('photoLbl').textContent=d.photo; $('submitLbl').textContent=d.submit;
+      $('thanks').textContent=d.thanks; $('foot').textContent=d.foot;
+      renderPrice(); renderAxes();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.title;
+      $('lead').style.color=t.sub; $('foot').style.color=t.muted;
+      ["lblGenre","lblCountry","lblName","lblBrand","lblPrice","lblVoice","lblPhoto","lblRate"].forEach(function(id){ if($(id)) $(id).style.color=t.lbl; });
+      if($('rateHint')) $('rateHint').style.color=t.muted;
+      ["genreBtn","countryBtn"].forEach(function(id){ $(id).style.background=t.field; $(id).style.borderColor=t.fieldBd; });
+      $('genreVal').style.color=t.txt; $('countryVal').style.color=t.txt;
+      ["inName","inBrand","inVoice"].forEach(function(id){ $(id).style.background=t.field; $(id).style.borderColor=t.fieldBd; $(id).style.color=t.txt; });
+      $('photoBtn').style.background=t.field; $('photoBtn').style.borderColor=t.chipBd; $('photoLbl').style.color=t.sub;
+      $('photoBtn').querySelector('i').style.color=t.sub;
+      $('submitBtn').style.background=t.accent; $('submitBtn').style.color= dark?"#16140F":"#FFFFFF";
+      [$('genreMenu'),$('countryMenu')].forEach(function(m){ m.style.background=t.menu; m.style.borderColor=t.menuBd; });
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background=t.menu; $('langMenu').style.borderColor=t.menuBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    function closeAll(){ $('langMenu').style.display="none"; $('genreMenu').style.display="none"; $('countryMenu').style.display="none"; }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); closeAll(); renderMenu(); $('langMenu').style.display="block"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    $('genreBtn').onclick=function(e){ e.stopPropagation(); var open=$('genreMenu').style.display==="block"; closeAll(); if(!open){ renderGenreMenu(); $('genreMenu').style.display="block"; } };
+    $('countryBtn').onclick=function(e){ e.stopPropagation(); var open=$('countryMenu').style.display==="block"; closeAll(); if(!open){ renderCountryMenu(); $('countryMenu').style.display="block"; } };
+    $('genreMenu').onclick=function(e){ e.stopPropagation(); };
+    $('countryMenu').onclick=function(e){ e.stopPropagation(); };
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    $('submitBtn').onclick=function(){ $('thanks').style.display="block"; };
+    document.addEventListener('click', closeAll);
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('ranking'); } };
+})();
+</script>
+</body>
+</html>

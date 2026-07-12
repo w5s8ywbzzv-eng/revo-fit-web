@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>次の一手 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">次の一手。いまの状態から、今日いちばん効く一手を根拠つきで提案する。なぜそれなのか、具体的にどうするか、食材は選べる。責めない。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">次の一手</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:18px 18px 0;">
+    <p id="lead" style="font-size:12px; color:#8A7E68; margin:0 0 14px; line-height:1.6;">今日の状態から、いちばん効く一手です。完璧じゃなくていい。ひとつできれば、今日は整います。</p>
+
+    <!-- 最優先の一手 -->
+    <div id="mainCard" style="background:linear-gradient(140deg,#221E12,#1A1813); border:0.5px solid #3A3220; border-radius:18px; padding:18px; margin:0 0 16px; box-shadow:0 14px 40px -16px rgba(227,197,106,0.25);">
+      <div style="display:flex; align-items:center; gap:8px; margin:0 0 12px;">
+        <span style="font-size:10px; color:#16140F; background:#E3C56A; padding:3px 10px; border-radius:999px; font-weight:600;" id="topTag">今日の最優先</span>
+        <span id="topArea" style="font-size:11px; color:#8A7E68;">食事</span>
+      </div>
+      <p id="mainAct" style="font-size:19px; font-weight:600; color:#F0EBE2; margin:0 0 14px; line-height:1.4;">夜、たんぱく質をあと約14g</p>
+
+      <!-- なぜ -->
+      <div style="display:flex; align-items:flex-start; gap:9px; margin:0 0 10px;">
+        <i class="ti ti-bulb" style="font-size:17px; color:#E3C56A; margin-top:1px;"></i>
+        <div>
+          <p id="whyLbl" style="font-size:11px; color:#8A7E68; margin:0 0 2px; font-weight:500;">なぜ？</p>
+          <p id="whyTxt" style="font-size:13px; color:#C9C0AE; margin:0; line-height:1.6;">食事スコアが58と低め。ここを上げると、総合スコアがいちばん伸びます。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- どうする（食材の選択肢） -->
+    <p id="howLbl" style="font-size:12px; color:#8A7E68; margin:0 0 10px; font-weight:500;">たとえば、こんな選び方で（約14g）</p>
+    <div id="foodOpts" style="display:flex; flex-direction:column; gap:8px; margin:0 0 20px;"></div>
+
+    <!-- 他の候補 -->
+    <p id="otherLbl" style="font-size:12px; color:#8A7E68; margin:0 0 10px; font-weight:500;">余裕があれば、こちらも</p>
+    <div id="otherList" style="display:flex; flex-direction:column; gap:8px;"></div>
+
+    <!-- 諭すコメント -->
+    <div id="msgCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:14px 16px; margin:18px 0 0; display:flex; align-items:flex-start; gap:10px;">
+      <i class="ti ti-heart" style="font-size:17px; color:#5DCAA5; margin-top:1px;"></i>
+      <p id="msg" style="font-size:13px; color:#C9E3D8; margin:0; line-height:1.65;">全部やろうとしなくて大丈夫。今日のひとつが、明日のあなたをつくります。</p>
+    </div>
+  </div>
+
+  <div style="padding:14px 16px 0;">
+    <p id="medNote" style="font-size:10px; color:#6E6555; margin:0; line-height:1.65; text-align:center;">これらは、あなたの記録をもとにした提案です。医学的な指示ではありません。体調に不安があるときは、無理せず専門家にご相談ください。</p>
+  </div>
+
+  <div style="height:22px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var D={
+      "日本語":{hdr:"次の一手",lead:"今日の状態から、いちばん効く一手です。完璧じゃなくていい。ひとつできれば、今日は整います。",
+        topTag:"今日の最優先",topArea:"食事",mainAct:"夜、たんぱく質をあと約14g",
+        whyLbl:"なぜ？",whyTxt:"食事スコアが58と低め。ここを上げると、総合スコアがいちばん伸びます。",
+        howLbl:"たとえば、こんな選び方で（約14g）",
+        foods:[{i:"ti-circle-filled",n:"卵 2個"},{i:"ti-circle-filled",n:"鶏むね肉 約60g"},{i:"ti-circle-filled",n:"ギリシャヨーグルト 150g"},{i:"ti-circle-filled",n:"プロテイン 1杯"}],
+        otherLbl:"余裕があれば、こちらも",
+        others:[{a:"運動",t:"15分の早歩き",s:"運動スコアにあと少し",ic:"ti-walk",c:"#5DCAA5"},{a:"回復",t:"寝る30分前はスマホを置く",s:"睡眠の質が上がります",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"全部やろうとしなくて大丈夫。今日のひとつが、明日のあなたをつくります。",medN:"これらは、あなたの記録をもとにした提案です。医学的な指示ではありません。体調に不安があるときは、無理せず専門家にご相談ください。"},
+      "English":{hdr:"Next step",lead:"From today's state, the one move that helps most. No need to be perfect. One thing, and today balances out.",
+        topTag:"Top priority today",topArea:"Food",mainAct:"About 14g more protein tonight",
+        whyLbl:"Why?",whyTxt:"Your food score is 58 — a bit low. Raising it lifts your overall score the most.",
+        howLbl:"For example, pick any (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 eggs"},{i:"ti-circle-filled",n:"Chicken breast ~60g"},{i:"ti-circle-filled",n:"Greek yogurt 150g"},{i:"ti-circle-filled",n:"1 protein shake"}],
+        otherLbl:"If you have room, these too",
+        others:[{a:"Exercise",t:"15-min brisk walk",s:"a little more for your activity score",ic:"ti-walk",c:"#5DCAA5"},{a:"Recovery",t:"Put the phone down 30 min before bed",s:"better sleep quality",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"You don't have to do it all. Today's one thing builds tomorrow's you.",medN:"These are suggestions based on your records, not medical instructions. If you feel unwell, don't push yourself and consult a professional."},
+      "简体中文":{hdr:"下一步",lead:"根据今天的状态，最有效的一步。不用完美。做到一件，今天就平衡了。",
+        topTag:"今天最优先",topArea:"饮食",mainAct:"晚上再补约14g蛋白质",
+        whyLbl:"为什么？",whyTxt:"饮食评分58偏低。提高这里，总分提升最多。",
+        howLbl:"比如，这样选（约14g）",
+        foods:[{i:"ti-circle-filled",n:"鸡蛋 2个"},{i:"ti-circle-filled",n:"鸡胸肉 约60g"},{i:"ti-circle-filled",n:"希腊酸奶 150g"},{i:"ti-circle-filled",n:"蛋白粉 1杯"}],
+        otherLbl:"有余力，也可以",
+        others:[{a:"运动",t:"快走15分钟",s:"运动评分再加一点",ic:"ti-walk",c:"#5DCAA5"},{a:"恢复",t:"睡前30分钟放下手机",s:"睡眠质量更好",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"不必全做。今天的一件，造就明天的你。",medN:"这些是根据你的记录提出的建议，并非医学指示。身体不适时请勿勉强，并咨询专业人士。"},
+      "繁體中文":{hdr:"下一步",lead:"根據今天的狀態，最有效的一步。不用完美。做到一件，今天就平衡了。",
+        topTag:"今天最優先",topArea:"飲食",mainAct:"晚上再補約14g蛋白質",
+        whyLbl:"為什麼？",whyTxt:"飲食評分58偏低。提高這裡，總分提升最多。",
+        howLbl:"比如，這樣選（約14g）",
+        foods:[{i:"ti-circle-filled",n:"雞蛋 2顆"},{i:"ti-circle-filled",n:"雞胸肉 約60g"},{i:"ti-circle-filled",n:"希臘優格 150g"},{i:"ti-circle-filled",n:"乳清蛋白 1杯"}],
+        otherLbl:"有餘力，也可以",
+        others:[{a:"運動",t:"快走15分鐘",s:"運動評分再加一點",ic:"ti-walk",c:"#5DCAA5"},{a:"恢復",t:"睡前30分鐘放下手機",s:"睡眠品質更好",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"不必全做。今天的一件，造就明天的你。",medN:"這些是根據你的記錄提出的建議，並非醫學指示。身體不適時請勿勉強，並諮詢專業人士。"},
+      "한국어":{hdr:"다음 한 수",lead:"오늘 상태에서 가장 효과적인 한 수예요. 완벽하지 않아도 돼요. 하나만 하면 오늘은 정돈돼요.",
+        topTag:"오늘 최우선",topArea:"식사",mainAct:"저녁에 단백질 약 14g 더",
+        whyLbl:"왜?",whyTxt:"식사 점수가 58로 낮아요. 여기를 올리면 종합 점수가 가장 많이 올라요.",
+        howLbl:"예를 들어, 이렇게(약 14g)",
+        foods:[{i:"ti-circle-filled",n:"달걀 2개"},{i:"ti-circle-filled",n:"닭가슴살 약 60g"},{i:"ti-circle-filled",n:"그릭요거트 150g"},{i:"ti-circle-filled",n:"프로틴 1잔"}],
+        otherLbl:"여유가 있으면 이것도",
+        others:[{a:"운동",t:"15분 빠르게 걷기",s:"운동 점수에 조금 더",ic:"ti-walk",c:"#5DCAA5"},{a:"회복",t:"자기 30분 전 휴대폰 내려놓기",s:"수면의 질이 좋아져요",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"다 하려 하지 않아도 돼요. 오늘의 하나가 내일의 당신을 만들어요.",medN:"이것들은 당신의 기록을 바탕으로 한 제안이며, 의학적 지시가 아닙니다. 몸 상태가 걱정되면 무리하지 말고 전문가와 상담하세요."},
+      "ภาษาไทย":{hdr:"ก้าวต่อไป",lead:"จากสภาพวันนี้ นี่คือก้าวที่ได้ผลที่สุด ไม่ต้องสมบูรณ์แบบ ทำได้สักอย่าง วันนี้ก็สมดุล",
+        topTag:"สำคัญสุดวันนี้",topArea:"อาหาร",mainAct:"คืนนี้เพิ่มโปรตีนอีก ~14 ก.",
+        whyLbl:"ทำไม?",whyTxt:"คะแนนอาหาร 58 ค่อนข้างต่ำ เพิ่มตรงนี้ คะแนนรวมขึ้นมากสุด",
+        howLbl:"เช่น เลือกแบบนี้ (~14 ก.)",
+        foods:[{i:"ti-circle-filled",n:"ไข่ 2 ฟอง"},{i:"ti-circle-filled",n:"อกไก่ ~60 ก."},{i:"ti-circle-filled",n:"กรีกโยเกิร์ต 150 ก."},{i:"ti-circle-filled",n:"โปรตีนเชค 1 แก้ว"}],
+        otherLbl:"ถ้ามีแรง ลองเพิ่ม",
+        others:[{a:"ออกกำลัง",t:"เดินเร็ว 15 นาที",s:"คะแนนออกกำลังเพิ่มอีกนิด",ic:"ti-walk",c:"#5DCAA5"},{a:"ฟื้นตัว",t:"วางมือถือ 30 นาทีก่อนนอน",s:"คุณภาพการนอนดีขึ้น",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"ไม่ต้องทำทั้งหมด สิ่งเดียววันนี้ สร้างตัวคุณในวันพรุ่งนี้",medN:"สิ่งเหล่านี้เป็นคำแนะนำจากบันทึกของคุณ ไม่ใช่คำสั่งทางการแพทย์ หากรู้สึกไม่สบาย อย่าฝืนและปรึกษาผู้เชี่ยวชาญ"},
+      "Français":{hdr:"Prochain pas",lead:"D'après votre état du jour, le geste le plus utile. Pas besoin d'être parfait. Un seul, et la journée s'équilibre.",
+        topTag:"Priorité du jour",topArea:"Alimentation",mainAct:"~14g de protéines en plus ce soir",
+        whyLbl:"Pourquoi ?",whyTxt:"Votre score alimentation est à 58, un peu bas. L'augmenter fait monter le score global le plus.",
+        howLbl:"Par exemple, au choix (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 œufs"},{i:"ti-circle-filled",n:"Blanc de poulet ~60g"},{i:"ti-circle-filled",n:"Yaourt grec 150g"},{i:"ti-circle-filled",n:"1 shake protéiné"}],
+        otherLbl:"Si vous avez le temps, aussi",
+        others:[{a:"Exercice",t:"15 min de marche rapide",s:"un peu plus pour votre score d'activité",ic:"ti-walk",c:"#5DCAA5"},{a:"Récupération",t:"Poser le téléphone 30 min avant le lit",s:"meilleure qualité de sommeil",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"Pas besoin de tout faire. Le geste d'aujourd'hui construit le vous de demain.",medN:"Ce sont des suggestions basées sur vos données, pas des instructions médicales. Si vous vous sentez mal, ne forcez pas et consultez un professionnel."},
+      "Español":{hdr:"Siguiente paso",lead:"Según tu estado de hoy, el paso que más ayuda. No tiene que ser perfecto. Uno, y el día se equilibra.",
+        topTag:"Prioridad de hoy",topArea:"Comida",mainAct:"~14g más de proteína esta noche",
+        whyLbl:"¿Por qué?",whyTxt:"Tu puntuación de comida es 58, algo baja. Subirla eleva más tu puntuación global.",
+        howLbl:"Por ejemplo, elige (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 huevos"},{i:"ti-circle-filled",n:"Pechuga de pollo ~60g"},{i:"ti-circle-filled",n:"Yogur griego 150g"},{i:"ti-circle-filled",n:"1 batido de proteína"}],
+        otherLbl:"Si tienes margen, también",
+        others:[{a:"Ejercicio",t:"15 min de caminata rápida",s:"un poco más para tu puntuación de actividad",ic:"ti-walk",c:"#5DCAA5"},{a:"Recuperación",t:"Deja el móvil 30 min antes de dormir",s:"mejor calidad de sueño",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"No tienes que hacerlo todo. Lo de hoy construye tu yo de mañana.",medN:"Son sugerencias basadas en tus registros, no instrucciones médicas. Si te sientes mal, no te fuerces y consulta a un profesional."},
+      "Deutsch":{hdr:"Nächster Schritt",lead:"Aus deinem heutigen Zustand der wirksamste Schritt. Muss nicht perfekt sein. Einer, und der Tag ist ausgeglichen.",
+        topTag:"Heute Priorität",topArea:"Ernährung",mainAct:"Heute Abend ~14g mehr Protein",
+        whyLbl:"Warum?",whyTxt:"Dein Ernährungsscore ist 58, etwas niedrig. Ihn anzuheben hebt den Gesamtscore am meisten.",
+        howLbl:"Zum Beispiel, zur Wahl (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 Eier"},{i:"ti-circle-filled",n:"Hähnchenbrust ~60g"},{i:"ti-circle-filled",n:"Griechischer Joghurt 150g"},{i:"ti-circle-filled",n:"1 Proteinshake"}],
+        otherLbl:"Wenn du Zeit hast, auch das",
+        others:[{a:"Bewegung",t:"15 Min zügig gehen",s:"etwas mehr für deinen Aktivitätsscore",ic:"ti-walk",c:"#5DCAA5"},{a:"Erholung",t:"Handy 30 Min vor dem Bett weglegen",s:"bessere Schlafqualität",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"Du musst nicht alles tun. Das Eine heute formt das Du von morgen.",medN:"Dies sind Vorschläge auf Basis deiner Daten, keine medizinischen Anweisungen. Wenn du dich unwohl fühlst, überfordere dich nicht und konsultiere eine Fachperson."},
+      "Italiano":{hdr:"Prossima mossa",lead:"Dal tuo stato di oggi, la mossa che aiuta di più. Non deve essere perfetto. Una, e la giornata si bilancia.",
+        topTag:"Priorità di oggi",topArea:"Alimentazione",mainAct:"~14g di proteine in più stasera",
+        whyLbl:"Perché?",whyTxt:"Il tuo punteggio cibo è 58, un po' basso. Alzarlo fa salire di più il punteggio totale.",
+        howLbl:"Ad esempio, a scelta (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 uova"},{i:"ti-circle-filled",n:"Petto di pollo ~60g"},{i:"ti-circle-filled",n:"Yogurt greco 150g"},{i:"ti-circle-filled",n:"1 frullato proteico"}],
+        otherLbl:"Se hai tempo, anche questo",
+        others:[{a:"Esercizio",t:"15 min di camminata veloce",s:"un po' di più per il punteggio attività",ic:"ti-walk",c:"#5DCAA5"},{a:"Recupero",t:"Posa il telefono 30 min prima di dormire",s:"migliore qualità del sonno",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"Non devi fare tutto. L'una cosa di oggi costruisce il te di domani.",medN:"Questi sono suggerimenti basati sui tuoi dati, non istruzioni mediche. Se non ti senti bene, non forzarti e consulta un professionista."},
+      "Português":{hdr:"Próximo passo",lead:"Pelo seu estado de hoje, o passo que mais ajuda. Não precisa ser perfeito. Um, e o dia se equilibra.",
+        topTag:"Prioridade de hoje",topArea:"Alimentação",mainAct:"~14g a mais de proteína hoje à noite",
+        whyLbl:"Por quê?",whyTxt:"Sua pontuação de comida é 58, um pouco baixa. Aumentá-la eleva mais a pontuação geral.",
+        howLbl:"Por exemplo, escolha (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 ovos"},{i:"ti-circle-filled",n:"Peito de frango ~60g"},{i:"ti-circle-filled",n:"Iogurte grego 150g"},{i:"ti-circle-filled",n:"1 shake de proteína"}],
+        otherLbl:"Se tiver tempo, isto também",
+        others:[{a:"Exercício",t:"15 min de caminhada rápida",s:"um pouco mais para sua pontuação de atividade",ic:"ti-walk",c:"#5DCAA5"},{a:"Recuperação",t:"Largue o celular 30 min antes de dormir",s:"melhor qualidade de sono",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"Você não precisa fazer tudo. O de hoje constrói o você de amanhã.",medN:"Estas são sugestões baseadas nos seus registros, não instruções médicas. Se não se sentir bem, não se force e consulte um profissional."},
+      "हिन्दी":{hdr:"अगला कदम",lead:"आज की स्थिति से, सबसे असरदार कदम। परफेक्ट होना ज़रूरी नहीं। एक कर लें, तो आज संतुलित।",
+        topTag:"आज सर्वोच्च",topArea:"खाना",mainAct:"रात में ~14g और प्रोटीन",
+        whyLbl:"क्यों?",whyTxt:"आपका खाना स्कोर 58 है, थोड़ा कम। इसे बढ़ाने से कुल स्कोर सबसे ज़्यादा बढ़ता है।",
+        howLbl:"जैसे, इनमें से चुनें (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 अंडे"},{i:"ti-circle-filled",n:"चिकन ब्रेस्ट ~60g"},{i:"ti-circle-filled",n:"ग्रीक योगर्ट 150g"},{i:"ti-circle-filled",n:"1 प्रोटीन शेक"}],
+        otherLbl:"समय हो तो ये भी",
+        others:[{a:"व्यायाम",t:"15 मिनट तेज़ चाल",s:"एक्टिविटी स्कोर में थोड़ा और",ic:"ti-walk",c:"#5DCAA5"},{a:"रिकवरी",t:"सोने से 30 मिनट पहले फोन रखें",s:"नींद की गुणवत्ता बेहतर",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"सब करने की ज़रूरत नहीं। आज की एक चीज़ कल का आपको बनाती है।",medN:"ये आपके रिकॉर्ड पर आधारित सुझाव हैं, चिकित्सा निर्देश नहीं। तबीयत ठीक न लगे तो ज़ोर न डालें और विशेषज्ञ से सलाह लें।"},
+      "Tiếng Việt":{hdr:"Bước tiếp theo",lead:"Từ trạng thái hôm nay, bước hiệu quả nhất. Không cần hoàn hảo. Một việc thôi, hôm nay sẽ cân bằng.",
+        topTag:"Ưu tiên hôm nay",topArea:"Ăn uống",mainAct:"Tối nay thêm ~14g đạm",
+        whyLbl:"Vì sao?",whyTxt:"Điểm ăn uống của bạn là 58, hơi thấp. Nâng nó lên giúp tổng điểm tăng nhiều nhất.",
+        howLbl:"Ví dụ, chọn một (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 quả trứng"},{i:"ti-circle-filled",n:"Ức gà ~60g"},{i:"ti-circle-filled",n:"Sữa chua Hy Lạp 150g"},{i:"ti-circle-filled",n:"1 ly protein"}],
+        otherLbl:"Nếu còn sức, thêm cái này",
+        others:[{a:"Vận động",t:"Đi bộ nhanh 15 phút",s:"thêm chút cho điểm vận động",ic:"ti-walk",c:"#5DCAA5"},{a:"Phục hồi",t:"Đặt điện thoại xuống 30 phút trước khi ngủ",s:"chất lượng giấc ngủ tốt hơn",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"Không cần làm hết. Một việc hôm nay tạo nên bạn của ngày mai.",medN:"Đây là gợi ý dựa trên bản ghi của bạn, không phải chỉ dẫn y tế. Nếu thấy không khỏe, đừng gắng sức và hãy hỏi chuyên gia."},
+      "Bahasa Indonesia":{hdr:"Langkah berikutnya",lead:"Dari kondisi hari ini, langkah paling efektif. Tak perlu sempurna. Satu saja, hari ini seimbang.",
+        topTag:"Prioritas hari ini",topArea:"Makan",mainAct:"Malam ini tambah ~14g protein",
+        whyLbl:"Kenapa?",whyTxt:"Skor makanmu 58, agak rendah. Menaikkannya paling banyak mengangkat skor total.",
+        howLbl:"Misalnya, pilih (~14g)",
+        foods:[{i:"ti-circle-filled",n:"2 telur"},{i:"ti-circle-filled",n:"Dada ayam ~60g"},{i:"ti-circle-filled",n:"Yogurt Yunani 150g"},{i:"ti-circle-filled",n:"1 shake protein"}],
+        otherLbl:"Kalau sempat, ini juga",
+        others:[{a:"Olahraga",t:"Jalan cepat 15 menit",s:"sedikit lagi untuk skor aktivitas",ic:"ti-walk",c:"#5DCAA5"},{a:"Pemulihan",t:"Letakkan ponsel 30 menit sebelum tidur",s:"kualitas tidur lebih baik",ic:"ti-moon",c:"#8A9AE0"}],
+        msg:"Tak perlu semuanya. Satu hal hari ini membangun dirimu esok.",medN:"Ini adalah saran berdasarkan catatanmu, bukan instruksi medis. Jika merasa tidak enak badan, jangan memaksakan diri dan konsultasikan ke profesional."}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",opt:"#1F1C16",optBd:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",opt:"#FBF7F1",optBd:"#F0EAE0",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderFoods(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('foodOpts').innerHTML="";
+      d.foods.forEach(function(f){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:11px; background:"+t.opt+"; border:0.5px solid "+t.optBd+"; border-radius:11px; padding:11px 14px;";
+        row.innerHTML='<i class="ti '+f.i+'" style="font-size:18px; color:'+t.accent+';"></i><span style="font-size:13px; color:'+t.txt+';">'+f.n+'</span>';
+        $('foodOpts').appendChild(row);
+      });
+    }
+    function renderOthers(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('otherList').innerHTML="";
+      d.others.forEach(function(o){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:12px; background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:13px; padding:13px 15px;";
+        row.innerHTML='<div style="width:36px; height:36px; border-radius:10px; background:'+o.c+'22; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+o.ic+'" style="font-size:18px; color:'+o.c+';"></i></div>'+
+          '<div style="flex:1;"><p style="font-size:13px; color:'+t.txt+'; margin:0 0 2px; font-weight:500;">'+o.t+'</p><p style="font-size:11px; color:'+t.sub+'; margin:0;">'+o.a+' ・ '+o.s+'</p></div>';
+        $('otherList').appendChild(row);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead;
+      $('topTag').textContent=d.topTag; $('topArea').textContent=d.topArea; $('mainAct').textContent=d.mainAct;
+      $('whyLbl').textContent=d.whyLbl; $('whyTxt').textContent=d.whyTxt;
+      $('howLbl').textContent=d.howLbl; $('otherLbl').textContent=d.otherLbl; $('msg').textContent=d.msg; if(d.medN) $('medNote').textContent=d.medN;
+      renderFoods(); renderOthers();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('lead').style.color=t.sub;
+      $('mainCard').style.background= dark?"linear-gradient(140deg,#221E12,#1A1813)":"linear-gradient(140deg,#FBF3E0,#FBF7F1)"; $('mainCard').style.borderColor= dark?"#3A3220":"#EADCBE";
+      $('mainAct').style.color=t.txt; $('whyTxt').style.color= dark?"#C9C0AE":"#5F5E5A";
+      $('whyLbl').style.color=t.sub; $('howLbl').style.color=t.sub; $('otherLbl').style.color=t.sub; $('topArea').style.color=t.sub;
+      $('msgCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('msgCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('msg').style.color= dark?"#C9E3D8":"#2E5D4E";
+      var mn=$('medNote'); if(mn) mn.style.color= dark?"#6E6555":"#B7A98F";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderFoods(); renderOthers();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+<script>
+(function(){
+  /* ===== 機能メニュー（オーナー承認済みの追加導線）=====
+     navigator の「余裕があれば、こちらも」と同じカード様式を踏襲。
+     ラベルは各画面の14言語辞書から抽出した既存コピーのみ使用。 */
+  var GROUPS=[{"lbl": {"日本語": "SNS", "English": "SNS", "简体中文": "SNS", "繁體中文": "SNS", "한국어": "SNS", "Français": "SNS", "Español": "SNS", "Deutsch": "SNS", "Italiano": "SNS", "Português": "SNS", "ภาษาไทย": "SNS", "हिन्दी": "SNS", "Tiếng Việt": "SNS", "Bahasa Indonesia": "SNS"}, "items": [{"go": "feed", "ic": "ti-users", "c": "#E89BB8", "lbl": {"日本語": "フィード", "English": "Feed", "简体中文": "动态", "繁體中文": "動態", "한국어": "피드", "Français": "Fil", "Español": "Feed", "Deutsch": "Feed", "Italiano": "Feed", "Português": "Feed", "ภาษาไทย": "ฟีด", "हिन्दी": "फ़ीड", "Tiếng Việt": "Bảng tin", "Bahasa Indonesia": "Beranda"}}, {"go": "ranking", "ic": "ti-trophy", "c": "#E3C56A", "lbl": {"日本語": "トレンド", "English": "Trends", "简体中文": "趋势", "繁體中文": "趨勢", "한국어": "트렌드", "Français": "Tendances", "Español": "Tendencias", "Deutsch": "Trends", "Italiano": "Tendenze", "Português": "Tendências", "ภาษาไทย": "เทรนด์", "हिन्दी": "ट्रेंड", "Tiếng Việt": "Xu hướng", "Bahasa Indonesia": "Tren"}}, {"go": "creator_profile", "ic": "ti-user-circle", "c": "#6FA8DC", "lbl": {"日本語": "プロフィール", "English": "Profile", "简体中文": "个人主页", "繁體中文": "個人主頁", "한국어": "프로필", "Français": "Profil", "Español": "Perfil", "Deutsch": "Profil", "Italiano": "Profilo", "Português": "Perfil", "ภาษาไทย": "โปรไฟล์", "हिन्दी": "प्रोफ़ाइल", "Tiếng Việt": "Hồ sơ", "Bahasa Indonesia": "Profil"}}, {"go": "creator_dashboard", "ic": "ti-coin", "c": "#E3C56A", "lbl": {"日本語": "クリエイター", "English": "Creator", "简体中文": "创作者", "繁體中文": "創作者", "한국어": "크리에이터", "Français": "Créateur", "Español": "Creador", "Deutsch": "Creator", "Italiano": "Creator", "Português": "Criador", "ภาษาไทย": "ครีเอเตอร์", "हिन्दी": "क्रिएटर", "Tiếng Việt": "Nhà sáng tạo", "Bahasa Indonesia": "Kreator"}}]}, {"lbl": {"日本語": "食事", "English": "Food", "简体中文": "饮食", "繁體中文": "飲食", "한국어": "식사", "Français": "Repas", "Español": "Comida", "Deutsch": "Essen", "Italiano": "Cibo", "Português": "Comida", "ภาษาไทย": "อาหาร", "हिन्दी": "खाना", "Tiếng Việt": "Ăn uống", "Bahasa Indonesia": "Makan"}, "items": [{"go": "recipes", "ic": "ti-salad", "c": "#5DCAA5", "lbl": {"日本語": "筋肉飯レシピ", "English": "Muscle meals", "简体中文": "增肌餐", "繁體中文": "增肌餐", "한국어": "근육밥 레시피", "Français": "Plats muscle", "Español": "Comidas de músculo", "Deutsch": "Muskel-Essen", "Italiano": "Piatti muscolo", "Português": "Comidas de músculo", "ภาษาไทย": "เมนูสร้างกล้าม", "हिन्दी": "मसल फूड", "Tiếng Việt": "Món cơ bắp", "Bahasa Indonesia": "Menu otot"}}, {"go": "nutrition", "ic": "ti-apple", "c": "#5DCAA5", "lbl": {"日本語": "きょうの栄養", "English": "Today's nutrition", "简体中文": "今天的营养", "繁體中文": "今天的營養", "한국어": "오늘의 영양", "Français": "Nutrition du jour", "Español": "Nutrición de hoy", "Deutsch": "Heutige Ernährung", "Italiano": "Nutrizione di oggi", "Português": "Nutrição de hoje", "ภาษาไทย": "โภชนาการวันนี้", "हिन्दी": "आज का पोषण", "Tiếng Việt": "Dinh dưỡng hôm nay", "Bahasa Indonesia": "Nutrisi hari ini"}}, {"go": "mysupp", "ic": "ti-pill", "c": "#6FA8DC", "lbl": {"日本語": "マイサプリ", "English": "My supplements", "简体中文": "我的补剂", "繁體中文": "我的補劑", "한국어": "내 보충제", "Français": "Mes compléments", "Español": "Mis suplementos", "Deutsch": "Meine Supplements", "Italiano": "I miei integratori", "Português": "Meus suplementos", "ภาษาไทย": "อาหารเสริมของฉัน", "हिन्दी": "मेरे सप्लिमेंट", "Tiếng Việt": "Thực phẩm bổ sung của tôi", "Bahasa Indonesia": "Suplemen saya"}}]}, {"lbl": {"日本語": "運動", "English": "Exercise", "简体中文": "运动", "繁體中文": "運動", "한국어": "운동", "Français": "Sport", "Español": "Ejercicio", "Deutsch": "Sport", "Italiano": "Sport", "Português": "Exercício", "ภาษาไทย": "ออกกำลัง", "हिन्दी": "कसरत", "Tiếng Việt": "Vận động", "Bahasa Indonesia": "Olahraga"}, "items": [{"go": "muscle_map", "ic": "ti-barbell", "c": "#E3C56A", "lbl": {"日本語": "今日のトレーニングを選択", "English": "Today's training", "简体中文": "选择今日训练", "繁體中文": "選擇今日訓練", "한국어": "오늘의 트레이닝 선택", "Français": "Entraînement du jour", "Español": "Entrenamiento de hoy", "Deutsch": "Heutiges Training", "Italiano": "Allenamento di oggi", "Português": "Treino de hoje", "ภาษาไทย": "เลือกการเทรนวันนี้", "हिन्दी": "आज की ट्रेनिंग चुनें", "Tiếng Việt": "Buổi tập hôm nay", "Bahasa Indonesia": "Latihan hari ini"}}, {"go": "muscle_calendar", "ic": "ti-calendar", "c": "#6FA8DC", "lbl": {"日本語": "トレーニング履歴", "English": "Training history", "简体中文": "训练记录", "繁體中文": "訓練記錄", "한국어": "운동 기록", "Français": "Historique", "Español": "Historial", "Deutsch": "Verlauf", "Italiano": "Cronologia", "Português": "Histórico", "ภาษาไทย": "ประวัติการเทรน", "हिन्दी": "ट्रेनिंग इतिहास", "Tiếng Việt": "Lịch sử tập", "Bahasa Indonesia": "Riwayat latihan"}}]}, {"lbl": {"日本語": "回復", "English": "Recovery", "简体中文": "恢复", "繁體中文": "恢復", "한국어": "회복", "Français": "Récup", "Español": "Recup.", "Deutsch": "Erholung", "Italiano": "Recupero", "Português": "Recup.", "ภาษาไทย": "ฟื้นตัว", "हिन्दी": "रिकवरी", "Tiếng Việt": "Phục hồi", "Bahasa Indonesia": "Pemulihan"}, "items": [{"go": "mypillow", "ic": "ti-zzz", "c": "#A78BDB", "lbl": {"日本語": "マイ枕", "English": "My pillows", "简体中文": "我的枕头", "繁體中文": "我的枕頭", "한국어": "내 베개", "Français": "Mes oreillers", "Español": "Mis almohadas", "Deutsch": "Meine Kissen", "Italiano": "I miei cuscini", "Português": "Meus travesseiros", "ภาษาไทย": "หมอนของฉัน", "हिन्दी": "मेरे तकिए", "Tiếng Việt": "Gối của tôi", "Bahasa Indonesia": "Bantal saya"}}, {"go": "bgm", "ic": "ti-music", "c": "#E3C56A", "lbl": {"日本語": "BGM", "English": "BGM", "简体中文": "BGM", "繁體中文": "BGM", "한국어": "BGM", "Français": "BGM", "Español": "BGM", "Deutsch": "BGM", "Italiano": "BGM", "Português": "BGM", "ภาษาไทย": "BGM", "हिन्दी": "BGM", "Tiếng Việt": "BGM", "Bahasa Indonesia": "BGM"}}]}];
+  GROUPS.push({lbl:{"日本語": "アカウント", "English": "Account", "简体中文": "账户", "繁體中文": "帳戶", "한국어": "계정", "Français": "Compte", "Español": "Cuenta", "Deutsch": "Konto", "Italiano": "Account", "Português": "Conta", "ภาษาไทย": "บัญชี", "हिन्दी": "खाता", "Tiếng Việt": "Tài khoản", "Bahasa Indonesia": "Akun"}, items:[{"go":"settings","ic":"ti-settings","c":"#8A7E68","lbl":{"日本語": "設定", "English": "Settings", "简体中文": "设置", "繁體中文": "設定", "한국어": "설정", "Français": "Réglages", "Español": "Ajustes", "Deutsch": "Einstellungen", "Italiano": "Impostazioni", "Português": "Configurações", "ภาษาไทย": "ตั้งค่า", "हिन्दी": "सेटिंग्स", "Tiếng Việt": "Cài đặt", "Bahasa Indonesia": "Pengaturan"}},{"act":"logout","ic":"ti-logout","c":"#E0605D","lbl":{"日本語": "ログアウト", "English": "Log out", "简体中文": "退出登录", "繁體中文": "登出", "한국어": "로그아웃", "Français": "Se déconnecter", "Español": "Cerrar sesión", "Deutsch": "Abmelden", "Italiano": "Esci", "Português": "Sair", "ภาษาไทย": "ออกจากระบบ", "हिन्दी": "लॉग आउट", "Tiếng Việt": "Đăng xuất", "Bahasa Indonesia": "Keluar"}}]});
+  var LOGOUT_MSG={"日本語": "ログアウトしますか？", "English": "Log out?", "简体中文": "要退出登录吗？", "繁體中文": "要登出嗎？", "한국어": "로그아웃할까요?", "Français": "Se déconnecter ?", "Español": "¿Cerrar sesión?", "Deutsch": "Abmelden?", "Italiano": "Uscire?", "Português": "Sair?", "ภาษาไทย": "ออกจากระบบหรือไม่?", "हिन्दी": "लॉग आउट करें?", "Tiếng Việt": "Đăng xuất?", "Bahasa Indonesia": "Keluar?"};
+  var TT={ dark:{txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620"},
+           light:{txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0"} };
+  var wrap=document.createElement('div');
+  wrap.id="featureMenu";
+  wrap.style.cssText="display:flex; flex-direction:column; gap:8px; margin:18px 18px 0; ";
+  var anchor=document.getElementById('medNote');
+  if(!anchor) return;
+  anchor.parentNode.parentNode.insertBefore(wrap, anchor.parentNode);
+  function render(){
+    var dark=REVO.dark(), lang=REVO.lang(), t=dark?TT.dark:TT.light;
+    var acc=REVO.colorObj(); var accHex=dark?acc.hex:acc.light;
+    wrap.innerHTML="";
+    GROUPS.forEach(function(gp){
+      var lbl=document.createElement('p');
+      lbl.style.cssText="font-size:12px; color:"+t.sub+"; margin:10px 2px 2px; font-weight:500;";
+      lbl.textContent=(gp.lbl[lang]||gp.lbl["English"]);
+      wrap.appendChild(lbl);
+      gp.items.forEach(function(m){
+        var c=(m.c==="#E3C56A")?accHex:m.c;
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:12px; background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:13px; padding:13px 15px; cursor:pointer;";
+        row.innerHTML='<div style="width:36px; height:36px; border-radius:10px; background:'+c+'22; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti '+m.ic+'" style="font-size:18px; color:'+c+';"></i></div>'+
+          '<div style="flex:1;"><p style="font-size:13px; color:'+t.txt+'; margin:0; font-weight:500;">'+(m.lbl[lang]||m.lbl["English"])+'</p></div>'+
+          '<i class="ti ti-chevron-right" style="font-size:16px; color:'+t.muted+';"></i>';
+        row.onclick=function(){
+          if(m.act==="logout"){
+            if(!confirm(LOGOUT_MSG[REVO.lang()]||LOGOUT_MSG["English"])) return;
+            var cloud=window.REVO_CLOUD&&REVO_CLOUD.enabled&&REVO_CLOUD.signedIn&&REVO_CLOUD.signedIn();
+            REVO.setAuth(null);
+            if(cloud){ try{ REVO.reset(); }catch(_e){} }
+            setTimeout(function(){ REVO.go('splash'); }, 150);
+            return;
+          }
+          REVO.go(m.go);
+        };
+        wrap.appendChild(row);
+      });
+    });
+  }
+  render();
+  /* 既存の言語・テーマ切替に追従（既存ハンドラは onclick、こちらは listener なので非破壊） */
+  var lb=document.getElementById('langBtn'), tb=document.getElementById('themeBtn'), lm=document.getElementById('langMenu');
+  [lb,tb,lm].forEach(function(el){ if(el) el.addEventListener('click', function(){ setTimeout(render, 30); }); });
+})();
+</script>
+</body>
+</html>

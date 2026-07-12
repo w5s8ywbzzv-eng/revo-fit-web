@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ホーム画面に追加 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.5s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">revo をホーム画面に追加するための、静かで洗練された案内画面。iPhone と Android で追加の手順を控えめに切り替えて示す。あとでブラウザで続けることもできる。</h2>
+
+  <!-- 右上：言語と明るさ（控えめ） -->
+  <div style="display:flex; align-items:center; justify-content:flex-end; padding:16px 18px; gap:8px;">
+    <button id="langBtn" aria-label="言語" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i class="ti ti-world" style="font-size:15px; color:#8A7E68;"></i></button>
+    <button id="themeBtn" aria-label="明るさ" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i id="themeIcon" class="ti ti-sun" style="font-size:15px; color:#8A7E68;"></i></button>
+    <div id="langMenu" style="display:none; position:absolute; top:52px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:24px 30px 40px; text-align:center;">
+
+    <!-- アプリアイコン（ホームに追加される実物） -->
+    <div style="display:flex; justify-content:center; margin:20px 0 34px;">
+      <div style="width:78px; height:78px; border-radius:19px; background:#16140F; overflow:hidden; display:flex; flex-direction:column; border:0.5px solid #2A2620; box-shadow:0 16px 40px -10px rgba(0,0,0,0.6);">
+        <div style="flex:1; display:flex; align-items:center; justify-content:center;"><span style="font-family:Jost; font-weight:200; font-size:21px; color:#F0EBE2; letter-spacing:1px;">revo</span></div>
+        <div style="height:24px; background:#E3C56A; display:flex; align-items:center; justify-content:center;"><span style="font-family:Jost; font-weight:500; font-size:13px; color:#16140F; letter-spacing:0.5px;">fit</span></div>
+      </div>
+    </div>
+
+    <!-- タイトルとひとこと -->
+    <p id="ttl" style="font-size:23px; color:#F0EBE2; margin:0 0 12px; font-weight:300; letter-spacing:0.02em;">ホーム画面に追加</p>
+    <p id="sub" style="font-size:13px; color:#8A7E68; margin:0 0 40px; line-height:1.9; font-weight:300;">いつでも、あなたの生活のそばに。</p>
+
+    <!-- デバイス切替（テキストリンク風・控えめ） -->
+    <div style="display:flex; align-items:center; justify-content:center; gap:22px; margin:0 0 22px;">
+      <button class="devTab" data-d="ios" style="background:transparent; border:none; cursor:pointer; font-size:13px; color:#F0EBE2; font-weight:500; padding:4px 2px; position:relative;">iPhone</button>
+      <span style="width:0.5px; height:14px; background:#3A352A;"></span>
+      <button class="devTab" data-d="android" style="background:transparent; border:none; cursor:pointer; font-size:13px; color:#6E6555; font-weight:400; padding:4px 2px; position:relative;">Android</button>
+    </div>
+
+    <!-- 手順（静かな縦並び・番号なし・余白重視） -->
+    <div id="steps" style="text-align:left; margin:0 0 40px; min-height:132px;"></div>
+
+    <!-- 主ボタン -->
+    <button id="gotBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:14px; font-weight:600; padding:16px; border-radius:13px; cursor:pointer; letter-spacing:0.02em; margin:0 0 16px;">追加しました</button>
+    <button id="laterBtn" style="background:transparent; border:none; color:#6E6555; font-size:12px; font-weight:400; cursor:pointer; letter-spacing:0.02em;">あとで、ブラウザで続ける</button>
+
+  </div>
+
+  <div id="toast" style="position:absolute; left:50%; bottom:24px; transform:translateX(-50%); background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; padding:11px 22px; border-radius:11px; box-shadow:0 12px 30px -8px rgba(0,0,0,0.6); opacity:0; transition:opacity 0.35s; white-space:nowrap; pointer-events:none; z-index:40;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur=REVO.lang(), dark=REVO.dark(), dev="ios";
+    var T={dark:{bg:"#16140F",title:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",line:"#2A2620",accent:"#E3C56A",activeTab:"#F0EBE2",inactiveTab:"#6E6555",stepTxt:"#B0A488",stepSub:"#6E6555",divider:"#3A352A"},
+            light:{bg:"#FCFAF6",title:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",line:"#EFE8DC",accent:"#BA7517",activeTab:"#2E2A24",inactiveTab:"#B7A98F",stepTxt:"#6B6250",stepSub:"#B7A98F",divider:"#E0D6C4"}};
+    var D={
+      "日本語":{ttl:"ホーム画面に追加",sub:"いつでも、あなたの生活のそばに。",
+        ios:[["共有ボタンを開く","画面下の共有アイコンから"],["ホーム画面に追加","メニューの中ほどにあります"]],
+        android:[["メニューを開く","右上の ⋮ から"],["アプリをインストール","または「ホーム画面に追加」"]],
+        got:"追加しました",later:"あとで、ブラウザで続ける",toast:"ようこそ、revo へ"},
+      "English":{ttl:"Add to Home Screen",sub:"Always close to your everyday life.",
+        ios:[["Open the share menu","The share icon at the bottom"],["Add to Home Screen","Partway down the menu"]],
+        android:[["Open the menu","The ⋮ at the top right"],["Install app","Or \"Add to Home screen\""]],
+        got:"I've added it",later:"Later, continue in browser",toast:"Welcome to revo"},
+      "简体中文":{ttl:"添加到主屏幕",sub:"始终陪伴你的日常。",
+        ios:[["打开分享菜单","底部的分享图标"],["添加到主屏幕","在菜单中部"]],
+        android:[["打开菜单","右上角的 ⋮"],["安装应用","或\"添加到主屏幕\""]],
+        got:"已添加",later:"稍后在浏览器中继续",toast:"欢迎来到 revo"},
+      "繁體中文":{ttl:"加入主畫面",sub:"始終陪伴你的日常。",
+        ios:[["開啟分享選單","底部的分享圖示"],["加入主畫面","在選單中間"]],
+        android:[["開啟選單","右上角的 ⋮"],["安裝應用程式","或「加入主畫面」"]],
+        got:"已加入",later:"稍後在瀏覽器中繼續",toast:"歡迎來到 revo"},
+      "한국어":{ttl:"홈 화면에 추가",sub:"언제나 당신의 일상 곁에.",
+        ios:[["공유 메뉴 열기","하단의 공유 아이콘"],["홈 화면에 추가","메뉴 중간쯤에 있어요"]],
+        android:[["메뉴 열기","오른쪽 상단의 ⋮"],["앱 설치","또는 '홈 화면에 추가'"]],
+        got:"추가했어요",later:"나중에 브라우저로 계속",toast:"revo에 오신 걸 환영해요"},
+      "Français":{ttl:"Ajouter à l'écran d'accueil",sub:"Toujours près de votre quotidien.",
+        ios:[["Ouvrez le partage","L'icône de partage en bas"],["Sur l'écran d'accueil","Au milieu du menu"]],
+        android:[["Ouvrez le menu","Le ⋮ en haut à droite"],["Installer l'appli","Ou « écran d'accueil »"]],
+        got:"C'est ajouté",later:"Plus tard, dans le navigateur",toast:"Bienvenue sur revo"},
+      "Español":{ttl:"Añadir a la pantalla de inicio",sub:"Siempre cerca de tu día a día.",
+        ios:[["Abre compartir","El icono de compartir abajo"],["Añadir a inicio","A media altura del menú"]],
+        android:[["Abre el menú","El ⋮ arriba a la derecha"],["Instalar app","O «Añadir a inicio»"]],
+        got:"Ya lo añadí",later:"Más tarde, en el navegador",toast:"Bienvenido a revo"},
+      "Deutsch":{ttl:"Zum Startbildschirm hinzufügen",sub:"Immer nah an deinem Alltag.",
+        ios:[["Teilen-Menü öffnen","Das Teilen-Symbol unten"],["Zum Home-Bildschirm","Etwa in der Menümitte"]],
+        android:[["Menü öffnen","Das ⋮ oben rechts"],["App installieren","Oder „Zum Startbildschirm“"]],
+        got:"Hinzugefügt",later:"Später, im Browser",toast:"Willkommen bei revo"},
+      "Italiano":{ttl:"Aggiungi alla schermata Home",sub:"Sempre vicino alla tua giornata.",
+        ios:[["Apri condivisione","L'icona condividi in basso"],["Aggiungi a Home","A metà del menu"]],
+        android:[["Apri il menu","Il ⋮ in alto a destra"],["Installa app","O «Aggiungi a Home»"]],
+        got:"Aggiunta",later:"Più tardi, nel browser",toast:"Benvenuto su revo"},
+      "Português":{ttl:"Adicionar à Tela de Início",sub:"Sempre perto do seu dia a dia.",
+        ios:[["Abra compartilhar","O ícone de compartilhar abaixo"],["Adicionar à Tela","No meio do menu"]],
+        android:[["Abra o menu","O ⋮ no canto superior direito"],["Instalar app","Ou \"Adicionar à tela\""]],
+        got:"Adicionei",later:"Depois, no navegador",toast:"Bem-vindo ao revo"},
+      "ภาษาไทย":{ttl:"เพิ่มไปยังหน้าจอหลัก",sub:"อยู่ใกล้ทุกวันของคุณเสมอ",
+        ios:[["เปิดเมนูแชร์","ไอคอนแชร์ด้านล่าง"],["เพิ่มไปหน้าจอโฮม","อยู่กลางเมนู"]],
+        android:[["เปิดเมนู","⋮ มุมขวาบน"],["ติดตั้งแอป","หรือ \"เพิ่มไปหน้าจอหลัก\""]],
+        got:"เพิ่มแล้ว",later:"ภายหลัง ใช้ต่อในเบราว์เซอร์",toast:"ยินดีต้อนรับสู่ revo"},
+      "हिन्दी":{ttl:"होम स्क्रीन में जोड़ें",sub:"हमेशा आपके रोज़मर्रा के पास।",
+        ios:[["शेयर मेनू खोलें","नीचे शेयर आइकन"],["होम स्क्रीन में जोड़ें","मेनू के बीच में"]],
+        android:[["मेनू खोलें","ऊपर दाएं ⋮"],["ऐप इंस्टॉल करें","या \"होम स्क्रीन में जोड़ें\""]],
+        got:"जोड़ लिया",later:"बाद में, ब्राउज़र में जारी रखें",toast:"revo में स्वागत है"},
+      "Tiếng Việt":{ttl:"Thêm vào Màn hình chính",sub:"Luôn bên cạnh ngày thường của bạn.",
+        ios:[["Mở menu chia sẻ","Biểu tượng chia sẻ ở dưới"],["Thêm vào MH chính","Ở giữa menu"]],
+        android:[["Mở menu","Dấu ⋮ góc trên phải"],["Cài đặt ứng dụng","Hoặc \"Thêm vào màn hình chính\""]],
+        got:"Đã thêm",later:"Để sau, tiếp tục trên trình duyệt",toast:"Chào mừng đến revo"},
+      "Bahasa Indonesia":{ttl:"Tambahkan ke Layar Utama",sub:"Selalu dekat dengan keseharianmu.",
+        ios:[["Buka menu bagikan","Ikon bagikan di bawah"],["Tambah ke Layar Utama","Di tengah menu"]],
+        android:[["Buka menu","Tanda ⋮ di kanan atas"],["Instal aplikasi","Atau \"Tambah ke layar utama\""]],
+        got:"Sudah ditambahkan",later:"Nanti, lanjut di browser",toast:"Selamat datang di revo"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+
+    function renderSteps(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var list=d[dev];
+      $('steps').innerHTML="";
+      list.forEach(function(st,i){
+        var el=document.createElement('div');
+        el.style.cssText="padding:16px 2px; "+(i<list.length-1?"border-bottom:0.5px solid "+t.line+";":"");
+        el.innerHTML='<p style="font-size:14px; color:'+t.stepTxt+'; margin:0 0 4px; font-weight:500;">'+st[0]+'</p><p style="font-size:11.5px; color:'+t.stepSub+'; margin:0; font-weight:300; line-height:1.5;">'+st[1]+'</p>';
+        $('steps').appendChild(el);
+      });
+    }
+    function setDev(d){
+      dev=d; var t=dark?T.dark:T.light;
+      document.querySelectorAll('.devTab').forEach(function(b){
+        var on=(b.getAttribute('data-d')===d);
+        b.style.color= on?t.activeTab:t.inactiveTab; b.style.fontWeight= on?"500":"400";
+      });
+      renderSteps();
+    }
+    function applyLang(){
+      var d=D[cur]||D["English"];
+      $('ttl').textContent=d.ttl; $('sub').textContent=d.sub;
+      $('gotBtn').textContent=d.got; $('laterBtn').textContent=d.later;
+      renderSteps();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('ttl').style.color=t.title; $('sub').style.color=t.sub;
+      $('gotBtn').style.background=t.accent; $('gotBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('laterBtn').style.color=t.muted;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.borderColor=t.divider; });
+      $('langBtn').querySelector('i').style.color=t.sub;
+      $('themeIcon').className= dark?"ti ti-sun":"ti ti-moon"; $('themeIcon').style.color=t.sub;
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.divider;
+      setDev(dev); applyLang();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    function toast(msg){ var t=$('toast'); t.textContent=msg; t.style.opacity="1"; setTimeout(function(){t.style.opacity="0";},2000); }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.querySelectorAll('.devTab').forEach(function(b){ b.onclick=function(){ setDev(b.getAttribute('data-d')); }; });
+    $('gotBtn').onclick=function(){
+      var p=REVO.installPrompt(); /* Android等でプロンプトが取れていれば表示 */
+      toast((D[cur]||D["English"]).toast);
+      setTimeout(function(){ REVO.go('home'); }, 900);
+    };
+    $('laterBtn').onclick=function(){ REVO.go('home'); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+</body>
+</html>

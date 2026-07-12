@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>栄養 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">きょうの栄養。食事とサプリを合わせた、ビタミン・ミネラルの充足。サプリを取らない人にも、食事ベースで不足を示す。確定値と目安を区別。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">きょうの栄養</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 18px 22px;">
+
+    <!-- 凡例（食事/サプリ/目安） -->
+    <div id="legend" style="display:flex; align-items:center; gap:14px; margin:0 0 16px; flex-wrap:wrap;">
+      <span style="display:flex; align-items:center; gap:5px;"><span style="width:11px; height:11px; border-radius:3px; background:#5DCAA5;"></span><span id="lgFood" style="font-size:11px; color:#8A7E68;">食事から</span></span>
+      <span style="display:flex; align-items:center; gap:5px;"><span style="width:11px; height:11px; border-radius:3px; background:#6FA8DC;"></span><span id="lgSupp" style="font-size:11px; color:#8A7E68;">サプリから</span></span>
+      <span style="display:flex; align-items:center; gap:5px;"><span style="font-size:9px; color:#B0A488; background:#211D16; padding:2px 7px; border-radius:999px;" id="lgEst">目安</span></span>
+    </div>
+
+    <!-- 微量栄養素（ビタミン・ミネラル）充足度 -->
+    <p id="microLbl" style="font-size:12px; color:#A89C84; margin:0 0 12px; font-weight:500;">ビタミン・ミネラルの充足</p>
+    <div id="micros" style="display:flex; flex-direction:column; gap:13px; margin:0 0 18px;"></div>
+
+    <!-- 食材のおすすめ（Revoのおすすめ・食事文脈・配慮メッセージから離した位置） -->
+    <div id="foodAdCard" style="display:flex; align-items:center; gap:12px; background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:13px 15px; margin:0 0 18px; cursor:pointer; transition:all 0.35s;">
+      <div id="foodAdIcon" style="width:44px; height:44px; border-radius:10px; background:#2A2418; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti ti-leaf" style="font-size:21px; color:#E3C56A;"></i></div>
+      <div style="flex:1; min-width:0;">
+        <p id="foodAdLabel" style="font-size:10px; color:#6E6555; margin:0 0 2px;">Revoのおすすめ</p>
+        <p id="foodAdName" style="font-size:13px; color:#F0EBE2; margin:0 0 2px; font-weight:600;">冷凍ブロッコリー</p>
+        <p id="foodAdDesc" style="font-size:11px; color:#8A7E68; margin:0; line-height:1.4;">不足しがちな葉酸・ビタミンCに。</p>
+      </div>
+      <span id="foodAdCta" style="font-size:12px; color:#E3C56A; font-weight:500; flex-shrink:0;">見てみる</span>
+    </div>
+
+    <!-- ビギナー向けサプリ（プルダウン） -->
+    <button id="begBtn" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:14px 15px; margin:0 0 8px; cursor:pointer; transition:all 0.35s;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <i class="ti ti-plant-2" style="font-size:19px; color:#5DCAA5;" aria-hidden="true"></i>
+        <span id="begLbl" style="font-size:14px; color:#F0EBE2; font-weight:500;">ビギナー向け</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:9px;">
+        <span id="begSummary" style="font-size:11px; color:#8A7E68;">4／4</span>
+        <i id="begChevron" class="ti ti-chevron-down" style="font-size:17px; color:#6E6555;" aria-hidden="true"></i>
+      </div>
+    </button>
+    <div id="begSupps" style="display:none; flex-direction:column; gap:13px; margin:0 0 12px; padding:4px 4px 0;"></div>
+
+    <!-- トレーニー向けサプリ（プルダウン） -->
+    <button id="trBtn" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:14px 15px; margin:0 0 8px; cursor:pointer; transition:all 0.35s;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <i class="ti ti-barbell" style="font-size:19px; color:#E3C56A;" aria-hidden="true"></i>
+        <span id="trLbl" style="font-size:14px; color:#F0EBE2; font-weight:500;">トレーニー向け</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:9px;">
+        <span id="trSummary" style="font-size:11px; color:#8A7E68;">2／7</span>
+        <i id="trChevron" class="ti ti-chevron-down" style="font-size:17px; color:#6E6555;" aria-hidden="true"></i>
+      </div>
+    </button>
+    <div id="trSupps" style="display:none; flex-direction:column; gap:13px; margin:0 0 18px; padding:4px 4px 0;"></div>
+
+    <!-- サプリ非利用者への配慮メッセージ -->
+    <div id="noSuppCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:13px 15px; margin:0 0 8px; display:flex; align-items:flex-start; gap:9px; transition:all 0.35s;">
+      <i class="ti ti-leaf" style="font-size:17px; color:#5DCAA5; margin-top:1px;" aria-hidden="true"></i>
+      <div style="flex:1;">
+        <p id="noSuppTxt" style="font-size:12px; color:#C9C0AE; margin:0; line-height:1.7;">サプリは使わなくても大丈夫。今日は鉄分が少し不足ぎみ。赤身の肉や小松菜で補えます。</p>
+      </div>
+    </div>
+    <p id="suppHint" style="font-size:11px; color:#6E6555; margin:0; padding:0 2px; line-height:1.6;">取った人は合算。取らない人は、食事ぶんだけで表示します。</p>
+
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 微量栄養素 [key, 食事%, サプリ%, 目安かどうか]
+    var MICROS=[
+      ["vc", 70, 25, false],  // ビタミンC
+      ["vd", 20, 60, false],  // ビタミンD
+      ["vb", 55, 30, true],   // ビタミンB群（目安）
+      ["iron", 45, 0, false], // 鉄（不足ぎみ）
+      ["ca", 60, 15, true]    // カルシウム（目安）
+    ];
+    var D={
+      "日本語":{hdr:"きょうの栄養",lgFood:"食事から",lgSupp:"サプリから",lgEst:"目安",
+        microLbl:"ビタミン・ミネラルの充足",foodAd:{label:"Revoのおすすめ",name:"冷凍ブロッコリー",desc:"不足しがちな葉酸・ビタミンCに。下ゆで不要、レンジで一品。",cta:"見てみる"},grpBeginner:"ビギナー向け",grpTrainee:"トレーニー向け",suppSummary:"{a}／{b}",supps:{protein:"プロテイン",creatine:"クレアチン",eaa:"EAA",bcaa:"BCAA／EAA",multi:"マルチビタミン",hmb:"HMB",beta:"β-アラニン",gluta:"グルタミン",citrulline:"シトルリン",caffeine:"カフェイン",fishoil:"フィッシュオイル",zma:"ZMA（亜鉛・Mg）"},
+        micros:{vc:"ビタミンC",vd:"ビタミンD",vb:"ビタミンB群",iron:"鉄分",ca:"カルシウム"},
+        noSupp:"サプリは使わなくても大丈夫。今日は鉄分が少し不足ぎみ。赤身の肉や小松菜で補えます。",
+        suppTtl:"サプリ・プロテイン",suppSub:"プロテイン1杯・マルチビタミン",
+        suppHint:"取った人は、ここで合算。取らない人は、食事ぶんだけで表示します。",crTtl:"クレアチン",crCharge:"筋肉のチャージ",crToday:"きょう 5g",crLoadDays:"あと{n}日で満タン",crMaint:"満タン・維持中",crLoadState:"ローディング中",crHint:"飲み続けて満タンにすると、力が出やすくなります。"},
+      "English":{hdr:"Today's nutrition",lgFood:"From food",lgSupp:"From supplements",lgEst:"est.",
+        microLbl:"Vitamins & minerals",foodAd:{label:"Revo picks",name:"Frozen broccoli",desc:"For folate and vitamin C. No prep, ready in the microwave.",cta:"Take a look"},grpBeginner:"For beginners",grpTrainee:"For trainees",suppSummary:"{a} of {b}",supps:{protein:"Protein",creatine:"Creatine",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-alanine",gluta:"Glutamine",citrulline:"Citrulline",caffeine:"Caffeine",fishoil:"Fish oil",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamin C",vd:"Vitamin D",vb:"B vitamins",iron:"Iron",ca:"Calcium"},
+        noSupp:"You don't need supplements. Iron is a little low today — red meat or leafy greens can top it up.",
+        suppTtl:"Supplements / protein",suppSub:"1 protein shake · multivitamin",
+        suppHint:"Took some? Add them here. If not, we show food only.",crTtl:"Creatine",crCharge:"Muscle charge",crToday:"Today 5g",crLoadDays:"{n} days to full",crMaint:"Full · maintaining",crLoadState:"Loading",crHint:"Keep taking it to fill up — then you’ll have more power."},
+      "简体中文":{hdr:"今天的营养",lgFood:"来自饮食",lgSupp:"来自补剂",lgEst:"估",
+        microLbl:"维生素·矿物质",foodAd:{label:"Revo推荐",name:"冷冻西兰花",desc:"补充易缺的叶酸和维C。免焯水，微波即可。",cta:"看看"},grpBeginner:"入门",grpTrainee:"进阶",suppSummary:"{a}／{b}",supps:{protein:"蛋白粉",creatine:"肌酸",eaa:"EAA",bcaa:"BCAA/EAA",multi:"复合维生素",hmb:"HMB",beta:"β-丙氨酸",gluta:"谷氨酰胺",citrulline:"瓜氨酸",caffeine:"咖啡因",fishoil:"鱼油",zma:"ZMA（锌·镁）"},
+        micros:{vc:"维生素C",vd:"维生素D",vb:"B族维生素",iron:"铁",ca:"钙"},
+        noSupp:"不吃补剂也没关系。今天铁略不足，红肉或绿叶菜可以补上。",
+        suppTtl:"补剂·蛋白粉",suppSub:"蛋白粉1杯·复合维生素",
+        suppHint:"吃了的在这里合算。没吃的，只显示饮食部分。",crTtl:"肌酸",crCharge:"肌肉储量",crToday:"今天 5g",crLoadDays:"还差{n}天满",crMaint:"已满·维持中",crLoadState:"加载期",crHint:"坚持补充直到充满，力量会更容易发挥。"},
+      "繁體中文":{hdr:"今天的營養",lgFood:"來自飲食",lgSupp:"來自補劑",lgEst:"估",
+        microLbl:"維生素·礦物質",foodAd:{label:"Revo推薦",name:"冷凍花椰菜",desc:"補充易缺的葉酸和維C。免汆燙，微波即可。",cta:"看看"},grpBeginner:"入門",grpTrainee:"進階",suppSummary:"{a}／{b}",supps:{protein:"蛋白粉",creatine:"肌酸",eaa:"EAA",bcaa:"BCAA/EAA",multi:"綜合維生素",hmb:"HMB",beta:"β-丙氨酸",gluta:"麩醯胺酸",citrulline:"瓜胺酸",caffeine:"咖啡因",fishoil:"魚油",zma:"ZMA（鋅·鎂）"},
+        micros:{vc:"維生素C",vd:"維生素D",vb:"B群維生素",iron:"鐵",ca:"鈣"},
+        noSupp:"不吃補劑也沒關係。今天鐵略不足，紅肉或綠葉菜可以補上。",
+        suppTtl:"補劑·蛋白粉",suppSub:"蛋白粉1杯·綜合維生素",
+        suppHint:"吃了的在這裡合算。沒吃的，只顯示飲食部分。",crTtl:"肌酸",crCharge:"肌肉儲量",crToday:"今天 5g",crLoadDays:"還差{n}天滿",crMaint:"已滿·維持中",crLoadState:"加載期",crHint:"堅持補充直到充滿，力量會更容易發揮。"},
+      "한국어":{hdr:"오늘의 영양",lgFood:"식사에서",lgSupp:"보충제에서",lgEst:"어림",
+        microLbl:"비타민·미네랄",foodAd:{label:"Revo 추천",name:"냉동 브로콜리",desc:"부족하기 쉬운 엽산·비타민C에. 데침 불필요, 전자레인지로.",cta:"보러 가기"},grpBeginner:"입문자용",grpTrainee:"트레이니용",suppSummary:"{a}／{b}",supps:{protein:"프로틴",creatine:"크레아틴",eaa:"EAA",bcaa:"BCAA/EAA",multi:"종합비타민",hmb:"HMB",beta:"베타알라닌",gluta:"글루타민",citrulline:"시트룰린",caffeine:"카페인",fishoil:"피쉬오일",zma:"ZMA（아연·Mg）"},
+        micros:{vc:"비타민C",vd:"비타민D",vb:"비타민B군",iron:"철분",ca:"칼슘"},
+        noSupp:"보충제 없어도 괜찮아요. 오늘은 철분이 조금 부족. 붉은 고기나 시금치로 채울 수 있어요.",
+        suppTtl:"보충제·프로틴",suppSub:"프로틴 1잔·종합비타민",
+        suppHint:"드신 분은 여기서 합산. 안 드시면 식사분만 표시해요.",crTtl:"크레아틴",crCharge:"근육 충전",crToday:"오늘 5g",crLoadDays:"{n}일 후 가득",crMaint:"가득·유지 중",crLoadState:"로딩 중",crHint:"꾸준히 채우면 힘이 더 잘 나요."},
+      "ภาษาไทย":{hdr:"โภชนาการวันนี้",lgFood:"จากอาหาร",lgSupp:"จากอาหารเสริม",lgEst:"ปย.",
+        microLbl:"วิตามิน·แร่ธาตุ",foodAd:{label:"Revo แนะนำ",name:"บรอกโคลีแช่แข็ง",desc:"เสริมโฟเลตและวิตามินซี ไม่ต้องลวก เข้าไมโครเวฟได้เลย",cta:"ดูเลย"},grpBeginner:"สำหรับมือใหม่",grpTrainee:"สำหรับเทรนนี่",suppSummary:"{a}/{b}",supps:{protein:"โปรตีน",creatine:"ครีเอทีน",eaa:"EAA",bcaa:"BCAA/EAA",multi:"วิตามินรวม",hmb:"HMB",beta:"เบต้า-อะลานีน",gluta:"กลูตามีน",citrulline:"ซิตรูลลีน",caffeine:"คาเฟอีน",fishoil:"น้ำมันปลา",zma:"ZMA（สังกะสี·Mg）"},
+        micros:{vc:"วิตามินC",vd:"วิตามินD",vb:"วิตามินB",iron:"ธาตุเหล็ก",ca:"แคลเซียม"},
+        noSupp:"ไม่กินอาหารเสริมก็ได้ วันนี้ธาตุเหล็กน้อยไปนิด เนื้อแดงหรือผักใบเขียวช่วยเติมได้",
+        suppTtl:"อาหารเสริม·โปรตีน",suppSub:"โปรตีน 1 แก้ว·วิตามินรวม",
+        suppHint:"ใครกินมาก็รวมตรงนี้ ใครไม่กินก็แสดงแค่จากอาหาร",crTtl:"ครีเอทีน",crCharge:"คลังในกล้ามเนื้อ",crToday:"วันนี้ 5g",crLoadDays:"อีก{n}วันเต็ม",crMaint:"เต็ม·คงระดับ",crLoadState:"ช่วงโหลด",crHint:"กินต่อเนื่องจนเต็ม แล้วจะออกแรงได้ดีขึ้น"},
+      "Français":{hdr:"Nutrition du jour",lgFood:"Des aliments",lgSupp:"Des compléments",lgEst:"est.",
+        microLbl:"Vitamines et minéraux",foodAd:{label:"Choix Revo",name:"Brocoli surgelé",desc:"Pour le folate et la vitamine C. Prêt au micro-ondes.",cta:"Voir"},grpBeginner:"Pour débutants",grpTrainee:"Pour confirmés",suppSummary:"{a} sur {b}",supps:{protein:"Protéine",creatine:"Créatine",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitamines",hmb:"HMB",beta:"Bêta-alanine",gluta:"Glutamine",citrulline:"Citrulline",caffeine:"Caféine",fishoil:"Huile de poisson",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamine C",vd:"Vitamine D",vb:"Vitamines B",iron:"Fer",ca:"Calcium"},
+        noSupp:"Pas besoin de compléments. Le fer est un peu bas aujourd'hui — viande rouge ou légumes verts y remédient.",
+        suppTtl:"Compléments / protéine",suppSub:"1 shake protéiné · multivitamines",
+        suppHint:"Vous en avez pris ? Ajoutez-les ici. Sinon, on n'affiche que l'alimentation.",crTtl:"Créatine",crCharge:"Charge musculaire",crToday:"Auj. 5g",crLoadDays:"plein dans {n} j",crMaint:"Plein · maintien",crLoadState:"Charge",crHint:"Continuez jusqu’au plein — vous aurez plus de force."},
+      "Español":{hdr:"Nutrición de hoy",lgFood:"De la comida",lgSupp:"De suplementos",lgEst:"est.",
+        microLbl:"Vitaminas y minerales",foodAd:{label:"Elección Revo",name:"Brócoli congelado",desc:"Para folato y vitamina C. Listo en el microondas.",cta:"Ver"},grpBeginner:"Para principiantes",grpTrainee:"Para avanzados",suppSummary:"{a} de {b}",supps:{protein:"Proteína",creatine:"Creatina",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitamínico",hmb:"HMB",beta:"Beta-alanina",gluta:"Glutamina",citrulline:"Citrulina",caffeine:"Cafeína",fishoil:"Aceite de pescado",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamina C",vd:"Vitamina D",vb:"Vitaminas B",iron:"Hierro",ca:"Calcio"},
+        noSupp:"No necesitas suplementos. Hoy el hierro está algo bajo — carne roja o verduras de hoja lo cubren.",
+        suppTtl:"Suplementos / proteína",suppSub:"1 batido de proteína · multivitamínico",
+        suppHint:"¿Tomaste? Añádelos aquí. Si no, mostramos solo la comida.",crTtl:"Creatina",crCharge:"Carga muscular",crToday:"Hoy 5g",crLoadDays:"lleno en {n} d",crMaint:"Lleno · manteniendo",crLoadState:"Carga",crHint:"Sigue hasta llenar — tendrás más fuerza."},
+      "Deutsch":{hdr:"Heutige Ernährung",lgFood:"Aus Essen",lgSupp:"Aus Supplements",lgEst:"ca.",
+        microLbl:"Vitamine & Mineralstoffe",foodAd:{label:"Revo-Tipps",name:"Tiefkühl-Brokkoli",desc:"Für Folsäure und Vitamin C. Fertig in der Mikrowelle.",cta:"Ansehen"},grpBeginner:"Für Anfänger",grpTrainee:"Für Fortgeschrittene",suppSummary:"{a} von {b}",supps:{protein:"Protein",creatine:"Kreatin",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-Alanin",gluta:"Glutamin",citrulline:"Citrullin",caffeine:"Koffein",fishoil:"Fischöl",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamin C",vd:"Vitamin D",vb:"B-Vitamine",iron:"Eisen",ca:"Kalzium"},
+        noSupp:"Du brauchst keine Supplements. Eisen ist heute etwas niedrig — rotes Fleisch oder Blattgemüse hilft.",
+        suppTtl:"Supplements / Protein",suppSub:"1 Protein-Shake · Multivitamin",
+        suppHint:"Genommen? Hier addieren. Sonst zeigen wir nur das Essen.",crTtl:"Kreatin",crCharge:"Muskelspeicher",crToday:"Heute 5g",crLoadDays:"voll in {n} T",crMaint:"Voll · halten",crLoadState:"Aufladen",crHint:"Weiter auffüllen — dann hast du mehr Kraft."},
+      "Italiano":{hdr:"Nutrizione di oggi",lgFood:"Dal cibo",lgSupp:"Dagli integratori",lgEst:"stima",
+        microLbl:"Vitamine e minerali",foodAd:{label:"Scelti da Revo",name:"Broccoli surgelati",desc:"Per folati e vitamina C. Pronti al microonde.",cta:"Guarda"},grpBeginner:"Per principianti",grpTrainee:"Per esperti",suppSummary:"{a} su {b}",supps:{protein:"Proteine",creatine:"Creatina",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitaminico",hmb:"HMB",beta:"Beta-alanina",gluta:"Glutammina",citrulline:"Citrullina",caffeine:"Caffeina",fishoil:"Olio di pesce",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamina C",vd:"Vitamina D",vb:"Vitamine B",iron:"Ferro",ca:"Calcio"},
+        noSupp:"Non servono integratori. Oggi il ferro è un po' basso — carne rossa o verdure a foglia lo reintegrano.",
+        suppTtl:"Integratori / proteine",suppSub:"1 shake proteico · multivitaminico",
+        suppHint:"Ne hai presi? Aggiungili qui. Altrimenti mostriamo solo il cibo.",crTtl:"Creatina",crCharge:"Carica muscolare",crToday:"Oggi 5g",crLoadDays:"piena tra {n} g",crMaint:"Piena · mantenimento",crLoadState:"Carica",crHint:"Continua fino a riempire — avrai più forza."},
+      "Português":{hdr:"Nutrição de hoje",lgFood:"Da comida",lgSupp:"De suplementos",lgEst:"est.",
+        microLbl:"Vitaminas e minerais",foodAd:{label:"Escolhas Revo",name:"Brócolis congelado",desc:"Para folato e vitamina C. Pronto no micro-ondas.",cta:"Ver"},grpBeginner:"Para iniciantes",grpTrainee:"Para avançados",suppSummary:"{a} de {b}",supps:{protein:"Proteína",creatine:"Creatina",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitamínico",hmb:"HMB",beta:"Beta-alanina",gluta:"Glutamina",citrulline:"Citrulina",caffeine:"Cafeína",fishoil:"Óleo de peixe",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamina C",vd:"Vitamina D",vb:"Vitaminas B",iron:"Ferro",ca:"Cálcio"},
+        noSupp:"Não precisa de suplementos. Hoje o ferro está um pouco baixo — carne vermelha ou folhas verdes resolvem.",
+        suppTtl:"Suplementos / proteína",suppSub:"1 shake de proteína · multivitamínico",
+        suppHint:"Tomou? Some aqui. Se não, mostramos só a comida.",crTtl:"Creatina",crCharge:"Carga muscular",crToday:"Hoje 5g",crLoadDays:"cheio em {n} d",crMaint:"Cheio · mantendo",crLoadState:"Carga",crHint:"Continue até encher — terá mais força."},
+      "हिन्दी":{hdr:"आज का पोषण",lgFood:"भोजन से",lgSupp:"सप्लिमेंट से",lgEst:"अनु.",
+        microLbl:"विटामिन·खनिज",foodAd:{label:"Revo की पसंद",name:"फ्रोज़न ब्रोकली",desc:"फोलेट और विटामिन C के लिए। माइक्रोवेव में तैयार।",cta:"देखें"},grpBeginner:"शुरुआती के लिए",grpTrainee:"ट्रेनी के लिए",suppSummary:"{b} में {a}",supps:{protein:"प्रोटीन",creatine:"क्रिएटिन",eaa:"EAA",bcaa:"BCAA/EAA",multi:"मल्टीविटामिन",hmb:"HMB",beta:"बीटा-एलानिन",gluta:"ग्लूटामिन",citrulline:"सिट्रुलाइन",caffeine:"कैफ़ीन",fishoil:"फ़िश ऑयल",zma:"ZMA（ज़िंक·Mg）"},
+        micros:{vc:"विटामिन C",vd:"विटामिन D",vb:"विटामिन B",iron:"आयरन",ca:"कैल्शियम"},
+        noSupp:"सप्लिमेंट न लें तो भी ठीक। आज आयरन थोड़ा कम है — लाल मांस या हरी पत्तेदार सब्ज़ी से पूरा करें।",
+        suppTtl:"सप्लिमेंट·प्रोटीन",suppSub:"प्रोटीन 1 गिलास·मल्टीविटामिन",
+        suppHint:"लिया है तो यहाँ जोड़ें। नहीं लिया तो सिर्फ़ भोजन दिखाएँगे।",crTtl:"क्रिएटिन",crCharge:"मांसपेशी चार्ज",crToday:"आज 5g",crLoadDays:"{n} दिन में फुल",crMaint:"फुल · बनाए रखें",crLoadState:"लोडिंग",crHint:"भरने तक लेते रहें — ताक़त ज़्यादा मिलेगी।"},
+      "Tiếng Việt":{hdr:"Dinh dưỡng hôm nay",lgFood:"Từ thức ăn",lgSupp:"Từ thực phẩm bổ sung",lgEst:"ƯL",
+        microLbl:"Vitamin & khoáng chất",foodAd:{label:"Revo gợi ý",name:"Bông cải xanh đông lạnh",desc:"Bổ sung folate và vitamin C. Sẵn sàng với lò vi sóng.",cta:"Xem thử"},grpBeginner:"Cho người mới",grpTrainee:"Cho người tập lâu",suppSummary:"{a}/{b}",supps:{protein:"Protein",creatine:"Creatine",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-alanine",gluta:"Glutamine",citrulline:"Citrulline",caffeine:"Caffeine",fishoil:"Dầu cá",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamin C",vd:"Vitamin D",vb:"Vitamin nhóm B",iron:"Sắt",ca:"Canxi"},
+        noSupp:"Không cần thực phẩm bổ sung. Hôm nay sắt hơi thấp — thịt đỏ hoặc rau lá xanh bù được.",
+        suppTtl:"Bổ sung / protein",suppSub:"1 ly protein · multivitamin",
+        suppHint:"Đã dùng? Cộng vào đây. Nếu không, chỉ hiện phần thức ăn.",crTtl:"Creatine",crCharge:"Nạp vào cơ",crToday:"Hôm nay 5g",crLoadDays:"đầy sau {n} ngày",crMaint:"Đầy · duy trì",crLoadState:"Đang nạp",crHint:"Dùng đều đến khi đầy — bạn sẽ khỏe hơn."},
+      "Bahasa Indonesia":{hdr:"Nutrisi hari ini",lgFood:"Dari makanan",lgSupp:"Dari suplemen",lgEst:"perk.",
+        microLbl:"Vitamin & mineral",foodAd:{label:"Pilihan Revo",name:"Brokoli beku",desc:"Untuk folat dan vitamin C. Siap dengan microwave.",cta:"Lihat"},grpBeginner:"Untuk pemula",grpTrainee:"Untuk trainee",suppSummary:"{a}/{b}",supps:{protein:"Protein",creatine:"Kreatin",eaa:"EAA",bcaa:"BCAA/EAA",multi:"Multivitamin",hmb:"HMB",beta:"Beta-alanine",gluta:"Glutamine",citrulline:"Citrulline",caffeine:"Kafein",fishoil:"Minyak ikan",zma:"ZMA (Zn·Mg)"},
+        micros:{vc:"Vitamin C",vd:"Vitamin D",vb:"Vitamin B",iron:"Zat besi",ca:"Kalsium"},
+        noSupp:"Tanpa suplemen pun tidak apa. Zat besi hari ini agak rendah — daging merah atau sayuran hijau bisa menambah.",
+        suppTtl:"Suplemen / protein",suppSub:"1 shake protein · multivitamin",
+        suppHint:"Sudah konsumsi? Tambahkan di sini. Kalau tidak, kami tampilkan dari makanan saja.",crTtl:"Kreatin",crCharge:"Muatan otot",crToday:"Hari ini 5g",crLoadDays:"penuh dalam {n} hari",crMaint:"Penuh · menjaga",crLoadState:"Pengisian",crHint:"Lanjut sampai penuh — tenaga jadi lebih besar."}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",body:"#C9C0AE",card:"#1A1814",cardBd:"#2A2620",track:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A",estBg:"#211D16",estTx:"#B0A488"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",body:"#5F5E5A",card:"#FBF7F1",cardBd:"#F0EAE0",track:"#EDE6D8",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#1D9E75",estBg:"#F0EAE0",estTx:"#9A8E78"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderMicros(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('micros').innerHTML="";
+      MICROS.forEach(function(m){
+        var key=m[0], food=m[1], supp=m[2], est=m[3], total=food+supp;
+        var low=(total<50);
+        var estBadge = est ? '<span style="font-size:9px; color:'+t.estTx+'; background:'+t.estBg+'; padding:2px 7px; border-radius:999px; margin-left:6px;">'+d.lgEst+'</span>' : '';
+        var totalCol = low ? "#E0936A" : (total>=80?"#5DCAA5":"#A89C84");
+        var row=document.createElement('div');
+        row.innerHTML=
+          '<div style="display:flex; align-items:baseline; justify-content:space-between; margin:0 0 6px;">'+
+            '<span style="font-size:13px; color:'+t.txt+';">'+d.micros[key]+estBadge+'</span>'+
+            '<span style="font-size:13px; font-weight:600; color:'+totalCol+';">'+Math.min(100,total)+'%</span>'+
+          '</div>'+
+          '<div style="display:flex; height:7px; border-radius:4px; overflow:hidden; background:'+t.track+';">'+
+            '<div style="width:'+food+'%; background:#5DCAA5;"></div>'+
+            '<div style="width:'+supp+'%; background:#6FA8DC;"></div>'+
+          '</div>';
+        $('micros').appendChild(row);
+      });
+    }
+    // 筋トレ系サプリ [key, charge%, todayDone, note(クレアチンのみ)]
+    var SUPPS=[
+      ["protein", 85, true, null],
+      ["creatine", 76, true, "load"],   // 累積・あと2日で満タン
+      ["eaa", 100, true, null],
+      ["bcaa", 0, false, null],
+      ["multi", 100, true, null]
+    ];
+    // ビギナー向け [key, charge%, today, note]
+    var BEG_SUPPS=[
+      ["protein", 85, true, null],
+      ["multi", 100, true, null],
+      ["bcaa", 90, true, null],
+      ["creatine", 76, true, "load"]
+    ];
+    // トレーニー向け
+    var TR_SUPPS=[
+      ["hmb", 0, false, null],
+      ["beta", 100, true, null],
+      ["gluta", 80, true, null],
+      ["citrulline", 0, false, null],
+      ["caffeine", 0, false, null],
+      ["fishoil", 100, true, null],
+      ["zma", 0, false, null]
+    ];
+    var begOpen=false, trOpen=false;
+    function suppRowHtml(d,t,key,charge,today,note){
+      var name=(d.supps&&d.supps[key])||key;
+      var barCol = charge>=100 ? "#5DCAA5" : (charge>=50? "#E3C56A" : (charge>0?"#E0936A":(dark?"#3A352A":"#E0DACE")));
+      var numCol = charge>=100 ? "#5DCAA5" : (charge>0? t.txt : t.muted);
+      var todayBadge = today
+        ? '<span style="font-size:9px; color:#5DCAA5; background:'+(dark?"#16241E":"#EAF6F1")+'; padding:2px 8px; border-radius:999px;"><i class="ti ti-check" style="font-size:10px; vertical-align:-1px;"></i> '+(d.crToday||"Today")+'</span>'
+        : '<span style="font-size:9px; color:'+t.muted+'; background:'+(dark?"#211D16":"#F0EAE0")+'; padding:2px 8px; border-radius:999px;">—</span>';
+      var noteTxt = note==="load"
+        ? '<p style="font-size:10px; color:'+(dark?"#B0A488":"#9A8E78")+'; margin:5px 0 0;">'+(d.crLoadDays||"{n} days to full").replace("{n}",2)+'</p>'
+        : '';
+      return '<div>'+
+        '<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 6px;">'+
+          '<span style="font-size:13px; color:'+t.txt+';">'+name+'</span>'+
+          '<div style="display:flex; align-items:center; gap:9px;">'+todayBadge+'<span style="font-size:13px; font-weight:600; color:'+numCol+';">'+charge+'%</span></div>'+
+        '</div>'+
+        '<div style="width:100%; height:7px; background:'+t.track+'; border-radius:4px; overflow:hidden;"><div style="width:'+charge+'%; height:7px; background:'+barCol+'; border-radius:4px; transition:width 0.6s;"></div></div>'+
+        noteTxt+'</div>';
+    }
+    function renderSuppGroup(containerId, btnSummaryId, chevronId, list, isOpen){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var taken=list.filter(function(x){return x[2];}).length;
+      $(btnSummaryId).textContent=(d.suppSummary||"{a}/{b}").replace("{a}",taken).replace("{b}",list.length);
+      $(containerId).style.display = isOpen ? "flex" : "none";
+      $(chevronId).className = isOpen ? "ti ti-chevron-up" : "ti ti-chevron-down";
+      $(containerId).innerHTML="";
+      list.forEach(function(sp){
+        var row=document.createElement('div');
+        row.innerHTML=suppRowHtml(d,t,sp[0],sp[1],sp[2],sp[3]);
+        $(containerId).appendChild(row);
+      });
+    }
+    function renderSupps(){
+      var d=D[cur]||D["English"];
+      $('begLbl').textContent=d.grpBeginner||"For beginners";
+      $('trLbl').textContent=d.grpTrainee||"For trainees";
+      renderSuppGroup('begSupps','begSummary','begChevron',BEG_SUPPS,begOpen);
+      renderSuppGroup('trSupps','trSummary','trChevron',TR_SUPPS,trOpen);
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('lgFood').textContent=d.lgFood; $('lgSupp').textContent=d.lgSupp; $('lgEst').textContent=d.lgEst;
+      $('microLbl').textContent=d.microLbl; $('noSuppTxt').textContent=d.noSupp;
+      if(d.foodAd){ $('foodAdLabel').textContent=d.foodAd.label; $('foodAdName').textContent=d.foodAd.name; $('foodAdDesc').textContent=d.foodAd.desc; $('foodAdCta').textContent=d.foodAd.cta; }
+      $('suppHint').textContent=d.suppHint;
+      renderMicros(); renderSupps();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('microLbl').style.color=t.sub;
+      $('noSuppCard').style.background=t.card; $('noSuppCard').style.borderColor=t.cardBd; $('noSuppTxt').style.color=t.body;
+      $('foodAdCard').style.background=t.card; $('foodAdCard').style.borderColor=t.cardBd;
+      $('foodAdIcon').style.background= dark?"#2A2418":"#F3E9D2";
+      $('foodAdName').style.color=t.txt; $('foodAdDesc').style.color=t.sub; $('foodAdLabel').style.color=t.muted; $('foodAdCta').style.color=t.accent;
+      [$('begBtn'),$('trBtn')].forEach(function(b){ b.style.background=t.card; b.style.borderColor=t.cardBd; });
+      $('begLbl').style.color=t.txt; $('trLbl').style.color=t.txt;
+      $('suppHint').style.color=t.muted;
+      $('lgEst').style.background=t.estBg; $('lgEst').style.color=t.estTx;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderMicros(); renderSupps();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('begBtn').onclick=function(){ begOpen=!begOpen; renderSupps(); };
+    $('trBtn').onclick=function(){ trOpen=!trOpen; renderSupps(); };
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+</body>
+</html>

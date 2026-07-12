@@ -1,163 +1,243 @@
--- revo fit — starter Supabase schema
--- ---------------------------------------------------------------------------
--- Scope: only what the screens implemented so far need
--- (signup/login, onboarding language+region, goal_setup, home).
--- The original design references ~25 tables (profiles, goals, daily_logs,
--- meals, training_logs, subscriptions, etc.) — add those incrementally as
--- each screen (log, nutrition, recipes, ranking, medals, billing, ...) gets
--- implemented. This file is a foundation, not the final schema.
---
--- How to apply: Supabase dashboard → SQL Editor → paste and run.
--- Or via CLI: supabase db push (after `supabase link`).
--- ---------------------------------------------------------------------------
+-- =====================================================================
+-- revo fit — Supabase スキーマ（docs/01・02・03 の設計書に準拠）
+-- ローカル版（localStorage）から移行する際に適用する。
+-- RLS：全テーブル「本人のみ」。visibility による読み取り制御は profile のみ。
+-- =====================================================================
 
--- Every table with a user_id column gets Row Level Security enabled below,
--- so a user can only ever read/write their own rows (roadmap §9 checklist).
-
-create extension if not exists "uuid-ossp";
-
--- ---------------------------------------------------------------------------
--- profiles: one row per auth.users row. Created automatically on signup
--- via the trigger at the bottom of this file.
--- ---------------------------------------------------------------------------
-create table if not exists public.profiles (
-  id uuid primary key references auth.users (id) on delete cascade,
-  locale text not null default 'ja',        -- one of the 14 LocaleCode values
-  region text,                              -- ISO-ish region code chosen in onboarding (e.g. "JP")
-  theme text not null default 'dark' check (theme in ('dark', 'light')),
-  display_name text,
+-- ---------- profile（docs/01 §5 統合版 ＋ docs/04 §3 テーマ列） ----------
+create table if not exists profile (
+  user_id uuid primary key references auth.users(id),
+  -- 言語・国
+  lang text, country text,
+  -- 基本プロフィール（goal_setup）
+  nickname text,
+  level text,                 -- 'beginner' | 'experienced'
+  goals text[],               -- ['lose','gain','maintain','sleep','gut'] 複数可
+  height_cm numeric, weight_kg numeric, goal_weight_kg numeric,
+  body_fat numeric, body_muscle numeric,
+  -- SNS公開プロフィール（sns_profile）
   avatar_url text,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  display_name text,
+  username text unique,       -- @ユーザー名。全体で一意
+  title text,
+  bio text,                   -- 160字まで（アプリ側で制限）
+  links jsonb default '{}',   -- {"instagram":"...","x":"...","youtube":"..."}
+  visibility text default 'all',  -- 'all'|'followers'|'private'
+  -- テーマ（docs/04）
+  theme_color text default 'groove',  -- 'chill'|'groove'|'energetic'|'focus'|'muse'
+  theme_mode  text default 'dark',    -- 'dark'|'light'
+  -- 状態
+  onboarded boolean default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
-alter table public.profiles enable row level security;
-
-create policy "profiles: read own" on public.profiles
-  for select using (auth.uid() = id);
-create policy "profiles: update own" on public.profiles
-  for update using (auth.uid() = id);
-create policy "profiles: insert own" on public.profiles
-  for insert with check (auth.uid() = id);
-
--- ---------------------------------------------------------------------------
--- user_goals: the multi-select goals from goal_setup ("lose", "gain",
--- "maintain", "sleep", "gut"). A user can hold several at once.
--- ---------------------------------------------------------------------------
-create table if not exists public.user_goals (
-  user_id uuid not null references public.profiles (id) on delete cascade,
-  goal_key text not null check (goal_key in ('lose', 'gain', 'maintain', 'sleep', 'gut')),
-  created_at timestamptz not null default now(),
-  primary key (user_id, goal_key)
+-- ---------- daily_log（docs/03 §2 親テーブル） ----------
+create table if not exists daily_log (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id),
+  log_date date not null,
+  body_weight numeric, body_fat numeric, body_muscle numeric,
+  sleep_hours numeric, sleep_quality int,
+  move_total_min int default 0,
+  water_total_ml int default 0,
+  diet_style int default 0,                 -- 0:バランス 1:低糖質 2:低脂質
+  protein_g numeric, fat_g numeric, carb_g numeric,
+  sugar_g numeric, fiber_g numeric, salt_g numeric,
+  cond_mood int, cond_bowel int, muscle_sore boolean default false,
+  cond_note text,
+  payload jsonb,                            -- クライアント完全復元用（明細含む。正規化テーブルは第2段階）
+  updated_at timestamptz default now(),
+  unique(user_id, log_date)                 -- 1ユーザー×1日=1レコード（upsertキー）
 );
 
-alter table public.user_goals enable row level security;
-
-create policy "user_goals: read own" on public.user_goals
-  for select using (auth.uid() = user_id);
-create policy "user_goals: write own" on public.user_goals
-  for insert with check (auth.uid() = user_id);
-create policy "user_goals: delete own" on public.user_goals
-  for delete using (auth.uid() = user_id);
-
--- ---------------------------------------------------------------------------
--- body_metrics: point-in-time entries from goal_setup's sliders, and later
--- from any "update my weight" flow. Keeping this as a time series (rather
--- than columns on profiles) lets the analysis/forecast screens chart trends.
--- ---------------------------------------------------------------------------
-create table if not exists public.body_metrics (
-  id uuid primary key default uuid_generate_v4(),
-  user_id uuid not null references public.profiles (id) on delete cascade,
-  recorded_at timestamptz not null default now(),
-  weight_kg numeric(5, 2),
-  height_cm numeric(5, 1),
-  goal_weight_kg numeric(5, 2),
-  body_fat_pct numeric(4, 1),
-  muscle_mass_kg numeric(5, 2)
+-- ---------- 子テーブル（docs/03 §2） ----------
+create table if not exists workout_set (
+  id uuid primary key default gen_random_uuid(),
+  log_id uuid not null references daily_log(id) on delete cascade,
+  part text,
+  exercise text,
+  weight_kg numeric,
+  reps int,
+  sets int,
+  sort int default 0
 );
 
-alter table public.body_metrics enable row level security;
-
-create policy "body_metrics: read own" on public.body_metrics
-  for select using (auth.uid() = user_id);
-create policy "body_metrics: write own" on public.body_metrics
-  for insert with check (auth.uid() = user_id);
-create policy "body_metrics: update own" on public.body_metrics
-  for update using (auth.uid() = user_id);
-
--- ---------------------------------------------------------------------------
--- daily_scores: the rf score (0-100) and its four factors (sleep/food/move/
--- recover) shown on the home ring + gauges. One row per user per day.
--- Until the log/nutrition/training screens exist, this table stays empty for
--- new users — which is exactly the "empty state" the home screen expects
--- (see src/app/home/page.tsx: useHomeSummary() returns null when there's no
--- row for today, and the UI shows the zero/empty state per roadmap §13).
--- ---------------------------------------------------------------------------
-create table if not exists public.daily_scores (
-  user_id uuid not null references public.profiles (id) on delete cascade,
-  score_date date not null default current_date,
-  total_score smallint check (total_score between 0 and 100),
-  sleep_score smallint check (sleep_score between 0 and 100),
-  food_score smallint check (food_score between 0 and 100),
-  move_score smallint check (move_score between 0 and 100),
-  recover_score smallint check (recover_score between 0 and 100),
-  next_step_key text, -- references a catalog of "today's one step" suggestions (future table)
-  created_at timestamptz not null default now(),
-  primary key (user_id, score_date)
+create table if not exists meal_entry (
+  id uuid primary key default gen_random_uuid(),
+  log_id uuid not null references daily_log(id) on delete cascade,
+  slot text,          -- 'breakfast'|'lunch'|'dinner'|'snack'
+  name text,
+  kcal int,
+  protein_g numeric, fat_g numeric, carb_g numeric,
+  photo_url text
 );
 
-alter table public.daily_scores enable row level security;
+create table if not exists water_intake (
+  id uuid primary key default gen_random_uuid(),
+  log_id uuid not null references daily_log(id) on delete cascade,
+  kind text,
+  ml int,
+  is_supp boolean default false
+);
 
-create policy "daily_scores: read own" on public.daily_scores
-  for select using (auth.uid() = user_id);
-create policy "daily_scores: write own" on public.daily_scores
-  for insert with check (auth.uid() = user_id);
-create policy "daily_scores: update own" on public.daily_scores
-  for update using (auth.uid() = user_id);
+-- ---------- daily_score（docs/02 §4） ----------
+create table if not exists daily_score (
+  user_id uuid not null references auth.users(id),
+  log_date date not null,
+  sleep_score int, food_score int, move_score int, recover_score int,
+  total_score int,             -- 加重平均（睡眠25/食事30/運動25/回復20）
+  updated_at timestamptz default now(),
+  primary key(user_id, log_date)
+);
 
--- ---------------------------------------------------------------------------
--- subscriptions: placeholder for the plans/billing/cross_confirm/receipt
--- screens (not yet implemented). Kept minimal — expand once Stripe (web) and
--- StoreKit/Play Billing (native, if that path is revisited) are wired up.
--- Do NOT trust amounts/plan from the client — this table is written only by
--- a server-side webhook handler once Stripe is connected (roadmap §9).
--- ---------------------------------------------------------------------------
-create table if not exists public.subscriptions (
-  user_id uuid primary key references public.profiles (id) on delete cascade,
-  plan text not null default 'free' check (plan in ('free', 'basic', 'standard', 'cross')),
-  billing_cycle text check (billing_cycle in ('monthly', 'yearly')),
+-- ---------- RLS（docs/03 §8：必須） ----------
+-- ※ このスクリプトは何度実行しても安全（既存ポリシーは作り直す）
+alter table profile enable row level security;
+alter table daily_log enable row level security;
+alter table workout_set enable row level security;
+alter table meal_entry enable row level security;
+alter table water_intake enable row level security;
+alter table daily_score enable row level security;
+
+drop policy if exists "profile_own_write" on profile;
+drop policy if exists "profile_public_read" on profile;
+drop policy if exists "daily_log_own" on daily_log;
+drop policy if exists "daily_score_own" on daily_score;
+drop policy if exists "workout_set_own" on workout_set;
+drop policy if exists "meal_entry_own" on meal_entry;
+drop policy if exists "water_intake_own" on water_intake;
+
+create policy "profile_own_write" on profile
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "profile_public_read" on profile
+  for select using (visibility = 'all' or auth.uid() = user_id);
+  -- 'followers' の読み取りはフォロー関係テーブル導入時に拡張する
+
+create policy "daily_log_own" on daily_log
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "daily_score_own" on daily_score
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "workout_set_own" on workout_set
+  for all using (exists (select 1 from daily_log l where l.id = log_id and l.user_id = auth.uid()));
+create policy "meal_entry_own" on meal_entry
+  for all using (exists (select 1 from daily_log l where l.id = log_id and l.user_id = auth.uid()));
+create policy "water_intake_own" on water_intake
+  for all using (exists (select 1 from daily_log l where l.id = log_id and l.user_id = auth.uid()));
+
+-- 旧版スキーマからの差分（存在しなければ追加）
+alter table daily_log add column if not exists payload jsonb;
+
+-- ---------- subscriptions（Stripe Webhook が service_role で書き込む） ----------
+create table if not exists subscriptions (
+  user_id uuid primary key references auth.users(id),
+  plan text,                    -- 'basic' | 'standard' | 'cross'
+  cycle text,                   -- 'month' | 'year'
+  status text,                  -- 'active' | 'canceled' | Stripeのstatus
+  cancel_at_period_end boolean default false,
+  current_period_end timestamptz,
   stripe_customer_id text,
   stripe_subscription_id text,
-  current_period_end timestamptz,
-  cancel_at_period_end boolean not null default false,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz default now()
 );
-
-alter table public.subscriptions enable row level security;
-
-create policy "subscriptions: read own" on public.subscriptions
+alter table subscriptions enable row level security;
+drop policy if exists "subscriptions_read_own" on subscriptions;
+create policy "subscriptions_read_own" on subscriptions
   for select using (auth.uid() = user_id);
--- No client insert/update policy on purpose: only the Stripe webhook
--- (using the service role key, which bypasses RLS) should write here.
+-- 書き込みポリシーは意図的に無し（クライアントから書けない。Webhookのservice_roleのみ）
 
--- ---------------------------------------------------------------------------
--- Auto-create a profiles row whenever a new auth.users row is created
--- (i.e. right after signup, before addhome/onboarding runs).
--- ---------------------------------------------------------------------------
-create or replace function public.handle_new_user()
-returns trigger
-language plpgsql
-security definer set search_path = public
-as $$
+-- ---------- SNS（posts / cheers / follows） ----------
+create table if not exists posts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id),
+  kind text not null,             -- 'training' | 'recipe' | 'ranking'
+  title text, body text,
+  tags text[] default '{}',
+  moods text[] default '{}',
+  photos jsonb default '[]',      -- v1は縮小dataURL。将来はStorage URLへ
+  extra jsonb default '{}',       -- レシピの材料・工程など
+  author_name text,               -- 表示名スナップショット
+  cheer_count int default 0,
+  created_at timestamptz default now()
+);
+alter table posts enable row level security;
+drop policy if exists "posts_read_all" on posts;
+create policy "posts_read_all" on posts for select using (true);
+drop policy if exists "posts_write_own" on posts;
+create policy "posts_write_own" on posts
+  for insert with check (auth.uid() = user_id);
+drop policy if exists "posts_update_own" on posts;
+create policy "posts_update_own" on posts
+  for update using (auth.uid() = user_id);
+drop policy if exists "posts_delete_own" on posts;
+create policy "posts_delete_own" on posts
+  for delete using (auth.uid() = user_id);
+
+create table if not exists cheers (
+  post_id uuid not null references posts(id) on delete cascade,
+  user_id uuid not null references auth.users(id),
+  created_at timestamptz default now(),
+  primary key(post_id, user_id)
+);
+alter table cheers enable row level security;
+drop policy if exists "cheers_read_all" on cheers;
+create policy "cheers_read_all" on cheers for select using (true);
+drop policy if exists "cheers_write_own" on cheers;
+create policy "cheers_write_own" on cheers
+  for insert with check (auth.uid() = user_id);
+
+create table if not exists follows (
+  follower_id uuid not null references auth.users(id),
+  followee_id uuid not null references auth.users(id),
+  created_at timestamptz default now(),
+  primary key(follower_id, followee_id)
+);
+alter table follows enable row level security;
+drop policy if exists "follows_read_all" on follows;
+create policy "follows_read_all" on follows for select using (true);
+drop policy if exists "follows_write_own" on follows;
+create policy "follows_write_own" on follows
+  for insert with check (auth.uid() = follower_id);
+drop policy if exists "follows_delete_own" on follows;
+create policy "follows_delete_own" on follows
+  for delete using (auth.uid() = follower_id);
+
+-- 応援数はトリガで集計（クライアントからの直接更新を不要に）
+create or replace function bump_cheer_count() returns trigger as $$
 begin
-  insert into public.profiles (id) values (new.id);
-  insert into public.subscriptions (user_id, plan) values (new.id, 'free');
+  update posts set cheer_count = cheer_count + 1 where id = new.post_id;
   return new;
-end;
-$$;
+end; $$ language plpgsql security definer;
+drop trigger if exists trg_bump_cheer on cheers;
+create trigger trg_bump_cheer after insert on cheers
+  for each row execute function bump_cheer_count();
 
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+-- ---------- tips（応援・投げ銭。Webhook が service_role で書込） ----------
+create table if not exists tips (
+  id text primary key,            -- Stripe checkout session id（冪等キー）
+  post_id uuid references posts(id) on delete set null,
+  from_user uuid references auth.users(id),
+  to_user uuid references auth.users(id),
+  amount int not null,
+  currency text default 'jpy',
+  created_at timestamptz default now()
+);
+alter table tips enable row level security;
+drop policy if exists "tips_read_own" on tips;
+create policy "tips_read_own" on tips
+  for select using (auth.uid() = from_user or auth.uid() = to_user);
+-- 書き込みポリシー無し（Webhookのservice_roleのみ）
+
+-- 背景テーマ（2026-07-09 追加）
+alter table profile add column if not exists bg_theme text;
+
+-- ---------- food_cache（AIカロリー推定の共有キャッシュ。書込はservice_roleのみ） ----------
+create table if not exists food_cache (
+  name_norm text primary key,
+  portions jsonb default '[]',
+  created_at timestamptz default now()
+);
+alter table food_cache enable row level security;
+drop policy if exists "food_cache_read_all" on food_cache;
+create policy "food_cache_read_all" on food_cache for select using (true);

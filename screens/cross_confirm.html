@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>横断プラン — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">横断プランの申し込み確認。3つのアプリ、金額、月払いと年払いの切替、次回請求日、同意事項、そして申し込みボタン。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">お申し込みの確認</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:18px 18px 24px; max-height:640px; overflow-y:auto;">
+
+    <!-- 申し込むプラン -->
+    <div id="planCard" style="background:linear-gradient(150deg,#2A2416,#1A1814); border:1px solid #3A352A; border-radius:18px; padding:20px 18px; margin:0 0 16px; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:-40px; right:-40px; width:150px; height:150px; border-radius:50%; background:radial-gradient(circle, rgba(227,197,106,0.14), transparent 70%); pointer-events:none;"></div>
+      <div style="position:relative;">
+        <p id="planKicker" style="font-size:11px; color:#E3C56A; letter-spacing:0.14em; margin:0 0 6px;">横断プラン</p>
+        <p id="planTitle" style="font-size:22px; color:#F0EBE2; margin:0 0 5px; font-weight:200; font-family:Jost; letter-spacing:0.5px;">revo in your life</p>
+        <p id="planDesc" style="font-size:12px; color:#A89C84; margin:0; line-height:1.6;">fit・life をまとめて登録。</p>
+      </div>
+    </div>
+
+    <!-- 月/年 トグル -->
+    <div id="cycleToggle" style="display:flex; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:4px; margin:0 0 8px;">
+      <button id="tabMonthBtn" style="flex:1; font-size:12px; font-weight:600; padding:9px; border-radius:9px; border:none; cursor:pointer; background:#221E14; color:#E3C56A;">月払い</button>
+      <button id="tabYearBtn" style="flex:1; font-size:12px; font-weight:500; padding:9px; border-radius:9px; border:none; cursor:pointer; background:transparent; color:#8A7E68;">年払い</button>
+    </div>
+
+    <!-- 金額 -->
+    <div id="priceCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:16px; margin:0 0 8px;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between;">
+        <span id="priceLbl" style="font-size:13px; color:#B0A488;">お支払い金額</span>
+        <div style="text-align:right;">
+          <span id="priceVal" style="font-size:26px; color:#F0EBE2; font-weight:600; font-family:Jost;">¥1,960</span>
+          <span id="priceCycle" style="font-size:12px; color:#8A7E68;">/ 月</span>
+        </div>
+      </div>
+      <div id="saveRow" style="display:none; margin:10px 0 0; padding:11px 12px; background:#16241E; border-radius:9px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin:0 0 6px;">
+          <span id="cmpLbl" style="font-size:11px; color:#8A9E94;">月払いだと</span>
+          <span id="cmpVal" style="font-size:12px; color:#8A9E94; font-family:Jost; text-decoration:line-through;">¥23,520 / 年</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin:0 0 6px;">
+          <span id="saveTxt" style="font-size:12px; color:#5DCAA5; font-weight:600;">2ヶ月分お得</span>
+          <span id="saveVal" style="font-size:13px; color:#5DCAA5; font-weight:600; font-family:Jost;">¥3,920 お得</span>
+        </div>
+        <p id="saveReason" style="font-size:10px; color:#6E8478; margin:0; line-height:1.5;">まとめてお支払いの分、お返しします。</p>
+      </div>
+    </div>
+
+    <!-- 内訳 -->
+    <div id="breakdownCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:15px; margin:0 0 8px;">
+      <p id="bdLbl" style="font-size:12px; color:#B0A488; margin:0 0 12px; font-weight:500;">ふくまれるもの</p>
+      <div id="bdRow" style="display:flex; flex-direction:column; gap:11px;"></div>
+    </div>
+
+    <!-- 次回請求日 -->
+    <div id="dateCard" style="display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:13px 14px; margin:0 0 16px;">
+      <i class="ti ti-calendar" style="font-size:16px; color:#8A7E68;"></i>
+      <span id="dateTxt" style="font-size:12px; color:#B0A488;">初回は本日、次回は 2026年8月2日 に更新</span>
+    </div>
+
+    <!-- 同意事項 -->
+    <div id="agreeCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:15px; margin:0 0 16px;">
+      <div id="agreeRow" style="display:flex; flex-direction:column; gap:9px;"></div>
+    </div>
+
+    <!-- 申し込みボタン -->
+    <button id="submitBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;"><span id="submitLbl">同意して申し込む</span><i class="ti ti-arrow-right" style="font-size:17px;"></i></button>
+    <p id="cancelNote" style="font-size:10px; color:#6E6555; margin:12px 0 0; text-align:center; line-height:1.6;">最初の14日間は、合わなければ全額返金します。以降に解約された場合も、更新日まではお使いいただけます。</p>
+
+    <!-- 完了トースト -->
+    <div id="doneOverlay" style="display:none; position:absolute; inset:0; background:rgba(16,15,12,0.92); z-index:40; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+      <div style="width:66px; height:66px; border-radius:50%; background:#E3C56A; display:flex; align-items:center; justify-content:center; margin:0 0 18px;"><i class="ti ti-check" style="font-size:34px; color:#16140F;"></i></div>
+      <p id="doneTitle" style="font-size:20px; color:#F0EBE2; margin:0 0 8px; font-weight:500;">横断プランになりました</p>
+      <p id="doneSub" style="font-size:13px; color:#A89C84; margin:0 0 22px; line-height:1.6;">総合スコアで、fit と life の合計が見られます。</p>
+      <button id="doneBtn" style="background:transparent; border:1px solid #E3C56A; color:#E3C56A; font-size:13px; font-weight:600; padding:11px 22px; border-radius:11px; cursor:pointer;">総合スコアを見る</button>
+    </div>
+
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur=REVO.lang(), dark=REVO.dark(), cycle="month";
+    var PM={"日本語":"¥1,960","English":"$12.99","简体中文":"¥98","繁體中文":"NT$390","한국어":"₩17,500","ภาษาไทย":"฿329","Français":"12,99 €","Español":"12,99 €","Deutsch":"12,99 €","Italiano":"12,99 €","Português":"R$64,90","हिन्दी":"₹979","Tiếng Việt":"329.000₫","Bahasa Indonesia":"Rp197.000"};
+    var PY={"日本語":"¥19,600","English":"$129.90","简体中文":"¥980","繁體中文":"NT$3,900","한국어":"₩175,000","ภาษาไทย":"฿3,290","Français":"129,90 €","Español":"129,90 €","Deutsch":"129,90 €","Italiano":"129,90 €","Português":"R$649","हिन्दी":"₹9,790","Tiếng Việt":"3.290.000₫","Bahasa Indonesia":"Rp1.970.000"};
+    var SAVE={"日本語":"¥3,920","English":"$26","简体中文":"¥196","繁體中文":"NT$780","한국어":"₩35,000","ภาษาไทย":"฿658","Français":"26 €","Español":"26 €","Deutsch":"26 €","Italiano":"26 €","Português":"R$130","हिन्दी":"₹1,958","Tiếng Việt":"658.000₫","Bahasa Indonesia":"Rp394.000"};
+    var PMY={"日本語":"¥23,520","English":"$155.88","简体中文":"¥1,176","繁體中文":"NT$4,680","한국어":"₩210,000","ภาษาไทย":"฿3,948","Français":"155,88 €","Español":"155,88 €","Deutsch":"155,88 €","Italiano":"155,88 €","Português":"R$778","हिन्दी":"₹11,748","Tiếng Việt":"3.948.000₫","Bahasa Indonesia":"Rp2.364.000"};
+    var T={
+      dark:{bg:"#16140F",title:"#F0EBE2",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",lbl:"#B0A488",card:"#1A1814",cardBd:"#2A2620",accent:"#E3C56A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",toggleOn:"#221E14"},
+      light:{bg:"#FFFFFF",title:"#2E2A24",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",lbl:"#7A7060",card:"#FBF7F1",cardBd:"#F0EAE0",accent:"#BA7517",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",toggleOn:"#FBF3E0"}
+    };
+    var D={
+      "日本語":{hdr:"お申し込みの確認",kicker:"横断プラン",title:"revo in your life",desc:"fit・life をまとめて登録。",
+        tabMonth:"月払い",tabYear:"年払い",priceLbl:"お支払い金額",cyMonth:"/ 月",cyYear:"/ 年",save:"年払いで 2ヶ月分お得（{s}分）",cmpLbl:"月払いだと",saveMain:"2ヶ月分お得",saveSuffix:"お得",saveReason:"まとめてお支払いの分、お返しします。",
+        bdLbl:"ふくまれるもの",bd:[["ti-barbell","revo fit","スタンダードのすべて","use"],["ti-heart","revo life","プレミアムのすべて","use"],["ti-run","revo running","近日登場","soon"],["ti-help-circle","？","構想中・未定","idea"]],
+        dateMonth:"初回は本日、次回は 2026年8月2日 に更新",dateYear:"初回は本日、次回は 2027年7月2日 に更新",
+        agree:["更新日に自動で更新されます","金額と日付は、いつでも確認できます","最初の14日間は全額返金、以降は更新日まで使えます"],
+        submit:"同意して申し込む",cancelNote:"最初の14日間は、合わなければ全額返金します。以降に解約された場合も、更新日まではお使いいただけます。",
+        doneTitle:"横断プランになりました",doneSub:"総合スコアで、fit と life の合計が見られます。",doneBtn:"総合スコアを見る",
+        useLbl:"利用中",soonLbl:"近日",ideaLbl:"?"},
+      "English":{hdr:"Confirm your plan",kicker:"Cross plan",title:"revo in your life",desc:"Subscribe to fit and life together.",
+        tabMonth:"Monthly",tabYear:"Yearly",priceLbl:"You pay",cyMonth:"/ mo",cyYear:"/ yr",save:"Yearly saves 2 months ({s})",cmpLbl:"If paid monthly",saveMain:"2 months free",saveSuffix:"saved",saveReason:"A little back for paying up front.",
+        bdLbl:"What's included",bd:[["ti-barbell","revo fit","Everything in Standard","use"],["ti-heart","revo life","Everything in Premium","use"],["ti-run","revo running","Coming soon","soon"],["ti-help-circle","？","In the works, TBD","idea"]],
+        dateMonth:"Starts today, renews Aug 2, 2026",dateYear:"Starts today, renews Jul 2, 2027",
+        agree:["Renews automatically on the renewal date","Amount and date are always visible","Full refund within 14 days, then use until renewal"],
+        submit:"Agree and subscribe",cancelNote:"Full refund within the first 14 days. After that, you keep access until the renewal date.",
+        doneTitle:"You're on the Cross plan",doneSub:"Total score now shows fit and life combined.",doneBtn:"See total score",
+        useLbl:"active",soonLbl:"soon",ideaLbl:"?"},
+      "简体中文":{hdr:"确认订阅",kicker:"横跨套餐",title:"revo in your life",desc:"fit 与 life 一并登录。",
+        tabMonth:"按月",tabYear:"按年",priceLbl:"应付金额",cyMonth:"/ 月",cyYear:"/ 年",save:"按年省2个月（{s}）",cmpLbl:"按月付则",saveMain:"省2个月",saveSuffix:"已省",saveReason:"一次付清，回馈一点。",
+        bdLbl:"包含内容",bd:[["ti-barbell","revo fit","标准版全部","use"],["ti-heart","revo life","高级版全部","use"],["ti-run","revo running","即将推出","soon"],["ti-help-circle","？","构想中·未定","idea"]],
+        dateMonth:"今日开始，2026年8月2日续费",dateYear:"今日开始，2027年7月2日续费",
+        agree:["将在续费日自动续费","金额与日期随时可查","14天内全额退款，之后可用至续费日"],
+        submit:"同意并订阅",cancelNote:"前14天内不满意可全额退款。之后取消，仍可用至续费日。",
+        doneTitle:"已开通横跨套餐",doneSub:"综合评分现在显示 fit 与 life 合计。",doneBtn:"查看综合评分",
+        useLbl:"使用中",soonLbl:"即将",ideaLbl:"?"},
+      "繁體中文":{hdr:"確認訂閱",kicker:"橫跨方案",title:"revo in your life",desc:"fit 與 life 一併登錄。",
+        tabMonth:"按月",tabYear:"按年",priceLbl:"應付金額",cyMonth:"/ 月",cyYear:"/ 年",save:"按年省2個月（{s}）",cmpLbl:"按月付則",saveMain:"省2個月",saveSuffix:"已省",saveReason:"一次付清，回饋一點。",
+        bdLbl:"包含內容",bd:[["ti-barbell","revo fit","標準版全部","use"],["ti-heart","revo life","高級版全部","use"],["ti-run","revo running","即將推出","soon"],["ti-help-circle","？","構想中·未定","idea"]],
+        dateMonth:"今日開始，2026年8月2日續訂",dateYear:"今日開始，2027年7月2日續訂",
+        agree:["將在續訂日自動續訂","金額與日期隨時可查","14天內全額退款，之後可用至續訂日"],
+        submit:"同意並訂閱",cancelNote:"前14天內不滿意可全額退款。之後取消，仍可用至續訂日。",
+        doneTitle:"已開通橫跨方案",doneSub:"綜合評分現在顯示 fit 與 life 合計。",doneBtn:"查看綜合評分",
+        useLbl:"使用中",soonLbl:"即將",ideaLbl:"?"},
+      "한국어":{hdr:"신청 확인",kicker:"크로스 플랜",title:"revo in your life",desc:"fit과 life를 함께 등록.",
+        tabMonth:"월간",tabYear:"연간",priceLbl:"결제 금액",cyMonth:"/ 월",cyYear:"/ 년",save:"연간 결제로 2개월 무료({s})",cmpLbl:"월 결제 시",saveMain:"2개월 무료",saveSuffix:"절약",saveReason:"한 번에 결제하시는 만큼 돌려드려요.",
+        bdLbl:"포함 내용",bd:[["ti-barbell","revo fit","스탠다드 전부","use"],["ti-heart","revo life","프리미엄 전부","use"],["ti-run","revo running","곧 출시","soon"],["ti-help-circle","？","구상 중·미정","idea"]],
+        dateMonth:"오늘 시작, 2026년 8월 2일 갱신",dateYear:"오늘 시작, 2027년 7월 2일 갱신",
+        agree:["갱신일에 자동으로 갱신됩니다","금액과 날짜는 언제든 확인 가능","14일 내 전액 환불, 이후 갱신일까지 이용"],
+        submit:"동의하고 신청",cancelNote:"첫 14일간 맞지 않으면 전액 환불해 드려요. 이후 해지 시에도 갱신일까지 사용 가능합니다.",
+        doneTitle:"크로스 플랜이 되었어요",doneSub:"종합 점수에서 fit과 life 합계를 볼 수 있어요.",doneBtn:"종합 점수 보기",
+        useLbl:"이용 중",soonLbl:"곧",ideaLbl:"?"},
+      "ภาษาไทย":{hdr:"ยืนยันการสมัคร",kicker:"แพ็กเกจข้ามแอป",title:"revo in your life",desc:"ลงทะเบียน fit และ life พร้อมกัน",
+        tabMonth:"รายเดือน",tabYear:"รายปี",priceLbl:"ยอดชำระ",cyMonth:"/ เดือน",cyYear:"/ ปี",save:"รายปีประหยัด 2 เดือน ({s})",cmpLbl:"ถ้าจ่ายรายเดือน",saveMain:"ฟรี 2 เดือน",saveSuffix:"ประหยัด",saveReason:"จ่ายครั้งเดียว คืนให้บางส่วน",
+        bdLbl:"สิ่งที่รวมอยู่",bd:[["ti-barbell","revo fit","ทุกอย่างในสแตนดาร์ด","use"],["ti-heart","revo life","ทุกอย่างในพรีเมียม","use"],["ti-run","revo running","เร็วๆ นี้","soon"],["ti-help-circle","？","กำลังคิด·ยังไม่กำหนด","idea"]],
+        dateMonth:"เริ่มวันนี้ ต่ออายุ 2 ส.ค. 2026",dateYear:"เริ่มวันนี้ ต่ออายุ 2 ก.ค. 2027",
+        agree:["ต่ออายุอัตโนมัติในวันต่ออายุ","ดูยอดและวันที่ได้ตลอด","คืนเงินเต็มใน 14 วัน จากนั้นใช้ได้ถึงวันต่ออายุ"],
+        submit:"ยอมรับและสมัคร",cancelNote:"14 วันแรกคืนเงินเต็มถ้าไม่ถูกใจ หลังจากนั้นหากยกเลิกยังใช้ได้ถึงวันต่ออายุ",
+        doneTitle:"เป็นแพ็กเกจข้ามแอปแล้ว",doneSub:"คะแนนรวมแสดง fit และ life รวมกันแล้ว",doneBtn:"ดูคะแนนรวม",
+        useLbl:"กำลังใช้",soonLbl:"เร็วๆนี้",ideaLbl:"?"},
+      "Français":{hdr:"Confirmer l'abonnement",kicker:"Plan croisé",title:"revo in your life",desc:"Abonnez-vous à fit et life ensemble.",
+        tabMonth:"Mensuel",tabYear:"Annuel",priceLbl:"Montant",cyMonth:"/ mois",cyYear:"/ an",save:"L'annuel offre 2 mois ({s})",cmpLbl:"En mensuel",saveMain:"2 mois offerts",saveSuffix:"économisé",saveReason:"Un petit retour pour le paiement en une fois.",
+        bdLbl:"Ce qui est inclus",bd:[["ti-barbell","revo fit","Tout Standard","use"],["ti-heart","revo life","Tout Premium","use"],["ti-run","revo running","Bientôt disponible","soon"],["ti-help-circle","？","En préparation, à venir","idea"]],
+        dateMonth:"Commence aujourd'hui, renouvelé le 2 août 2026",dateYear:"Commence aujourd'hui, renouvelé le 2 juil. 2027",
+        agree:["Renouvellement automatique à la date","Montant et date toujours visibles","Remboursé sous 14 jours, puis accès jusqu'au renouvellement"],
+        submit:"Accepter et s'abonner",cancelNote:"Remboursement intégral sous 14 jours. Ensuite, accès jusqu'à la date de renouvellement.",
+        doneTitle:"Vous êtes sur le plan Croisé",doneSub:"Le score total montre fit et life réunis.",doneBtn:"Voir le score total",
+        useLbl:"actif",soonLbl:"bientôt",ideaLbl:"?"},
+      "Español":{hdr:"Confirmar plan",kicker:"Plan cruzado",title:"revo in your life",desc:"Suscríbete a fit y life juntos.",
+        tabMonth:"Mensual",tabYear:"Anual",priceLbl:"Importe",cyMonth:"/ mes",cyYear:"/ año",save:"Anual ahorra 2 meses ({s})",cmpLbl:"Si pagas al mes",saveMain:"2 meses gratis",saveSuffix:"ahorrado",saveReason:"Algo de vuelta por pagar de una vez.",
+        bdLbl:"Qué incluye",bd:[["ti-barbell","revo fit","Todo Estándar","use"],["ti-heart","revo life","Todo Premium","use"],["ti-run","revo running","Muy pronto","soon"],["ti-help-circle","？","En desarrollo, por definir","idea"]],
+        dateMonth:"Empieza hoy, se renueva el 2 ago 2026",dateYear:"Empieza hoy, se renueva el 2 jul 2027",
+        agree:["Se renueva automáticamente en la fecha","Importe y fecha siempre visibles","Reembolso en 14 días, luego acceso hasta la renovación"],
+        submit:"Aceptar y suscribirse",cancelNote:"Reembolso total en los primeros 14 días. Después, acceso hasta la renovación.",
+        doneTitle:"Ya tienes el plan Cruzado",doneSub:"La puntuación total muestra fit y life juntos.",doneBtn:"Ver puntuación total",
+        useLbl:"activo",soonLbl:"pronto",ideaLbl:"?"},
+      "Deutsch":{hdr:"Abo bestätigen",kicker:"Cross-Plan",title:"revo in your life",desc:"fit und life zusammen abonnieren.",
+        tabMonth:"Monatlich",tabYear:"Jährlich",priceLbl:"Betrag",cyMonth:"/ Mon.",cyYear:"/ Jahr",save:"Jährlich spart 2 Monate ({s})",cmpLbl:"Monatlich gezahlt",saveMain:"2 Monate gratis",saveSuffix:"gespart",saveReason:"Etwas zurück fürs Vorauszahlen.",
+        bdLbl:"Enthalten",bd:[["ti-barbell","revo fit","Alles in Standard","use"],["ti-heart","revo life","Alles in Premium","use"],["ti-run","revo running","Bald verfügbar","soon"],["ti-help-circle","？","In Arbeit, offen","idea"]],
+        dateMonth:"Startet heute, Verlängerung 2. Aug. 2026",dateYear:"Startet heute, Verlängerung 2. Juli 2027",
+        agree:["Verlängert sich automatisch am Datum","Betrag und Datum stets sichtbar","Rückerstattung in 14 Tagen, danach Zugang bis zur Verlängerung"],
+        submit:"Zustimmen und abonnieren",cancelNote:"Volle Rückerstattung in den ersten 14 Tagen. Danach Zugang bis zur Verlängerung.",
+        doneTitle:"Du hast den Cross-Plan",doneSub:"Die Gesamtwertung zeigt fit und life zusammen.",doneBtn:"Gesamtwertung ansehen",
+        useLbl:"aktiv",soonLbl:"bald",ideaLbl:"?"},
+      "Italiano":{hdr:"Conferma piano",kicker:"Piano incrociato",title:"revo in your life",desc:"Abbonati a fit e life insieme.",
+        tabMonth:"Mensile",tabYear:"Annuale",priceLbl:"Importo",cyMonth:"/ mese",cyYear:"/ anno",save:"L'annuale offre 2 mesi ({s})",cmpLbl:"Se paghi al mese",saveMain:"2 mesi gratis",saveSuffix:"risparmi",saveReason:"Un piccolo ritorno per il pagamento unico.",
+        bdLbl:"Cosa include",bd:[["ti-barbell","revo fit","Tutto Standard","use"],["ti-heart","revo life","Tutto Premium","use"],["ti-run","revo running","Presto disponibile","soon"],["ti-help-circle","？","In lavorazione, da definire","idea"]],
+        dateMonth:"Inizia oggi, rinnovo il 2 ago 2026",dateYear:"Inizia oggi, rinnovo il 2 lug 2027",
+        agree:["Si rinnova automaticamente alla data","Importo e data sempre visibili","Rimborso entro 14 giorni, poi accesso fino al rinnovo"],
+        submit:"Accetta e abbonati",cancelNote:"Rimborso totale nei primi 14 giorni. Poi accesso fino al rinnovo.",
+        doneTitle:"Sei sul piano Incrociato",doneSub:"Il punteggio totale mostra fit e life insieme.",doneBtn:"Vedi punteggio totale",
+        useLbl:"attivo",soonLbl:"presto",ideaLbl:"?"},
+      "Português":{hdr:"Confirmar plano",kicker:"Plano cruzado",title:"revo in your life",desc:"Assine fit e life juntos.",
+        tabMonth:"Mensal",tabYear:"Anual",priceLbl:"Valor",cyMonth:"/ mês",cyYear:"/ ano",save:"Anual economiza 2 meses ({s})",cmpLbl:"Se pagar por mês",saveMain:"2 meses grátis",saveSuffix:"economizou",saveReason:"Um retorno por pagar de uma vez.",
+        bdLbl:"O que inclui",bd:[["ti-barbell","revo fit","Tudo do Padrão","use"],["ti-heart","revo life","Tudo do Premium","use"],["ti-run","revo running","Em breve","soon"],["ti-help-circle","？","Em desenvolvimento, a definir","idea"]],
+        dateMonth:"Começa hoje, renova em 2 ago 2026",dateYear:"Começa hoje, renova em 2 jul 2027",
+        agree:["Renova automaticamente na data","Valor e data sempre visíveis","Reembolso em 14 dias, depois acesso até a renovação"],
+        submit:"Aceitar e assinar",cancelNote:"Reembolso total nos primeiros 14 dias. Depois, acesso até a renovação.",
+        doneTitle:"Você está no plano Cruzado",doneSub:"A pontuação total mostra fit e life juntos.",doneBtn:"Ver pontuação total",
+        useLbl:"ativo",soonLbl:"em breve",ideaLbl:"?"},
+      "हिन्दी":{hdr:"सदस्यता की पुष्टि",kicker:"क्रॉस प्लान",title:"revo in your life",desc:"fit और life एक साथ रजिस्टर करें।",
+        tabMonth:"मासिक",tabYear:"वार्षिक",priceLbl:"भुगतान राशि",cyMonth:"/ माह",cyYear:"/ वर्ष",save:"वार्षिक में 2 महीने मुफ्त ({s})",cmpLbl:"मासिक भुगतान पर",saveMain:"2 महीने मुफ्त",saveSuffix:"बचत",saveReason:"एकमुश्त भुगतान पर थोड़ा वापस।",
+        bdLbl:"क्या शामिल है",bd:[["ti-barbell","revo fit","स्टैंडर्ड का सब","use"],["ti-heart","revo life","प्रीमियम का सब","use"],["ti-run","revo running","जल्द आ रहा है","soon"],["ti-help-circle","？","विचाराधीन·अनिर्धारित","idea"]],
+        dateMonth:"आज शुरू, 2 अगस्त 2026 को नवीनीकरण",dateYear:"आज शुरू, 2 जुलाई 2027 को नवीनीकरण",
+        agree:["नवीनीकरण तिथि पर स्वतः नवीनीकरण","राशि और तिथि हमेशा दिखती है","14 दिन में पूरा रिफंड, फिर नवीनीकरण तक उपयोग"],
+        submit:"सहमत होकर सदस्यता लें",cancelNote:"पहले 14 दिन में पूरा रिफंड। उसके बाद रद्द करने पर भी नवीनीकरण तक उपयोग।",
+        doneTitle:"आप क्रॉस प्लान पर हैं",doneSub:"कुल स्कोर में अब fit और life साथ दिखते हैं।",doneBtn:"कुल स्कोर देखें",
+        useLbl:"सक्रिय",soonLbl:"जल्द",ideaLbl:"?"},
+      "Tiếng Việt":{hdr:"Xác nhận đăng ký",kicker:"Gói kết hợp",title:"revo in your life",desc:"Đăng ký fit và life cùng lúc.",
+        tabMonth:"Hàng tháng",tabYear:"Hàng năm",priceLbl:"Số tiền",cyMonth:"/ tháng",cyYear:"/ năm",save:"Hàng năm tiết kiệm 2 tháng ({s})",cmpLbl:"Nếu trả theo tháng",saveMain:"2 tháng miễn phí",saveSuffix:"tiết kiệm",saveReason:"Trả một lần, hoàn lại một chút.",
+        bdLbl:"Gồm những gì",bd:[["ti-barbell","revo fit","Toàn bộ Tiêu chuẩn","use"],["ti-heart","revo life","Toàn bộ Premium","use"],["ti-run","revo running","Sắp ra mắt","soon"],["ti-help-circle","？","Đang lên ý tưởng·chưa xác định","idea"]],
+        dateMonth:"Bắt đầu hôm nay, gia hạn 2/8/2026",dateYear:"Bắt đầu hôm nay, gia hạn 2/7/2027",
+        agree:["Tự động gia hạn vào ngày gia hạn","Số tiền và ngày luôn hiển thị","Hoàn tiền trong 14 ngày, sau đó dùng đến ngày gia hạn"],
+        submit:"Đồng ý và đăng ký",cancelNote:"Hoàn tiền đầy đủ trong 14 ngày đầu. Sau đó vẫn dùng đến ngày gia hạn.",
+        doneTitle:"Bạn đã dùng gói Kết hợp",doneSub:"Điểm tổng giờ hiện fit và life cộng lại.",doneBtn:"Xem điểm tổng",
+        useLbl:"đang dùng",soonLbl:"sắp",ideaLbl:"?"},
+      "Bahasa Indonesia":{hdr:"Konfirmasi langganan",kicker:"Paket lintas",title:"revo in your life",desc:"Daftar fit dan life sekaligus.",
+        tabMonth:"Bulanan",tabYear:"Tahunan",priceLbl:"Jumlah bayar",cyMonth:"/ bln",cyYear:"/ thn",save:"Tahunan hemat 2 bulan ({s})",cmpLbl:"Jika bayar bulanan",saveMain:"2 bulan gratis",saveSuffix:"hemat",saveReason:"Sedikit kembali karena bayar di muka.",
+        bdLbl:"Yang termasuk",bd:[["ti-barbell","revo fit","Semua Standar","use"],["ti-heart","revo life","Semua Premium","use"],["ti-run","revo running","Segera hadir","soon"],["ti-help-circle","？","Sedang digodok·belum pasti","idea"]],
+        dateMonth:"Mulai hari ini, perpanjang 2 Agu 2026",dateYear:"Mulai hari ini, perpanjang 2 Jul 2027",
+        agree:["Diperpanjang otomatis pada tanggalnya","Jumlah dan tanggal selalu terlihat","Refund penuh dalam 14 hari, lalu akses sampai perpanjangan"],
+        submit:"Setuju dan berlangganan",cancelNote:"Refund penuh dalam 14 hari pertama. Setelah itu tetap akses sampai perpanjangan.",
+        doneTitle:"Kamu di paket Lintas",doneSub:"Skor total kini menampilkan fit dan life digabung.",doneBtn:"Lihat skor total",
+        useLbl:"aktif",soonLbl:"segera",ideaLbl:"?"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderBreakdown(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('bdRow').innerHTML="";
+      d.bd.forEach(function(it){
+        var st=it[3];
+        var badgeTxt = st==="use"?d.useLbl:(st==="soon"?d.soonLbl:d.ideaLbl);
+        var badgeCol = st==="use"?"#5DCAA5":(st==="soon"?t.accent:t.sub);
+        var badgeBg = st==="use"?(dark?"#16241E":"#EAF6F1"):(st==="soon"?(dark?"#221E14":"#FBF3E0"):(dark?"#1F1C16":"#F1EFE8"));
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:11px;";
+        row.innerHTML='<i class="ti '+it[0]+'" style="font-size:18px; color:'+t.accent+'; width:20px; text-align:center; flex-shrink:0;"></i>'+
+          '<div style="flex:1; min-width:0;"><p style="font-size:13px; color:'+t.txt+'; margin:0; font-weight:500; font-family:Jost;">'+it[1]+'</p><p style="font-size:11px; color:'+t.sub+'; margin:1px 0 0;">'+it[2]+'</p></div>'+
+          '<span style="font-size:9px; color:'+badgeCol+'; background:'+badgeBg+'; padding:2px 8px; border-radius:5px; font-weight:600; flex-shrink:0;">'+badgeTxt+'</span>';
+        $('bdRow').appendChild(row);
+      });
+    }
+    function renderAgree(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('agreeRow').innerHTML="";
+      d.agree.forEach(function(a){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:flex-start; gap:9px;";
+        row.innerHTML='<i class="ti ti-check" style="font-size:15px; color:#5DCAA5; margin-top:1px; flex-shrink:0;"></i><span style="font-size:12px; color:'+t.lbl+'; line-height:1.5;">'+a+'</span>';
+        $('agreeRow').appendChild(row);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('planKicker').textContent=d.kicker; $('planTitle').textContent=d.title; $('planDesc').textContent=d.desc;
+      $('tabMonthBtn').textContent=d.tabMonth; $('tabYearBtn').textContent=d.tabYear;
+      $('priceLbl').textContent=d.priceLbl;
+      $('bdLbl').textContent=d.bdLbl; $('submitLbl').textContent=d.submit; $('cancelNote').textContent=d.cancelNote;
+      $('doneTitle').textContent=d.doneTitle; $('doneSub').textContent=d.doneSub; $('doneBtn').textContent=d.doneBtn;
+      renderBreakdown(); renderAgree(); setCycle(cycle);
+    }
+    function setCycle(c){
+      cycle=c; var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var mb=$('tabMonthBtn'), yb=$('tabYearBtn');
+      mb.style.background=c==="month"?t.toggleOn:"transparent"; mb.style.color=c==="month"?t.accent:t.sub; mb.style.fontWeight=c==="month"?"600":"500";
+      yb.style.background=c==="year"?t.toggleOn:"transparent"; yb.style.color=c==="year"?t.accent:t.sub; yb.style.fontWeight=c==="year"?"600":"500";
+      if(c==="year"){
+        $('priceVal').textContent=PY[cur]||PY["English"]; $('priceCycle').textContent=d.cyYear;
+        $('saveRow').style.display="block";
+        $('cmpLbl').textContent=d.cmpLbl;
+        $('cmpVal').textContent=(PMY[cur]||PMY["English"])+" "+d.cyYear;
+        $('saveTxt').textContent=d.saveMain;
+        $('saveVal').textContent=(SAVE[cur]||SAVE["English"])+" "+d.saveSuffix;
+        $('saveReason').textContent=d.saveReason;
+        $('dateTxt').textContent=d.dateYear;
+      } else {
+        $('priceVal').textContent=PM[cur]||PM["English"]; $('priceCycle').textContent=d.cyMonth;
+        $('saveRow').style.display="none";
+        $('dateTxt').textContent=d.dateMonth;
+      }
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor=t.cardBd; $('hdrTtl').style.color=t.title;
+      $('planCard').style.background= dark?"linear-gradient(150deg,#2A2416,#1A1814)":"linear-gradient(150deg,#FBF3E0,#FBF7F1)";
+      $('planCard').style.borderColor= dark?"#3A352A":"#EAD9B0";
+      $('planKicker').style.color=t.accent; $('planTitle').style.color=t.title; $('planDesc').style.color=t.sub;
+      $('cycleToggle').style.background=t.card; $('cycleToggle').style.borderColor=t.cardBd;
+      ['priceCard','breakdownCard','dateCard','agreeCard'].forEach(function(id){ $(id).style.background=t.card; $(id).style.borderColor=t.cardBd; });
+      $('priceLbl').style.color=t.lbl; $('priceVal').style.color=t.title; $('priceCycle').style.color=t.sub;
+      $('saveRow').style.background= dark?"#16241E":"#EAF6F1";
+      $('saveTxt').style.color= dark?"#5DCAA5":"#3E8068"; $('saveVal').style.color= dark?"#5DCAA5":"#3E8068";
+      $('cmpLbl').style.color= dark?"#8A9E94":"#7A8E84"; $('cmpVal').style.color= dark?"#8A9E94":"#7A8E84";
+      $('saveReason').style.color= dark?"#6E8478":"#8AA096";
+      $('bdLbl').style.color=t.lbl;
+      $('dateCard').querySelector('i').style.color=t.sub; $('dateTxt').style.color=t.lbl;
+      $('submitBtn').style.background=t.accent; $('submitBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('cancelNote').style.color=t.muted;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    $('tabMonthBtn').onclick=function(){ setCycle("month"); };
+    $('tabYearBtn').onclick=function(){ setCycle("year"); };
+    $('submitBtn').onclick=function(){
+      if(window.REVO_CLOUD && REVO_CLOUD.signedIn() && REVO_CLOUD.checkout){
+        /* 本番：Stripe Checkout（¥1,960/月・¥19,600/年はサーバ側Priceで決定）。成功時は score_total へ戻る */
+        REVO_CLOUD.checkout('cross', (typeof cycle!=="undefined"?cycle:"month"))
+          .catch(function(){ $('doneOverlay').style.display="flex"; });
+      } else {
+        $('doneOverlay').style.display="flex";
+      }
+    };
+    $('doneBtn').onclick=function(){
+      $('doneOverlay').style.display="none";
+      /* README §3：横断（fit+life ¥1,960/月・¥19,600/年）をローカル保存 → 総合スコアへ */
+      REVO.setSub({plan:'cross', cycle:(typeof cycle!=="undefined"?cycle:"month"), at:Date.now()});
+      REVO.go('score_total');
+    };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('plans'); } };
+})();
+</script>
+</body>
+</html>

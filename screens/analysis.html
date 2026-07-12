@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>分析 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">本格分析。ボリューム推移、部位ごとの負荷バランス、自己ベストの履歴。スタンダードで見られる、あなたの成長の記録。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">本格分析</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 16px 24px; max-height:600px; overflow-y:auto;">
+    <span id="stdBadge" style="display:inline-block; font-size:10px; color:#E3C56A; background:#221E14; border:0.5px solid #3A3220; padding:4px 11px; border-radius:999px; margin:0 0 16px;">スタンダード</span>
+
+    <!-- ① ボリューム推移（12週） -->
+    <div id="card1" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:16px; padding:16px; margin:0 0 12px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 4px;">
+        <p id="c1Ttl" style="font-size:13px; color:#F0EBE2; margin:0; font-weight:600;">ボリューム推移（12週）</p>
+        <span id="c1Delta" style="font-size:11px; color:#5DCAA5; font-weight:500;">+18%</span>
+      </div>
+      <p id="c1Sub" style="font-size:11px; color:#8A7E68; margin:0 0 12px;">総挙上量は、着実に伸びています</p>
+      <svg id="c1Chart" viewBox="0 0 300 120" style="width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- グリッド線 -->
+        <line x1="8" y1="20" x2="292" y2="20" stroke="#2A2620" stroke-width="0.5"/>
+        <line x1="8" y1="55" x2="292" y2="55" stroke="#2A2620" stroke-width="0.5"/>
+        <line x1="8" y1="90" x2="292" y2="90" stroke="#2A2620" stroke-width="0.5"/>
+        <polygon points="12,92 37,86 62,88 88,74 113,78 138,62 163,66 188,48 213,52 238,34 263,38 288,20 288,100 12,100" fill="#E3C56A" opacity="0.08"/>
+        <polyline points="12,92 37,86 62,88 88,74 113,78 138,62 163,66 188,48 213,52 238,34 263,38 288,20" fill="none" stroke="#E3C56A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="288" cy="20" r="3.5" fill="#E3C56A"/>
+      </svg>
+      <div style="display:flex; justify-content:space-between; margin:6px 2px 0;">
+        <span id="c1w1" style="font-size:9px; color:#6E6555;">12週前</span>
+        <span id="c1w2" style="font-size:9px; color:#6E6555;">今週</span>
+      </div>
+    </div>
+
+    <!-- ② 部位ごとの負荷バランス -->
+    <div id="card2" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:16px; padding:16px; margin:0 0 12px;">
+      <p id="c2Ttl" style="font-size:13px; color:#F0EBE2; margin:0 0 4px; font-weight:600;">部位ごとの負荷バランス</p>
+      <p id="c2Sub" style="font-size:11px; color:#8A7E68; margin:0 0 14px;">脚の頻度が、少なめです</p>
+      <div id="c2Bars" style="display:flex; flex-direction:column; gap:9px;"></div>
+    </div>
+
+    <!-- ③ 自己ベストの履歴 -->
+    <div id="card3" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:16px; padding:16px; margin:0 0 12px;">
+      <p id="c3Ttl" style="font-size:13px; color:#F0EBE2; margin:0 0 4px; font-weight:600;">自己ベストの履歴</p>
+      <p id="c3Sub" style="font-size:11px; color:#8A7E68; margin:0 0 14px;">この3か月で、5回の更新がありました</p>
+      <div id="c3List" style="display:flex; flex-direction:column; gap:0;"></div>
+    </div>
+
+    <!-- 労い -->
+    <div id="msgCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:14px 16px; display:flex; align-items:flex-start; gap:10px;">
+      <i class="ti ti-heart" style="font-size:16px; color:#5DCAA5; margin-top:1px;"></i>
+      <p id="msg" style="font-size:12px; color:#C9E3D8; margin:0; line-height:1.65;">数字は、あなたが積み重ねてきた時間そのものです。この伸びは、続けた人にしか描けません。</p>
+    </div>
+
+    <p id="medNote" style="font-size:10px; color:#6E6555; margin:14px 4px 0; line-height:1.65; text-align:center;">数値は目安であり、医療上の診断・治療を目的とするものではありません。</p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 部位別バランス（部位キー・割合%）
+    /* ===== 実データ（ローカル記録）から算出 ===== */
+    var ST = REVO.stats();
+    var _pi = {chest:0, back:1, shoulder:3, arm:4, leg:2, core:5};   // log.moveParts の並びに対応
+    var PARTS = ["chest","back","shoulder","arm","leg","core"].map(function(k){
+      return {k:k, v: ST.partShare[_pi[k]]||0};
+    });
+    var _hasMove = ST.partShare.some(function(v){ return v>0; });
+    var PRS = ST.prs.slice(0,5).map(function(p){
+      return {ex:p.name, w:(Math.round(p.w*10)/10)+"kg", d:p.d, up:(p.up>0?"+"+(Math.round(p.up*10)/10)+"kg":"")};
+    });
+    // 週次総挙上量 → 12週チャートの座標
+    var _vols = ST.weeklyVol, _volWeeks = _vols.filter(function(v){ return v>0; }).length;
+    var _delta = null;
+    (function(){
+      var first=null,last=null;
+      _vols.forEach(function(v,i){ if(v>0){ if(first==null) first=v; last=v; } });
+      if(first!=null && last!=null && first>0 && _volWeeks>=2) _delta = Math.round((last-first)/first*100);
+    })();
+    function renderChart(){
+      var svg=$('c1Chart');
+      var pl=svg.querySelector('polyline'), pg=svg.querySelector('polygon'), cc=svg.querySelector('circle');
+      if(_volWeeks<2){ if(pl) pl.setAttribute('points',""); if(pg) pg.setAttribute('points',""); if(cc) cc.setAttribute('r',"0"); return; }
+      var vMax=Math.max.apply(null,_vols)||1;
+      var pts=_vols.map(function(v,i){
+        var x=12+(288-12)*i/11, y=100-(v/vMax)*80;   // y:20(最大)〜100(ゼロ)
+        return Math.round(x)+","+Math.round(y*10)/10;
+      });
+      if(pl) pl.setAttribute('points', pts.join(" "));
+      if(pg) pg.setAttribute('points', pts.join(" ")+" 288,100 12,100");
+      if(cc){ cc.setAttribute('r',"3.5"); var lastPt=pts[pts.length-1].split(","); cc.setAttribute('cx',lastPt[0]); cc.setAttribute('cy',lastPt[1]); }
+    }
+    var D={
+      "日本語":{hdr:"本格分析",std:"スタンダード",
+        c1Ttl:"ボリューム推移（12週）",c1Sub:"総挙上量は、着実に伸びています",c1w1:"12週前",c1w2:"今週",
+        c2Ttl:"部位ごとの負荷バランス",c2Sub:"脚の頻度が、少なめです",
+        c3Ttl:"自己ベストの履歴",c3Sub:"この3か月で、5回の更新がありました",
+        parts:{chest:"胸",back:"背中",shoulder:"肩",arm:"腕",leg:"脚",core:"体幹"},
+        ex:{bench:"ベンチプレス",squat:"スクワット",dead:"デッドリフト",ohp:"ショルダープレス",row:"ベントオーバーロウ"},
+        msgBase:"数字は、あなたが積み重ねてきた時間と努力そのものです。",msgFull:"数字は、あなたが積み重ねてきた時間と努力そのものです。続けた人にしか味わえない壁を、見事にのりこえました。",
+        medNote:"数値は目安であり、医療上の診断・治療を目的とするものではありません。",
+        days:{"3日前":"3日前","2週間前":"2週間前","3週間前":"3週間前","1か月前":"1か月前","2か月前":"2か月前"}},
+      "English":{hdr:"Deep analysis",std:"Standard",
+        c1Ttl:"Volume trend (12 weeks)",c1Sub:"Your total lifted is steadily rising",c1w1:"12 wks ago",c1w2:"This wk",
+        c2Ttl:"Load balance by muscle",c2Sub:"Legs are a little under-trained",
+        c3Ttl:"Personal record history",c3Sub:"5 records broken in the last 3 months",
+        parts:{chest:"Chest",back:"Back",shoulder:"Shoulder",arm:"Arms",leg:"Legs",core:"Core"},
+        ex:{bench:"Bench press",squat:"Squat",dead:"Deadlift",ohp:"Overhead press",row:"Bent-over row"},
+        msgBase:"The numbers are the time and effort you've put in.",msgFull:"The numbers are the time and effort you've put in. You broke through a wall only those who keep going ever reach.",
+        medNote:"Numbers are estimates and not intended for medical diagnosis or treatment.",
+        days:{"3日前":"3 days ago","2週間前":"2 weeks ago","3週間前":"3 weeks ago","1か月前":"1 month ago","2か月前":"2 months ago"}},
+      "简体中文":{hdr:"专业分析",std:"标准版",
+        c1Ttl:"容量推移（12周）",c1Sub:"总举起量稳步提升",c1w1:"12周前",c1w2:"本周",
+        c2Ttl:"各部位负荷平衡",c2Sub:"腿部频率偏少",
+        c3Ttl:"自己最佳记录",c3Sub:"近3个月更新了5次",
+        parts:{chest:"胸",back:"背",shoulder:"肩",arm:"臂",leg:"腿",core:"核心"},
+        ex:{bench:"卧推",squat:"深蹲",dead:"硬拉",ohp:"肩上推举",row:"俯身划船"},
+        msgBase:"数字就是你积累的时间与努力。",msgFull:"数字就是你积累的时间与努力。你漂亮地越过了只有坚持的人才能遇到的那道墙。",
+        medNote:"数值仅供参考，并非以医疗诊断或治疗为目的。",
+        days:{"3日前":"3天前","2週間前":"2周前","3週間前":"3周前","1か月前":"1个月前","2か月前":"2个月前"}},
+      "繁體中文":{hdr:"專業分析",std:"標準版",
+        c1Ttl:"容量推移（12週）",c1Sub:"總舉起量穩步提升",c1w1:"12週前",c1w2:"本週",
+        c2Ttl:"各部位負荷平衡",c2Sub:"腿部頻率偏少",
+        c3Ttl:"自己最佳記錄",c3Sub:"近3個月更新了5次",
+        parts:{chest:"胸",back:"背",shoulder:"肩",arm:"臂",leg:"腿",core:"核心"},
+        ex:{bench:"臥推",squat:"深蹲",dead:"硬舉",ohp:"肩上推舉",row:"俯身划船"},
+        msgBase:"數字就是你積累的時間與努力。",msgFull:"數字就是你積累的時間與努力。你漂亮地越過了只有堅持的人才能遇到的那道牆。",
+        medNote:"數值僅供參考，並非以醫療診斷或治療為目的。",
+        days:{"3日前":"3天前","2週間前":"2週前","3週間前":"3週前","1か月前":"1個月前","2か月前":"2個月前"}},
+      "한국어":{hdr:"본격 분석",std:"스탠다드",
+        c1Ttl:"볼륨 추이(12주)",c1Sub:"총 들어올린 무게가 착실히 늘고 있어요",c1w1:"12주 전",c1w2:"이번 주",
+        c2Ttl:"부위별 부하 밸런스",c2Sub:"다리 빈도가 조금 적어요",
+        c3Ttl:"자기최고 이력",c3Sub:"최근 3개월간 5회 갱신했어요",
+        parts:{chest:"가슴",back:"등",shoulder:"어깨",arm:"팔",leg:"다리",core:"코어"},
+        ex:{bench:"벤치프레스",squat:"스쿼트",dead:"데드리프트",ohp:"숄더프레스",row:"벤트오버로우"},
+        msgBase:"숫자는 당신이 쌓아온 시간과 노력 그 자체예요.",msgFull:"숫자는 당신이 쌓아온 시간과 노력 그 자체예요. 계속한 사람만 만날 수 있는 벽을 멋지게 넘어섰어요.",
+        medNote:"수치는 예상치이며, 의료상 진단·치료를 목적으로 하지 않습니다.",
+        days:{"3日前":"3일 전","2週間前":"2주 전","3週間前":"3주 전","1か月前":"1개월 전","2か月前":"2개월 전"}},
+      "ภาษาไทย":{hdr:"วิเคราะห์เชิงลึก",std:"สแตนดาร์ด",
+        c1Ttl:"แนวโน้มปริมาณ (12 สัปดาห์)",c1Sub:"น้ำหนักรวมที่ยกเพิ่มขึ้นอย่างมั่นคง",c1w1:"12 สัปดาห์ก่อน",c1w2:"สัปดาห์นี้",
+        c2Ttl:"สมดุลภาระแต่ละส่วน",c2Sub:"ความถี่ของขาน้อยไปหน่อย",
+        c3Ttl:"ประวัติสถิติส่วนตัว",c3Sub:"3 เดือนที่ผ่านมาทำลายสถิติ 5 ครั้ง",
+        parts:{chest:"อก",back:"หลัง",shoulder:"ไหล่",arm:"แขน",leg:"ขา",core:"แกนกลาง"},
+        ex:{bench:"เบนช์เพรส",squat:"สควอต",dead:"เดดลิฟต์",ohp:"โอเวอร์เฮดเพรส",row:"เบนต์โอเวอร์โรว์"},
+        msgBase:"ตัวเลขคือเวลาและความพยายามที่คุณสะสมมา",msgFull:"ตัวเลขคือเวลาและความพยายามที่คุณสะสมมา คุณก้าวข้ามกำแพงที่มีแต่คนทำต่อเนื่องเท่านั้นจะได้เจอ ได้อย่างงดงาม",
+        medNote:"ตัวเลขเป็นค่าประมาณ ไม่ได้มีวัตถุประสงค์เพื่อการวินิจฉัยหรือรักษาทางการแพทย์",
+        days:{"3日前":"3 วันก่อน","2週間前":"2 สัปดาห์ก่อน","3週間前":"3 สัปดาห์ก่อน","1か月前":"1 เดือนก่อน","2か月前":"2 เดือนก่อน"}},
+      "Français":{hdr:"Analyse approfondie",std:"Standard",
+        c1Ttl:"Tendance du volume (12 sem.)",c1Sub:"Votre charge totale augmente régulièrement",c1w1:"Il y a 12 sem.",c1w2:"Cette sem.",
+        c2Ttl:"Équilibre de charge par muscle",c2Sub:"Les jambes sont un peu sous-travaillées",
+        c3Ttl:"Historique des records",c3Sub:"5 records battus ces 3 derniers mois",
+        parts:{chest:"Pectoraux",back:"Dos",shoulder:"Épaules",arm:"Bras",leg:"Jambes",core:"Gainage"},
+        ex:{bench:"Développé couché",squat:"Squat",dead:"Soulevé de terre",ohp:"Développé militaire",row:"Rowing penché"},
+        msgBase:"Les chiffres sont le temps et les efforts que vous avez investis.",msgFull:"Les chiffres sont le temps et les efforts que vous avez investis. Vous avez franchi avec brio un mur que seuls les persévérants rencontrent.",
+        medNote:"Les chiffres sont indicatifs et non destinés à un diagnostic ou traitement médical.",
+        days:{"3日前":"Il y a 3 j","2週間前":"Il y a 2 sem.","3週間前":"Il y a 3 sem.","1か月前":"Il y a 1 mois","2か月前":"Il y a 2 mois"}},
+      "Español":{hdr:"Análisis profundo",std:"Estándar",
+        c1Ttl:"Tendencia de volumen (12 sem.)",c1Sub:"Tu carga total sube de forma constante",c1w1:"Hace 12 sem.",c1w2:"Esta sem.",
+        c2Ttl:"Equilibrio de carga por músculo",c2Sub:"Las piernas están poco trabajadas",
+        c3Ttl:"Historial de récords",c3Sub:"5 récords batidos en los últimos 3 meses",
+        parts:{chest:"Pecho",back:"Espalda",shoulder:"Hombros",arm:"Brazos",leg:"Piernas",core:"Core"},
+        ex:{bench:"Press banca",squat:"Sentadilla",dead:"Peso muerto",ohp:"Press militar",row:"Remo inclinado"},
+        msgBase:"Los números son el tiempo y el esfuerzo que has invertido.",msgFull:"Los números son el tiempo y el esfuerzo que has invertido. Superaste con creces un muro que solo encuentran quienes perseveran.",
+        medNote:"Las cifras son estimaciones y no destinadas a diagnóstico ni tratamiento médico.",
+        days:{"3日前":"Hace 3 días","2週間前":"Hace 2 sem.","3週間前":"Hace 3 sem.","1か月前":"Hace 1 mes","2か月前":"Hace 2 meses"}},
+      "Deutsch":{hdr:"Tiefenanalyse",std:"Standard",
+        c1Ttl:"Volumenverlauf (12 Wochen)",c1Sub:"Dein Gesamtgewicht steigt stetig",c1w1:"Vor 12 Wo.",c1w2:"Diese Wo.",
+        c2Ttl:"Lastverteilung pro Muskel",c2Sub:"Beine sind etwas untertrainiert",
+        c3Ttl:"Rekord-Verlauf",c3Sub:"5 Rekorde in den letzten 3 Monaten",
+        parts:{chest:"Brust",back:"Rücken",shoulder:"Schultern",arm:"Arme",leg:"Beine",core:"Rumpf"},
+        ex:{bench:"Bankdrücken",squat:"Kniebeuge",dead:"Kreuzheben",ohp:"Schulterdrücken",row:"Vorgebeugtes Rudern"},
+        msgBase:"Die Zahlen sind die Zeit und Mühe, die du investiert hast.",msgFull:"Die Zahlen sind die Zeit und Mühe, die du investiert hast. Du hast eine Wand überwunden, die nur erreicht, wer dranbleibt.",
+        medNote:"Zahlen sind Schätzungen und nicht für medizinische Diagnose oder Behandlung bestimmt.",
+        days:{"3日前":"Vor 3 Tagen","2週間前":"Vor 2 Wo.","3週間前":"Vor 3 Wo.","1か月前":"Vor 1 Monat","2か月前":"Vor 2 Monaten"}},
+      "Italiano":{hdr:"Analisi approfondita",std:"Standard",
+        c1Ttl:"Andamento volume (12 sett.)",c1Sub:"Il carico totale sale costantemente",c1w1:"12 sett. fa",c1w2:"Questa sett.",
+        c2Ttl:"Bilancio del carico per muscolo",c2Sub:"Le gambe sono un po' poco allenate",
+        c3Ttl:"Cronologia record",c3Sub:"5 record battuti negli ultimi 3 mesi",
+        parts:{chest:"Petto",back:"Schiena",shoulder:"Spalle",arm:"Braccia",leg:"Gambe",core:"Core"},
+        ex:{bench:"Panca",squat:"Squat",dead:"Stacco",ohp:"Lento avanti",row:"Rematore"},
+        msgBase:"I numeri sono il tempo e l'impegno che hai investito.",msgFull:"I numeri sono il tempo e l'impegno che hai investito. Hai superato con stile un muro che solo chi continua incontra.",
+        medNote:"I numeri sono stime e non destinati a diagnosi o trattamento medico.",
+        days:{"3日前":"3 giorni fa","2週間前":"2 sett. fa","3週間前":"3 sett. fa","1か月前":"1 mese fa","2か月前":"2 mesi fa"}},
+      "Português":{hdr:"Análise profunda",std:"Padrão",
+        c1Ttl:"Tendência de volume (12 sem.)",c1Sub:"Sua carga total sobe de forma constante",c1w1:"Há 12 sem.",c1w2:"Esta sem.",
+        c2Ttl:"Equilíbrio de carga por músculo",c2Sub:"As pernas estão pouco treinadas",
+        c3Ttl:"Histórico de recordes",c3Sub:"5 recordes batidos nos últimos 3 meses",
+        parts:{chest:"Peito",back:"Costas",shoulder:"Ombros",arm:"Braços",leg:"Pernas",core:"Core"},
+        ex:{bench:"Supino",squat:"Agachamento",dead:"Levantamento terra",ohp:"Desenvolvimento",row:"Remada curvada"},
+        msgBase:"Os números são o tempo e o esforço que você investiu.",msgFull:"Os números são o tempo e o esforço que você investiu. Você superou com brilho um muro que só quem persiste encontra.",
+        medNote:"Os números são estimativas e não destinados a diagnóstico ou tratamento médico.",
+        days:{"3日前":"Há 3 dias","2週間前":"Há 2 sem.","3週間前":"Há 3 sem.","1か月前":"Há 1 mês","2か月前":"Há 2 meses"}},
+      "हिन्दी":{hdr:"गहरा विश्लेषण",std:"स्टैंडर्ड",
+        c1Ttl:"वॉल्यूम रुझान (12 सप्ताह)",c1Sub:"कुल उठाया वजन लगातार बढ़ रहा है",c1w1:"12 सप्ताह पहले",c1w2:"इस सप्ताह",
+        c2Ttl:"हर हिस्से का भार संतुलन",c2Sub:"पैरों की फ्रीक्वेंसी थोड़ी कम है",
+        c3Ttl:"सर्वश्रेष्ठ का इतिहास",c3Sub:"पिछले 3 महीनों में 5 बार सुधार",
+        parts:{chest:"छाती",back:"पीठ",shoulder:"कंधे",arm:"बाहें",leg:"पैर",core:"कोर"},
+        ex:{bench:"बेंच प्रेस",squat:"स्क्वाट",dead:"डेडलिफ्ट",ohp:"शोल्डर प्रेस",row:"बेंट ओवर रो"},
+        msgBase:"संख्याएँ वही समय और मेहनत हैं जो आपने लगाई।",msgFull:"संख्याएँ वही समय और मेहनत हैं जो आपने लगाई। आपने उस दीवार को शानदार ढंग से पार किया, जो केवल लगे रहने वालों को मिलती है।",
+        medNote:"संख्याएँ अनुमान हैं और चिकित्सा निदान या उपचार के लिए नहीं।",
+        days:{"3日前":"3 दिन पहले","2週間前":"2 सप्ताह पहले","3週間前":"3 सप्ताह पहले","1か月前":"1 महीने पहले","2か月前":"2 महीने पहले"}},
+      "Tiếng Việt":{hdr:"Phân tích sâu",std:"Tiêu chuẩn",
+        c1Ttl:"Xu hướng khối lượng (12 tuần)",c1Sub:"Tổng tạ nâng tăng đều đặn",c1w1:"12 tuần trước",c1w2:"Tuần này",
+        c2Ttl:"Cân bằng tải theo cơ",c2Sub:"Chân hơi ít được tập",
+        c3Ttl:"Lịch sử kỷ lục",c3Sub:"5 kỷ lục bị phá trong 3 tháng qua",
+        parts:{chest:"Ngực",back:"Lưng",shoulder:"Vai",arm:"Tay",leg:"Chân",core:"Lõi"},
+        ex:{bench:"Đẩy ngực",squat:"Squat",dead:"Deadlift",ohp:"Đẩy vai",row:"Chèo tạ"},
+        msgBase:"Những con số là thời gian và nỗ lực bạn đã bỏ ra.",msgFull:"Những con số là thời gian và nỗ lực bạn đã bỏ ra. Bạn đã vượt qua ngoạn mục bức tường mà chỉ người kiên trì mới gặp.",
+        medNote:"Con số là ước tính và không nhằm mục đích chẩn đoán hay điều trị y tế.",
+        days:{"3日前":"3 ngày trước","2週間前":"2 tuần trước","3週間前":"3 tuần trước","1か月前":"1 tháng trước","2か月前":"2 tháng trước"}},
+      "Bahasa Indonesia":{hdr:"Analisis mendalam",std:"Standar",
+        c1Ttl:"Tren volume (12 minggu)",c1Sub:"Total angkatanmu naik stabil",c1w1:"12 mgg lalu",c1w2:"Mgg ini",
+        c2Ttl:"Keseimbangan beban per otot",c2Sub:"Kaki agak kurang dilatih",
+        c3Ttl:"Riwayat rekor",c3Sub:"5 rekor terpecahkan dalam 3 bulan terakhir",
+        parts:{chest:"Dada",back:"Punggung",shoulder:"Bahu",arm:"Lengan",leg:"Kaki",core:"Inti"},
+        ex:{bench:"Bench press",squat:"Squat",dead:"Deadlift",ohp:"Overhead press",row:"Bent-over row"},
+        msgBase:"Angka adalah waktu dan usaha yang kamu curahkan.",msgFull:"Angka adalah waktu dan usaha yang kamu curahkan. Kamu dengan gemilang melewati tembok yang hanya ditemui mereka yang bertahan.",
+        medNote:"Angka adalah perkiraan dan bukan untuk diagnosis atau pengobatan medis.",
+        days:{"3日前":"3 hari lalu","2週間前":"2 mgg lalu","3週間前":"3 mgg lalu","1か月前":"1 bln lalu","2か月前":"2 bln lalu"}}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    // 直近に自己ベスト更新があれば full メッセージ（ここでは3日前=最近とみなす）
+    var recentPR = (ST.prs[0] && REVO.prevKey && (function(){
+      var d1=new Date(ST.prs[0].d+"T00:00:00"), now=new Date();
+      return (now-d1)/86400000 <= 7;
+    })());
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",track:"#2A2620",accent:"#E3C56A",check:"#5DCAA5",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",rowBd:"#2A2620"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",track:"#EDE6D8",accent:"#BA7517",check:"#3E8068",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",rowBd:"#F0EAE0"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderParts(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('c2Bars').innerHTML="";
+      PARTS.forEach(function(p){
+        var low=(p.v<50);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:10px;";
+        row.innerHTML='<span style="width:44px; font-size:11px; color:'+t.sub+';">'+d.parts[p.k]+'</span>'+
+          '<div style="flex:1; height:9px; background:'+t.track+'; border-radius:5px; overflow:hidden;"><div style="width:'+p.v+'%; height:9px; background:'+(low?"#C97A5A":t.accent)+'; border-radius:5px;"></div></div>'+
+          '<span style="width:30px; text-align:right; font-size:10px; color:'+(low?"#C97A5A":t.sub)+'; font-family:Jost;">'+p.v+'%</span>';
+        $('c2Bars').appendChild(row);
+      });
+    }
+    function renderPRs(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('c3List').innerHTML="";
+      PRS.forEach(function(pr,i){
+        var latest=(i===0);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:11px; padding:11px 0; "+(i<PRS.length-1?"border-bottom:0.5px solid "+t.rowBd+";":"");
+        row.innerHTML='<i class="ti ti-trophy" style="font-size:16px; color:'+(latest?t.accent:t.muted)+';"></i>'+
+          '<div style="flex:1;"><p style="font-size:12px; color:'+(latest?t.txt:t.sub)+'; margin:0; font-weight:'+(latest?"600":"400")+';">'+(d.ex[pr.ex]||pr.ex)+' '+pr.w+'</p><p style="font-size:10px; color:'+t.muted+'; margin:1px 0 0;">'+(d.days[pr.d]||pr.d)+'</p></div>'+
+          '<span style="font-size:11px; color:'+t.check+'; font-weight:500;">'+pr.up+'</span>';
+        $('c3List').appendChild(row);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('stdBadge').textContent=d.std;
+      var E2=(REVO.EMPTY2[cur]||REVO.EMPTY2["English"]), E=(REVO.EMPTY[cur]||REVO.EMPTY["English"]);
+      $('c1Ttl').textContent=d.c1Ttl;
+      $('c1Sub').textContent = (_volWeeks>=2) ? (_delta!=null && _delta>=0 ? d.c1Sub : "") : E2.grow;
+      $('c1Delta').textContent = (_delta!=null) ? ((_delta>=0?"+":"")+_delta+"%") : "";
+      $('c1Delta').style.color = (_delta!=null && _delta<0) ? "#E0936A" : "#5DCAA5";
+      $('c1w1').textContent=d.c1w1; $('c1w2').textContent=d.c1w2;
+      $('c2Ttl').textContent=d.c2Ttl;
+      (function(){
+        if(!_hasMove){ $('c2Sub').textContent=E2.grow; return; }
+        var low=null; PARTS.forEach(function(p){ if(p.v>0 && p.v<50 && (low==null||p.v<low.v)) low=p; });
+        $('c2Sub').textContent = low ? E.lowTtl.replace('{f}', d.parts[low.k]) : "";
+      })();
+      $('c3Ttl').textContent=d.c3Ttl;
+      $('c3Sub').textContent = PRS.length ? d.c3Sub.replace(/5|５/, String(PRS.length)) : E2.grow;
+      renderChart();
+      $('msg').textContent = recentPR ? d.msgFull : d.msgBase; $('medNote').textContent=d.medNote;
+      renderParts(); renderPRs();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('stdBadge').style.background= dark?"#221E14":"#FBF3E0"; $('stdBadge').style.borderColor= dark?"#3A3220":"#EADCBE"; $('stdBadge').style.color=t.accent;
+      ["card1","card2","card3"].forEach(function(id){ $(id).style.background=t.card; $(id).style.borderColor=t.cardBd; });
+      ["c1Ttl","c2Ttl","c3Ttl"].forEach(function(id){ $(id).style.color=t.txt; });
+      ["c1Sub","c2Sub","c3Sub"].forEach(function(id){ $(id).style.color=t.sub; });
+      $('msgCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('msgCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('msg').style.color= dark?"#C9E3D8":"#2E5D4E";
+      $('medNote').style.color=t.muted;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+</body>
+</html>

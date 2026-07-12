@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+@keyframes revoFadeUp{0%{opacity:0; transform:translateY(14px) scale(0.96);}100%{opacity:1; transform:translateY(0) scale(1);}}
+@keyframes revoGlow{0%,100%{filter:drop-shadow(0 0 5px rgba(227,197,106,0.25));}50%{filter:drop-shadow(0 0 13px rgba(227,197,106,0.45));}}
+@keyframes revoBar{0%{width:0;}100%{width:100%;}}
+@keyframes revoTagline{0%{opacity:0;}100%{opacity:0.85;}}
+.revoLogoAnim{animation:revoFadeUp 1s cubic-bezier(0.22,1,0.36,1) both, revoGlow 2.8s ease-in-out 1s infinite;}
+.revoTagAnim{animation:revoTagline 1.1s ease 0.7s both;}
+.revoBarAnim{animation:revoBar 2.2s cubic-bezier(0.5,0,0.2,1) 0.4s both;}
+.revoBtnAnim{animation:revoFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;}
+.revoTagText{font-family:'Outfit',var(--font-sans),sans-serif;}
+</style>
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; min-height:680px; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">Revo Fitの起動画面。ロゴのアニメーションのあと、SNSやメールで続けるログイン。言語と明暗を切り替えられる</h2>
+
+  <!-- 上部：言語・テーマ -->
+  <div style="display:flex; align-items:center; justify-content:flex-end; gap:9px; padding:16px 18px 0; position:relative; z-index:5;">
+    <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+    <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- ロゴエリア -->
+  <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:64px 18px 30px;">
+    <div class="revoLogoAnim" style="margin:0 0 18px; transform-origin:center center;">
+      <svg width="112" height="112" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="revo fit" style="display:block;">
+        <defs><clipPath id="splashIcon"><rect width="180" height="180" rx="40"/></clipPath></defs>
+        <g clip-path="url(#splashIcon)">
+          <rect width="180" height="180" fill="#16140F"/>
+          <text id="logoRevo" x="90" y="70" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-weight="200" font-size="44" letter-spacing="1.5" fill="#F0EBE2">revo</text>
+          <rect id="logoBand" x="0" y="116" width="180" height="64" fill="#E3C56A"/>
+          <text id="logoFit" x="90" y="149" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-weight="500" font-size="34" letter-spacing="1" fill="#16140F">fit</text>
+        </g>
+      </svg>
+    </div>
+    <p id="tagline" class="revoTagAnim revoTagText" style="font-size:14px; color:#8A7E68; margin:0; text-align:center; letter-spacing:0.08em; font-weight:300;">revo in your life</p>
+    <!-- ローディングバー -->
+    <div style="width:140px; height:3px; background:#2A2620; border-radius:2px; margin:26px 0 0; overflow:hidden;">
+      <div class="revoBarAnim" style="height:3px; background:linear-gradient(90deg,#C9A24E,#E3C56A); border-radius:2px;"></div>
+    </div>
+  </div>
+
+  <!-- ログインエリア -->
+  <div style="padding:14px 22px 30px;">
+    <p id="loginLead" class="revoBtnAnim" style="font-size:12px; color:#6E6555; text-align:center; margin:0 0 18px; animation-delay:1.2s;">続けると、利用規約とプライバシーポリシーに同意したものとみなされます。</p>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="loginBtn revoBtnAnim" data-p="apple" style="animation-delay:1.3s; width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:#F0EBE2; border:none; color:#16140F; font-size:14px; font-weight:600; padding:14px; border-radius:13px; cursor:pointer;"><i class="ti ti-brand-apple" style="font-size:19px;"></i><span class="lblApple">Appleで続ける</span></button>
+      <button class="loginBtn revoBtnAnim" data-p="google" style="animation-delay:1.4s; width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:#1F1C16; border:0.5px solid #3A352A; color:#F0EBE2; font-size:14px; font-weight:600; padding:14px; border-radius:13px; cursor:pointer;"><i class="ti ti-brand-google" style="font-size:19px; color:#E3C56A;"></i><span class="lblGoogle">Googleで続ける</span></button>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:12px; margin:18px 0;">
+      <div style="flex:1; height:0.5px; background:#2A2620;"></div>
+      <span id="orTxt" style="font-size:11px; color:#6E6555;">または</span>
+      <div style="flex:1; height:0.5px; background:#2A2620;"></div>
+    </div>
+
+    <button class="revoBtnAnim" id="emailBtn" style="animation-delay:1.7s; width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:transparent; border:0.5px solid #3A352A; color:#B0A488; font-size:14px; font-weight:500; padding:14px; border-radius:13px; cursor:pointer;"><i class="ti ti-mail" style="font-size:18px;"></i><span id="lblEmail">メールで続ける</span></button>
+
+    <p id="loginFoot" class="revoBtnAnim" style="font-size:11px; color:#6E6555; text-align:center; margin:18px 0 0; animation-delay:1.8s;">アカウントをお持ちですか？ <span style="color:#E3C56A; cursor:pointer;">ログイン</span></p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var D={
+      "日本語":{tagline:"あなたの体を、根っこから整える。",lead:"続けると、利用規約とプライバシーポリシーに同意したものとみなされます。",
+        apple:"Appleで続ける",google:"Googleで続ける",x:"Xで続ける",meta:"Instagram（Meta）で続ける",or:"または",email:"メールで続ける",
+        foot:"アカウントをお持ちですか？",login:"ログイン"},
+      "English":{tagline:"Fix your body from the root.",lead:"By continuing, you agree to the Terms and Privacy Policy.",
+        apple:"Continue with Apple",google:"Continue with Google",x:"Continue with X",meta:"Continue with Instagram (Meta)",or:"or",email:"Continue with email",
+        foot:"Already have an account?",login:"Log in"},
+      "简体中文":{tagline:"从根本上调整你的身体。",lead:"继续即表示同意服务条款与隐私政策。",
+        apple:"通过 Apple 继续",google:"通过 Google 继续",x:"通过 X 继续",meta:"通过 Instagram（Meta）继续",or:"或",email:"用邮箱继续",
+        foot:"已有账号？",login:"登录"},
+      "繁體中文":{tagline:"從根本調整你的身體。",lead:"繼續即表示同意服務條款與隱私政策。",
+        apple:"透過 Apple 繼續",google:"透過 Google 繼續",x:"透過 X 繼續",meta:"透過 Instagram（Meta）繼續",or:"或",email:"用電子郵件繼續",
+        foot:"已有帳號？",login:"登入"},
+      "한국어":{tagline:"몸을 뿌리부터 바로잡다.",lead:"계속하면 이용약관과 개인정보 정책에 동의하는 것으로 간주됩니다.",
+        apple:"Apple로 계속",google:"Google로 계속",x:"X로 계속",meta:"Instagram(Meta)로 계속",or:"또는",email:"이메일로 계속",
+        foot:"이미 계정이 있나요?",login:"로그인"},
+      "ภาษาไทย":{tagline:"ปรับร่างกายของคุณจากต้นตอ",lead:"การดำเนินการต่อถือว่ายอมรับข้อกำหนดและนโยบายความเป็นส่วนตัว",
+        apple:"ดำเนินการต่อด้วย Apple",google:"ดำเนินการต่อด้วย Google",x:"ดำเนินการต่อด้วย X",meta:"ดำเนินการต่อด้วย Instagram (Meta)",or:"หรือ",email:"ดำเนินการต่อด้วยอีเมล",
+        foot:"มีบัญชีอยู่แล้ว?",login:"เข้าสู่ระบบ"},
+      "Français":{tagline:"Rééquilibrez votre corps à la racine.",lead:"En continuant, vous acceptez les Conditions et la Politique de confidentialité.",
+        apple:"Continuer avec Apple",google:"Continuer avec Google",x:"Continuer avec X",meta:"Continuer avec Instagram (Meta)",or:"ou",email:"Continuer avec l'e-mail",
+        foot:"Vous avez déjà un compte ?",login:"Se connecter"},
+      "Español":{tagline:"Reequilibra tu cuerpo desde la raíz.",lead:"Al continuar, aceptas los Términos y la Política de privacidad.",
+        apple:"Continuar con Apple",google:"Continuar con Google",x:"Continuar con X",meta:"Continuar con Instagram (Meta)",or:"o",email:"Continuar con correo",
+        foot:"¿Ya tienes una cuenta?",login:"Iniciar sesión"},
+      "Deutsch":{tagline:"Bring deinen Körper von Grund auf ins Gleichgewicht.",lead:"Mit dem Fortfahren stimmst du den AGB und der Datenschutzerklärung zu.",
+        apple:"Weiter mit Apple",google:"Weiter mit Google",x:"Weiter mit X",meta:"Weiter mit Instagram (Meta)",or:"oder",email:"Weiter mit E-Mail",
+        foot:"Schon ein Konto?",login:"Anmelden"},
+      "Italiano":{tagline:"Riequilibra il tuo corpo dalla radice.",lead:"Continuando, accetti i Termini e la Privacy Policy.",
+        apple:"Continua con Apple",google:"Continua con Google",x:"Continua con X",meta:"Continua con Instagram (Meta)",or:"oppure",email:"Continua con email",
+        foot:"Hai già un account?",login:"Accedi"},
+      "Português":{tagline:"Ajuste seu corpo desde a raiz.",lead:"Ao continuar, você concorda com os Termos e a Política de Privacidade.",
+        apple:"Continuar com Apple",google:"Continuar com Google",x:"Continuar com X",meta:"Continuar com Instagram (Meta)",or:"ou",email:"Continuar com e-mail",
+        foot:"Já tem uma conta?",login:"Entrar"},
+      "हिन्दी":{tagline:"अपने शरीर को जड़ से संतुलित करें।",lead:"जारी रखने पर आप शर्तें और गोपनीयता नीति से सहमत होते हैं।",
+        apple:"Apple से जारी रखें",google:"Google से जारी रखें",x:"X से जारी रखें",meta:"Instagram (Meta) से जारी रखें",or:"या",email:"ईमेल से जारी रखें",
+        foot:"पहले से खाता है?",login:"लॉग इन"},
+      "Tiếng Việt":{tagline:"Cân chỉnh cơ thể bạn từ gốc.",lead:"Khi tiếp tục, bạn đồng ý với Điều khoản và Chính sách bảo mật.",
+        apple:"Tiếp tục với Apple",google:"Tiếp tục với Google",x:"Tiếp tục với X",meta:"Tiếp tục với Instagram (Meta)",or:"hoặc",email:"Tiếp tục với email",
+        foot:"Đã có tài khoản?",login:"Đăng nhập"},
+      "Bahasa Indonesia":{tagline:"Perbaiki tubuhmu dari akarnya.",lead:"Dengan melanjutkan, kamu menyetujui Ketentuan dan Kebijakan Privasi.",
+        apple:"Lanjut dengan Apple",google:"Lanjut dengan Google",x:"Lanjut dengan X",meta:"Lanjut dengan Instagram (Meta)",or:"atau",email:"Lanjut dengan email",
+        foot:"Sudah punya akun?",login:"Masuk"}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var T={
+      dark:{bg:"#16140F",sub:"#8A7E68",muted:"#6E6555",btnDark:"#1F1C16",btnBd:"#3A352A",btnTx:"#F0EBE2",appleBg:"#F0EBE2",appleTx:"#16140F",line:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",sub:"#8A7E68",muted:"#B7A98F",btnDark:"#FBF7F1",btnBd:"#E8E0CE",btnTx:"#2E2A24",appleBg:"#16140F",appleTx:"#FFFFFF",line:"#F0EAE0",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('tagline').textContent="revo in your life"; $('loginLead').textContent=d.lead;
+      document.querySelector('.lblApple').textContent=d.apple;
+      document.querySelector('.lblGoogle').textContent=d.google;
+      $('orTxt').textContent=d.or; $('lblEmail').textContent=d.email;
+      $('loginFoot').innerHTML=d.foot+' <span style="color:'+(dark?'#E3C56A':'#BA7517')+'; cursor:pointer;">'+d.login+'</span>';
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('tagline').style.color=t.sub; $('loginLead').style.color=t.muted; $('orTxt').style.color=t.muted; $('loginFoot').style.color=t.muted;
+      // アプリアイコンはテーマに関わらず固定（黒地・金帯・白revo・黒fit）
+      // Appleボタン
+      var ab=document.querySelector('[data-p="apple"]'); ab.style.background=t.appleBg; ab.style.color=t.appleTx;
+      // 他SNS
+      ['google'].forEach(function(p){ var b=document.querySelector('[data-p="'+p+'"]'); b.style.background=t.btnDark; b.style.borderColor=t.btnBd; b.style.color=t.btnTx; });
+      $('emailBtn').style.borderColor=t.btnBd; $('emailBtn').style.color=t.sub;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+
+    /* ===== 遷移（docs/01 起動フロー）=====
+       既存ユーザー(onboarded)：ロゴ演出のあと自動でホームへ。
+       新規：ローディングバー完了後に welcome へ。ボタン操作があれば自動遷移は解除。 */
+    var _autoNav=true;
+    function _cancelAuto(){ _autoNav=false; }
+    document.querySelectorAll('.loginBtn').forEach(function(b){
+      b.addEventListener('click', function(){
+        _cancelAuto();
+        REVO.setAuth({provider:b.getAttribute('data-p'), at:Date.now()});
+        REVO.go(REVO.onboarded() ? 'home' : 'onboarding');
+      });
+    });
+    $('emailBtn').addEventListener('click', function(){ _cancelAuto(); REVO.go('signup'); });
+    $('loginFoot').addEventListener('click', function(){ _cancelAuto(); REVO.go('login'); });
+    setTimeout(function(){
+      if(!_autoNav) return;
+      if(REVO.onboarded()){ REVO.go('home'); }
+      else { REVO.go('welcome'); }
+    }, REVO.onboarded() ? 2400 : 3000);
+  })();
+</script>
+</div>
+
+</body>
+</html>

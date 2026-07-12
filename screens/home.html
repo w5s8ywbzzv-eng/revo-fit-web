@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ホーム — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s; min-height:760px; display:flex; flex-direction:column;">
+
+  <style>
+    @keyframes revoIntroGlow{0%,100%{filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(227,197,106,0.15));}50%{filter:drop-shadow(0 6px 18px rgba(0,0,0,0.45)) drop-shadow(0 0 16px rgba(227,197,106,0.4));}}
+    @keyframes revoIntroOut{0%{opacity:1; visibility:visible;}100%{opacity:0; visibility:hidden;}}
+    @keyframes revoIconIn{
+      0%{opacity:0; transform:scale(0.82);}
+      45%{opacity:1; transform:scale(1);}
+      82%{opacity:1; transform:scale(1);}
+      100%{opacity:1; transform:scale(1.06);}
+    }
+    @keyframes revoTagFade{
+      0%,30%{opacity:0; transform:translateY(6px);}
+      50%{opacity:0.85; transform:translateY(0);}
+      82%{opacity:0.85;}
+      100%{opacity:0;}
+    }
+  </style>
+  <div class="revoIntro" style="position:absolute; inset:0; z-index:60; background:#16140F; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; animation:revoIntroOut 0.6s ease 2.5s forwards;">
+    <div style="transform-origin:center center; animation:revoIconIn 3.0s cubic-bezier(0.4,0,0.2,1) both, revoIntroGlow 2.8s ease-in-out infinite;">
+      <svg width="122" height="122" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="revo fit" style="display:block;">
+        <defs><clipPath id="introIcon"><rect width="180" height="180" rx="40"/></clipPath></defs>
+        <g clip-path="url(#introIcon)">
+          <rect width="180" height="180" fill="#16140F"/>
+          <text x="90" y="70" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-weight="200" font-size="44" letter-spacing="1.5" fill="#F0EBE2">revo</text>
+          <rect x="0" y="116" width="180" height="64" fill="#E3C56A"/>
+          <text x="90" y="149" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-weight="500" font-size="34" letter-spacing="1" fill="#16140F">fit</text>
+        </g>
+      </svg>
+    </div>
+    <p style="font-size:14px; color:#8A7E68; margin:0; text-align:center; letter-spacing:0.08em; font-weight:300; animation:revoTagFade 3.0s ease both;">revo in your life</p>
+  </div>
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">Revo Fit のホーム。総合スコアと、睡眠・食事・運動・回復の内訳。そこから導かれた今日の一手。考えなくていい。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:18px 18px 10px;">
+    <div style="display:flex; align-items:center; gap:9px;">
+      <svg viewBox="0 0 116 30" width="92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="revo fit">
+        <text x="0" y="23" font-family="Jost,sans-serif" font-weight="200" font-size="25" letter-spacing="0.5" fill="#F0EBE2"><tspan id="logoRevo" fill="#F0EBE2">revo </tspan><tspan id="logoFit" fill="#E3C56A">fit</tspan></text>
+      </svg>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:56px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="flex:1; padding:6px 20px 0; display:flex; flex-direction:column;">
+
+    <p id="greet" style="font-size:14px; color:#8A7E68; margin:6px 0 6px;">おはようございます</p>
+    <p id="scoreState" style="font-size:14px; color:#5DCAA5; margin:0 0 18px; font-weight:500;">いい調子です。食事だけ、あと一歩。</p>
+
+    <!-- 総合スコア（円の中に rf score と数字） -->
+    <div style="display:flex; flex-direction:column; align-items:center; margin:0 0 6px;">
+      <svg viewBox="0 0 240 240" style="width:188px; height:188px;" role="img" aria-label="rf score 78">
+        <defs><linearGradient id="fitGlow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F0D98A"/><stop offset="55%" stop-color="#E3C56A"/><stop offset="100%" stop-color="#C9A24E"/></linearGradient></defs>
+        <circle cx="120" cy="120" r="100" fill="none" stroke="#2A2620" stroke-width="13"/>
+        <circle id="fitArc" cx="120" cy="120" r="100" fill="none" stroke="url(#fitGlow)" stroke-width="13" stroke-linecap="round" transform="rotate(-90 120 120)" stroke-dasharray="628" stroke-dashoffset="628" style="filter:drop-shadow(0 0 8px rgba(227,197,106,0.4));"/>
+        <text id="scoreRingLbl" x="120" y="90" text-anchor="middle" font-size="19" font-weight="500" fill="#C9A24E" font-family="Jost,sans-serif" letter-spacing="1">rf score</text>
+        <text id="fitNum" x="120" y="154" text-anchor="middle" font-size="62" font-weight="600" fill="#F0EBE2" font-family="var(--font-sans)">0</text>
+      </svg>
+    </div>
+
+    <!-- 要素別スコア（色とゲージで直感的） -->
+    <div id="factors" style="display:flex; gap:8px; margin:20px 0 0;"></div>
+
+    <!-- 今日の一手（弱点と繋がる） -->
+    <div style="margin:22px 0 0;">
+      <p id="nextLbl" style="font-size:12px; color:#8A7E68; margin:0 0 9px; font-weight:500; letter-spacing:0.03em;">だから、きょうの一手</p>
+      <div id="nextCard" style="background:linear-gradient(135deg,#1F1B12,#46412F); border:0.5px solid #4A4230; border-radius:18px; padding:17px; display:flex; align-items:center; gap:14px; transition:all 0.35s;">
+        <div style="width:48px; height:48px; border-radius:13px; background:rgba(227,197,106,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i id="nextIcon" class="ti ti-salad" style="font-size:25px; color:#E3C56A;" aria-hidden="true"></i></div>
+        <div style="flex:1;">
+          <p id="nextTtl" style="font-size:15px; font-weight:600; color:#F0EBE2; margin:0 0 3px;">夜は、たんぱく質を少し多めに</p>
+          <p id="nextSub" style="font-size:12px; color:#B0A488; margin:0; line-height:1.5;">食事スコアが低め。あと卵2個ぶん（たんぱく質 約14g）で、今日は整います。</p>
+        </div>
+        <i class="ti ti-chevron-right" style="font-size:19px; color:#8A7E68;" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <button id="recordBtn" style="margin:14px 0 0; width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer;"><i class="ti ti-plus" style="font-size:18px;" aria-hidden="true"></i><span id="recordLbl">記録する</span></button>
+
+    <button id="moreBtn" style="margin:13px 0 6px; width:100%; background:transparent; border:none; color:#8A7E68; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;"><span id="moreLbl">くわしい分析を見る</span><i class="ti ti-chevron-down" style="font-size:15px;" aria-hidden="true"></i></button>
+
+  </div>
+
+  <div id="nav" style="display:none; align-items:center; justify-content:space-around; padding:10px 8px 14px; border-top:0.5px solid #2A2620; background:#16140F; transition:all 0.35s;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-home-2" style="font-size:21px; color:#E3C56A;" aria-hidden="true"></i><span id="nav0" style="font-size:9px; color:#E3C56A;">ホーム</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-arrow-guide" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav1" style="font-size:9px; color:#6E6555;">次の一手</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-chart-line" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav2" style="font-size:9px; color:#6E6555;">未来予測</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-pencil-plus" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav3" style="font-size:9px; color:#6E6555;">記録</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-award" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav4" style="font-size:9px; color:#6E6555;">メダル</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-users" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav5" style="font-size:9px; color:#6E6555;">SNS</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-salad" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav6" style="font-size:9px; color:#6E6555;">食事</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-barbell" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav7" style="font-size:9px; color:#6E6555;">運動</span></div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:3px;"><i class="ti ti-zzz" style="font-size:21px; color:#6E6555;" aria-hidden="true"></i><span id="nav8" style="font-size:9px; color:#6E6555;">回復</span></div>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // 要素別スコア [key, icon, score(0-100)] — 食事を弱点に
+    var _sc = window.REVO ? REVO.todayScore() : null;  /* docs/02：daily_score の当日行 */
+    var FACTORS=[["sleep","ti-moon",_sc?_sc.sleep:null],["food","ti-salad",_sc?_sc.food:null],["move","ti-flame",_sc?_sc.move:null],["recover","ti-heart",_sc?_sc.recover:null]];
+    function scoreColor(s){ if(s>=75) return ["#5DCAA5","#16241E"]; if(s>=60) return ["#E3C56A","#211B10"]; return ["#E0936A","#2A201A"]; }
+    var D={
+      "日本語":{greet:"おはようございます",ringLbl:"rf score",state:"いい調子です。食事だけ、あと一歩。",
+        factors:{sleep:"睡眠",food:"食事",move:"運動",recover:"回復"},
+        nextLbl:"だから、きょうの一手",nextTtl:"夜は、たんぱく質を少し多めに",nextSub:"食事スコアが低め。あと卵2個ぶん（たんぱく質 約14g）で、今日は整います。",
+        record:"記録する",more:"くわしい分析を見る",nav:["ホーム","次の一手","未来予測","記録","メダル"]},
+      "English":{greet:"Good morning",ringLbl:"rf score",state:"You're doing well. Just food, one more step.",
+        factors:{sleep:"Sleep",food:"Food",move:"Exercise",recover:"Recovery"},
+        nextLbl:"So, today's one step",nextTtl:"A bit more protein tonight",nextSub:"Food score is low. About 2 eggs (≈14g protein) and today balances out.",
+        record:"Log it",more:"See detailed analysis",nav:["Home","Next Step","Forecast","Log","Medals"]},
+      "简体中文":{greet:"早上好",ringLbl:"rf score",state:"状态不错。只差饮食再加把劲。",
+        factors:{sleep:"睡眠",food:"饮食",move:"运动",recover:"恢复"},
+        nextLbl:"所以，今天这一步",nextTtl:"晚上多补点蛋白质",nextSub:"饮食评分偏低。再加约2个鸡蛋（约14g蛋白质），今天就平衡了。",
+        record:"记录",more:"查看详细分析",nav:["首页","下一步","未来预测","记录","足迹"]},
+      "繁體中文":{greet:"早安",ringLbl:"rf score",state:"狀態不錯。只差飲食再加把勁。",
+        factors:{sleep:"睡眠",food:"飲食",move:"運動",recover:"恢復"},
+        nextLbl:"所以，今天這一步",nextTtl:"晚上多補點蛋白質",nextSub:"飲食評分偏低。再加約2顆蛋（約14g蛋白質），今天就平衡了。",
+        record:"記錄",more:"查看詳細分析",nav:["首頁","下一步","未來預測","記錄","足跡"]},
+      "한국어":{greet:"좋은 아침이에요",ringLbl:"rf score",state:"좋은 흐름이에요. 식사만 한 걸음 더.",
+        factors:{sleep:"수면",food:"식사",move:"운동",recover:"회복"},
+        nextLbl:"그래서, 오늘의 한 걸음",nextTtl:"저녁엔 단백질을 조금 더",nextSub:"식사 점수가 낮아요. 달걀 2개(단백질 약 14g)면 오늘은 균형이 맞아요.",
+        record:"기록하기",more:"자세한 분석 보기",nav:["홈","다음 한 수","미래 예측","기록","메달"]},
+      "ภาษาไทย":{greet:"อรุณสวัสดิ์",ringLbl:"rf score",state:"กำลังดีเลย ขาดแค่มื้ออาหารอีกนิด",
+        factors:{sleep:"การนอน",food:"อาหาร",move:"ออกกำลัง",recover:"ฟื้นตัว"},
+        nextLbl:"ดังนั้น ก้าวของวันนี้",nextTtl:"มื้อเย็นเพิ่มโปรตีนอีกหน่อย",nextSub:"คะแนนอาหารต่ำ เพิ่มประมาณไข่ 2 ฟอง (โปรตีน ~14 ก.) วันนี้ก็สมดุล",
+        record:"บันทึก",more:"ดูการวิเคราะห์ละเอียด",nav:["หน้าแรก","ก้าวต่อไป","พยากรณ์","บันทึก","เหรียญ"]},
+      "Français":{greet:"Bonjour",ringLbl:"rf score",state:"Vous êtes sur la bonne voie. Plus qu'un pas côté repas.",
+        factors:{sleep:"Sommeil",food:"Repas",move:"Sport",recover:"Récup"},
+        nextLbl:"Donc, le pas du jour",nextTtl:"Un peu plus de protéines ce soir",nextSub:"Score repas bas. L'équivalent de 2 œufs (≈14g de protéines), et la journée s'équilibre.",
+        record:"Enregistrer",more:"Voir l'analyse détaillée",nav:["Accueil","Étape","Prévision","Journal","Médailles"]},
+      "Español":{greet:"Buenos días",ringLbl:"rf score",state:"Vas muy bien. Solo la comida, un paso más.",
+        factors:{sleep:"Sueño",food:"Comida",move:"Ejercicio",recover:"Recup."},
+        nextLbl:"Por eso, el paso de hoy",nextTtl:"Un poco más de proteína esta noche",nextSub:"Comida con puntuación baja. Unos 2 huevos (≈14g de proteína), y el día se equilibra.",
+        record:"Registrar",more:"Ver análisis detallado",nav:["Inicio","Paso","Previsión","Registro","Medallas"]},
+      "Deutsch":{greet:"Guten Morgen",ringLbl:"rf score",state:"Du bist auf einem guten Weg. Nur beim Essen ein Schritt noch.",
+        factors:{sleep:"Schlaf",food:"Essen",move:"Sport",recover:"Erholung"},
+        nextLbl:"Also, der heutige Schritt",nextTtl:"Heute Abend etwas mehr Protein",nextSub:"Ernährungswert niedrig. Etwa 2 Eier (≈14g Protein), und der Tag ist im Gleichgewicht.",
+        record:"Eintragen",more:"Detailanalyse ansehen",nav:["Start","Schritt","Prognose","Log","Medaillen"]},
+      "Italiano":{greet:"Buongiorno",ringLbl:"rf score",state:"Stai andando bene. Manca solo un passo sui pasti.",
+        factors:{sleep:"Sonno",food:"Cibo",move:"Sport",recover:"Recupero"},
+        nextLbl:"Quindi, il passo di oggi",nextTtl:"Stasera un po' più di proteine",nextSub:"Punteggio cibo basso. Circa 2 uova (≈14g di proteine) e la giornata si bilancia.",
+        record:"Registra",more:"Vedi analisi dettagliata",nav:["Home","Passo","Previsione","Diario","Medaglie"]},
+      "Português":{greet:"Bom dia",ringLbl:"rf score",state:"Você vai bem. Só a alimentação, mais um passo.",
+        factors:{sleep:"Sono",food:"Comida",move:"Exercício",recover:"Recup."},
+        nextLbl:"Por isso, o passo de hoje",nextTtl:"Um pouco mais de proteína à noite",nextSub:"Pontuação de comida baixa. Cerca de 2 ovos (≈14g de proteína), e o dia se equilibra.",
+        record:"Registrar",more:"Ver análise detalhada",nav:["Início","Passo","Previsão","Registro","Medalhas"]},
+      "हिन्दी":{greet:"सुप्रभात",ringLbl:"rf score",state:"आप अच्छा कर रहे हैं। बस खाने में एक कदम और।",
+        factors:{sleep:"नींद",food:"खाना",move:"कसरत",recover:"रिकवरी"},
+        nextLbl:"इसलिए, आज का एक कदम",nextTtl:"रात में थोड़ा ज़्यादा प्रोटीन",nextSub:"खाने का स्कोर कम है। क़रीब 2 अंडे (प्रोटीन ~14g), और आज संतुलित।",
+        record:"दर्ज करें",more:"विस्तृत विश्लेषण देखें",nav:["होम","अगला कदम","भविष्यवाणी","रिकॉर्ड","मेडल"]},
+      "Tiếng Việt":{greet:"Chào buổi sáng",ringLbl:"rf score",state:"Bạn đang rất tốt. Chỉ còn một bước ở bữa ăn.",
+        factors:{sleep:"Giấc ngủ",food:"Ăn uống",move:"Vận động",recover:"Phục hồi"},
+        nextLbl:"Vậy nên, bước hôm nay",nextTtl:"Tối nay thêm chút đạm",nextSub:"Điểm ăn uống thấp. Khoảng 2 quả trứng (~14g đạm) là hôm nay cân bằng.",
+        record:"Ghi lại",more:"Xem phân tích chi tiết",nav:["Trang chủ","Bước tiếp","Dự báo","Ghi","Huy chương"]},
+      "Bahasa Indonesia":{greet:"Selamat pagi",ringLbl:"rf score",state:"Kamu berjalan baik. Tinggal makan, satu langkah lagi.",
+        factors:{sleep:"Tidur",food:"Makan",move:"Olahraga",recover:"Pemulihan"},
+        nextLbl:"Maka, langkah hari ini",nextTtl:"Malam ini protein sedikit lebih",nextSub:"Skor makan rendah. Sekitar 2 telur (~14g protein), dan hari ini seimbang.",
+        record:"Catat",more:"Lihat analisis detail",nav:["Beranda","Langkah","Prakiraan","Catat","Medali"]}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",ring:"#2A2620",num:"#F0EBE2",ringLbl:"#C9A24E",state:"#5DCAA5",nextSub:"#B0A488",factorBg:"#1A1814",factorBd:"#2A2620",factorName:"#8A7E68",navBg:"#16140F",navBd:"#2A2620",navOff:"#6E6555",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",ring:"#EDE6D8",num:"#2E2A24",ringLbl:"#A87A1E",state:"#0F9E84",nextSub:"#8A7560",factorBg:"#FBF7F1",factorBd:"#F0EAE0",factorName:"#8A7E68",navBg:"#FFFFFF",navBd:"#F0EAE0",navOff:"#B7A98F",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderFactors(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('factors').innerHTML="";
+      FACTORS.forEach(function(f){
+        var key=f[0], icon=f[1], sc=f[2], has=(sc!=null), col=has?scoreColor(sc):[t.factorName,"transparent"];
+        var cell=document.createElement('div');
+        cell.style.cssText="flex:1; background:"+t.factorBg+"; border:0.5px solid "+t.factorBd+"; border-radius:14px; padding:11px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:6px;";
+        cell.innerHTML=
+          '<i class="ti '+icon+'" style="font-size:19px; color:'+col[0]+';" aria-hidden="true"></i>'+
+          '<span style="font-size:16px; font-weight:600; color:'+col[0]+';">'+(has?sc:"--")+'</span>'+
+          '<div style="width:100%; height:3px; background:'+(dark?"#2A2620":"#EDE6D8")+'; border-radius:2px; overflow:hidden;"><div style="width:'+(has?sc:0)+'%; height:3px; background:'+col[0]+';"></div></div>'+
+          '<span style="font-size:10px; color:'+t.factorName+';">'+d.factors[key]+'</span>';
+        $('factors').appendChild(cell);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('greet').textContent=d.greet; $('scoreRingLbl').textContent=d.ringLbl; $('scoreState').textContent=d.state;
+      $('nextLbl').textContent=d.nextLbl; $('nextTtl').textContent=d.nextTtl; $('nextSub').textContent=d.nextSub;
+      $('recordLbl').textContent=d.record; $('moreLbl').textContent=d.more;
+      for(var i=0;i<5;i++){ $('nav'+i).textContent=d.nav[i]; }
+      $('nav5').textContent="SNS";
+      $('nav6').textContent=d.factors.food;
+      $('nav7').textContent=d.factors.move;
+      $('nav8').textContent=d.factors.recover;
+      renderFactors();
+      patchDynamic();
+    }
+    /* ROADMAP 13章：サンプル文を実データ由来に差し替え（見た目・要素は不変） */
+    function patchDynamic(){
+      var d=D[cur]||D["English"], E=(REVO.EMPTY[cur]||REVO.EMPTY["English"]);
+      if(!_sc){
+        $('scoreState').textContent=E.state;
+        $('nextTtl').textContent=E.ttl;
+        $('nextSub').textContent=E.sub;
+        return;
+      }
+      var lowKey=null, lowVal=101;
+      FACTORS.forEach(function(f){ if(f[2]!=null && f[2]<lowVal){ lowVal=f[2]; lowKey=f[0]; } });
+      if(lowKey!=null && lowVal<75){
+        var fname=d.factors[lowKey];
+        $('scoreState').textContent=E.lowTtl.replace('{f}',fname);
+        $('nextTtl').textContent=E.lowTtl.replace('{f}',fname);
+        $('nextSub').textContent=E.lowSub.split('{f}').join(fname);
+      } else {
+        $('scoreState').textContent=E.good;
+        $('nextTtl').textContent=E.good;
+        $('nextSub').textContent="";
+      }
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('greet').style.color=t.sub;
+      $('fitArc').previousElementSibling.setAttribute('stroke', t.ring);
+      $('fitNum').setAttribute('fill', t.num); $('scoreRingLbl').setAttribute('fill', t.ringLbl);
+      $('scoreState').style.color=t.state;
+      $('nextLbl').style.color=t.sub; $('nextSub').style.color=t.nextSub;
+      $('recordBtn').style.background=t.accent; $('recordBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('moreBtn').style.color=t.sub;
+      $('nav').style.background=t.navBg; $('nav').style.borderColor=t.navBd;
+      var lr=document.getElementById('logoRevo'); if(lr) lr.setAttribute('fill', dark?"#F0EBE2":"#1A1813");
+      var lf=document.getElementById('logoFit'); if(lf) lf.setAttribute('fill', dark?"#E3C56A":"#BA7517");
+      for(var i=0;i<9;i++){ var on=(i===0); $('nav'+i).style.color= on?t.accent:t.navOff; $('nav'+i).previousElementSibling.style.color= on?t.accent:t.navOff; }
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderFactors();
+    }
+    function animate(){
+      if(!_sc){ $('fitNum').textContent="--"; $('fitArc').style.strokeDashoffset=628; return; }
+      var target=_sc.total, arc=$('fitArc'), num=$('fitNum'), full=628, end=full-(full*(target/100)), dur=1400, t0=null;
+      function ease(p){ return 1-Math.pow(1-p,3); }
+      function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1), e=ease(p);
+        arc.style.strokeDashoffset=full-((full-end)*e); num.textContent=Math.round(target*e);
+        if(p<1) requestAnimationFrame(step); }
+      requestAnimationFrame(step);
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme(); animate();
+    /* 遷移：記録する→log／下タブ→各画面／くわしい分析→analysis */
+    $('recordBtn').onclick=function(){ REVO.go('log'); };
+    $('moreBtn').onclick=function(){ REVO.go('analysis'); };
+    var _navGo=[null,'navigator','forecast','log','medals','feed','recipes','muscle_map','mypillow'];
+    for(var ni=1; ni<9; ni++){ (function(i){
+      $('nav'+i).parentNode.style.cursor='pointer';
+      $('nav'+i).parentNode.onclick=function(){ REVO.go(_navGo[i]); };
+    })(ni); }
+  })();
+</script>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BGM選択 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@keyframes revoWave { 0%,100%{ transform:scaleY(0.35);} 50%{ transform:scaleY(1);} }
+@keyframes sheetUp { from{ transform:translateY(100%);} to{ transform:translateY(0);} }
+</style>
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; height:720px;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">運動中に聞く BGM を選ぶ画面。右上の音符マークを押すと、Chill・Groove・Energetic・Focus のジャンルから曲を選べるパネルが開く。曲をタップすると再生され、再生中は下部にミニプレーヤーと波が表示される。</h2>
+
+  <!-- 背景：運動画面のダミー -->
+  <div style="display:flex; align-items:center; justify-content:flex-end; padding:16px 18px; gap:10px; position:relative; z-index:5;">
+    <button id="bgmBtn" aria-label="BGM" style="width:38px; height:38px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.3s;">
+      <i id="bgmIcon" class="ti ti-music-off" style="font-size:18px; color:#6E6555;"></i>
+    </button>
+  </div>
+
+  <div style="padding:20px 30px; text-align:center;">
+    <div style="display:flex; justify-content:center; margin:30px 0 26px;">
+      <span style="font-family:Jost; font-weight:100; font-size:38px; letter-spacing:0.02em;"><span style="color:#F0EBE2;">revo</span><span style="color:#E3C56A; font-weight:200; margin-left:0.18em;">fit</span></span>
+    </div>
+    <p style="font-size:13px; color:#8A7E68; margin:0 0 8px; font-weight:300; line-height:1.8;">右上の <i class="ti ti-music" style="font-size:14px; color:#E3C56A;"></i> をタップすると<br>運動中の BGM を選べます。</p>
+  </div>
+
+  <!-- ミニプレーヤー（再生中に下部に出る） -->
+  <div id="miniPlayer" style="position:absolute; left:14px; right:14px; bottom:14px; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:12px 14px; display:none; align-items:center; gap:12px; box-shadow:0 -8px 30px -10px rgba(0,0,0,0.5); z-index:20;">
+    <div id="miniViz" style="display:flex; align-items:flex-end; gap:3px; height:28px; width:32px; flex-shrink:0;">
+      <div class="mbar" style="width:4px; height:60%; background:#E3C56A; border-radius:2px;"></div>
+      <div class="mbar" style="width:4px; height:100%; background:#E3C56A; border-radius:2px;"></div>
+      <div class="mbar" style="width:4px; height:45%; background:#E3C56A; border-radius:2px;"></div>
+      <div class="mbar" style="width:4px; height:80%; background:#E3C56A; border-radius:2px;"></div>
+    </div>
+    <div style="flex:1; min-width:0; text-align:left;">
+      <p id="miniTitle" style="font-size:13px; color:#F0EBE2; margin:0 0 2px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">City Pulse</p>
+      <p id="miniGenre" style="font-size:10px; color:#E3C56A; margin:0;">Groove</p>
+    </div>
+    <button id="miniToggle" style="width:38px; height:38px; border-radius:50%; background:#E3C56A; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;"><i id="miniIcon" class="ti ti-player-pause-filled" style="font-size:17px; color:#16140F;"></i></button>
+  </div>
+
+  <!-- 選曲シート -->
+  <div id="overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:none; z-index:30;"></div>
+  <div id="sheet" style="position:absolute; left:0; right:0; bottom:0; background:#1A1814; border-top:0.5px solid #3A352A; border-radius:22px 22px 0 0; padding:0 0 20px; display:none; z-index:31; max-height:82%; overflow:hidden; flex-direction:column;">
+    <!-- ハンドル -->
+    <div style="display:flex; justify-content:center; padding:12px 0 4px;"><div style="width:38px; height:4px; border-radius:2px; background:#3A352A;"></div></div>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 22px 14px;">
+      <div style="display:flex; align-items:center; gap:8px;"><i class="ti ti-music" style="font-size:18px; color:#E3C56A;"></i><span style="font-size:16px; color:#F0EBE2; font-weight:500;">BGM を選ぶ</span></div>
+      <button id="closeSheet" style="background:transparent; border:none; cursor:pointer;"><i class="ti ti-x" style="font-size:20px; color:#8A7E68;"></i></button>
+    </div>
+
+    <!-- ジャンルタブ -->
+    <div style="display:flex; gap:7px; padding:0 22px 14px; overflow-x:auto;">
+      <button class="gt" data-g="Groove" style="font-size:12px; font-weight:600; padding:8px 15px; border-radius:9px; border:none; cursor:pointer; background:#E3C56A; color:#16140F; white-space:nowrap;">Groove</button>
+      <button class="gt" data-g="Chill" style="font-size:12px; font-weight:500; padding:8px 15px; border-radius:9px; border:0.5px solid #2A2620; cursor:pointer; background:transparent; color:#B0A488; white-space:nowrap;">Chill</button>
+      <button class="gt" data-g="Energetic" style="font-size:12px; font-weight:500; padding:8px 15px; border-radius:9px; border:0.5px solid #2A2620; cursor:pointer; background:transparent; color:#B0A488; white-space:nowrap;">Energetic</button>
+      <button class="gt" data-g="Focus" style="font-size:12px; font-weight:500; padding:8px 15px; border-radius:9px; border:0.5px solid #2A2620; cursor:pointer; background:transparent; color:#B0A488; white-space:nowrap;">Focus</button>
+    </div>
+    <p id="genreDesc" style="font-size:11px; color:#8A7E68; margin:0; padding:0 22px 12px; font-weight:300;">爽やかで軽快。日常のトレーニングに。</p>
+
+    <!-- 曲リスト -->
+    <div id="songList" style="padding:0 16px; overflow-y:auto; flex:1;"></div>
+  </div>
+
+  <audio id="audio" loop>
+    <source src="../assets/audio/City_Pulse.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="toast" style="position:absolute; left:50%; bottom:80px; transform:translateX(-50%); background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; padding:10px 20px; border-radius:10px; box-shadow:0 12px 30px -8px rgba(0,0,0,0.6); opacity:0; transition:opacity 0.3s; white-space:nowrap; pointer-events:none; z-index:50;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    var audio=$('audio'); audio.volume=0.6;
+    var playing=false, curTitle="", curGenre="", curGenreTab="Groove";
+    // ジャンル別の曲（playable:true のみ実際に鳴る＝City Pulse）
+    var songs={
+      Groove:[["City Pulse","3:42",true],["Road Pulse","3:48",false],["Home Groove","3:36",false]],
+      Chill:[["Morning Rise","4:10",false],["Sunset Cool","3:55",false],["Gentle Day","4:22",false]],
+      Energetic:[["Iron Drive","3:28",false],["Uphill Power","3:30",false],["Night Sprint","3:12",false]],
+      Focus:[["Deep Focus","5:02",false],["Steady Pace","4:44",false],["Quiet Time","5:20",false]]
+    };
+    var genreDesc={Groove:"爽やかで軽快。日常のトレーニングに。",Chill:"ゆったり。ウォームアップやクールダウンに。",Energetic:"高揚感。追い込みたい日に。",Focus:"淡々と集中。ペースを保ちたいときに。"};
+    var genreColor={Chill:"#5DCAA5",Groove:"#E3C56A",Energetic:"#E0605D",Focus:"#6FA8DC"};
+
+    function openSheet(){ $('overlay').style.display="block"; $('sheet').style.display="flex"; $('sheet').style.animation="sheetUp 0.32s ease"; renderSongs(); }
+    function closeSheet(){ $('overlay').style.display="none"; $('sheet').style.display="none"; }
+    function renderSongs(){
+      var list=songs[curGenreTab]||[];
+      var box=$('songList'); box.innerHTML="";
+      list.forEach(function(s){
+        var isCur=(s[0]===curTitle && playing);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:12px; padding:13px 12px; border-radius:11px; cursor:pointer; margin:0 0 3px; background:"+(isCur?"#241F13":"transparent")+";";
+        row.onmouseenter=function(){ if(!isCur) row.style.background="#211E17"; };
+        row.onmouseleave=function(){ if(!isCur) row.style.background="transparent"; };
+        var icon = isCur? '<i class="ti ti-player-pause-filled" style="font-size:15px; color:#16140F;"></i>' : '<i class="ti ti-player-play-filled" style="font-size:15px; color:'+(s[2]?"#E3C56A":"#6E6555")+';"></i>';
+        var btnBg = isCur? "#E3C56A" : "#221E14";
+        row.innerHTML=
+          '<div style="width:36px; height:36px; border-radius:9px; background:'+btnBg+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;">'+icon+'</div>'+
+          '<div style="flex:1; min-width:0;"><p style="font-size:13px; color:'+(s[2]?"#F0EBE2":"#8A7E68")+'; margin:0 0 2px; font-weight:500;">'+s[0]+(s[2]?"":' <span style="font-size:10px; color:#6E6555;">近日</span>')+'</p><p style="font-size:10px; color:#6E6555; margin:0;">'+s[1]+'</p></div>'+
+          (isCur?'<div style="display:flex; align-items:flex-end; gap:2px; height:16px;"><div class="mbar" style="width:3px; height:50%; background:#E3C56A; border-radius:1px;"></div><div class="mbar" style="width:3px; height:100%; background:#E3C56A; border-radius:1px;"></div><div class="mbar" style="width:3px; height:70%; background:#E3C56A; border-radius:1px;"></div></div>':'');
+        row.onclick=function(){
+          if(!s[2]){ toast("この曲は近日公開です"); return; }
+          if(s[0]===curTitle && playing){ pause(); }
+          else{ play(s[0], curGenreTab); }
+          renderSongs();
+        };
+        box.appendChild(row);
+      });
+      startBars();
+    }
+    function play(title, genre){
+      curTitle=title; curGenre=genre;
+      var p=audio.play();
+      if(p&&p.then){ p.then(function(){ setPlaying(true); toast("♪ "+title); }).catch(function(){ toast("再生できませんでした"); }); }
+      else{ setPlaying(true); }
+    }
+    function pause(){ audio.pause(); setPlaying(false); }
+    function setPlaying(on){
+      playing=on;
+      if(on){
+        $('bgmIcon').className="ti ti-music"; $('bgmIcon').style.color="#E3C56A";
+        $('bgmBtn').style.background="#2A2416"; $('bgmBtn').style.borderColor="#E3C56A";
+        $('miniPlayer').style.display="flex";
+        $('miniTitle').textContent=curTitle; $('miniGenre').textContent=curGenre;
+        $('miniGenre').style.color=genreColor[curGenre]||"#E3C56A";
+        $('miniIcon').className="ti ti-player-pause-filled";
+      }else{
+        $('bgmIcon').className="ti ti-music-off"; $('bgmIcon').style.color="#6E6555";
+        $('bgmBtn').style.background="#1F1C16"; $('bgmBtn').style.borderColor="#3A352A";
+        $('miniIcon').className="ti ti-player-play-filled";
+      }
+      startBars();
+    }
+    function startBars(){
+      document.querySelectorAll('.mbar').forEach(function(b,i){
+        b.style.transformOrigin="bottom";
+        b.style.animation= playing? ("revoWave "+(0.6+ (i%4)*0.12)+"s ease-in-out infinite") : "none";
+      });
+    }
+    function toast(msg){ var t=$('toast'); t.textContent=msg; t.style.opacity="1"; setTimeout(function(){t.style.opacity="0";},1600); }
+
+    $('bgmBtn').onclick=openSheet;
+    $('closeSheet').onclick=closeSheet;
+    $('overlay').onclick=closeSheet;
+    $('miniToggle').onclick=function(){ if(playing) pause(); else play(curTitle||"City Pulse", curGenre||"Groove"); };
+    document.querySelectorAll('.gt').forEach(function(b){
+      b.onclick=function(){
+        curGenreTab=b.getAttribute('data-g');
+        document.querySelectorAll('.gt').forEach(function(x){ x.style.background="transparent"; x.style.color="#B0A488"; x.style.border="0.5px solid #2A2620"; x.style.fontWeight="500"; });
+        var c=genreColor[curGenreTab];
+        b.style.background=c; b.style.color="#16140F"; b.style.border="none"; b.style.fontWeight="600";
+        $('genreDesc').textContent=genreDesc[curGenreTab];
+        renderSongs();
+      };
+    });
+  })();
+</script>
+</div>
+<script>
+(function(){
+  /* BGM状態をアプリ全体と共有（再生位置・ON/OFF を localStorage revo.bgm に保存） */
+  function findAudio(){
+    var a=document.getElementById('audio');
+    if(a && a.tagName!=='AUDIO'){ a=a.querySelector && a.querySelector('audio'); }
+    return (a && a.tagName==='AUDIO') ? a : document.querySelector('audio');
+  }
+  var a=findAudio(); if(!a) return;
+  function save(playing){
+    try{ localStorage.setItem('revo.bgm', JSON.stringify({playing:playing, t:a.currentTime||0, vol:(a.volume!=null?a.volume:1), track:'City_Pulse', at:Date.now()})); }catch(e){}
+  }
+  try{
+    var st=JSON.parse(localStorage.getItem('revo.bgm')||'null');
+    if(st && st.playing){
+      try{ a.currentTime=st.t||0; }catch(e){}
+      if(st.vol!=null) a.volume=st.vol;
+      var kick=function(){ a.play().then(function(){ document.removeEventListener('pointerdown',kick); }).catch(function(){}); };
+      a.play().catch(function(){ document.addEventListener('pointerdown',kick); });
+    }
+  }catch(e){}
+  a.addEventListener('play', function(){ save(true); });
+  a.addEventListener('pause', function(){ save(false); });
+  setInterval(function(){ if(!a.paused) save(true); }, 2000);
+  window.addEventListener('pagehide', function(){ save(!a.paused); });
+})();
+</script>
+</body>
+</html>

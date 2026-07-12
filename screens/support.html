@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>サポート — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; min-height:580px; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">応援を贈る。頑張る人へ、気持ちと金額を選び、確認して贈る。同じ道を行く者同士の支え合い。言語と明暗を切り替えられる</h2>
+
+  <!-- 入力画面 -->
+  <div id="inputView">
+    <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+      <span id="closeTxt" style="font-size:14px; color:#8A7E68; cursor:pointer;">とじる</span>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">応援を贈る</p>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button id="langBtn" aria-label="言語" style="width:30px; height:30px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:15px; color:#B0A488;" aria-hidden="true"></i></button>
+        <button id="themeBtn" aria-label="明るさ" style="width:30px; height:30px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:15px; color:#E3C56A;" aria-hidden="true"></i></button>
+      </div>
+      <div id="langMenu" style="display:none; position:absolute; top:50px; right:16px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+    </div>
+
+    <div style="padding:20px 18px 0; text-align:center;">
+      <div style="width:56px; height:56px; border-radius:50%; background:#2A2418; display:flex; align-items:center; justify-content:center; color:#E3C56A; font-size:20px; font-weight:500; margin:0 auto 8px; font-family:Jost;">K</div>
+      <p id="toName" style="font-size:14px; color:#F0EBE2; margin:0 0 2px; font-weight:500;">Kaiさんへ</p>
+      <p id="viaPost" style="font-size:11px; color:#8A7E68; margin:0;">「胸・三頭を鍛えた」を見て</p>
+    </div>
+
+    <div style="padding:22px 18px 0;">
+      <p id="lblFeel" style="font-size:12px; color:#A89C84; margin:0 0 10px; font-weight:500;">気持ちを、ひとつ選んで</p>
+      <div id="feelWrap" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+
+    <div style="padding:20px 18px 0;">
+      <p id="lblAmount" style="font-size:12px; color:#A89C84; margin:0 0 10px; font-weight:500;">金額（任意・少額でも気持ちは伝わります）</p>
+      <div id="amountWrap" style="display:flex; gap:8px;"></div>
+    </div>
+
+    <div style="padding:18px 18px 0;">
+      <div id="msgBox" style="background:#1A1814; border-radius:12px; padding:12px 14px; transition:background 0.35s;">
+        <p style="font-size:13px; margin:0; line-height:1.6;"><span id="lblMsgMain" style="color:#C9C0AE;">ひとことそえる（任意）</span><br><span id="msgSample" style="color:#8A7E68; font-size:12px;">その粘り、リスペクトです。自分も頑張れました。</span></p>
+      </div>
+    </div>
+
+    <div style="padding:18px 18px 0;">
+      <button id="toConfirm" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:500; padding:15px; border-radius:14px; cursor:pointer;">確認する</button>
+    </div>
+
+    <div style="padding:14px 18px 22px;">
+      <div id="noteCard" style="background:#16201C; border-radius:12px; padding:11px 14px; display:flex; align-items:flex-start; gap:9px; transition:background 0.35s;">
+        <i class="ti ti-heart" style="font-size:15px; color:#5DCAA5; margin-top:1px;" aria-hidden="true"></i>
+        <span id="noteTxt" style="font-size:11px; color:#7FB89E; line-height:1.6;">あなたの応援は、Kaiさんに直接届きます。同じ道を行く者同士の、ささやかな支え合いです。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 確認画面 -->
+  <div id="confirmView" style="display:none;">
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:0.5px solid #2A2620;">
+      <span id="backTxt" style="font-size:14px; color:#8A7E68; cursor:pointer;"><i class="ti ti-arrow-left" style="font-size:15px; vertical-align:-2px;" aria-hidden="true"></i> もどる</span>
+      <p id="confHdr" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0;">確認</p>
+      <span style="width:40px;"></span>
+    </div>
+
+    <div style="padding:24px 20px 0; text-align:center;">
+      <p id="confLead" style="font-size:13px; color:#A89C84; margin:0 0 20px;">この内容で、応援を贈ります</p>
+      <div style="width:56px; height:56px; border-radius:50%; background:#2A2418; display:flex; align-items:center; justify-content:center; color:#E3C56A; font-size:20px; font-weight:500; margin:0 auto 10px; font-family:Jost;">K</div>
+      <p id="confTo" style="font-size:15px; color:#F0EBE2; margin:0 0 26px; font-weight:500;">Kaiさんへ</p>
+
+      <div id="confCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:18px; padding:22px 20px; margin:0 0 18px; transition:all 0.35s;">
+        <p id="confFeelLbl" style="font-size:11px; color:#8A7E68; margin:0 0 6px;">気持ち</p>
+        <p id="confFeel" style="font-size:17px; color:#E89BB8; margin:0 0 20px; font-weight:500;">よく頑張った</p>
+        <p id="confAmtLbl" style="font-size:11px; color:#8A7E68; margin:0 0 4px;">金額</p>
+        <p id="confAmt" style="font-size:38px; color:#E3C56A; margin:0; font-weight:600; letter-spacing:0.5px; font-family:Jost;">¥300</p>
+        <div id="confMsgRow" style="margin:18px 0 0; padding:16px 0 0; border-top:0.5px solid #2A2620;">
+          <p id="confMsgLbl" style="font-size:11px; color:#8A7E68; margin:0 0 5px;">ひとこと</p>
+          <p id="confMsg" style="font-size:13px; color:#C9C0AE; margin:0; line-height:1.6;">その粘り、リスペクトです。自分も頑張れました。</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:6px 20px 0;">
+      <button id="doSend" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:16px; border-radius:14px; cursor:pointer;">¥300 を贈る</button>
+    </div>
+  </div>
+
+  <!-- 完了 -->
+  <div id="doneView" style="display:none; padding:60px 24px; text-align:center;">
+    <div id="doneCircle" style="width:76px; height:76px; border-radius:50%; background:#2A2418; display:flex; align-items:center; justify-content:center; margin:0 auto 22px;"><i class="ti ti-heart" style="font-size:36px; color:#E3C56A;"></i></div>
+    <p id="doneTtl" style="font-size:20px; color:#F0EBE2; margin:0 0 8px; font-weight:600;">応援を贈りました</p>
+    <p id="doneSub" style="font-size:13px; color:#8A7E68; margin:0 0 30px; line-height:1.6;">あなたの気持ちは、Kaiさんへ届きます。</p>
+    <button id="doneClose" style="background:transparent; border:0.5px solid #3A352A; color:#B0A488; font-size:14px; padding:12px 32px; border-radius:12px; cursor:pointer;">とじる</button>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var amounts=["¥100","¥300","¥500"];
+    var D={
+      "日本語":{close:"とじる",ttl:"応援を贈る",to:"Kaiさんへ",via:"「胸・三頭を鍛えた」を見て",feelLbl:"気持ちを、ひとつ選んで",feels:["よく頑張った","リスペクト","ありがとう","一緒にがんばろう","おつかれさま"],amtLbl:"金額（任意・少額でも気持ちは伝わります）",other:"その他",msgMain:"ひとことそえる（任意）",msgSample:"その粘り、リスペクトです。自分も頑張れました。",confirm:"確認する",note:"あなたの応援は、Kaiさんに直接届きます。同じ道を行く者同士の、ささやかな支え合いです。",confHdr:"確認",confLead:"この内容で、応援を贈ります",confFeelLbl:"気持ち",confAmtLbl:"金額",confMsgLbl:"ひとこと",back:"もどる",send:"{a} を贈る",doneTtl:"応援を贈りました",doneSub:"あなたの気持ちは、Kaiさんへ届きます。",doneClose:"とじる"},
+      "English":{close:"Close",ttl:"Send support",to:"To Kai",via:"After seeing \"Trained chest & triceps\"",feelLbl:"Pick one feeling",feels:["Well done","Respect","Thank you","Let's grow together","Take care"],amtLbl:"Amount (optional · even a little means a lot)",other:"Other",msgMain:"Add a note (optional)",msgSample:"That grit — respect. You pushed me too.",confirm:"Review",note:"Your support goes directly to Kai. A small act of solidarity between those on the same path.",confHdr:"Review",confLead:"Send support with this",confFeelLbl:"Feeling",confAmtLbl:"Amount",confMsgLbl:"Note",back:"Back",send:"Send {a}",doneTtl:"Support sent",doneSub:"Your feelings are on their way to Kai.",doneClose:"Close"},
+      "简体中文":{close:"关闭",ttl:"送出应援",to:"致Kai",via:"看了「练了胸·三头」",feelLbl:"选一个心意",feels:["辛苦你了","尊敬","谢谢","一起加油","辛苦了"],amtLbl:"金额（可选·一点点也能传达心意）",other:"其他",msgMain:"附一句话（可选）",msgSample:"那份坚持，令人敬佩。我也被激励了。",confirm:"确认",note:"你的应援会直接送达Kai。同行者之间，小小的互相扶持。",confHdr:"确认",confLead:"以此内容送出应援",confFeelLbl:"心意",confAmtLbl:"金额",confMsgLbl:"留言",back:"返回",send:"送出 {a}",doneTtl:"已送出应援",doneSub:"你的心意会送达Kai。",doneClose:"关闭"},
+      "繁體中文":{close:"關閉",ttl:"送出應援",to:"致Kai",via:"看了「練了胸·三頭」",feelLbl:"選一個心意",feels:["辛苦你了","尊敬","謝謝","一起加油","辛苦了"],amtLbl:"金額（可選·一點點也能傳達心意）",other:"其他",msgMain:"附一句話（可選）",msgSample:"那份堅持，令人敬佩。我也被激勵了。",confirm:"確認",note:"你的應援會直接送達Kai。同行者之間，小小的互相扶持。",confHdr:"確認",confLead:"以此內容送出應援",confFeelLbl:"心意",confAmtLbl:"金額",confMsgLbl:"留言",back:"返回",send:"送出 {a}",doneTtl:"已送出應援",doneSub:"你的心意會送達Kai。",doneClose:"關閉"},
+      "한국어":{close:"닫기",ttl:"응원 보내기",to:"Kai님에게",via:"「가슴·삼두 운동」을 보고",feelLbl:"마음을 하나 골라요",feels:["잘했어요","리스펙트","고마워요","함께 힘내요","수고했어요"],amtLbl:"금액（선택·적어도 마음은 전해져요）",other:"기타",msgMain:"한마디 남기기（선택）",msgSample:"그 끈기, 리스펙트예요. 저도 힘냈어요.",confirm:"확인하기",note:"당신의 응원은 Kai님에게 직접 전해져요. 같은 길을 가는 사람끼리의 작은 도움.",confHdr:"확인",confLead:"이 내용으로 응원을 보내요",confFeelLbl:"마음",confAmtLbl:"금액",confMsgLbl:"한마디",back:"뒤로",send:"{a} 보내기",doneTtl:"응원을 보냈어요",doneSub:"당신의 마음은 Kai님에게 전해져요.",doneClose:"닫기"},
+      "ภาษาไทย":{close:"ปิด",ttl:"ส่งกำลังใจ",to:"ถึง Kai",via:"หลังจากดู「เล่นอก·หลังแขน」",feelLbl:"เลือกความรู้สึกหนึ่งอย่าง",feels:["ทำได้ดีมาก","เคารพเลย","ขอบคุณ","สู้ไปด้วยกัน","เหนื่อยหน่อยนะ"],amtLbl:"จำนวนเงิน（ไม่บังคับ·แม้น้อยก็สื่อใจได้）",other:"อื่นๆ",msgMain:"เพิ่มข้อความ（ไม่บังคับ）",msgSample:"ความมุมานะนั้น เคารพเลย ฉันก็ได้แรงด้วย",confirm:"ตรวจสอบ",note:"กำลังใจของคุณส่งตรงถึง Kai การช่วยเหลือกันเล็กๆ ระหว่างคนบนเส้นทางเดียวกัน",confHdr:"ตรวจสอบ",confLead:"ส่งกำลังใจด้วยเนื้อหานี้",confFeelLbl:"ความรู้สึก",confAmtLbl:"จำนวนเงิน",confMsgLbl:"ข้อความ",back:"กลับ",send:"ส่ง {a}",doneTtl:"ส่งกำลังใจแล้ว",doneSub:"ความรู้สึกของคุณจะถึง Kai",doneClose:"ปิด"},
+      "Français":{close:"Fermer",ttl:"Envoyer un soutien",to:"À Kai",via:"Après « Pecs & triceps travaillés »",feelLbl:"Choisissez un sentiment",feels:["Bien joué","Respect","Merci","Progressons ensemble","Courage"],amtLbl:"Montant (facultatif · même peu compte)",other:"Autre",msgMain:"Ajouter un mot (facultatif)",msgSample:"Cette ténacité, respect. Tu m'as motivé aussi.",confirm:"Vérifier",note:"Votre soutien va directement à Kai. Un petit geste de solidarité entre ceux qui suivent le même chemin.",confHdr:"Vérifier",confLead:"Envoyer le soutien ainsi",confFeelLbl:"Sentiment",confAmtLbl:"Montant",confMsgLbl:"Mot",back:"Retour",send:"Envoyer {a}",doneTtl:"Soutien envoyé",doneSub:"Vos sentiments arrivent chez Kai.",doneClose:"Fermer"},
+      "Español":{close:"Cerrar",ttl:"Enviar apoyo",to:"Para Kai",via:"Tras ver «Pecho y tríceps trabajados»",feelLbl:"Elige un sentimiento",feels:["Bien hecho","Respeto","Gracias","Crezcamos juntos","Ánimo"],amtLbl:"Importe (opcional · hasta poco significa mucho)",other:"Otro",msgMain:"Añade una nota (opcional)",msgSample:"Esa constancia, respeto. Me motivaste también.",confirm:"Revisar",note:"Tu apoyo llega directo a Kai. Un pequeño gesto de solidaridad entre quienes van por el mismo camino.",confHdr:"Revisar",confLead:"Enviar apoyo con esto",confFeelLbl:"Sentimiento",confAmtLbl:"Importe",confMsgLbl:"Nota",back:"Atrás",send:"Enviar {a}",doneTtl:"Apoyo enviado",doneSub:"Tus sentimientos van hacia Kai.",doneClose:"Cerrar"},
+      "Deutsch":{close:"Schließen",ttl:"Unterstützung senden",to:"An Kai",via:"Nach „Brust & Trizeps trainiert\"",feelLbl:"Wähle ein Gefühl",feels:["Gut gemacht","Respekt","Danke","Wachsen wir zusammen","Pass auf dich auf"],amtLbl:"Betrag (optional · auch wenig zählt)",other:"Andere",msgMain:"Notiz hinzufügen (optional)",msgSample:"Diese Ausdauer, Respekt. Hast mich auch angespornt.",confirm:"Prüfen",note:"Deine Unterstützung geht direkt an Kai. Eine kleine Geste der Solidarität unter Gleichgesinnten.",confHdr:"Prüfen",confLead:"Unterstützung so senden",confFeelLbl:"Gefühl",confAmtLbl:"Betrag",confMsgLbl:"Notiz",back:"Zurück",send:"{a} senden",doneTtl:"Unterstützung gesendet",doneSub:"Deine Gefühle sind unterwegs zu Kai.",doneClose:"Schließen"},
+      "Italiano":{close:"Chiudi",ttl:"Invia sostegno",to:"A Kai",via:"Dopo «Petto e tricipiti allenati»",feelLbl:"Scegli un sentimento",feels:["Ben fatto","Rispetto","Grazie","Cresciamo insieme","Forza"],amtLbl:"Importo (facoltativo · anche poco conta)",other:"Altro",msgMain:"Aggiungi un messaggio (facoltativo)",msgSample:"Quella tenacia, rispetto. Hai spronato anche me.",confirm:"Verifica",note:"Il tuo sostegno va direttamente a Kai. Un piccolo gesto di solidarietà tra chi segue la stessa strada.",confHdr:"Verifica",confLead:"Invia il sostegno così",confFeelLbl:"Sentimento",confAmtLbl:"Importo",confMsgLbl:"Messaggio",back:"Indietro",send:"Invia {a}",doneTtl:"Sostegno inviato",doneSub:"I tuoi sentimenti sono in viaggio verso Kai.",doneClose:"Chiudi"},
+      "Português":{close:"Fechar",ttl:"Enviar apoio",to:"Para Kai",via:"Após «Peito e tríceps treinados»",feelLbl:"Escolha um sentimento",feels:["Mandou bem","Respeito","Obrigado","Vamos crescer juntos","Descanse"],amtLbl:"Valor (opcional · até pouco significa muito)",other:"Outro",msgMain:"Adicione um recado (opcional)",msgSample:"Essa garra, respeito. Você me motivou também.",confirm:"Revisar",note:"Seu apoio vai direto para Kai. Um pequeno gesto de solidariedade entre quem segue o mesmo caminho.",confHdr:"Revisar",confLead:"Enviar apoio assim",confFeelLbl:"Sentimento",confAmtLbl:"Valor",confMsgLbl:"Recado",back:"Voltar",send:"Enviar {a}",doneTtl:"Apoio enviado",doneSub:"Seus sentimentos vão para Kai.",doneClose:"Fechar"},
+      "हिन्दी":{close:"बंद करें",ttl:"सहयोग भेजें",to:"Kai को",via:"「चेस्ट·ट्राइसेप्स किया」देखकर",feelLbl:"एक भावना चुनें",feels:["बहुत बढ़िया","सम्मान","धन्यवाद","साथ बढ़ें","ख्याल रखें"],amtLbl:"राशि（वैकल्पिक·थोड़ा भी मायने रखता है）",other:"अन्य",msgMain:"एक बात जोड़ें（वैकल्पिक）",msgSample:"वो लगन, सम्मान। मुझे भी प्रेरणा मिली।",confirm:"जाँचें",note:"आपका सहयोग सीधे Kai तक जाता है। एक ही राह के साथियों के बीच छोटा सा साथ।",confHdr:"जाँचें",confLead:"इसी के साथ सहयोग भेजें",confFeelLbl:"भावना",confAmtLbl:"राशि",confMsgLbl:"संदेश",back:"वापस",send:"{a} भेजें",doneTtl:"सहयोग भेजा गया",doneSub:"आपकी भावना Kai तक पहुँचेगी।",doneClose:"बंद करें"},
+      "Tiếng Việt":{close:"Đóng",ttl:"Gửi ủng hộ",to:"Gửi Kai",via:"Sau khi xem «Tập ngực & tay sau»",feelLbl:"Chọn một cảm xúc",feels:["Làm tốt lắm","Nể phục","Cảm ơn","Cùng tiến bộ","Vất vả rồi"],amtLbl:"Số tiền (tùy chọn · ít cũng ý nghĩa)",other:"Khác",msgMain:"Thêm lời nhắn (tùy chọn)",msgSample:"Sự bền bỉ đó, nể phục. Bạn tiếp thêm sức cho tôi.",confirm:"Xem lại",note:"Ủng hộ của bạn đến thẳng Kai. Một sự sẻ chia nhỏ giữa những người cùng đường.",confHdr:"Xem lại",confLead:"Gửi ủng hộ với nội dung này",confFeelLbl:"Cảm xúc",confAmtLbl:"Số tiền",confMsgLbl:"Lời nhắn",back:"Quay lại",send:"Gửi {a}",doneTtl:"Đã gửi ủng hộ",doneSub:"Cảm xúc của bạn đang đến với Kai.",doneClose:"Đóng"},
+      "Bahasa Indonesia":{close:"Tutup",ttl:"Kirim dukungan",to:"Untuk Kai",via:"Setelah melihat «Latih dada & trisep»",feelLbl:"Pilih satu perasaan",feels:["Kerja bagus","Respek","Terima kasih","Tumbuh bersama","Semangat"],amtLbl:"Jumlah (opsional · sedikit pun berarti)",other:"Lainnya",msgMain:"Tambah catatan (opsional)",msgSample:"Kegigihan itu, respek. Kamu juga menyemangatiku.",confirm:"Tinjau",note:"Dukunganmu langsung sampai ke Kai. Sedikit solidaritas antar sesama pejalan.",confHdr:"Tinjau",confLead:"Kirim dukungan dengan ini",confFeelLbl:"Perasaan",confAmtLbl:"Jumlah",confMsgLbl:"Catatan",back:"Kembali",send:"Kirim {a}",doneTtl:"Dukungan terkirim",doneSub:"Perasaanmu menuju Kai.",doneClose:"Tutup"}
+    };
+    var cur=REVO.lang(), dark=REVO.dark(), selFeel=0, selAmt=1;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84",note:"#16201C",noteTx:"#7FB89E",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A",feel:"#E89BB8"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",note:"#EAF6F1",noteTx:"#3E8068",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517",feel:"#C86E96"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function curAmt(){ return amounts[selAmt]||amounts[1]; }
+    function renderFeels(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('feelWrap').innerHTML="";
+      d.feels.forEach(function(f,i){
+        var on=(selFeel===i);
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:13px; padding:9px 15px; border-radius:999px; cursor:pointer; "+(on?"background:"+t.accent+"; color:"+(dark?"#16140F":"#FFFFFF")+"; font-weight:600;":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        chip.textContent=f;
+        chip.onclick=function(){ selFeel=i; renderFeels(); };
+        $('feelWrap').appendChild(chip);
+      });
+    }
+    function renderAmounts(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('amountWrap').innerHTML="";
+      var all=amounts.concat([d.other]);
+      all.forEach(function(a,i){
+        var on=(i<amounts.length && selAmt===i);
+        var s=document.createElement('span');
+        s.style.cssText="flex:1; text-align:center; font-size:14px; padding:12px 0; border-radius:11px; cursor:pointer; font-family:Jost; "+(on?"background:"+t.accent+"; color:"+(dark?"#16140F":"#FFFFFF")+"; font-weight:600;":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        s.textContent=a;
+        s.onclick=function(){ if(i<amounts.length){ selAmt=i; } renderAmounts(); };
+        $('amountWrap').appendChild(s);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('closeTxt').textContent=d.close; $('hdrTtl').textContent=d.ttl; $('toName').textContent=d.to; $('viaPost').textContent=d.via;
+      $('lblFeel').textContent=d.feelLbl; $('lblAmount').textContent=d.amtLbl;
+      $('lblMsgMain').textContent=d.msgMain; $('msgSample').textContent=d.msgSample;
+      $('toConfirm').textContent=d.confirm; $('noteTxt').textContent=d.note;
+      $('confHdr').textContent=d.confHdr; $('confLead').textContent=d.confLead; $('confTo').textContent=d.to;
+      $('confFeelLbl').textContent=d.confFeelLbl; $('confAmtLbl').textContent=d.confAmtLbl; $('confMsgLbl').textContent=d.confMsgLbl;
+      $('confMsg').textContent=d.msgSample; $('backTxt').innerHTML='<i class="ti ti-arrow-left" style="font-size:15px; vertical-align:-2px;"></i> '+d.back;
+      $('doneTtl').textContent=d.doneTtl; $('doneSub').textContent=d.doneSub; $('doneClose').textContent=d.doneClose;
+      renderFeels(); renderAmounts();
+      $('confFeel').textContent=d.feels[selFeel]; $('confAmt').textContent=curAmt(); $('doSend').textContent=d.send.replace("{a}",curAmt());
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      document.querySelectorAll('#hdr, #confirmView > div:first-child').forEach(function(el){ el.style.borderColor= dark?"#2A2620":"#F0EAE0"; });
+      $('hdrTtl').style.color=t.txt; $('closeTxt').style.color=t.sub; $('confHdr').style.color=t.txt; $('backTxt').style.color=t.sub;
+      $('toName').style.color=t.txt; $('viaPost').style.color=t.sub; $('confTo').style.color=t.txt; $('confLead').style.color=t.sub;
+      $('lblFeel').style.color=t.sub; $('lblAmount').style.color=t.sub;
+      $('msgBox').style.background=t.card; $('lblMsgMain').style.color= dark?"#C9C0AE":"#5F5E5A"; $('msgSample').style.color=t.sub;
+      $('confCard').style.background=t.card; $('confCard').style.borderColor=t.cardBd;
+      $('confFeelLbl').style.color=t.sub; $('confAmtLbl').style.color=t.sub; $('confMsgLbl').style.color=t.sub;
+      $('confFeel').style.color=t.feel; $('confAmt').style.color=t.accent; $('confMsg').style.color= dark?"#C9C0AE":"#5F5E5A";
+      $('confMsgRow').style.borderColor=t.cardBd;
+      $('toConfirm').style.background=t.accent; $('toConfirm').style.color= dark?"#16140F":"#FFFFFF";
+      $('doSend').style.background=t.accent; $('doSend').style.color= dark?"#16140F":"#FFFFFF";
+      $('noteCard').style.background=t.note; $('noteTxt').style.color=t.noteTx; $('noteCard').querySelector('i').style.color= dark?"#5DCAA5":"#3E8068";
+      $('doneCircle').style.background=t.card; $('doneCircle').querySelector('i').style.color=t.accent;
+      $('doneTtl').style.color=t.txt; $('doneSub').style.color=t.sub;
+      $('doneClose').style.borderColor= dark?"#3A352A":"#E0DACE"; $('doneClose').style.color=t.sub;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    $('toConfirm').onclick=function(){ $('inputView').style.display="none"; $('confirmView').style.display="block"; $('doneView').style.display="none"; };
+    $('backTxt').onclick=function(){ $('confirmView').style.display="none"; $('inputView').style.display="block"; };
+    $('doSend').onclick=function(){ $('confirmView').style.display="none"; $('doneView').style.display="block"; };
+    $('doneClose').onclick=function(){ $('doneView').style.display="none"; $('inputView').style.display="block"; };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  var bt=document.getElementById('backTxt');
+  if(bt){ bt.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('settings'); } }; }
+})();
+</script>
+</body>
+</html>

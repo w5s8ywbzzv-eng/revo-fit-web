@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>レシピ — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">筋肉飯のアイデアレシピ。鶏むねやオートミールに飽きた人へ、世界のトレーニー飯。レンジで何分か、包丁やまな板が要るか、洗い物が少ないかが一目で分かる。食材・目的・手間で絞れる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">筋肉飯レシピ</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <p id="lead" style="font-size:12px; color:#8A7E68; margin:0; padding:14px 18px 0; line-height:1.6;">同じ食材に飽きたら。世界のトレーニー飯から、今日の一皿を。</p>
+
+  <!-- 絞り込みプルダウン -->
+  <div style="padding:14px 18px 0;">
+    <button id="filterSelect" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:12px 15px; cursor:pointer; transition:all 0.3s;">
+      <span style="display:flex; align-items:center; gap:9px;"><i class="ti ti-filter" style="font-size:17px; color:#E3C56A;"></i><span id="filterVal" style="font-size:14px; color:#F0EBE2; font-weight:500;">すべて</span></span>
+      <i id="filterChev" class="ti ti-chevron-down" style="font-size:18px; color:#6E6555;"></i>
+    </button>
+    <div id="filterMenu" style="display:none; position:absolute; left:18px; right:18px; margin-top:6px; max-height:340px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:8px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:25;"></div>
+  </div>
+
+  <!-- レシピカード一覧 -->
+  <div id="recipeList" style="padding:14px 18px 0; display:flex; flex-direction:column; gap:12px;"></div>
+
+  <!-- 投稿を促す -->
+  <div style="padding:16px 18px 0;">
+    <button id="postBtn" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:transparent; border:1px dashed #3A352A; color:#B0A488; font-size:14px; font-weight:500; padding:14px; border-radius:13px; cursor:pointer;"><i class="ti ti-plus" style="font-size:18px;"></i><span id="postLbl">あなたのアイデアを投稿</span></button>
+  </div>
+
+  <div style="height:22px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // レシピデータ（demo）。time=分, micro=レンジ調理か, noKnife/noBoard/lessWash=手間フラグ, p=たんぱく質g, kcal, ing=主食材, goal=目的
+    var RECIPES=[
+      {key:"r1",flag:"🇯🇵",time:5,micro:true,noKnife:true,noBoard:true,lessWash:true,p:32,kcal:280,ing:"chicken",goals:["highp","quick","lowcal"],react:428,tags:["home","zubora"]},
+      {key:"r2",flag:"🇰🇷",time:8,micro:true,noKnife:true,noBoard:false,lessWash:true,p:28,kcal:340,ing:"egg",goals:["highp","quick"],react:315,tags:["home","nightshift"]},
+      {key:"r3",flag:"🇮🇹",time:12,micro:false,noKnife:false,noBoard:false,lessWash:false,p:35,kcal:420,ing:"oat",goals:["highp","bulk"],react:502,tags:["bulkmax"]},
+      {key:"r4",flag:"🇹🇭",time:6,micro:true,noKnife:true,noBoard:true,lessWash:true,p:30,kcal:300,ing:"tofu",goals:["highp","quick","lowcal"],react:271,tags:["zubora","cutting"]},
+      {key:"r5",flag:"🇲🇽",time:10,micro:false,noKnife:true,noBoard:true,lessWash:true,p:26,kcal:390,ing:"egg",goals:["quick","bulk"],react:198,tags:["bulkmax","home","cheatday"]},
+      {key:"r6",flag:"🇮🇳",time:9,micro:true,noKnife:true,noBoard:false,lessWash:true,p:24,kcal:310,ing:"tofu",goals:["highp","lowcal"],react:356,tags:["cutting","zubora"]}
+    ];
+    // ユーザー生成タグ（使用数付き・多言語ラベル）。使用数の多い順に育つ
+    var TAGS={
+      home:{count:342,label:{"日本語":"#宅トレ飯","English":"#homegym","简体中文":"#居家健身餐","繁體中文":"#居家健身餐","한국어":"#홈트밥","ภาษาไทย":"#ออกกำลังที่บ้าน","Français":"#homegym","Español":"#gimnasiocasa","Deutsch":"#homegym","Italiano":"#homegym","Português":"#homegym","हिन्दी":"#होमजिम","Tiếng Việt":"#tậpnhà","Bahasa Indonesia":"#gymrumah"}},
+      zubora:{count:289,label:{"日本語":"#ズボラ飯","English":"#lazymeal","简体中文":"#懒人餐","繁體中文":"#懶人餐","한국어":"#귀차니즘밥","ภาษาไทย":"#มื้อขี้เกียจ","Français":"#repasfacile","Español":"#comidafacil","Deutsch":"#faulessen","Italiano":"#pastopigro","Português":"#refeicaopreguicosa","हिन्दी":"#आलसीखाना","Tiếng Việt":"#ănlười","Bahasa Indonesia":"#makanmalas"}},
+      bulkmax:{count:214,label:{"日本語":"#増量爆盛り","English":"#bulkmax","简体中文":"#增肌爆量","繁體中文":"#增肌爆量","한국어":"#벌크폭탄","ภาษาไทย":"#เพิ่มกล้ามจัดหนัก","Français":"#prisemasse","Español":"#volumenmax","Deutsch":"#massephase","Italiano":"#massamax","Português":"#bulkmax","हिन्दी":"#बल्कमैक्स","Tiếng Việt":"#tăngcơmax","Bahasa Indonesia":"#bulkmax"}},
+      cutting:{count:176,label:{"日本語":"#減量中","English":"#cutting","简体中文":"#减脂中","繁體中文":"#減脂中","한국어":"#다이어트중","ภาษาไทย":"#กำลังลด","Français":"#seche","Español":"#definicion","Deutsch":"#definiphase","Italiano":"#definizione","Português":"#cutting","हिन्दी":"#कटिंग","Tiếng Việt":"#épcân","Bahasa Indonesia":"#cutting"}},
+      nightshift:{count:98,label:{"日本語":"#夜勤飯","English":"#nightshift","简体中文":"#夜班餐","繁體中文":"#夜班餐","한국어":"#야간근무밥","ภาษาไทย":"#มื้อกะดึก","Français":"#reparnuit","Español":"#turnonoche","Deutsch":"#nachtschicht","Italiano":"#turnonotte","Português":"#turnonoite","हिन्दी":"#नाइटशिफ्ट","Tiếng Việt":"#calàmđêm","Bahasa Indonesia":"#shiftmalam"}},
+      cheatday:{count:156,label:{"日本語":"#チートデイ","English":"#cheatday","简体中文":"#欺骗餐","繁體中文":"#欺騙餐","한국어":"#치팅데이","ภาษาไทย":"#ชีทเดย์","Français":"#cheatday","Español":"#diatrampa","Deutsch":"#cheatday","Italiano":"#cheatday","Português":"#cheatday","हिन्दी":"#चीटडे","Tiếng Việt":"#cheatday","Bahasa Indonesia":"#cheatday"}}
+    };
+    var FILTERS=[
+      {k:"all",type:"all"},
+      {k:"quick",type:"goal"},{k:"noknife",type:"effort"},{k:"lesswash",type:"effort"},{k:"micro",type:"effort"},
+      {k:"highp",type:"goal"},{k:"lowcal",type:"goal"},{k:"bulk",type:"goal"},
+      {k:"chicken",type:"ing"},{k:"egg",type:"ing"},{k:"oat",type:"ing"},{k:"tofu",type:"ing"}
+    ];
+    var D={
+      "日本語":{hdr:"筋肉飯レシピ",lead:"同じ食材に飽きたら。世界のトレーニー飯から、今日の一皿を。",post:"あなたのアイデアを投稿",
+        f:{all:"すべて",quick:"時短",noknife:"包丁いらず",lesswash:"洗い物少",micro:"レンジだけ",highp:"高たんぱく",lowcal:"低カロリー",bulk:"増量向け",chicken:"鶏むね",egg:"卵",oat:"オートミール",tofu:"豆腐"},grp:{effort:"手間",goal:"目的",ing:"食材",tag:"人気タグ"},
+        names:{r1:"レンジ蒸し鶏のピリ辛だれ",r2:"ふわとろ卵のプロテイン雑炊",r3:"オートミールの塩リゾット",r4:"豆腐そぼろのピリ辛丼",r5:"包まないブリトーボウル",r6:"豆腐とひよこ豆のカレー風"},
+        badge:{micro:"レンジ{n}分",min:"{n}分",noKnife:"包丁いらず",noBoard:"まな板いらず",lessWash:"洗い物少"},
+        protein:"たんぱく質 {n}g",kcal:"{n}kcal",react:"{n}人が参考に"},
+      "English":{hdr:"Muscle meals",lead:"Bored of the same food? Today's dish, from trainee meals around the world.",post:"Post your idea",
+        f:{all:"All",quick:"Quick",noknife:"No knife",lesswash:"Less washing",micro:"Microwave only",highp:"High protein",lowcal:"Low calorie",bulk:"For bulking",chicken:"Chicken breast",egg:"Egg",oat:"Oatmeal",tofu:"Tofu"},grp:{effort:"Effort",goal:"Goal",ing:"Ingredient",tag:"Popular tags"},
+        names:{r1:"Microwave chicken, spicy sauce",r2:"Fluffy egg protein porridge",r3:"Savory oatmeal risotto",r4:"Spicy tofu crumble bowl",r5:"No-wrap burrito bowl",r6:"Tofu & chickpea curry"},
+        badge:{micro:"Microwave {n}min",min:"{n} min",noKnife:"No knife",noBoard:"No board",lessWash:"Less washing"},
+        protein:"{n}g protein",kcal:"{n} kcal",react:"{n} found useful"},
+      "简体中文":{hdr:"增肌餐",lead:"吃腻了同样的？来自世界各地的健身餐，今天来一盘。",post:"投稿你的点子",
+        f:{all:"全部",quick:"快手",noknife:"免刀",lesswash:"少洗碗",micro:"只用微波炉",highp:"高蛋白",lowcal:"低卡",bulk:"增肌向",chicken:"鸡胸",egg:"鸡蛋",oat:"燕麦",tofu:"豆腐"},grp:{effort:"省事",goal:"目的",ing:"食材",tag:"热门标签"},
+        names:{r1:"微波蒸鸡配香辣酱",r2:"滑蛋蛋白粥",r3:"咸味燕麦烩饭",r4:"香辣豆腐碎盖饭",r5:"免包卷饼碗",r6:"豆腐鹰嘴豆咖喱"},
+        badge:{micro:"微波{n}分",min:"{n}分",noKnife:"免刀",noBoard:"免砧板",lessWash:"少洗碗"},
+        protein:"蛋白质 {n}g",kcal:"{n}千卡",react:"{n}人参考"},
+      "繁體中文":{hdr:"增肌餐",lead:"吃膩了同樣的？來自世界各地的健身餐，今天來一盤。",post:"投稿你的點子",
+        f:{all:"全部",quick:"快手",noknife:"免刀",lesswash:"少洗碗",micro:"只用微波爐",highp:"高蛋白",lowcal:"低卡",bulk:"增肌向",chicken:"雞胸",egg:"雞蛋",oat:"燕麥",tofu:"豆腐"},grp:{effort:"省事",goal:"目的",ing:"食材",tag:"熱門標籤"},
+        names:{r1:"微波蒸雞配香辣醬",r2:"滑蛋蛋白粥",r3:"鹹味燕麥燉飯",r4:"香辣豆腐碎蓋飯",r5:"免包捲餅碗",r6:"豆腐鷹嘴豆咖哩"},
+        badge:{micro:"微波{n}分",min:"{n}分",noKnife:"免刀",noBoard:"免砧板",lessWash:"少洗碗"},
+        protein:"蛋白質 {n}g",kcal:"{n}千卡",react:"{n}人參考"},
+      "한국어":{hdr:"근육밥 레시피",lead:"같은 음식에 질렸다면. 세계의 트레이니 밥에서, 오늘의 한 그릇.",post:"당신의 아이디어를 올리기",
+        f:{all:"전체",quick:"초스피드",noknife:"칼 없이",lesswash:"설거지 적게",micro:"전자레인지만",highp:"고단백",lowcal:"저칼로리",bulk:"벌크업용",chicken:"닭가슴살",egg:"달걀",oat:"오트밀",tofu:"두부"},grp:{effort:"수고",goal:"목적",ing:"재료",tag:"인기 태그"},
+        names:{r1:"전자레인지 닭찜 매콤소스",r2:"부드러운 달걀 단백질 죽",r3:"짭짤한 오트밀 리조또",r4:"매콤 두부소보로 덮밥",r5:"안 싸는 부리토 볼",r6:"두부 병아리콩 커리"},
+        badge:{micro:"레인지 {n}분",min:"{n}분",noKnife:"칼 없이",noBoard:"도마 없이",lessWash:"설거지 적게"},
+        protein:"단백질 {n}g",kcal:"{n}kcal",react:"{n}명이 참고"},
+      "ภาษาไทย":{hdr:"เมนูสร้างกล้าม",lead:"เบื่ออาหารเดิมๆ? เมนูสายเทรนจากทั่วโลก จานของวันนี้",post:"โพสต์ไอเดียของคุณ",
+        f:{all:"ทั้งหมด",quick:"เร็ว",noknife:"ไม่ใช้มีด",lesswash:"ล้างน้อย",micro:"ไมโครเวฟล้วน",highp:"โปรตีนสูง",lowcal:"แคลต่ำ",bulk:"เพิ่มกล้าม",chicken:"อกไก่",egg:"ไข่",oat:"ข้าวโอ๊ต",tofu:"เต้าหู้"},grp:{effort:"ความง่าย",goal:"เป้าหมาย",ing:"วัตถุดิบ",tag:"แท็กยอดนิยม"},
+        names:{r1:"ไก่นึ่งไมโครเวฟซอสเผ็ด",r2:"โจ๊กไข่โปรตีนนุ่ม",r3:"ริซอตโตข้าวโอ๊ตรสเค็ม",r4:"ข้าวหน้าเต้าหู้สับเผ็ด",r5:"บูริโตโบวล์ไม่ต้องห่อ",r6:"แกงเต้าหู้ถั่วชิกพี"},
+        badge:{micro:"ไมโครเวฟ {n} นาที",min:"{n} นาที",noKnife:"ไม่ใช้มีด",noBoard:"ไม่ใช้เขียง",lessWash:"ล้างน้อย"},
+        protein:"โปรตีน {n}g",kcal:"{n} แคล",react:"{n} คนว่าดี"},
+      "Français":{hdr:"Plats muscle",lead:"Lassé du même plat ? Le plat du jour, venu des repas de sportifs du monde entier.",post:"Publier votre idée",
+        f:{all:"Tout",quick:"Rapide",noknife:"Sans couteau",lesswash:"Peu de vaisselle",micro:"Micro-ondes seul",highp:"Riche en protéines",lowcal:"Peu calorique",bulk:"Prise de masse",chicken:"Blanc de poulet",egg:"Œuf",oat:"Flocons d'avoine",tofu:"Tofu"},grp:{effort:"Effort",goal:"Objectif",ing:"Ingrédient",tag:"Tags populaires"},
+        names:{r1:"Poulet vapeur micro-ondes, sauce épicée",r2:"Porridge protéiné aux œufs",r3:"Risotto salé de flocons d'avoine",r4:"Bol de tofu émietté épicé",r5:"Bol burrito sans roulage",r6:"Curry tofu & pois chiches"},
+        badge:{micro:"Micro-ondes {n}min",min:"{n} min",noKnife:"Sans couteau",noBoard:"Sans planche",lessWash:"Peu de vaisselle"},
+        protein:"{n}g de protéines",kcal:"{n} kcal",react:"{n} l'ont trouvé utile"},
+      "Español":{hdr:"Comidas de músculo",lead:"¿Cansado de lo mismo? El plato de hoy, de las comidas de deportistas del mundo.",post:"Publica tu idea",
+        f:{all:"Todo",quick:"Rápido",noknife:"Sin cuchillo",lesswash:"Menos platos",micro:"Solo microondas",highp:"Alto en proteína",lowcal:"Bajo en calorías",bulk:"Para volumen",chicken:"Pechuga de pollo",egg:"Huevo",oat:"Avena",tofu:"Tofu"},grp:{effort:"Esfuerzo",goal:"Objetivo",ing:"Ingrediente",tag:"Etiquetas populares"},
+        names:{r1:"Pollo al microondas, salsa picante",r2:"Gachas proteicas de huevo",r3:"Risotto salado de avena",r4:"Bol de tofu desmenuzado picante",r5:"Bol burrito sin enrollar",r6:"Curry de tofu y garbanzos"},
+        badge:{micro:"Microondas {n}min",min:"{n} min",noKnife:"Sin cuchillo",noBoard:"Sin tabla",lessWash:"Menos platos"},
+        protein:"{n}g de proteína",kcal:"{n} kcal",react:"{n} lo vieron útil"},
+      "Deutsch":{hdr:"Muskel-Essen",lead:"Satt vom Gleichen? Das Gericht des Tages, aus Sportler-Mahlzeiten weltweit.",post:"Poste deine Idee",
+        f:{all:"Alle",quick:"Schnell",noknife:"Ohne Messer",lesswash:"Weniger Abwasch",micro:"Nur Mikrowelle",highp:"Proteinreich",lowcal:"Kalorienarm",bulk:"Für Masse",chicken:"Hähnchenbrust",egg:"Ei",oat:"Haferflocken",tofu:"Tofu"},grp:{effort:"Aufwand",goal:"Ziel",ing:"Zutat",tag:"Beliebte Tags"},
+        names:{r1:"Mikrowellen-Hähnchen, scharfe Sauce",r2:"Cremiger Ei-Protein-Brei",r3:"Herzhaftes Haferflocken-Risotto",r4:"Scharfe Tofu-Bowl",r5:"Burrito-Bowl ohne Wickeln",r6:"Tofu-Kichererbsen-Curry"},
+        badge:{micro:"Mikrowelle {n}min",min:"{n} Min",noKnife:"Ohne Messer",noBoard:"Ohne Brett",lessWash:"Weniger Abwasch"},
+        protein:"{n}g Protein",kcal:"{n} kcal",react:"{n} fanden es nützlich"},
+      "Italiano":{hdr:"Piatti muscolo",lead:"Stanco del solito? Il piatto di oggi, dai pasti degli sportivi di tutto il mondo.",post:"Pubblica la tua idea",
+        f:{all:"Tutti",quick:"Veloce",noknife:"Senza coltello",lesswash:"Pochi piatti",micro:"Solo microonde",highp:"Ricco di proteine",lowcal:"Poche calorie",bulk:"Per massa",chicken:"Petto di pollo",egg:"Uovo",oat:"Avena",tofu:"Tofu"},grp:{effort:"Sforzo",goal:"Obiettivo",ing:"Ingrediente",tag:"Tag popolari"},
+        names:{r1:"Pollo al microonde, salsa piccante",r2:"Porridge proteico all'uovo",r3:"Risotto salato di avena",r4:"Bowl di tofu sbriciolato piccante",r5:"Bowl burrito senza arrotolare",r6:"Curry di tofu e ceci"},
+        badge:{micro:"Microonde {n}min",min:"{n} min",noKnife:"Senza coltello",noBoard:"Senza tagliere",lessWash:"Pochi piatti"},
+        protein:"{n}g di proteine",kcal:"{n} kcal",react:"{n} l'hanno trovato utile"},
+      "Português":{hdr:"Comidas de músculo",lead:"Cansado do mesmo? O prato de hoje, das refeições de atletas pelo mundo.",post:"Publique sua ideia",
+        f:{all:"Todos",quick:"Rápido",noknife:"Sem faca",lesswash:"Menos louça",micro:"Só micro-ondas",highp:"Rico em proteína",lowcal:"Baixa caloria",bulk:"Para volume",chicken:"Peito de frango",egg:"Ovo",oat:"Aveia",tofu:"Tofu"},grp:{effort:"Esforço",goal:"Objetivo",ing:"Ingrediente",tag:"Tags populares"},
+        names:{r1:"Frango na micro-ondas, molho picante",r2:"Mingau proteico de ovo",r3:"Risoto salgado de aveia",r4:"Bowl de tofu esfarelado picante",r5:"Bowl burrito sem enrolar",r6:"Curry de tofu e grão-de-bico"},
+        badge:{micro:"Micro-ondas {n}min",min:"{n} min",noKnife:"Sem faca",noBoard:"Sem tábua",lessWash:"Menos louça"},
+        protein:"{n}g de proteína",kcal:"{n} kcal",react:"{n} acharam útil"},
+      "हिन्दी":{hdr:"मसल फूड",lead:"वही खाना बोरिंग लगे? दुनिया भर के ट्रेनी खाने से, आज का एक कटोरा।",post:"अपना आइडिया पोस्ट करें",
+        f:{all:"सभी",quick:"झटपट",noknife:"बिना चाकू",lesswash:"कम बर्तन",micro:"सिर्फ माइक्रोवेव",highp:"हाई प्रोटीन",lowcal:"लो कैलोरी",bulk:"बल्क के लिए",chicken:"चिकन ब्रेस्ट",egg:"अंडा",oat:"ओट्स",tofu:"टोफू"},grp:{effort:"मेहनत",goal:"लक्ष्य",ing:"सामग्री",tag:"लोकप्रिय टैग"},
+        names:{r1:"माइक्रोवेव चिकन, तीखी चटनी",r2:"मुलायम अंडा प्रोटीन दलिया",r3:"नमकीन ओट्स रिसोतो",r4:"तीखा टोफू भुरजी बाउल",r5:"बिना लपेटे बुरिटो बाउल",r6:"टोफू छोले करी"},
+        badge:{micro:"माइक्रोवेव {n}मिनट",min:"{n} मिनट",noKnife:"बिना चाकू",noBoard:"बिना बोर्ड",lessWash:"कम बर्तन"},
+        protein:"प्रोटीन {n}g",kcal:"{n} कैलोरी",react:"{n} को उपयोगी लगा"},
+      "Tiếng Việt":{hdr:"Món cơ bắp",lead:"Chán món cũ? Món hôm nay, từ bữa ăn của người tập khắp thế giới.",post:"Đăng ý tưởng của bạn",
+        f:{all:"Tất cả",quick:"Nhanh",noknife:"Không dao",lesswash:"Ít rửa",micro:"Chỉ lò vi sóng",highp:"Nhiều đạm",lowcal:"Ít calo",bulk:"Để tăng cơ",chicken:"Ức gà",egg:"Trứng",oat:"Yến mạch",tofu:"Đậu phụ"},grp:{effort:"Công sức",goal:"Mục tiêu",ing:"Nguyên liệu",tag:"Thẻ phổ biến"},
+        names:{r1:"Gà hấp lò vi sóng, sốt cay",r2:"Cháo trứng giàu đạm",r3:"Risotto yến mạch mặn",r4:"Cơm đậu phụ băm cay",r5:"Bát burrito không cuốn",r6:"Cà ri đậu phụ & đậu gà"},
+        badge:{micro:"Lò vi sóng {n}phút",min:"{n} phút",noKnife:"Không dao",noBoard:"Không thớt",lessWash:"Ít rửa"},
+        protein:"{n}g đạm",kcal:"{n} kcal",react:"{n} thấy hữu ích"},
+      "Bahasa Indonesia":{hdr:"Menu otot",lead:"Bosan makanan yang itu-itu? Hidangan hari ini, dari menu para trainee sedunia.",post:"Posting idemu",
+        f:{all:"Semua",quick:"Cepat",noknife:"Tanpa pisau",lesswash:"Sedikit cucian",micro:"Microwave saja",highp:"Tinggi protein",lowcal:"Rendah kalori",bulk:"Untuk bulking",chicken:"Dada ayam",egg:"Telur",oat:"Oatmeal",tofu:"Tahu"},grp:{effort:"Usaha",goal:"Tujuan",ing:"Bahan",tag:"Tag populer"},
+        names:{r1:"Ayam kukus microwave, saus pedas",r2:"Bubur telur protein lembut",r3:"Risotto oat gurih",r4:"Bowl tahu cincang pedas",r5:"Bowl burrito tanpa gulung",r6:"Kari tahu & buncis kacang"},
+        badge:{micro:"Microwave {n}mnt",min:"{n} mnt",noKnife:"Tanpa pisau",noBoard:"Tanpa talenan",lessWash:"Sedikit cucian"},
+        protein:"{n}g protein",kcal:"{n} kkal",react:"{n} merasa berguna"}
+    };
+    var cur=REVO.lang(), dark=REVO.dark(), activeFilter="all";
+    var recipeGrad=["#2A2418","#1F2420","#26221C","#222630","#2A2224","#1F2624"];
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84",badgeBg:"#221E14",badgeTx:"#D8C79A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",badgeBg:"#FBF3E0",badgeTx:"#7A6A3E",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function matchFilter(r){
+      var f=activeFilter;
+      if(f==="all") return true;
+      if(f.indexOf("tag_")===0){ var tk=f.slice(4); return (r.tags||[]).indexOf(tk)>=0; }
+      if(f==="noknife") return r.noKnife;
+      if(f==="lesswash") return r.lessWash;
+      if(f==="micro") return r.micro;
+      if(["chicken","egg","oat","tofu"].indexOf(f)>=0) return r.ing===f;
+      return r.goals.indexOf(f)>=0; // highp/lowcal/bulk/quick
+    }
+    function filterLabel(k){
+      var d=D[cur]||D["English"];
+      if(k.indexOf("tag_")===0){ var tk=k.slice(4); return (TAGS[tk]&&TAGS[tk].label[cur])||(TAGS[tk]&&TAGS[tk].label["English"])||tk; }
+      return d.f[k];
+    }
+    function renderFilters(){
+      $('filterVal').textContent=filterLabel(activeFilter);
+    }
+    function renderFilterMenu(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var acc= dark?"#E3C56A":"#BA7517", titleCol=t.txt;
+      $('filterMenu').innerHTML="";
+      // すべて
+      function addRow(k){
+        var on=(activeFilter===k);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<span style="font-size:13px; color:'+(on?acc:titleCol)+'; font-weight:'+(on?"500":"400")+';">'+d.f[k]+'</span>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); activeFilter=k; $('filterMenu').style.display="none"; $('filterChev').className="ti ti-chevron-down"; renderFilters(); renderRecipes(); };
+        $('filterMenu').appendChild(row);
+      }
+      function addHeader(txt){
+        var h=document.createElement('p');
+        h.style.cssText="font-size:10px; color:"+t.muted+"; margin:10px 12px 4px; letter-spacing:0.05em; text-transform:uppercase;";
+        h.textContent=txt;
+        $('filterMenu').appendChild(h);
+      }
+      addRow("all");
+      addHeader(d.grp.effort); ["noknife","lesswash","micro"].forEach(addRow);
+      addHeader(d.grp.goal); ["quick","highp","lowcal","bulk"].forEach(addRow);
+      addHeader(d.grp.ing); ["chicken","egg","oat","tofu"].forEach(addRow);
+      // 人気タグ（ユーザー生成・使用数順に育つ）
+      function addTagRow(tk){
+        var on=(activeFilter==="tag_"+tk);
+        var lbl=(TAGS[tk].label[cur])||(TAGS[tk].label["English"]);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<span style="display:flex; align-items:center; gap:8px;"><span style="font-size:13px; color:'+(on?acc:t.accent)+'; font-weight:'+(on?"500":"400")+';">'+lbl+'</span><span style="font-size:10px; color:'+t.muted+';">'+TAGS[tk].count.toLocaleString()+'</span></span>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); activeFilter="tag_"+tk; $('filterMenu').style.display="none"; $('filterChev').className="ti ti-chevron-down"; renderFilters(); renderRecipes(); };
+        $('filterMenu').appendChild(row);
+      }
+      var tagKeys=Object.keys(TAGS).sort(function(a,b){ return TAGS[b].count-TAGS[a].count; });
+      addHeader(d.grp.tag); tagKeys.forEach(addTagRow);
+    }
+    function badge(txt, ic, t, strong){
+      return '<span style="display:inline-flex; align-items:center; gap:3px; font-size:10px; padding:3px 8px; border-radius:999px; background:'+(strong?t.accent:t.badgeBg)+'; color:'+(strong?(dark?"#16140F":"#FFFFFF"):t.badgeTx)+'; font-weight:'+(strong?"600":"400")+';">'+(ic?'<i class="ti '+ic+'" style="font-size:11px;"></i>':'')+txt+'</span>';
+    }
+    function renderRecipes(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('recipeList').innerHTML="";
+      var shown=RECIPES.filter(matchFilter);
+      shown.forEach(function(r,idx){
+        var card=document.createElement('div');
+        card.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:16px; overflow:hidden; cursor:pointer;";
+        // サムネ（グラデ＋国旗＋料理名頭文字の代わりに絵文字皿）
+        var thumb='<div style="height:96px; background:linear-gradient(135deg,'+recipeGrad[idx%recipeGrad.length]+',#16140F); display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:relative;">'+
+          '<span style="font-size:34px;">'+r.flag+'</span>'+
+          '<div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">'+
+            badge((r.micro?d.badge.micro:d.badge.min).replace("{n}",r.time), "ti-clock", t, true)+
+          '</div></div>';
+        // 手間バッジ
+        var effort="";
+        if(r.noKnife) effort+=badge(d.badge.noKnife,"ti-check",t);
+        if(r.noBoard) effort+=badge(d.badge.noBoard,"",t);
+        if(r.lessWash) effort+=badge(d.badge.lessWash,"ti-droplet",t);
+        var body='<div style="padding:13px 15px;">'+
+          '<p style="font-size:14px; color:'+t.txt+'; margin:0 0 8px; font-weight:600; line-height:1.4;">'+d.names[r.key]+'</p>'+
+          '<div style="display:flex; flex-wrap:wrap; gap:5px; margin:0 0 10px;">'+effort+'</div>'+
+          '<div style="display:flex; align-items:center; justify-content:space-between;">'+
+            '<div style="display:flex; align-items:center; gap:10px;">'+
+              '<span style="font-size:12px; color:'+t.accent+'; font-weight:600;">'+d.protein.replace("{n}",r.p)+'</span>'+
+              '<span style="font-size:11px; color:'+t.sub+';">'+d.kcal.replace("{n}",r.kcal)+'</span>'+
+            '</div>'+
+            '<span style="font-size:10px; color:'+t.muted+';">'+d.react.replace("{n}",r.react.toLocaleString())+'</span>'+
+          '</div></div>';
+        card.innerHTML=thumb+body;
+        $('recipeList').appendChild(card);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead; $('postLbl').textContent=d.post;
+      renderFilters(); renderRecipes();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('lead').style.color=t.sub;
+      $('postBtn').style.borderColor= dark?"#3A352A":"#E0DACE"; $('postBtn').style.color=t.sub;
+      $('filterSelect').style.background=t.card; $('filterSelect').style.borderColor=t.cardBd;
+      $('filterVal').style.color=t.txt;
+      $('filterMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('filterMenu').style.borderColor= dark?"#3A352A":"#E8E0CE";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderFilters(); renderRecipes();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('filterSelect').onclick=function(e){ e.stopPropagation(); var open=($('filterMenu').style.display==="block"); if(open){ $('filterMenu').style.display="none"; $('filterChev').className="ti ti-chevron-down"; } else { renderFilterMenu(); $('filterMenu').style.display="block"; $('filterChev').className="ti ti-chevron-up"; $('langMenu').style.display="none"; } };
+    $('filterMenu').onclick=function(e){ e.stopPropagation(); };
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; $('filterMenu').style.display="none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; $('filterMenu').style.display="none"; $('filterChev').className="ti ti-chevron-down"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('feed'); } };
+})();
+</script>
+<script>
+(function(){
+  var p=document.getElementById('postBtn');
+  if(p){ p.onclick=function(){ REVO.go('recipe_post'); }; }
+})();
+</script>
+</body>
+</html>

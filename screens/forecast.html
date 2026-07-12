@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>未来予測 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">未来予測。今のペースを続けたら、もっと頑張ったら、ゆっくりにしたら、体重が30日後どう変わるかを3本の線で見せる。焦らせない。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">未来予測</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- 現在地＋目標 -->
+  <div style="padding:16px 18px 0; display:flex; align-items:center; justify-content:space-between;">
+    <div>
+      <p id="nowLbl" style="font-size:11px; color:#8A7E68; margin:0 0 2px;">いまの体重</p>
+      <p style="font-size:22px; font-weight:600; color:#F0EBE2; margin:0;"><span id="nowW">68.2</span><span style="font-size:13px; color:#8A7E68; font-weight:400;"> kg</span></p>
+    </div>
+    <i class="ti ti-arrow-right" style="font-size:18px; color:#6E6555;"></i>
+    <div style="text-align:right;">
+      <p id="goalLbl" style="font-size:11px; color:#8A7E68; margin:0 0 2px;">目標</p>
+      <p style="font-size:22px; font-weight:600; color:#E3C56A; margin:0;"><span id="goalW">64.0</span><span style="font-size:13px; color:#8A7E68; font-weight:400;"> kg</span></p>
+    </div>
+  </div>
+
+  <!-- グラフ -->
+  <div style="padding:18px 14px 0;">
+    <svg id="chart" viewBox="0 0 340 220" style="width:100%; height:auto;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="30日後までの体重予測 3本線"></svg>
+  </div>
+
+  <!-- 凡例＋30日後の値 -->
+  <div style="padding:6px 18px 0;">
+    <div id="legend" style="display:flex; flex-direction:column; gap:9px;"></div>
+  </div>
+
+  <!-- 諭すコメント -->
+  <div style="padding:16px 18px 0;">
+    <div id="msgCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:15px 16px; display:flex; align-items:flex-start; gap:10px;">
+      <i class="ti ti-heart" style="font-size:18px; color:#5DCAA5; margin-top:1px;"></i>
+      <p id="msg" style="font-size:13px; color:#C9E3D8; margin:0; line-height:1.65;">どのペースでも、続ければ必ず近づきます。焦らなくて大丈夫。今日できることを、確実に。</p>
+    </div>
+  </div>
+
+  <div style="padding:0 16px;">
+    <p id="medNote" style="font-size:10px; color:#6E6555; margin:0; line-height:1.65; text-align:center;">この予測は、今の記録から計算した目安です。将来を保証したり、医療上の診断・治療を行うものではありません。</p>
+  </div>
+
+  <div style="height:22px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    /* ===== 実データ（7日移動平均トレンド）から予測を算出 docs/02 §2 ===== */
+    var ST=REVO.stats(), PROF=REVO.profile()||{};
+    var _ma=ST.ma7;
+    var hasData = _ma.length>=1;
+    var startW = hasData ? _ma[_ma.length-1].w : (PROF.weight_kg||null);
+    var goalW  = (PROF.goal_weight_kg!=null) ? PROF.goal_weight_kg : null;
+    var enough = _ma.length>=3;   // 予測には3日分以上の体重記録が必要
+    // 傾き（kg/日）：移動平均の直近14日を線形回帰
+    var slope=0;
+    if(enough){
+      var pts=_ma.slice(-14);
+      var t0=new Date(pts[0].d+"T00:00:00").getTime();
+      var xs=pts.map(function(p){ return (new Date(p.d+"T00:00:00").getTime()-t0)/86400000; });
+      var ys=pts.map(function(p){ return p.w; });
+      var n=xs.length, sx=0,sy=0,sxy=0,sxx=0;
+      for(var i=0;i<n;i++){ sx+=xs[i]; sy+=ys[i]; sxy+=xs[i]*ys[i]; sxx+=xs[i]*xs[i]; }
+      var den=n*sxx-sx*sx;
+      slope = den!==0 ? (n*sxy-sx*sy)/den : 0;
+    }
+    // 目標方向（減量/増量）。目標未設定時はトレンド方向
+    var dir = (goalW!=null && startW!=null) ? (goalW<startW?-1:1) : (slope<0?-1:1);
+    var d30 = slope*30;
+    function _r(v){ return Math.round(v*10)/10; }
+    var scen = (startW==null) ? {high:0,keep:0,slow:0} : {
+      keep: _r(startW + d30),
+      high: _r(startW + (Math.abs(d30)>0.4 ? d30*1.5 : dir*1.2)),
+      slow: _r(startW + d30*0.4)
+    };
+    if(dir*(scen.high-startW)<dir*(scen.keep-startW)){ var _tmp=scen.high; scen.high=scen.keep; scen.keep=_tmp; }
+    var D={
+      "日本語":{hdr:"未来予測",now:"いまの体重",goal:"目標",unit:"kg",
+        high:"ハイペース",keep:"ペース維持",slow:"スローペース",
+        afterN:"30日後",
+        highSub:"がんばった場合",keepSub:"今のままの場合",slowSub:"ゆっくりの場合",
+        msg:"どのペースでも、続ければ必ず近づきます。焦らなくて大丈夫。今日できることを、確実に。",medN:"この予測は、今の記録から計算した目安です。将来を保証したり、医療上の診断・治療を行うものではありません。"},
+      "English":{hdr:"Forecast",now:"Current weight",goal:"Goal",unit:"kg",
+        high:"Fast pace",keep:"Steady pace",slow:"Slow pace",
+        afterN:"in 30 days",
+        highSub:"if you push",keepSub:"if you keep on",slowSub:"if you go easy",
+        msg:"Any pace gets you there if you keep going. No need to rush. Just do what you can today, for sure.",medN:"This forecast is an estimate calculated from your current records. It does not guarantee the future or provide medical diagnosis or treatment."},
+      "简体中文":{hdr:"未来预测",now:"当前体重",goal:"目标",unit:"kg",
+        high:"快节奏",keep:"保持节奏",slow:"慢节奏",
+        afterN:"30天后",
+        highSub:"努力的话",keepSub:"保持现状",slowSub:"放慢的话",
+        msg:"无论哪种节奏，坚持就一定会接近。不用着急，把今天能做的，扎实做好。",medN:"此预测是根据当前记录计算的参考值。不保证未来，也不进行医疗诊断或治疗。"},
+      "繁體中文":{hdr:"未來預測",now:"目前體重",goal:"目標",unit:"kg",
+        high:"快節奏",keep:"保持節奏",slow:"慢節奏",
+        afterN:"30天後",
+        highSub:"努力的話",keepSub:"保持現狀",slowSub:"放慢的話",
+        msg:"無論哪種節奏，堅持就一定會接近。不用著急，把今天能做的，扎實做好。",medN:"此預測是根據當前記錄計算的參考值。不保證未來，也不進行醫療診斷或治療。"},
+      "한국어":{hdr:"미래 예측",now:"현재 체중",goal:"목표",unit:"kg",
+        high:"빠른 페이스",keep:"페이스 유지",slow:"느린 페이스",
+        afterN:"30일 후",
+        highSub:"열심히 하면",keepSub:"지금처럼이면",slowSub:"천천히 하면",
+        msg:"어떤 페이스든 계속하면 반드시 가까워져요. 서두르지 않아도 돼요. 오늘 할 수 있는 걸, 확실히.",medN:"이 예측은 현재 기록에서 계산한 예상치입니다. 미래를 보장하거나 의료상 진단·치료를 하지 않습니다."},
+      "ภาษาไทย":{hdr:"พยากรณ์",now:"น้ำหนักตอนนี้",goal:"เป้าหมาย",unit:"กก.",
+        high:"จังหวะเร็ว",keep:"คงจังหวะ",slow:"จังหวะช้า",
+        afterN:"อีก 30 วัน",
+        highSub:"ถ้าตั้งใจ",keepSub:"ถ้าทำต่อ",slowSub:"ถ้าค่อยเป็นค่อยไป",
+        msg:"จังหวะไหนก็ถึงได้ถ้าทำต่อ ไม่ต้องรีบ แค่ทำสิ่งที่ทำได้วันนี้ให้แน่นอน",medN:"การพยากรณ์นี้เป็นค่าประมาณที่คำนวณจากบันทึกปัจจุบัน ไม่รับประกันอนาคตและไม่ใช่การวินิจฉัยหรือรักษาทางการแพทย์"},
+      "Français":{hdr:"Prévision",now:"Poids actuel",goal:"Objectif",unit:"kg",
+        high:"Rythme rapide",keep:"Rythme stable",slow:"Rythme lent",
+        afterN:"dans 30 jours",
+        highSub:"si vous poussez",keepSub:"si vous continuez",slowSub:"en douceur",
+        msg:"Quel que soit le rythme, en continuant vous y arriverez. Pas de précipitation. Faites ce que vous pouvez aujourd'hui, sûrement.",medN:"Cette prévision est une estimation calculée à partir de vos données actuelles. Elle ne garantit pas l'avenir ni ne constitue un diagnostic ou traitement médical."},
+      "Español":{hdr:"Previsión",now:"Peso actual",goal:"Meta",unit:"kg",
+        high:"Ritmo rápido",keep:"Ritmo constante",slow:"Ritmo lento",
+        afterN:"en 30 días",
+        highSub:"si te esfuerzas",keepSub:"si sigues igual",slowSub:"con calma",
+        msg:"Cualquier ritmo te acerca si sigues. Sin prisa. Solo haz lo que puedas hoy, con seguridad.",medN:"Esta previsión es una estimación calculada a partir de tus registros actuales. No garantiza el futuro ni constituye diagnóstico o tratamiento médico."},
+      "Deutsch":{hdr:"Prognose",now:"Aktuelles Gewicht",goal:"Ziel",unit:"kg",
+        high:"Schnelles Tempo",keep:"Gleichmäßig",slow:"Langsames Tempo",
+        afterN:"in 30 Tagen",
+        highSub:"wenn du pushst",keepSub:"wenn du dranbleibst",slowSub:"ganz entspannt",
+        msg:"Jedes Tempo bringt dich hin, wenn du dranbleibst. Keine Eile. Tu einfach das, was heute sicher geht.",medN:"Diese Prognose ist eine aus deinen aktuellen Daten berechnete Schätzung. Sie garantiert nicht die Zukunft und ist keine medizinische Diagnose oder Behandlung."},
+      "Italiano":{hdr:"Previsione",now:"Peso attuale",goal:"Obiettivo",unit:"kg",
+        high:"Ritmo veloce",keep:"Ritmo costante",slow:"Ritmo lento",
+        afterN:"tra 30 giorni",
+        highSub:"se spingi",keepSub:"se continui",slowSub:"con calma",
+        msg:"Qualsiasi ritmo ti avvicina se continui. Nessuna fretta. Fai con sicurezza ciò che puoi oggi.",medN:"Questa previsione è una stima calcolata dai tuoi dati attuali. Non garantisce il futuro né costituisce diagnosi o trattamento medico."},
+      "Português":{hdr:"Previsão",now:"Peso atual",goal:"Meta",unit:"kg",
+        high:"Ritmo rápido",keep:"Ritmo constante",slow:"Ritmo lento",
+        afterN:"em 30 dias",
+        highSub:"se você se esforçar",keepSub:"se continuar",slowSub:"com calma",
+        msg:"Qualquer ritmo te aproxima se você continuar. Sem pressa. Faça com firmeza o que dá pra fazer hoje.",medN:"Esta previsão é uma estimativa calculada a partir dos seus registros atuais. Não garante o futuro nem constitui diagnóstico ou tratamento médico."},
+      "हिन्दी":{hdr:"भविष्य अनुमान",now:"अभी वज़न",goal:"लक्ष्य",unit:"kg",
+        high:"तेज़ गति",keep:"स्थिर गति",slow:"धीमी गति",
+        afterN:"30 दिन बाद",
+        highSub:"मेहनत करें तो",keepSub:"ऐसे ही चलें तो",slowSub:"आराम से करें तो",
+        msg:"कोई भी गति हो, लगे रहें तो ज़रूर पहुँचेंगे। जल्दी की ज़रूरत नहीं। आज जो कर सकें, उसे पक्के से करें।",medN:"यह पूर्वानुमान आपके वर्तमान रिकॉर्ड से गणना किया अनुमान है। यह भविष्य की गारंटी नहीं देता, न ही चिकित्सा निदान या उपचार करता है।"},
+      "Tiếng Việt":{hdr:"Dự đoán",now:"Cân nặng hiện tại",goal:"Mục tiêu",unit:"kg",
+        high:"Nhịp nhanh",keep:"Giữ nhịp",slow:"Nhịp chậm",
+        afterN:"sau 30 ngày",
+        highSub:"nếu cố gắng",keepSub:"nếu duy trì",slowSub:"nếu thong thả",
+        msg:"Nhịp nào cũng tới nếu bạn tiếp tục. Không cần vội. Cứ làm chắc điều bạn làm được hôm nay.",medN:"Dự đoán này là ước tính tính từ bản ghi hiện tại của bạn. Nó không đảm bảo tương lai hay chẩn đoán, điều trị y tế."},
+      "Bahasa Indonesia":{hdr:"Prakiraan",now:"Berat saat ini",goal:"Target",unit:"kg",
+        high:"Tempo cepat",keep:"Tempo stabil",slow:"Tempo pelan",
+        afterN:"30 hari lagi",
+        highSub:"kalau ngebut",keepSub:"kalau lanjut",slowSub:"kalau santai",
+        msg:"Tempo apa pun akan sampai kalau diteruskan. Tak perlu buru-buru. Lakukan dengan pasti yang bisa kamu lakukan hari ini.",medN:"Prediksi ini adalah perkiraan yang dihitung dari catatanmu saat ini. Tidak menjamin masa depan atau memberikan diagnosis maupun pengobatan medis."}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var lineColors={high:"#E3C56A",keep:"#5DCAA5",slow:"#8A7E68"};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",grid:"#2A2620",card:"#1A1814",cardBd:"#2A2620",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",grid:"#EDE6D8",card:"#FBF7F1",cardBd:"#F0EAE0",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function buildChart(){
+      var t=dark?T.dark:T.light, d=D[cur]||D["English"];
+      var W=340,H=220,padL=8,padR=46,padT=14,padB=24;
+      var x0=padL, x1=W-padR, yTop=padT, yBot=H-padB;
+      var _all=[startW,scen.high,scen.keep,scen.slow]; if(goalW!=null) _all.push(goalW);
+      var vMax=Math.ceil(Math.max.apply(null,_all))+1, vMin=Math.floor(Math.min.apply(null,_all))-1;
+      if(vMax-vMin<4){ vMax+=2; vMin-=1; }
+      function X(day){ return x0 + (x1-x0)*(day/30); }
+      function Y(w){ return yTop + (yBot-yTop)*((vMax-w)/(vMax-vMin)); }
+      var svg="";
+      if(!enough || startW==null){
+        var E2=(REVO.EMPTY2[cur]||REVO.EMPTY2["English"]);
+        svg+='<text x="'+(W/2)+'" y="'+(H/2)+'" font-size="12" fill="'+t.sub+'" text-anchor="middle">'+E2.forecast+'</text>';
+        $('chart').innerHTML=svg;
+        return;
+      }
+      var _grid=[]; for(var gv=vMax-1; gv>vMin; gv-=Math.max(1,Math.round((vMax-vMin)/5))) _grid.push(gv);
+      _grid.forEach(function(v){
+        svg+='<line x1="'+x0+'" y1="'+Y(v)+'" x2="'+x1+'" y2="'+Y(v)+'" stroke="'+t.grid+'" stroke-width="1"/>';
+        svg+='<text x="'+(x1+6)+'" y="'+(Y(v)+3)+'" font-size="9" fill="'+t.muted+'">'+v+'</text>';
+      });
+      // 各シナリオの線（0日=startW → 30日=scen.X）。緩やかなカーブ感のため中間点も
+      function line(endW, col, dash){
+        var pts=[];
+        for(var day=0; day<=30; day+=5){
+          // ゆるい曲線：序盤ゆっくり→中盤→終盤、線形でシンプルに
+          var w=startW + (endW-startW)*(day/30);
+          pts.push(X(day)+","+Y(w));
+        }
+        return '<polyline points="'+pts.join(" ")+'" fill="none" stroke="'+col+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>';
+      }
+      if(goalW!=null) svg+='<line x1="'+x0+'" y1="'+Y(goalW)+'" x2="'+x1+'" y2="'+Y(goalW)+'" stroke="'+t.accent+'" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"/>';
+      // 3本線
+      svg+=line(scen.slow, lineColors.slow, "5 4");
+      svg+=line(scen.keep, lineColors.keep, "");
+      svg+=line(scen.high, lineColors.high, "");
+      // 起点の点
+      svg+='<circle cx="'+X(0)+'" cy="'+Y(startW)+'" r="4" fill="'+t.txt+'"/>';
+      // 終点の点＋ラベル
+      [["high",scen.high],["keep",scen.keep],["slow",scen.slow]].forEach(function(p){
+        svg+='<circle cx="'+X(30)+'" cy="'+Y(p[1])+'" r="3.5" fill="'+lineColors[p[0]]+'"/>';
+      });
+      // X軸ラベル（今日 / 30日後）
+      svg+='<text x="'+x0+'" y="'+(H-8)+'" font-size="9" fill="'+t.muted+'">'+(cur==="日本語"?"今日":"0")+'</text>';
+      svg+='<text x="'+(x1-4)+'" y="'+(H-8)+'" font-size="9" fill="'+t.muted+'" text-anchor="end">'+d.afterN+'</text>';
+      $('chart').innerHTML=svg;
+    }
+    function buildLegend(){
+      var t=dark?T.dark:T.light, d=D[cur]||D["English"];
+      $('legend').innerHTML="";
+      if(!enough || startW==null) return;
+      [["high",scen.high,d.high,d.highSub],["keep",scen.keep,d.keep,d.keepSub],["slow",scen.slow,d.slow,d.slowSub]].forEach(function(p){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:11px; padding:10px 13px;";
+        row.innerHTML=
+          '<div style="display:flex; align-items:center; gap:10px;"><span style="width:18px; height:3px; border-radius:2px; background:'+lineColors[p[0]]+';"></span>'+
+            '<div><span style="font-size:13px; color:'+t.txt+'; font-weight:500;">'+p[2]+'</span> <span style="font-size:10px; color:'+t.sub+';">'+p[3]+'</span></div></div>'+
+          '<span style="font-size:14px; color:'+lineColors[p[0]]+'; font-weight:600;">'+p[1].toFixed(1)+' '+d.unit+'</span>';
+        $('legend').appendChild(row);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('nowLbl').textContent=d.now; $('goalLbl').textContent=d.goal;
+      $('nowW').textContent = startW!=null ? startW.toFixed(1) : "--";
+      $('goalW').textContent = goalW!=null ? goalW.toFixed(1) : "--";
+      $('msg').textContent=d.msg; if(d.medN) $('medNote').textContent=d.medN;
+      buildChart(); buildLegend();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('nowLbl').style.color=t.sub; $('goalLbl').style.color=t.sub;
+      $('msgCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('msgCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('msg').style.color= dark?"#C9E3D8":"#2E5D4E";
+      var mn=$('medNote'); if(mn) mn.style.color= dark?"#6E6555":"#B7A98F";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      buildChart(); buildLegend();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+</body>
+</html>

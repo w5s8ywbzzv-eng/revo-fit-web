@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ショップ — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">ランキング。プロテインやサプリ、ウェア、器具、各国コンビニの市販品、トレーニー向けの飲食店、置き換え宅配。旅行先でも、開けば分かる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <p id="hdrTtl" style="font-size:17px; font-weight:600; color:#F0EBE2; margin:0; transition:color 0.35s;">ランキング</p>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- カテゴリー・国プルダウン -->
+  <div style="padding:12px 16px 0; display:flex; gap:9px;">
+    <!-- カテゴリー -->
+    <div style="flex:1.4; position:relative;">
+      <button id="catBtn" style="width:100%; display:flex; align-items:center; gap:8px; background:#1F1C16; border:0.5px solid #3A352A; border-radius:12px; padding:11px 13px; cursor:pointer; transition:all 0.35s;">
+        <i id="catBtnIc" class="ti ti-bolt" style="font-size:16px; color:#E3C56A;"></i>
+        <span id="catBtnLbl" style="flex:1; text-align:left; font-size:13px; color:#F0EBE2; font-weight:500;">プロテイン</span>
+        <i class="ti ti-chevron-down" style="font-size:16px; color:#8A7E68;"></i>
+      </button>
+      <div id="catMenu" style="display:none; position:absolute; left:0; right:0; top:48px; background:#1F1C16; border:0.5px solid #3A352A; border-radius:12px; padding:6px; box-shadow:0 14px 34px -10px rgba(0,0,0,0.7); z-index:25;"></div>
+    </div>
+    <!-- 国（地球儀＋中立ラベル・全ジャンル） -->
+    <div id="regionWrap" style="flex:1; position:relative;">
+      <button id="regionBtn" aria-label="国を選ぶ" style="width:100%; display:flex; align-items:center; gap:8px; background:#1F1C16; border:0.5px solid #3A352A; border-radius:12px; padding:11px 13px; cursor:pointer; transition:all 0.35s;">
+        <i class="ti ti-world" style="font-size:17px; color:#E3C56A;"></i>
+        <span id="regionBtnLbl" style="flex:1; text-align:left; font-size:13px; color:#F0EBE2; font-weight:500;">国</span>
+        <i class="ti ti-chevron-down" style="font-size:16px; color:#8A7E68;"></i>
+      </button>
+      <div id="regionMenu" style="display:none; position:absolute; left:0; right:0; top:48px; max-height:280px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:12px; padding:6px; box-shadow:0 14px 34px -10px rgba(0,0,0,0.7); z-index:25;"></div>
+    </div>
+  </div>
+
+  <div style="padding:14px 16px 20px; max-height:560px; overflow-y:auto;">
+    <p id="catNote" style="font-size:11px; color:#8A7E68; margin:0 0 12px; line-height:1.6;"></p>
+    <div id="priceChips" style="display:flex; gap:7px; margin:0 0 14px;"></div>
+    <div id="list" style="display:flex; flex-direction:column; gap:10px;"></div>
+    <button id="postBtn" style="width:100%; margin:16px 0 0; background:transparent; border:1px dashed #3A352A; color:#E3C56A; font-size:13px; font-weight:600; padding:13px; border-radius:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><i class="ti ti-plus" style="font-size:16px;"></i><span id="postLbl">あなたのおすすめを投稿する</span></button>
+    <p id="affNote" style="font-size:10px; color:#6E6555; margin:14px 0 0; line-height:1.6; text-align:center;"></p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    // カテゴリー: key, アイコン, 地域切替の有無
+    var CATS=[
+      {k:"protein", ic:"ti-bolt", region:true},
+      {k:"store", ic:"ti-shopping-cart", region:true},
+      {k:"resto", ic:"ti-cup", region:true},
+      {k:"wear", ic:"ti-tag", region:true},
+      {k:"gear", ic:"ti-barbell", region:true},
+      {k:"meal", ic:"ti-leaf", region:true}
+    ];
+    var REGIONS=["jp","kr","th","id","us","vn","fr","it","es","gb","mx","au"];
+    var cur=REVO.lang(), dark=REVO.dark(), activeCat=0, activeRegion=0, activePrice=0;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",title:"#F0EBE2",sub:"#8A7E68",meta:"#6E6555",card:"#1A1814",cardBd:"#2A2620",accent:"#E3C56A",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84",tagBg:"#221E14",tagTx:"#D8B65A",imgBg:"linear-gradient(135deg,#221E17,#1B1813)",imgIc:"#3A352A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",title:"#2E2A24",sub:"#8A7E68",meta:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",accent:"#BA7517",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",tagBg:"#FBF3E0",tagTx:"#9A7B16",imgBg:"linear-gradient(135deg,#F2ECE0,#EDE6D8)",imgIc:"#D8CDBA",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78"}
+    };
+    // ---- データ（各言語）----
+    var D={
+      "日本語":{hdr:"ランキング",cats:{protein:"プロテイン",store:"各国の市販品",resto:"外食",wear:"ウェア",gear:"器具",meal:"宅配"},
+        regions:{jp:"日本",kr:"韓国",th:"タイ",id:"インドネシア",us:"アメリカ",vn:"ベトナム",fr:"フランス",it:"イタリア",es:"スペイン",gb:"イギリス",mx:"メキシコ",au:"オーストラリア"},
+        note:{protein:"revoユーザーに人気のプロテイン・サプリ。",store:"現地のコンビニ・スーパーで買える、トレーニーの味方。",resto:"高たんぱくで食べられる、トレーニーにやさしいお店。",wear:"動きやすく、気分が上がるウェア。",gear:"自宅トレを支える器具・ガジェット。",meal:"忙しい日の、栄養設計ずみの一皿。"},
+        aff:"※ アフィリエイトを含む可能性があります。順位は、revoユーザーの投稿数により決まります。",priceL:["すべて","安価","中","高価"],postLbl:"あなたのおすすめを投稿する",countryLbl:"国",
+        refUnit:"人が参考に",axes:{"protein":["溶けやすさ", "味", "コスパ"], "store":["手軽さ", "コスパ", "満足度"], "resto":["高たんぱく", "通いやすさ", "コスパ"], "wear":["通気性", "ファッション", "機能"], "gear":["省スペース", "耐久性", "コスパ"], "meal":["味", "栄養設計", "コスパ"]},
+        proteinItems:[["ホエイ プレーン","たんぱく質23g/食・溶けやすい","2,340",2,""],["ソイ ココア","植物性・腹持ちがいい","1,780",2,""],["EAA オレンジ","トレ中の一杯に","1,510",2,""],["クレアチン","定番・毎日3〜5g","1,120",2,""]],
+        store:{
+          jp:[["サラダチキン プレーン","たんぱく質27g","3,120",2,"セブン"],["ギリシャヨーグルト","高たんぱく・低脂質","2,450",2,""],["ゆで卵2個入り","どこでも・手軽","1,980",1,""],["プロテインドリンク","15g","1,540",2,"ローソン"]],
+          kr:[["닭가슴살 소시지","持ち歩きやすい","2,010",2,"GS25"],["프로틴 우유","単品で20g","1,760",2,"CU"],["삶은 계란","定番","1,320",1,""],["그릭요거트","高たんぱく","1,090",2,""]],
+          th:[["อกไก่พร้อมทาน","味つき","1,880",2,"セブン"],["ไข่ต้ม","どこでも安い","1,440",1,""],["นมโปรตีน","プロテイン牛乳","1,220",2,""],["โยเกิร์ตกรีก","高たんぱく","980",2,""]],
+          id:[["Dada ayam siap makan","味つき","1,650",2,"Indomaret"],["Telur rebus","定番・安い","1,280",1,""],["Susu protein","Alfamart","1,040",2,"Alfamart"],["Yogurt Yunani","高たんぱく","870",2,""]],
+          us:[["Rotisserie chicken","スーパー・大容量","2,890",3,"Costco"],["Greek yogurt (Chobani)","高たんぱく定番","2,510",3,""],["Protein bar (Quest)","20g・携帯に","2,120",2,""],["Fairlife protein shake","30g・人気","1,940",3,""]],
+          vn:[["Ức gà ăn liền","味つき","1,420",2,"Circle K"],["Trứng luộc","どこでも","1,180",1,""],["Sữa protein","GS25","960",2,"GS25"],["Sữa chua Hy Lạp","高たんぱく","780",2,""]]},
+        resto:{
+          jp:[["筋肉食堂（東京）","高たんぱく定食・PFC表示あり","2,760",2,""],["やよい軒","定食・ご飯おかわり","2,210",2,""],["CoCo壱（低糖質カレー）","カスタムで調整","1,680",2,""],["いきなりステーキ","赤身肉をがっつり","1,450",2,""]],
+          kr:[["헬스인 식당（ソウル）","닭가슴살メニュー豊富","1,920",2,""],["샐러디","サラダ・ボウル","1,540",2,""],["고기집（赤身）","焼肉で高たんぱく","1,230",2,""]],
+          th:[["Fit Food BKK（バンコク）","PFC表示・鶏胸","1,510",2,""],["MK スキー","鶏・野菜たっぷり","1,180",2,""],["Jones' Salad","サラダチェーン","990",2,""]],
+          id:[["SaladStop!（ジャカルタ）","高たんぱくボウル","1,120",2,""],["Ayam bakar chain","焼き鶏定食","940",2,""],["Warung protein","ローカル・鶏胸","760",2,""]],
+          us:[["Chipotle（NY他）","ボウルでPFC調整","3,210",2,""],["Sweetgreen","サラダボウル","2,680",2,""],["CAVA","高たんぱくボウル","2,140",2,""],["Chick-fil-A（grilled）","グリルチキン","1,870",2,""]],
+          vn:[["Fit meal HCM（ホーチミン）","鶏胸・PFC","1,080",2,""],["Pho ga（鶏フォー）","高たんぱく・低脂質","920",2,""],["Salad chain","サラダ","680",2,""]]},
+        wear:{jp:[["トレーニングTシャツ","国産・タイトすぎない","1,980",3,"LYFT"],["ドライTシャツ","速乾・普段使いも","1,540",2,"VALX"],["動きやすいジョガー","コスパ最強","1,320",1,"ワークマン"],["コンプレッションタイツ","下半身を支える","990",2,"GRIPS"]],kr:[["レギンス","履き心地で人気","1,760",3,"XEXYMIX"],["トレーニングTシャツ","韓国トレーニー定番","1,340",2,"MULAWEAR"],["Dri-FIT Tシャツ","定番","1,120",2,"NIKE"]],us:[["トレーニングTシャツ","フィット感で人気","2,340",2,"Gymshark"],["メンズTシャツ","高品質","1,980",3,"Lululemon"],["Dri-FIT Tシャツ","定番","1,650",2,"NIKE"],["トレーニングショーツ","動きやすい","1,240",2,"Alphalete"]],gb:[["トレーニングTシャツ","英国発・人気","1,880",2,"Gymshark"],["Dri-FIT Tシャツ","定番","1,320",2,"NIKE"],["トレーニングタイツ","動きやすい","990",2,"adidas"]],au:[["トレーニングTシャツ","フィット感","1,540",2,"Gymshark"],["シームレスウェア","豪州発","1,240",3,"STAX."],["Dri-FIT Tシャツ","定番","1,020",2,"NIKE"]]},
+        gear:[["可変式ダンベル","自宅の場所を取らない","1,760",3,""],["トレーニングマット","床とひざを守る","1,290",1,""],["シェイカー","漏れにくい","1,140",1,""],["プロテイン用ドリンクホルダー","ジムに持参","760",2,""]],
+        meal:[["高たんぱく冷凍弁当","管理栄養士監修・PFC計算ずみ","1,580",2,""],["置き換えシェイク","1食分の栄養","1,120",2,""],["サラダチキン定期便","毎週届く","890",2,""]]},
+      "English":{hdr:"Rankings",cats:{protein:"Protein",store:"Local goods",resto:"Eating out",wear:"Wear",gear:"Gear",meal:"Delivery"},
+        regions:{jp:"Japan",kr:"Korea",th:"Thailand",id:"Indonesia",us:"USA",vn:"Vietnam",fr:"France",it:"Italy",es:"Spain",gb:"UK",mx:"Mexico",au:"Australia"},
+        note:{protein:"Protein & supplements popular with revo users.",store:"A lifter's ally, found at local convenience stores.",resto:"Lifter-friendly places where you can eat high-protein.",wear:"Wear that moves well and lifts your mood.",gear:"Gear and gadgets for home training.",meal:"A nutrition-planned meal for busy days."},
+        aff:"* May contain affiliate links. Rankings are decided by the number of revo user posts.",priceL:["All","Budget","Mid","Premium"],postLbl:"Post your recommendation",countryLbl:"Country",
+        refUnit:"referenced",axes:{"protein":["Mixability", "Taste", "Value"], "store":["Convenience", "Value", "Satisfaction"], "resto":["High-protein", "Access", "Value"], "wear":["Breathability", "Fashion", "Function"], "gear":["Space", "Durability", "Value"], "meal":["Taste", "Nutrition", "Value"]},
+        proteinItems:[["Whey plain","23g protein/serving, mixes easily","2,340",2,""],["Soy cocoa","Plant-based, filling","1,780",2,""],["EAA orange","A cup during training","1,510",2,""],["Creatine","Classic, 3-5g daily","1,120",2,""]],
+        store:{
+          jp:[["Salad chicken plain","27g protein","3,120",2,"7-Eleven"],["Greek yogurt","High protein, low fat","2,450",2,""],["Boiled eggs (2)","Anywhere, easy","1,980",1,""],["Protein drink","15g","1,540",2,"Lawson"]],
+          kr:[["Chicken breast sausage","easy to carry","2,010",2,"GS25"],["Protein milk","20g each","1,760",2,"CU"],["Boiled eggs","Classic","1,320",1,""],["Greek yogurt","High protein","1,090",2,""]],
+          th:[["Ready-to-eat chicken","seasoned","1,880",2,"7-Eleven"],["Boiled eggs","Cheap anywhere","1,440",1,""],["Protein milk","","1,220",2,""],["Greek yogurt","High protein","980",2,""]],
+          id:[["Ready chicken breast","seasoned","1,650",2,"Indomaret"],["Boiled eggs","Classic, cheap","1,280",1,""],["Protein milk","Alfamart","1,040",2,"Alfamart"],["Greek yogurt","High protein","870",2,""]],
+          us:[["Rotisserie chicken","grocery, big","2,890",3,"Costco"],["Greek yogurt (Chobani)","High-protein staple","2,510",3,""],["Protein bar (Quest)","20g, portable","2,120",2,""],["Fairlife protein shake","30g, popular","1,940",3,""]],
+          vn:[["Ready-to-eat chicken","seasoned","1,420",2,"Circle K"],["Boiled eggs","Anywhere","1,180",1,""],["Protein milk","GS25","960",2,"GS25"],["Greek yogurt","High protein","780",2,""]],fr:[["Poulet rôti (Monoprix)","Grocery, high protein","1,340",3,""],["Skyr / fromage blanc","High protein, low fat","1,180",2,""],["Œufs durs (Carrefour)","Cheap everywhere","920",1,""],["Jambon de poulet","Lean, packaged","740",2,""]],it:[["Petto di pollo (Esselunga)","Grocery, lean","1,220",2,""],["Bresaola","Very lean, high protein","1,060",3,""],["Yogurt greco","High protein","880",2,""],["Uova sode","Cheap staple","690",1,""]],es:[["Pechuga de pavo (Mercadona)","Sliced, lean","1,410",2,""],["Yogur griego","High protein","1,190",2,""],["Atún en lata","Cheap protein","980",1,""],["Huevos cocidos","Staple","780",1,""]],gb:[["Chicken breast (Tesco/M&S)","Grocery, lean","1,880",3,""],["Skyr (Icelandic)","High protein yogurt","1,520",2,""],["Protein pot (Boots)","Grab-and-go","1,140",2,""],["Boiled eggs","Everywhere","910",1,""]],mx:[["Pechuga de pollo (OXXO/super)","Lean protein","1,240",2,""],["Atún en lata","Cheap protein","1,020",1,""],["Huevos cocidos","Staple","860",1,""],["Yogur griego","High protein","670",2,""]],au:[["Chicken breast (Woolworths)","Grocery, lean","1,360",3,""],["Greek yogurt (Chobani)","High protein","1,150",3,""],["YoPRO protein pot","20g protein","940",2,""],["Boiled eggs","Everywhere","720",1,""]]},
+        resto:{
+          jp:[["Kinniku Shokudo (Tokyo)","High-protein set, PFC shown","2,760",2,""],["Yayoiken","Set meals, free rice","2,210",2,""],["CoCo Ichi (low-carb)","Customizable","1,680",2,""],["Ikinari Steak","Lean meat, hearty","1,450",2,""]],
+          kr:[["Health-in Diner (Seoul)","Lots of chicken breast","1,920",2,""],["Sallday","Salads & bowls","1,540",2,""],["Korean BBQ (lean)","High protein grill","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","PFC shown, chicken","1,510",2,""],["MK Suki","Chicken & veggies","1,180",2,""],["Jones' Salad","Salad chain","990",2,""]],
+          id:[["SaladStop! (Jakarta)","High-protein bowls","1,120",2,""],["Ayam bakar chain","Grilled chicken set","940",2,""],["Warung protein","Local, chicken breast","760",2,""]],
+          us:[["Chipotle (NY & more)","PFC-tunable bowls","3,210",1,""],["Sweetgreen","Salad bowls","2,680",2,""],["CAVA","High-protein bowls","2,140",2,""],["Chick-fil-A (grilled)","Grilled chicken","1,870",2,""]],
+          vn:[["Fit meal HCM (Ho Chi Minh)","Chicken, PFC","1,080",2,""],["Pho ga (chicken pho)","High protein, low fat","920",2,""],["Salad chain","Salads","680",2,""]],fr:[["Cojean (Paris)","Salads & lean bowls","1,120",2,""],["Big Fernand","Burgers, lean options","880",2,""],["Poulet rôti stand","Street rotisserie","690",3,""]],it:[["Poke House (Milano/Roma)","High-protein poke bowls","1,040",2,""],["Rosticceria","Grilled chicken","820",2,""],["Grigliata / steakhouse","Lean grilled meat","640",2,""]],es:[["Muerde la Pasta / Honest","Bowls & grilled","980",2,""],["Pollo asado (a l'ast)","Rotisserie chicken","800",3,""],["Poke bar","High-protein bowls","620",2,""]],gb:[["Leon (London)","Naked bowls, grilled","1,640",2,""],["Nando's","Peri-peri grilled chicken","1,420",2,""],["Pret (protein pots)","Grab-and-go protein","1,180",2,""],["Tossed / Chopd","Salad bowls","910",2,""]],mx:[["Pollo asado / Rostizado","Rotisserie chicken","1,080",3,""],["Fitness bowl chains","High-protein bowls","840",2,""],["Taqueria (grilled)","Lean grilled tacos","660",2,""]],au:[["Grill'd","Lean burger options","1,260",2,""],["Fishbowl / Poke","High-protein bowls","1,040",2,""],["Charcoal chicken","Grilled chicken","820",2,""]]},
+        wear:{jp:[["Training tee","Domestic, not too tight","1,980",3,"LYFT"],["Dry tee","Quick-dry, daily use","1,540",2,"VALX"],["Easy-move joggers","Best value","1,320",1,"WORKMAN"],["Compression tights","Supports lower body","990",2,"GRIPS"]],kr:[["Leggings","Loved for the fit","1,760",3,"XEXYMIX"],["Training tee","Korean staple","1,340",2,"MULAWEAR"],["Dri-FIT tee","Classic","1,120",2,"NIKE"]],th:[["Training tee","Great fit","1,240",2,"Gymshark"],["Dri-FIT tee","Classic","1,020",2,"NIKE"],["Training tights","Moves with you","860",2,"adidas"]],id:[["Training tee","Great fit","1,180",2,"Gymshark"],["Dri-FIT tee","Classic","980",2,"NIKE"],["Training shorts","Easy move","760",2,"adidas"]],us:[["Training tee","Loved for the fit","2,340",2,"Gymshark"],["Men's tee","High quality","1,980",3,"Lululemon"],["Dri-FIT tee","Classic","1,650",2,"NIKE"],["Training shorts","Easy move","1,240",2,"Alphalete"]],vn:[["Training tee","Great fit","1,120",2,"Gymshark"],["Dri-FIT tee","Classic","960",2,"NIKE"],["Training tights","Easy move","780",2,"adidas"]],fr:[["Training tee","Great fit","1,340",2,"Gymshark"],["Eco training tee","French brand","1,120",3,"Circle Sportswear"],["Dri-FIT tee","Classic","980",2,"NIKE"]],it:[["Training tee","Great fit","1,240",2,"Gymshark"],["Dri-FIT tee","Classic","1,020",2,"NIKE"],["Training tights","Easy move","860",2,"adidas"]],es:[["Training tee","Great fit","1,340",2,"Gymshark"],["Dri-FIT tee","Classic","1,120",2,"NIKE"],["Training tights","Easy move","920",2,"adidas"]],gb:[["Training tee","UK brand, popular","1,880",2,"Gymshark"],["Dri-FIT tee","Classic","1,320",2,"NIKE"],["Training tights","Easy move","990",2,"adidas"]],mx:[["Dri-FIT tee","Classic","1,240",2,"NIKE"],["Training tee","Great fit","1,020",2,"Gymshark"],["Training tights","Easy move","860",2,"adidas"]],au:[["Training tee","Great fit","1,540",2,"Gymshark"],["Seamless wear","Aussie brand","1,240",3,"STAX."],["Dri-FIT tee","Classic","1,020",2,"NIKE"]]},
+        gear:[["Adjustable dumbbells","Save space at home","1,760",3,""],["Training mat","Protects floor & knees","1,290",1,""],["Shaker","Leak-resistant","1,140",1,""],["Protein drink holder","Bring to the gym","760",2,""]],
+        meal:[["High-protein frozen meal","Dietitian-designed, PFC set","1,580",3,""],["Meal-replacement shake","A meal's nutrition","1,120",2,""],["Salad chicken subscription","Weekly delivery","890",2,""]]},
+      "简体中文":{hdr:"排行榜",cats:{protein:"蛋白粉",store:"各国市售",resto:"外食",wear:"服饰",gear:"器械",meal:"配送"},
+        regions:{jp:"日本",kr:"韩国",th:"泰国",id:"印尼",us:"美国",vn:"越南",fr:"法国",it:"意大利",es:"西班牙",gb:"英国",mx:"墨西哥",au:"澳大利亚"},
+        note:{protein:"revo用户喜爱的蛋白粉·补剂。",store:"当地便利店·超市能买到的健身伙伴。",resto:"能吃到高蛋白、对健身者友好的店。",wear:"好活动、提升心情的服饰。",gear:"支撑居家训练的器械·装备。",meal:"忙碌日子里，营养已设计好的一餐。"},
+        aff:"※ 可能含联盟推广。排名由revo用户的投稿数决定。",priceL:["全部","平价","中档","高档"],postLbl:"发布你的推荐",countryLbl:"国家",refUnit:"人参考",axes:{"protein":["易溶", "口味", "性价比"], "store":["便利", "性价比", "满意度"], "resto":["高蛋白", "方便前往", "性价比"], "wear":["透气", "时尚", "功能"], "gear":["省空间", "耐用", "性价比"], "meal":["口味", "营养", "性价比"]},
+        proteinItems:[["乳清 原味","每份蛋白质23g·易溶","2,340",2,""],["大豆 可可","植物性·耐饿","1,780",2,""],["EAA 橙味","训练中一杯","1,510",2,""],["肌酸","经典·每日3-5g","1,120",2,""]],
+        store:{jp:[["沙拉鸡胸 原味","蛋白质27g","3,120",2,"7-11"],["希腊酸奶","高蛋白低脂","2,450",2,""],["水煮蛋2个","随处·方便","1,980",2,""],["蛋白饮料","罗森·15g","1,540",2,""]],
+          kr:[["鸡胸香肠","便携","2,010",2,"GS25"],["蛋白牛奶","单瓶20g","1,760",2,"CU"],["水煮蛋","经典","1,320",2,""],["希腊酸奶","高蛋白","1,090",2,""]],
+          th:[["即食鸡胸","调味","1,880",2,"7-11"],["水煮蛋","随处便宜","1,440",2,""],["蛋白牛奶","","1,220",2,""],["希腊酸奶","高蛋白","980",2,""]],
+          id:[["即食鸡胸","调味","1,650",2,"Indomaret"],["水煮蛋","经典便宜","1,280",2,""],["蛋白牛奶","Alfamart","1,040",2,"Alfamart"],["希腊酸奶","高蛋白","870",2,""]],
+          us:[["烤全鸡","超市·大份","2,890",2,"Costco"],["希腊酸奶(Chobani)","高蛋白经典","2,510",3,""],["蛋白棒(Quest)","20g·便携","2,120",2,""],["Fairlife蛋白奶昔","30g·人气","1,940",3,""]],
+          vn:[["即食鸡胸","调味","1,420",2,"Circle K"],["水煮蛋","随处","1,180",2,""],["蛋白牛奶","GS25","960",2,"GS25"],["希腊酸奶","高蛋白","780",2,""]]},
+        resto:{jp:[["肌肉食堂(东京)","高蛋白定食·标PFC","2,760",2,""],["弥生轩","定食·米饭续","2,210",2,""],["CoCo壱(低糖咖喱)","可定制","1,680",2,""],["立食牛排","瘦肉大口吃","1,450",2,""]],
+          kr:[["健身食堂(首尔)","鸡胸菜品丰富","1,920",2,""],["Sallday","沙拉·碗餐","1,540",2,""],["烤肉店(瘦肉)","高蛋白烧烤","1,230",2,""]],
+          th:[["Fit Food BKK(曼谷)","标PFC·鸡胸","1,510",2,""],["MK火锅","鸡肉蔬菜","1,180",2,""],["Jones' Salad","沙拉连锁","990",2,""]],
+          id:[["SaladStop!(雅加达)","高蛋白碗","1,120",2,""],["烤鸡连锁","烤鸡定食","940",2,""],["蛋白小馆","本地·鸡胸","760",2,""]],
+          us:[["Chipotle(纽约等)","可调PFC碗餐","3,210",2,""],["Sweetgreen","沙拉碗","2,680",2,""],["CAVA","高蛋白碗","2,140",2,""],["Chick-fil-A(烤)","烤鸡","1,870",2,""]],
+          vn:[["Fit meal 胡志明","鸡胸·PFC","1,080",2,""],["鸡肉河粉","高蛋白低脂","920",2,""],["沙拉连锁","沙拉","680",2,""]]},
+        wear:{},
+        gear:[["可调哑铃","居家省空间","1,760",2,""],["训练垫","护地板膝盖","1,290",2,""],["摇摇杯","不易漏","1,140",2,""],["蛋白杯支架","带去健身房","760",2,""]],
+        meal:[["高蛋白冷冻便当","营养师监制·算好PFC","1,580",2,""],["代餐奶昔","一餐营养","1,120",2,""],["沙拉鸡定期送","每周送达","890",2,""]]},
+      "繁體中文":{hdr:"排行榜",cats:{protein:"蛋白粉",store:"各國市售",resto:"外食",wear:"服飾",gear:"器械",meal:"配送"},
+        regions:{jp:"日本",kr:"韓國",th:"泰國",id:"印尼",us:"美國",vn:"越南",fr:"法國",it:"意大利",es:"西班牙",gb:"英國",mx:"墨西哥",au:"澳大利亞"},
+        note:{protein:"revo用戶喜愛的蛋白粉·補劑。",store:"當地便利店·超市能買到的健身夥伴。",resto:"能吃到高蛋白、對健身者友好的店。",wear:"好活動、提升心情的服飾。",gear:"支撐居家訓練的器械·裝備。",meal:"忙碌日子裡，營養已設計好的一餐。"},
+        aff:"※ 可能含聯盟推廣。排名由revo用戶的投稿數決定。",priceL:["全部","平價","中檔","高檔"],postLbl:"發布你的推薦",countryLbl:"國家",refUnit:"人參考",axes:{"protein":["易溶", "口味", "性價比"], "store":["便利", "性價比", "滿意度"], "resto":["高蛋白", "方便前往", "性價比"], "wear":["透氣", "時尚", "功能"], "gear":["省空間", "耐用", "性價比"], "meal":["口味", "營養", "性價比"]},
+        proteinItems:[["乳清 原味","每份蛋白質23g·易溶","2,340",2,""],["大豆 可可","植物性·耐餓","1,780",2,""],["EAA 橙味","訓練中一杯","1,510",2,""],["肌酸","經典·每日3-5g","1,120",2,""]],
+        store:{jp:[["沙拉雞胸 原味","蛋白質27g","3,120",2,"7-11"],["希臘優格","高蛋白低脂","2,450",2,""],["水煮蛋2個","隨處·方便","1,980",2,""],["蛋白飲料","羅森·15g","1,540",2,""]],
+          kr:[["雞胸香腸","便攜","2,010",2,"GS25"],["蛋白牛奶","單瓶20g","1,760",2,"CU"],["水煮蛋","經典","1,320",2,""],["希臘優格","高蛋白","1,090",2,""]],
+          th:[["即食雞胸","調味","1,880",2,"7-11"],["水煮蛋","隨處便宜","1,440",2,""],["蛋白牛奶","","1,220",2,""],["希臘優格","高蛋白","980",2,""]],
+          id:[["即食雞胸","調味","1,650",2,"Indomaret"],["水煮蛋","經典便宜","1,280",2,""],["蛋白牛奶","Alfamart","1,040",2,"Alfamart"],["希臘優格","高蛋白","870",2,""]],
+          us:[["烤全雞","超市·大份","2,890",2,"Costco"],["希臘優格(Chobani)","高蛋白經典","2,510",3,""],["蛋白棒(Quest)","20g·便攜","2,120",2,""],["Fairlife蛋白奶昔","30g·人氣","1,940",3,""]],
+          vn:[["即食雞胸","調味","1,420",2,"Circle K"],["水煮蛋","隨處","1,180",2,""],["蛋白牛奶","GS25","960",2,"GS25"],["希臘優格","高蛋白","780",2,""]]},
+        resto:{jp:[["肌肉食堂(東京)","高蛋白定食·標PFC","2,760",2,""],["彌生軒","定食·米飯續","2,210",2,""],["CoCo壱(低糖咖哩)","可訂製","1,680",2,""],["立食牛排","瘦肉大口吃","1,450",2,""]],
+          kr:[["健身食堂(首爾)","雞胸菜品豐富","1,920",2,""],["Sallday","沙拉·碗餐","1,540",2,""],["烤肉店(瘦肉)","高蛋白燒烤","1,230",2,""]],
+          th:[["Fit Food BKK(曼谷)","標PFC·雞胸","1,510",2,""],["MK火鍋","雞肉蔬菜","1,180",2,""],["Jones' Salad","沙拉連鎖","990",2,""]],
+          id:[["SaladStop!(雅加達)","高蛋白碗","1,120",2,""],["烤雞連鎖","烤雞定食","940",2,""],["蛋白小館","本地·雞胸","760",2,""]],
+          us:[["Chipotle(紐約等)","可調PFC碗餐","3,210",2,""],["Sweetgreen","沙拉碗","2,680",2,""],["CAVA","高蛋白碗","2,140",2,""],["Chick-fil-A(烤)","烤雞","1,870",2,""]],
+          vn:[["Fit meal 胡志明","雞胸·PFC","1,080",2,""],["雞肉河粉","高蛋白低脂","920",2,""],["沙拉連鎖","沙拉","680",2,""]]},
+        wear:{},
+        gear:[["可調啞鈴","居家省空間","1,760",2,""],["訓練墊","護地板膝蓋","1,290",2,""],["搖搖杯","不易漏","1,140",2,""],["蛋白杯支架","帶去健身房","760",2,""]],
+        meal:[["高蛋白冷凍便當","營養師監製·算好PFC","1,580",2,""],["代餐奶昔","一餐營養","1,120",2,""],["沙拉雞定期送","每週送達","890",2,""]]},
+      "한국어":{hdr:"랭킹",cats:{protein:"프로틴",store:"각국 시판품",resto:"외식",wear:"웨어",gear:"기구",meal:"배송"},
+        regions:{jp:"일본",kr:"한국",th:"태국",id:"인도네시아",us:"미국",vn:"베트남",fr:"프랑스",it:"이탈리아",es:"스페인",gb:"영국",mx:"멕시코",au:"호주"},
+        note:{protein:"revo 유저에게 인기인 프로틴·보충제.",store:"현지 편의점·마트에서 살 수 있는 트레이니의 아군.",resto:"고단백으로 먹을 수 있는, 트레이니에게 친절한 가게.",wear:"움직이기 편하고 기분이 좋아지는 웨어.",gear:"홈트를 받쳐주는 기구·가젯.",meal:"바쁜 날의, 영양 설계된 한 끼."},
+        aff:"※ 제휴 링크를 포함할 수 있습니다. 순위는 revo 유저의 게시물 수로 결정됩니다.",priceL:["전체","저가","중간","고가"],postLbl:"당신의 추천을 올리기",countryLbl:"국가",refUnit:"명 참고",axes:{"protein":["잘 녹음", "맛", "가성비"], "store":["간편함", "가성비", "만족도"], "resto":["고단백", "접근성", "가성비"], "wear":["통기성", "패션", "기능"], "gear":["공간", "내구성", "가성비"], "meal":["맛", "영양", "가성비"]},
+        proteinItems:[["웨이 플레인","단백질 23g/회·잘 녹음","2,340",2,""],["소이 코코아","식물성·든든함","1,780",2,""],["EAA 오렌지","운동 중 한 잔","1,510",2,""],["크레아틴","클래식·매일 3-5g","1,120",2,""]],
+        store:{jp:[["샐러드 치킨 플레인","세븐·단백질 27g","3,120",2,""],["그릭요거트","고단백 저지방","2,450",2,""],["삶은 계란 2개","어디서나·간편","1,980",1,""],["프로틴 드링크","로손·15g","1,540",2,""]],
+          kr:[["닭가슴살 소시지","휴대 편리","2,010",2,"GS25"],["프로틴 우유","개당 20g","1,760",2,"CU"],["삶은 계란","클래식","1,320",1,""],["그릭요거트","고단백","1,090",2,""]],
+          th:[["즉석 닭가슴살","세븐·양념","1,880",2,""],["삶은 계란","어디서나 저렴","1,440",1,""],["프로틴 우유","","1,220",2,""],["그릭요거트","고단백","980",2,""]],
+          id:[["즉석 닭가슴살","양념","1,650",2,"Indomaret"],["삶은 계란","클래식·저렴","1,280",1,""],["프로틴 우유","Alfamart","1,040",2,"Alfamart"],["그릭요거트","고단백","870",2,""]],
+          us:[["로티세리 치킨","마트·대용량","2,890",2,"Costco"],["그릭요거트(Chobani)","고단백 정석","2,510",3,""],["프로틴바(Quest)","20g·휴대","2,120",2,""],["Fairlife 프로틴 셰이크","30g·인기","1,940",3,""]],
+          vn:[["즉석 닭가슴살","양념","1,420",2,"Circle K"],["삶은 계란","어디서나","1,180",1,""],["프로틴 우유","GS25","960",2,"GS25"],["그릭요거트","고단백","780",2,""]]},
+        resto:{jp:[["근육식당(도쿄)","고단백 정식·PFC 표시","2,760",2,""],["야요이켄","정식·밥 리필","2,210",2,""],["코코이치(저당 카레)","커스텀 가능","1,680",2,""],["이키나리 스테이크","살코기 든든","1,450",2,""]],
+          kr:[["헬스인 식당(서울)","닭가슴살 메뉴 풍부","1,920",2,""],["샐러디","샐러드·볼","1,540",2,""],["고깃집(살코기)","고단백 구이","1,230",2,""]],
+          th:[["Fit Food BKK(방콕)","PFC 표시·닭가슴","1,510",2,""],["MK 수끼","닭·채소 듬뿍","1,180",2,""],["Jones' Salad","샐러드 체인","990",2,""]],
+          id:[["SaladStop!(자카르타)","고단백 볼","1,120",2,""],["아얌 바카르 체인","구운 닭 정식","940",2,""],["프로틴 와룽","현지·닭가슴","760",2,""]],
+          us:[["Chipotle(뉴욕 등)","PFC 조절 볼","3,210",2,""],["Sweetgreen","샐러드 볼","2,680",2,""],["CAVA","고단백 볼","2,140",2,""],["Chick-fil-A(구이)","그릴 치킨","1,870",2,""]],
+          vn:[["Fit meal 호치민","닭가슴·PFC","1,080",2,""],["닭 쌀국수","고단백 저지방","920",2,""],["샐러드 체인","샐러드","680",2,""]]},
+        wear:{},
+        gear:[["가변식 덤벨","집에서 공간 절약","1,760",2,""],["트레이닝 매트","바닥·무릎 보호","1,290",1,""],["셰이커","잘 안 샘","1,140",1,""],["프로틴 드링크 홀더","헬스장에 지참","760",2,""]],
+        meal:[["고단백 냉동 도시락","영양사 감수·PFC 계산","1,580",3,""],["대체식 셰이크","한 끼 영양","1,120",2,""],["샐러드 치킨 정기배송","매주 배달","890",2,""]]},
+      "ภาษาไทย":{hdr:"อันดับ",cats:{protein:"โปรตีน",store:"สินค้าแต่ละประเทศ",resto:"กินนอกบ้าน",wear:"เสื้อผ้า",gear:"อุปกรณ์",meal:"เดลิเวอรี"},
+        regions:{jp:"ญี่ปุ่น",kr:"เกาหลี",th:"ไทย",id:"อินโดนีเซีย",us:"อเมริกา",vn:"เวียดนาม",fr:"ฝรั่งเศส",it:"อิตาลี",es:"สเปน",gb:"อังกฤษ",mx:"เม็กซิโก",au:"ออสเตรเลีย"},
+        note:{protein:"โปรตีน·อาหารเสริมยอดนิยมของผู้ใช้ revo",store:"มิตรของนักออกกำลัง หาซื้อได้ที่ร้านสะดวกซื้อ·ซูเปอร์",resto:"ร้านที่กินโปรตีนสูงได้ เป็นมิตรกับนักออกกำลัง",wear:"เสื้อผ้าที่ขยับสบายและทำให้อารมณ์ดี",gear:"อุปกรณ์·แกดเจ็ตหนุนการเทรนที่บ้าน",meal:"มื้อที่ออกแบบโภชนาการแล้ว สำหรับวันยุ่ง"},
+        aff:"※ อาจมีลิงก์พันธมิตร อันดับตัดสินจากจำนวนโพสต์ของผู้ใช้ revo",priceL:["ทั้งหมด","ราคาถูก","กลาง","พรีเมียม"],postLbl:"โพสต์คำแนะนำของคุณ",countryLbl:"ประเทศ",refUnit:"คนอ้างอิง",axes:{"protein":["ละลายง่าย", "รสชาติ", "คุ้มค่า"], "store":["สะดวก", "คุ้มค่า", "พอใจ"], "resto":["โปรตีนสูง", "ไปง่าย", "คุ้มค่า"], "wear":["ระบายอากาศ", "แฟชั่น", "ฟังก์ชัน"], "gear":["ประหยัดที่", "ทนทาน", "คุ้มค่า"], "meal":["รสชาติ", "โภชนาการ", "คุ้มค่า"]},
+        proteinItems:[["เวย์ รสธรรมชาติ","โปรตีน 23g/มื้อ·ละลายง่าย","2,340",2,""],["ถั่วเหลือง โกโก้","พืช·อยู่ท้อง","1,780",2,""],["EAA ส้ม","ดื่มระหว่างเทรน","1,510",2,""],["ครีเอทีน","คลาสสิก·วันละ 3-5g","1,120",2,""]],
+        store:{jp:[["สลัดไก่ รสธรรมดา","เซเว่น·โปรตีน 27g","3,120",2,""],["กรีกโยเกิร์ต","โปรตีนสูงไขมันต่ำ","2,450",2,""],["ไข่ต้ม 2 ฟอง","ที่ไหนก็ได้·สะดวก","1,980",1,""],["นมโปรตีน","ลอว์สัน·15g","1,540",2,""]],
+          kr:[["ไส้กรอกอกไก่","พกพาง่าย","2,010",2,"GS25"],["นมโปรตีน","ขวดละ 20g","1,760",2,"CU"],["ไข่ต้ม","คลาสสิก","1,320",1,""],["กรีกโยเกิร์ต","โปรตีนสูง","1,090",2,""]],
+          th:[["อกไก่พร้อมทาน","เซเว่น·ปรุงรส","1,880",2,""],["ไข่ต้ม","ถูกทุกที่","1,440",1,""],["นมโปรตีน","","1,220",2,""],["กรีกโยเกิร์ต","โปรตีนสูง","980",2,""]],
+          id:[["อกไก่พร้อมทาน","ปรุงรส","1,650",2,"Indomaret"],["ไข่ต้ม","คลาสสิก·ถูก","1,280",1,""],["นมโปรตีน","Alfamart","1,040",2,"Alfamart"],["กรีกโยเกิร์ต","โปรตีนสูง","870",2,""]],
+          us:[["ไก่โรตีสเซอรี","ซูเปอร์·ชิ้นใหญ่","2,890",2,"Costco"],["กรีกโยเกิร์ต(Chobani)","โปรตีนสูงยอดนิยม","2,510",3,""],["โปรตีนบาร์(Quest)","20g·พกพา","2,120",2,""],["Fairlife โปรตีนเชค","30g·ยอดนิยม","1,940",3,""]],
+          vn:[["อกไก่พร้อมทาน","ปรุงรส","1,420",2,"Circle K"],["ไข่ต้ม","ทุกที่","1,180",1,""],["นมโปรตีน","GS25","960",2,"GS25"],["กรีกโยเกิร์ต","โปรตีนสูง","780",2,""]]},
+        resto:{jp:[["ร้านกล้ามเนื้อ(โตเกียว)","เซตโปรตีนสูง·แสดง PFC","2,760",2,""],["ยาโยอิเคน","เซต·เติมข้าวได้","2,210",2,""],["โคโคอิจิ(แกงคาร์บต่ำ)","ปรับได้","1,680",2,""],["สเต๊กอิคินาริ","เนื้อแดงจัดเต็ม","1,450",2,""]],
+          kr:[["ร้านเฮลท์อิน(โซล)","เมนูอกไก่เยอะ","1,920",2,""],["Sallday","สลัด·โบว์ล","1,540",2,""],["ร้านย่าง(เนื้อแดง)","ย่างโปรตีนสูง","1,230",2,""]],
+          th:[["Fit Food BKK(กรุงเทพ)","แสดง PFC·อกไก่","1,510",2,""],["MK สุกี้","ไก่·ผักเยอะ","1,180",2,""],["Jones' Salad","เชนสลัด","990",2,""]],
+          id:[["SaladStop!(จาการ์ตา)","โบว์ลโปรตีนสูง","1,120",2,""],["เชนไก่ย่าง","เซตไก่ย่าง","940",2,""],["ร้านโปรตีน","ท้องถิ่น·อกไก่","760",2,""]],
+          us:[["Chipotle(นิวยอร์ก ฯลฯ)","โบว์ลปรับ PFC","3,210",2,""],["Sweetgreen","สลัดโบว์ล","2,680",2,""],["CAVA","โบว์ลโปรตีนสูง","2,140",2,""],["Chick-fil-A(ย่าง)","ไก่ย่าง","1,870",2,""]],
+          vn:[["Fit meal โฮจิมินห์","อกไก่·PFC","1,080",2,""],["เฝอไก่","โปรตีนสูงไขมันต่ำ","920",2,""],["เชนสลัด","สลัด","680",2,""]]},
+        wear:{},
+        gear:[["ดัมเบลปรับได้","ประหยัดพื้นที่ที่บ้าน","1,760",2,""],["เสื่อเทรนนิ่ง","ปกป้องพื้นและเข่า","1,290",1,""],["เชคเกอร์","ไม่รั่วง่าย","1,140",1,""],["ที่วางแก้วโปรตีน","พกไปยิม","760",2,""]],
+        meal:[["ข้าวกล่องแช่แข็งโปรตีนสูง","นักโภชนาการออกแบบ·คำนวณ PFC","1,580",2,""],["เชคแทนมื้อ","โภชนาการหนึ่งมื้อ","1,120",2,""],["สลัดไก่ส่งประจำ","ส่งทุกสัปดาห์","890",2,""]]},
+      "Français":{hdr:"Classements",cats:{protein:"Protéines",store:"Produits locaux",resto:"Restaurants",wear:"Vêtements",gear:"Matériel",meal:"Livraison"},
+        regions:{jp:"Japon",kr:"Corée",th:"Thaïlande",id:"Indonésie",us:"USA",vn:"Vietnam",fr:"France",it:"Italie",es:"Espagne",gb:"Royaume-Uni",mx:"Mexique",au:"Australie"},
+        note:{protein:"Protéines et compléments prisés des utilisateurs revo.",store:"L'allié du pratiquant, trouvé en supérette locale.",resto:"Des lieux accueillants où manger riche en protéines.",wear:"Des vêtements qui bougent bien et boostent le moral.",gear:"Matériel et gadgets pour s'entraîner chez soi.",meal:"Un repas au profil nutritionnel calculé, pour les jours chargés."},
+        aff:"* Peut contenir des liens affiliés. Les classements sont déterminés par le nombre de publications des utilisateurs revo.",priceL:["Tout","Éco","Moyen","Premium"],postLbl:"Publier votre recommandation",countryLbl:"Pays",refUnit:"références",axes:{"protein":["Dissolution", "Goût", "Prix"], "store":["Praticité", "Prix", "Satisfaction"], "resto":["Protéiné", "Accès", "Prix"], "wear":["Respirabilité", "Style", "Fonction"], "gear":["Compact", "Durabilité", "Prix"], "meal":["Goût", "Nutrition", "Prix"]},
+        proteinItems:[["Whey nature","23g de protéines/portion, se dissout bien","2,340",2,""],["Soja cacao","Végétal, rassasiant","1,780",2,""],["EAA orange","Un verre à l'entraînement","1,510",2,""],["Créatine","Classique, 3-5g/jour","1,120",2,""]],
+        store:{jp:[["Poulet salade nature","27g protéines","3,120",2,"7-Eleven"],["Yaourt grec","Riche en protéines, maigre","2,450",2,""],["Œufs durs (2)","Partout, facile","1,980",1,""],["Boisson protéinée","15g","1,540",2,"Lawson"]],
+          kr:[["Saucisse de poulet","facile à emporter","2,010",2,"GS25"],["Lait protéiné","20g/unité","1,760",2,"CU"],["Œufs durs","Classique","1,320",1,""],["Yaourt grec","Riche en protéines","1,090",2,""]],
+          th:[["Poulet prêt-à-manger","assaisonné","1,880",2,"7-Eleven"],["Œufs durs","Pas cher partout","1,440",1,""],["Lait protéiné","","1,220",2,""],["Yaourt grec","Riche en protéines","980",2,""]],
+          id:[["Blanc de poulet prêt","assaisonné","1,650",2,"Indomaret"],["Œufs durs","Classique, pas cher","1,280",1,""],["Lait protéiné","Alfamart","1,040",2,"Alfamart"],["Yaourt grec","Riche en protéines","870",2,""]],
+          us:[["Poulet rôti","épicerie, grand","2,890",3,"Costco"],["Yaourt grec (Chobani)","Incontournable protéiné","2,510",3,""],["Barre protéinée (Quest)","20g, portable","2,120",2,""],["Shake Fairlife","30g, populaire","1,940",3,""]],
+          vn:[["Poulet prêt-à-manger","assaisonné","1,420",2,"Circle K"],["Œufs durs","Partout","1,180",1,""],["Lait protéiné","GS25","960",2,"GS25"],["Yaourt grec","Riche en protéines","780",2,""]]},
+        resto:{jp:[["Kinniku Shokudo (Tokyo)","Menu protéiné, PFC affiché","2,760",2,""],["Yayoiken","Repas, riz à volonté","2,210",2,""],["CoCo Ichi (faible en glucides)","Personnalisable","1,680",2,""],["Ikinari Steak","Viande maigre, copieux","1,450",2,""]],
+          kr:[["Health-in Diner (Séoul)","Beaucoup de blanc de poulet","1,920",2,""],["Sallday","Salades & bowls","1,540",2,""],["BBQ coréen (maigre)","Grillades protéinées","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","PFC affiché, poulet","1,510",2,""],["MK Suki","Poulet & légumes","1,180",2,""],["Jones' Salad","Chaîne de salades","990",2,""]],
+          id:[["SaladStop! (Jakarta)","Bowls protéinés","1,120",2,""],["Chaîne ayam bakar","Poulet grillé","940",2,""],["Warung protein","Local, blanc de poulet","760",2,""]],
+          us:[["Chipotle (NY et +)","Bowls ajustables PFC","3,210",2,""],["Sweetgreen","Bowls de salade","2,680",2,""],["CAVA","Bowls protéinés","2,140",2,""],["Chick-fil-A (grillé)","Poulet grillé","1,870",2,""]],
+          vn:[["Fit meal HCM (Hô Chi Minh)","Poulet, PFC","1,080",2,""],["Pho ga (pho au poulet)","Protéiné, maigre","920",2,""],["Chaîne de salades","Salades","680",2,""]]},
+        wear:{},
+        gear:[["Haltères réglables","Gain de place à la maison","1,760",3,""],["Tapis d'entraînement","Protège sol et genoux","1,290",2,""],["Shaker","Anti-fuite","1,140",1,""],["Porte-shaker","À emporter à la salle","760",1,""]],
+        meal:[["Repas surgelé protéiné","Conçu par diététicien, PFC calculé","1,580",3,""],["Shake substitut de repas","La nutrition d'un repas","1,120",2,""],["Abonnement poulet salade","Livraison hebdo","890",2,""]]},
+      "Español":{hdr:"Rankings",cats:{protein:"Proteína",store:"Productos locales",resto:"Restaurantes",wear:"Ropa",gear:"Equipo",meal:"Entrega"},
+        regions:{jp:"Japón",kr:"Corea",th:"Tailandia",id:"Indonesia",us:"EE.UU.",vn:"Vietnam",fr:"Francia",it:"Italia",es:"España",gb:"Reino Unido",mx:"México",au:"Australia"},
+        note:{protein:"Proteína y suplementos populares entre usuarios de revo.",store:"El aliado del que entrena, en tiendas locales.",resto:"Lugares donde comer alto en proteína, amigables para entrenar.",wear:"Ropa que se mueve bien y sube el ánimo.",gear:"Equipo y gadgets para entrenar en casa.",meal:"Una comida con nutrición calculada, para días ocupados."},
+        aff:"* Puede contener enlaces de afiliados. Los rankings se deciden por el número de publicaciones de usuarios de revo.",priceL:["Todo","Económico","Medio","Premium"],postLbl:"Publica tu recomendación",countryLbl:"País",refUnit:"referencias",axes:{"protein":["Disolución", "Sabor", "Precio"], "store":["Comodidad", "Precio", "Satisfacción"], "resto":["Proteína", "Acceso", "Precio"], "wear":["Transpirable", "Moda", "Función"], "gear":["Compacto", "Durabilidad", "Precio"], "meal":["Sabor", "Nutrición", "Precio"]},
+        proteinItems:[["Whey natural","23g de proteína/toma, se disuelve bien","2,340",2,""],["Soja cacao","Vegetal, saciante","1,780",2,""],["EAA naranja","Un vaso al entrenar","1,510",2,""],["Creatina","Clásico, 3-5g al día","1,120",2,""]],
+        store:{jp:[["Pollo ensalada natural","27g proteína","3,120",2,"7-Eleven"],["Yogur griego","Alto en proteína, bajo en grasa","2,450",2,""],["Huevos cocidos (2)","En todas partes, fácil","1,980",1,""],["Bebida proteica","15g","1,540",2,"Lawson"]],
+          kr:[["Salchicha de pollo","fácil de llevar","2,010",2,"GS25"],["Leche proteica","20g/unidad","1,760",2,"CU"],["Huevos cocidos","Clásico","1,320",1,""],["Yogur griego","Alto en proteína","1,090",2,""]],
+          th:[["Pollo listo para comer","sazonado","1,880",2,"7-Eleven"],["Huevos cocidos","Barato en todas partes","1,440",1,""],["Leche proteica","","1,220",2,""],["Yogur griego","Alto en proteína","980",2,""]],
+          id:[["Pechuga lista","sazonada","1,650",2,"Indomaret"],["Huevos cocidos","Clásico, barato","1,280",1,""],["Leche proteica","Alfamart","1,040",2,"Alfamart"],["Yogur griego","Alto en proteína","870",2,""]],
+          us:[["Pollo rostizado","súper, grande","2,890",2,"Costco"],["Yogur griego (Chobani)","Básico proteico","2,510",3,""],["Barra proteica (Quest)","20g, portátil","2,120",2,""],["Batido Fairlife","30g, popular","1,940",3,""]],
+          vn:[["Pollo listo para comer","sazonado","1,420",2,"Circle K"],["Huevos cocidos","En todas partes","1,180",1,""],["Leche proteica","GS25","960",2,"GS25"],["Yogur griego","Alto en proteína","780",2,""]]},
+        resto:{jp:[["Kinniku Shokudo (Tokio)","Menú proteico, PFC visible","2,760",2,""],["Yayoiken","Menús, arroz libre","2,210",2,""],["CoCo Ichi (bajo en carbos)","Personalizable","1,680",2,""],["Ikinari Steak","Carne magra, abundante","1,450",2,""]],
+          kr:[["Health-in Diner (Seúl)","Mucho pollo","1,920",2,""],["Sallday","Ensaladas y bowls","1,540",2,""],["BBQ coreano (magro)","Parrilla proteica","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","PFC visible, pollo","1,510",2,""],["MK Suki","Pollo y verduras","1,180",2,""],["Jones' Salad","Cadena de ensaladas","990",2,""]],
+          id:[["SaladStop! (Yakarta)","Bowls proteicos","1,120",2,""],["Cadena ayam bakar","Pollo a la parrilla","940",2,""],["Warung protein","Local, pechuga","760",2,""]],
+          us:[["Chipotle (NY y más)","Bowls ajustables PFC","3,210",2,""],["Sweetgreen","Bowls de ensalada","2,680",2,""],["CAVA","Bowls proteicos","2,140",2,""],["Chick-fil-A (a la parrilla)","Pollo a la parrilla","1,870",2,""]],
+          vn:[["Fit meal HCM (Ho Chi Minh)","Pollo, PFC","1,080",2,""],["Pho ga (pho de pollo)","Proteico, magro","920",2,""],["Cadena de ensaladas","Ensaladas","680",2,""]]},
+        wear:{},
+        gear:[["Mancuernas ajustables","Ahorra espacio en casa","1,760",2,""],["Colchoneta","Protege suelo y rodillas","1,290",2,""],["Shaker","Antiderrames","1,140",1,""],["Portavasos de proteína","Llévalo al gym","760",2,""]],
+        meal:[["Comida congelada proteica","Diseñada por nutricionista, PFC calc.","1,580",3,""],["Batido sustitutivo","Nutrición de una comida","1,120",2,""],["Suscripción pollo ensalada","Entrega semanal","890",2,""]]},
+      "Deutsch":{hdr:"Rankings",cats:{protein:"Protein",store:"Lokale Produkte",resto:"Auswärts essen",wear:"Kleidung",gear:"Ausrüstung",meal:"Lieferung"},
+        regions:{jp:"Japan",kr:"Korea",th:"Thailand",id:"Indonesien",us:"USA",vn:"Vietnam",fr:"Frankreich",it:"Italien",es:"Spanien",gb:"UK",mx:"Mexiko",au:"Australien"},
+        note:{protein:"Bei revo-Nutzern beliebtes Protein & Supplements.",store:"Der Verbündete Trainierender, im lokalen Kiosk.",resto:"Orte, an denen man proteinreich essen kann.",wear:"Kleidung, die gut mitgeht und die Laune hebt.",gear:"Ausrüstung und Gadgets fürs Heimtraining.",meal:"Eine nährstoffgeplante Mahlzeit für volle Tage."},
+        aff:"* Kann Affiliate-Links enthalten. Rankings werden durch die Anzahl der Beiträge von revo-Nutzern bestimmt.",priceL:["Alle","Günstig","Mittel","Premium"],postLbl:"Deine Empfehlung posten",countryLbl:"Land",refUnit:"Referenzen",axes:{"protein":["Löslichkeit", "Geschmack", "Preis"], "store":["Bequem", "Preis", "Zufrieden"], "resto":["Proteinreich", "Zugang", "Preis"], "wear":["Atmung", "Mode", "Funktion"], "gear":["Kompakt", "Haltbar", "Preis"], "meal":["Geschmack", "Nährwert", "Preis"]},
+        proteinItems:[["Whey neutral","23g Protein/Portion, löst sich gut","2,340",2,""],["Soja Kakao","Pflanzlich, sättigend","1,780",2,""],["EAA Orange","Ein Glas beim Training","1,510",2,""],["Kreatin","Klassisch, 3-5g täglich","1,120",2,""]],
+        store:{jp:[["Salat-Hähnchen neutral","27g Protein","3,120",2,"7-Eleven"],["Griech. Joghurt","Proteinreich, fettarm","2,450",2,""],["Gekochte Eier (2)","Überall, einfach","1,980",2,""],["Proteindrink","15g","1,540",2,"Lawson"]],
+          kr:[["Hähnchen-Wurst","gut tragbar","2,010",2,"GS25"],["Proteinmilch","20g/Stück","1,760",2,"CU"],["Gekochte Eier","Klassisch","1,320",2,""],["Griech. Joghurt","Proteinreich","1,090",2,""]],
+          th:[["Fertig-Hähnchen","gewürzt","1,880",2,"7-Eleven"],["Gekochte Eier","Überall günstig","1,440",2,""],["Proteinmilch","","1,220",2,""],["Griech. Joghurt","Proteinreich","980",2,""]],
+          id:[["Fertige Hähnchenbrust","gewürzt","1,650",2,"Indomaret"],["Gekochte Eier","Klassisch, günstig","1,280",2,""],["Proteinmilch","Alfamart","1,040",2,"Alfamart"],["Griech. Joghurt","Proteinreich","870",2,""]],
+          us:[["Grillhähnchen","Supermarkt, groß","2,890",2,"Costco"],["Griech. Joghurt (Chobani)","Protein-Klassiker","2,510",3,""],["Proteinriegel (Quest)","20g, tragbar","2,120",2,""],["Fairlife Shake","30g, beliebt","1,940",3,""]],
+          vn:[["Fertig-Hähnchen","gewürzt","1,420",2,"Circle K"],["Gekochte Eier","Überall","1,180",2,""],["Proteinmilch","GS25","960",2,"GS25"],["Griech. Joghurt","Proteinreich","780",2,""]]},
+        resto:{jp:[["Kinniku Shokudo (Tokio)","Protein-Set, PFC angezeigt","2,760",2,""],["Yayoiken","Sets, Reis frei","2,210",2,""],["CoCo Ichi (Low Carb)","Anpassbar","1,680",2,""],["Ikinari Steak","Mageres Fleisch, deftig","1,450",2,""]],
+          kr:[["Health-in Diner (Seoul)","Viel Hähnchenbrust","1,920",2,""],["Sallday","Salate & Bowls","1,540",2,""],["Korean BBQ (mager)","Proteinreiches Grillen","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","PFC angezeigt, Hähnchen","1,510",2,""],["MK Suki","Hähnchen & Gemüse","1,180",2,""],["Jones' Salad","Salat-Kette","990",2,""]],
+          id:[["SaladStop! (Jakarta)","Protein-Bowls","1,120",2,""],["Ayam-Bakar-Kette","Gegrilltes Hähnchen","940",2,""],["Warung Protein","Lokal, Hähnchenbrust","760",2,""]],
+          us:[["Chipotle (NY u.a.)","PFC-anpassbare Bowls","3,210",2,""],["Sweetgreen","Salat-Bowls","2,680",2,""],["CAVA","Protein-Bowls","2,140",2,""],["Chick-fil-A (gegrillt)","Grillhähnchen","1,870",2,""]],
+          vn:[["Fit meal HCM (Ho-Chi-Minh)","Hähnchen, PFC","1,080",2,""],["Pho ga (Hühner-Pho)","Proteinreich, mager","920",2,""],["Salat-Kette","Salate","680",2,""]]},
+        wear:{},
+        gear:[["Verstellbare Hanteln","Platzsparend zuhause","1,760",2,""],["Trainingsmatte","Schützt Boden & Knie","1,290",1,""],["Shaker","Auslaufsicher","1,140",1,""],["Shaker-Halter","Mit ins Gym","760",1,""]],
+        meal:[["Proteinreiche TK-Mahlzeit","Von Ernährungsberatern, PFC berechnet","1,580",2,""],["Mahlzeitersatz-Shake","Nährstoffe einer Mahlzeit","1,120",2,""],["Salat-Hähnchen-Abo","Wöchentliche Lieferung","890",2,""]]},
+      "Italiano":{hdr:"Classifiche",cats:{protein:"Proteine",store:"Prodotti locali",resto:"Ristoranti",wear:"Abbigliamento",gear:"Attrezzi",meal:"Consegna"},
+        regions:{jp:"Giappone",kr:"Corea",th:"Thailandia",id:"Indonesia",us:"USA",vn:"Vietnam",fr:"Francia",it:"Italia",es:"Spagna",gb:"Regno Unito",mx:"Messico",au:"Australia"},
+        note:{protein:"Proteine e integratori amati dagli utenti revo.",store:"L'alleato di chi si allena, nei negozi locali.",resto:"Locali dove mangiare proteico, adatti a chi si allena.",wear:"Abbigliamento comodo che tira su il morale.",gear:"Attrezzi e gadget per allenarsi a casa.",meal:"Un pasto con nutrizione calcolata, per giorni impegnati."},
+        aff:"* Può contenere link di affiliazione. Le classifiche sono determinate dal numero di post degli utenti revo.",priceL:["Tutto","Economico","Medio","Premium"],postLbl:"Pubblica il tuo consiglio",countryLbl:"Paese",refUnit:"riferimenti",axes:{"protein":["Solubilità", "Gusto", "Prezzo"], "store":["Comodità", "Prezzo", "Soddisf."], "resto":["Proteico", "Accesso", "Prezzo"], "wear":["Traspir.", "Moda", "Funzione"], "gear":["Compatto", "Durata", "Prezzo"], "meal":["Gusto", "Nutriz.", "Prezzo"]},
+        proteinItems:[["Whey neutro","23g proteine/porzione, si scioglie bene","2,340",2,""],["Soia cacao","Vegetale, saziante","1,780",2,""],["EAA arancia","Un bicchiere in allenamento","1,510",2,""],["Creatina","Classico, 3-5g al giorno","1,120",2,""]],
+        store:{jp:[["Pollo insalata neutro","27g proteine","3,120",2,"7-Eleven"],["Yogurt greco","Proteico, magro","2,450",2,""],["Uova sode (2)","Ovunque, facile","1,980",1,""],["Bevanda proteica","15g","1,540",2,"Lawson"]],
+          kr:[["Salsiccia di pollo","facile da portare","2,010",2,"GS25"],["Latte proteico","20g/unità","1,760",2,"CU"],["Uova sode","Classico","1,320",1,""],["Yogurt greco","Proteico","1,090",2,""]],
+          th:[["Pollo pronto","condito","1,880",2,"7-Eleven"],["Uova sode","Economiche ovunque","1,440",1,""],["Latte proteico","","1,220",2,""],["Yogurt greco","Proteico","980",2,""]],
+          id:[["Petto di pollo pronto","condito","1,650",2,"Indomaret"],["Uova sode","Classico, economico","1,280",1,""],["Latte proteico","Alfamart","1,040",2,"Alfamart"],["Yogurt greco","Proteico","870",2,""]],
+          us:[["Pollo arrosto","super, grande","2,890",2,"Costco"],["Yogurt greco (Chobani)","Classico proteico","2,510",3,""],["Barretta (Quest)","20g, portatile","2,120",2,""],["Shake Fairlife","30g, popolare","1,940",3,""]],
+          vn:[["Pollo pronto","condito","1,420",2,"Circle K"],["Uova sode","Ovunque","1,180",1,""],["Latte proteico","GS25","960",2,"GS25"],["Yogurt greco","Proteico","780",2,""]]},
+        resto:{jp:[["Kinniku Shokudo (Tokyo)","Set proteico, PFC indicato","2,760",2,""],["Yayoiken","Set, riso illimitato","2,210",2,""],["CoCo Ichi (low-carb)","Personalizzabile","1,680",2,""],["Ikinari Steak","Carne magra, abbondante","1,450",2,""]],
+          kr:[["Health-in Diner (Seoul)","Tanto petto di pollo","1,920",2,""],["Sallday","Insalate e bowl","1,540",2,""],["BBQ coreano (magro)","Griglia proteica","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","PFC indicato, pollo","1,510",2,""],["MK Suki","Pollo e verdure","1,180",2,""],["Jones' Salad","Catena di insalate","990",2,""]],
+          id:[["SaladStop! (Giacarta)","Bowl proteici","1,120",2,""],["Catena ayam bakar","Pollo grigliato","940",2,""],["Warung protein","Locale, petto di pollo","760",2,""]],
+          us:[["Chipotle (NY e altri)","Bowl regolabili PFC","3,210",2,""],["Sweetgreen","Bowl di insalata","2,680",2,""],["CAVA","Bowl proteici","2,140",2,""],["Chick-fil-A (grigliato)","Pollo grigliato","1,870",2,""]],
+          vn:[["Fit meal HCM (Ho Chi Minh)","Pollo, PFC","1,080",2,""],["Pho ga (pho di pollo)","Proteico, magro","920",2,""],["Catena di insalate","Insalate","680",2,""]]},
+        wear:{},
+        gear:[["Manubri regolabili","Salvaspazio a casa","1,760",3,""],["Tappetino","Protegge pavimento e ginocchia","1,290",2,""],["Shaker","Anti-perdita","1,140",1,""],["Porta-shaker","Da portare in palestra","760",1,""]],
+        meal:[["Pasto surgelato proteico","Progettato da nutrizionisti, PFC calc.","1,580",3,""],["Shake sostitutivo","La nutrizione di un pasto","1,120",2,""],["Abbonamento pollo insalata","Consegna settimanale","890",2,""]]},
+      "Português":{hdr:"Rankings",cats:{protein:"Proteína",store:"Produtos locais",resto:"Restaurantes",wear:"Roupas",gear:"Equipamento",meal:"Entrega"},
+        regions:{jp:"Japão",kr:"Coreia",th:"Tailândia",id:"Indonésia",us:"EUA",vn:"Vietnã",fr:"França",it:"Itália",es:"Espanha",gb:"Reino Unido",mx:"México",au:"Austrália"},
+        note:{protein:"Proteína e suplementos populares entre usuários revo.",store:"O aliado de quem treina, nas lojas locais.",resto:"Lugares para comer rico em proteína, amigáveis a quem treina.",wear:"Roupas que se movem bem e animam.",gear:"Equipamentos e gadgets para treinar em casa.",meal:"Uma refeição com nutrição calculada, para dias corridos."},
+        aff:"* Pode conter links de afiliados. Os rankings são decididos pelo número de publicações de usuários revo.",priceL:["Tudo","Econômico","Médio","Premium"],postLbl:"Publique sua recomendação",countryLbl:"País",refUnit:"referências",axes:{"protein":["Dissolução", "Sabor", "Preço"], "store":["Praticidade", "Preço", "Satisfação"], "resto":["Proteico", "Acesso", "Preço"], "wear":["Respirável", "Moda", "Função"], "gear":["Compacto", "Durável", "Preço"], "meal":["Sabor", "Nutrição", "Preço"]},
+        proteinItems:[["Whey natural","23g de proteína/porção, dissolve bem","2,340",2,""],["Soja cacau","Vegetal, saciante","1,780",2,""],["EAA laranja","Um copo no treino","1,510",2,""],["Creatina","Clássico, 3-5g por dia","1,120",2,""]],
+        store:{jp:[["Frango salada natural","27g proteína","3,120",2,"7-Eleven"],["Iogurte grego","Rico em proteína, magro","2,450",2,""],["Ovos cozidos (2)","Em todo lugar, fácil","1,980",2,""],["Bebida proteica","15g","1,540",2,"Lawson"]],
+          kr:[["Salsicha de frango","fácil de levar","2,010",2,"GS25"],["Leite proteico","20g/unidade","1,760",2,"CU"],["Ovos cozidos","Clássico","1,320",2,""],["Iogurte grego","Rico em proteína","1,090",2,""]],
+          th:[["Frango pronto","temperado","1,880",2,"7-Eleven"],["Ovos cozidos","Barato em todo lugar","1,440",2,""],["Leite proteico","","1,220",2,""],["Iogurte grego","Rico em proteína","980",2,""]],
+          id:[["Peito de frango pronto","temperado","1,650",2,"Indomaret"],["Ovos cozidos","Clássico, barato","1,280",2,""],["Leite proteico","Alfamart","1,040",2,"Alfamart"],["Iogurte grego","Rico em proteína","870",2,""]],
+          us:[["Frango assado","mercado, grande","2,890",2,"Costco"],["Iogurte grego (Chobani)","Clássico proteico","2,510",3,""],["Barra proteica (Quest)","20g, portátil","2,120",2,""],["Shake Fairlife","30g, popular","1,940",3,""]],
+          vn:[["Frango pronto","temperado","1,420",2,"Circle K"],["Ovos cozidos","Em todo lugar","1,180",2,""],["Leite proteico","GS25","960",2,"GS25"],["Iogurte grego","Rico em proteína","780",2,""]]},
+        resto:{jp:[["Kinniku Shokudo (Tóquio)","Prato proteico, PFC exibido","2,760",2,""],["Yayoiken","Pratos, arroz à vontade","2,210",2,""],["CoCo Ichi (low-carb)","Personalizável","1,680",2,""],["Ikinari Steak","Carne magra, fartura","1,450",2,""]],
+          kr:[["Health-in Diner (Seul)","Muito peito de frango","1,920",2,""],["Sallday","Saladas e bowls","1,540",2,""],["Churrasco coreano (magro)","Grelha proteica","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","PFC exibido, frango","1,510",2,""],["MK Suki","Frango e legumes","1,180",2,""],["Jones' Salad","Rede de saladas","990",2,""]],
+          id:[["SaladStop! (Jacarta)","Bowls proteicos","1,120",2,""],["Rede ayam bakar","Frango grelhado","940",2,""],["Warung protein","Local, peito de frango","760",2,""]],
+          us:[["Chipotle (NY e mais)","Bowls ajustáveis PFC","3,210",2,""],["Sweetgreen","Bowls de salada","2,680",2,""],["CAVA","Bowls proteicos","2,140",2,""],["Chick-fil-A (grelhado)","Frango grelhado","1,870",2,""]],
+          vn:[["Fit meal HCM (Ho Chi Minh)","Frango, PFC","1,080",2,""],["Pho ga (pho de frango)","Proteico, magro","920",2,""],["Rede de saladas","Saladas","680",2,""]]},
+        wear:{},
+        gear:[["Halteres ajustáveis","Economiza espaço em casa","1,760",2,""],["Tapete de treino","Protege piso e joelhos","1,290",2,""],["Coqueteleira","Antivazamento","1,140",2,""],["Suporte de coqueteleira","Leve para a academia","760",1,""]],
+        meal:[["Refeição congelada proteica","Feita por nutricionista, PFC calc.","1,580",3,""],["Shake substituto","Nutrição de uma refeição","1,120",2,""],["Assinatura frango salada","Entrega semanal","890",2,""]]},
+      "हिन्दी":{hdr:"रैंकिंग",cats:{protein:"प्रोटीन",store:"देश-विशेष उत्पाद",resto:"बाहर खाना",wear:"वियर",gear:"उपकरण",meal:"डिलीवरी"},
+        regions:{jp:"जापान",kr:"कोरिया",th:"थाईलैंड",id:"इंडोनेशिया",us:"अमेरिका",vn:"वियतनाम",fr:"फ्रांस",it:"इटली",es:"स्पेन",gb:"यूके",mx:"मेक्सिको",au:"ऑस्ट्रेलिया"},
+        note:{protein:"revo यूज़र्स में लोकप्रिय प्रोटीन·सप्लीमेंट।",store:"स्थानीय स्टोर में मिलने वाला, ट्रेनी का साथी।",resto:"जहाँ हाई-प्रोटीन खा सकें, ट्रेनी के अनुकूल जगहें।",wear:"आसानी से हिलने वाले, मूड बढ़ाने वाले वियर।",gear:"होम ट्रेनिंग के लिए उपकरण·गैजेट।",meal:"व्यस्त दिनों के लिए, पोषण-नियोजित एक थाली।"},
+        aff:"※ इसमें एफिलिएट लिंक हो सकते हैं। रैंकिंग revo यूज़र्स की पोस्ट संख्या से तय होती है।",priceL:["सभी","सस्ता","मध्यम","प्रीमियम"],postLbl:"अपनी सिफ़ारिश पोस्ट करें",countryLbl:"देश",refUnit:"ने देखा",axes:{"protein":["घुलनशीलता", "स्वाद", "कीमत"], "store":["सुविधा", "कीमत", "संतुष्टि"], "resto":["हाई-प्रोटीन", "पहुँच", "कीमत"], "wear":["हवादार", "फैशन", "फंक्शन"], "gear":["कम जगह", "टिकाऊ", "कीमत"], "meal":["स्वाद", "पोषण", "कीमत"]},
+        proteinItems:[["व्हे प्लेन","23g प्रोटीन/सर्विंग·आसानी से घुले","2,340",2,""],["सोया कोको","पौध·पेट भरे","1,780",2,""],["EAA ऑरेंज","ट्रेनिंग में एक गिलास","1,510",2,""],["क्रिएटिन","क्लासिक·रोज़ 3-5g","1,120",2,""]],
+        store:{jp:[["सलाद चिकन प्लेन","प्रोटीन 27g","3,120",2,"7-Eleven"],["ग्रीक योगर्ट","हाई प्रोटीन लो फैट","2,450",2,""],["उबले अंडे (2)","कहीं भी·आसान","1,980",1,""],["प्रोटीन ड्रिंक","15g","1,540",2,"Lawson"]],
+          kr:[["चिकन सॉसेज","ले जाना आसान","2,010",2,"GS25"],["प्रोटीन दूध","20g प्रति","1,760",2,"CU"],["उबले अंडे","क्लासिक","1,320",1,""],["ग्रीक योगर्ट","हाई प्रोटीन","1,090",2,""]],
+          th:[["रेडी चिकन","मसालेदार","1,880",2,"7-Eleven"],["उबले अंडे","हर जगह सस्ते","1,440",1,""],["प्रोटीन दूध","","1,220",2,""],["ग्रीक योगर्ट","हाई प्रोटीन","980",2,""]],
+          id:[["रेडी चिकन ब्रेस्ट","मसालेदार","1,650",2,"Indomaret"],["उबले अंडे","क्लासिक·सस्ते","1,280",1,""],["प्रोटीन दूध","Alfamart","1,040",2,"Alfamart"],["ग्रीक योगर्ट","हाई प्रोटीन","870",2,""]],
+          us:[["रोटिसरी चिकन","स्टोर·बड़ा","2,890",2,"Costco"],["ग्रीक योगर्ट(Chobani)","हाई प्रोटीन क्लासिक","2,510",3,""],["प्रोटीन बार(Quest)","20g·पोर्टेबल","2,120",2,""],["Fairlife शेक","30g·लोकप्रिय","1,940",3,""]],
+          vn:[["रेडी चिकन","मसालेदार","1,420",2,"Circle K"],["उबले अंडे","हर जगह","1,180",1,""],["प्रोटीन दूध","GS25","960",2,"GS25"],["ग्रीक योगर्ट","हाई प्रोटीन","780",2,""]]},
+        resto:{jp:[["मसल डाइनर(टोक्यो)","हाई-प्रोटीन सेट·PFC दिखे","2,760",2,""],["Yayoiken","सेट·चावल फ्री","2,210",2,""],["CoCo Ichi(लो-कार्ब)","कस्टमाइज़","1,680",2,""],["Ikinari Steak","लीन मीट भरपूर","1,450",2,""]],
+          kr:[["हेल्थ-इन डाइनर(सियोल)","चिकन ब्रेस्ट मेनू","1,920",2,""],["Sallday","सलाद·बाउल","1,540",2,""],["कोरियन BBQ(लीन)","हाई प्रोटीन ग्रिल","1,230",2,""]],
+          th:[["Fit Food BKK(बैंकॉक)","PFC·चिकन","1,510",2,""],["MK Suki","चिकन·सब्ज़ी","1,180",2,""],["Jones' Salad","सलाद चेन","990",2,""]],
+          id:[["SaladStop!(जकार्ता)","हाई-प्रोटीन बाउल","1,120",2,""],["अयम बाकार चेन","ग्रिल्ड चिकन","940",2,""],["प्रोटीन वारुंग","लोकल·चिकन ब्रेस्ट","760",2,""]],
+          us:[["Chipotle(NY आदि)","PFC बाउल","3,210",2,""],["Sweetgreen","सलाद बाउल","2,680",2,""],["CAVA","हाई-प्रोटीन बाउल","2,140",2,""],["Chick-fil-A(ग्रिल्ड)","ग्रिल चिकन","1,870",2,""]],
+          vn:[["Fit meal HCM","चिकन·PFC","1,080",2,""],["चिकन फो","हाई प्रोटीन लो फैट","920",2,""],["सलाद चेन","सलाद","680",2,""]]},
+        wear:{},
+        gear:[["एडजस्टेबल डम्बल","घर में जगह बचाए","1,760",2,""],["ट्रेनिंग मैट","फर्श·घुटने बचाए","1,290",2,""],["शेकर","लीक न हो","1,140",2,""],["प्रोटीन ड्रिंक होल्डर","जिम ले जाएँ","760",2,""]],
+        meal:[["हाई-प्रोटीन फ्रोज़न मील","पोषण विशेषज्ञ·PFC गणना","1,580",2,""],["मील रिप्लेसमेंट शेक","एक भोजन का पोषण","1,120",2,""],["सलाद चिकन सब्सक्रिप्शन","हर हफ्ते डिलीवरी","890",2,""]]},
+      "Tiếng Việt":{hdr:"Xếp hạng",cats:{protein:"Protein",store:"Hàng nội địa",resto:"Ăn ngoài",wear:"Trang phục",gear:"Dụng cụ",meal:"Giao hàng"},
+        regions:{jp:"Nhật",kr:"Hàn",th:"Thái",id:"Indonesia",us:"Mỹ",vn:"Việt Nam",fr:"Pháp",it:"Ý",es:"Tây Ban Nha",gb:"Anh",mx:"Mexico",au:"Úc"},
+        note:{protein:"Protein & thực phẩm bổ sung được người dùng revo ưa chuộng.",store:"Đồng minh của người tập, mua được ở cửa hàng tiện lợi.",resto:"Nơi ăn được nhiều đạm, thân thiện với người tập.",wear:"Trang phục co giãn tốt và nâng tinh thần.",gear:"Dụng cụ và thiết bị hỗ trợ tập tại nhà.",meal:"Một bữa được tính toán dinh dưỡng, cho ngày bận."},
+        aff:"* Có thể chứa liên kết tiếp thị. Xếp hạng được quyết định bởi số bài đăng của người dùng revo.",priceL:["Tất cả","Giá rẻ","Trung","Cao cấp"],postLbl:"Đăng gợi ý của bạn",countryLbl:"Quốc gia",refUnit:"lượt tham khảo",axes:{"protein":["Dễ tan", "Vị", "Giá"], "store":["Tiện", "Giá", "Hài lòng"], "resto":["Giàu đạm", "Dễ đến", "Giá"], "wear":["Thoáng khí", "Thời trang", "Chức năng"], "gear":["Gọn", "Bền", "Giá"], "meal":["Vị", "Dinh dưỡng", "Giá"]},
+        proteinItems:[["Whey vị nhạt","23g đạm/phần, dễ tan","2,340",2,""],["Đậu nành cacao","Thực vật, no lâu","1,780",2,""],["EAA cam","Một ly khi tập","1,510",2,""],["Creatine","Kinh điển, 3-5g/ngày","1,120",2,""]],
+        store:{jp:[["Ức gà salad vị nhạt","27g đạm","3,120",2,"7-Eleven"],["Sữa chua Hy Lạp","Nhiều đạm, ít béo","2,450",2,""],["Trứng luộc (2)","Ở đâu cũng có, tiện","1,980",1,""],["Sữa protein","15g","1,540",2,"Lawson"]],
+          kr:[["Xúc xích ức gà","dễ mang theo","2,010",2,"GS25"],["Sữa protein","20g/hộp","1,760",2,"CU"],["Trứng luộc","Kinh điển","1,320",1,""],["Sữa chua Hy Lạp","Nhiều đạm","1,090",2,""]],
+          th:[["Ức gà ăn liền","tẩm vị","1,880",2,"7-Eleven"],["Trứng luộc","Rẻ khắp nơi","1,440",1,""],["Sữa protein","","1,220",2,""],["Sữa chua Hy Lạp","Nhiều đạm","980",2,""]],
+          id:[["Ức gà ăn liền","tẩm vị","1,650",2,"Indomaret"],["Trứng luộc","Kinh điển, rẻ","1,280",1,""],["Sữa protein","Alfamart","1,040",2,"Alfamart"],["Sữa chua Hy Lạp","Nhiều đạm","870",2,""]],
+          us:[["Gà quay","siêu thị, cỡ lớn","2,890",2,"Costco"],["Sữa chua Hy Lạp (Chobani)","Kinh điển nhiều đạm","2,510",3,""],["Thanh protein (Quest)","20g, mang theo","2,120",2,""],["Sữa lắc Fairlife","30g, phổ biến","1,940",3,""]],
+          vn:[["Ức gà ăn liền","tẩm vị","1,420",2,"Circle K"],["Trứng luộc","Khắp nơi","1,180",1,""],["Sữa protein","GS25","960",2,"GS25"],["Sữa chua Hy Lạp","Nhiều đạm","780",2,""]]},
+        resto:{jp:[["Kinniku Shokudo (Tokyo)","Set nhiều đạm, hiện PFC","2,760",2,""],["Yayoiken","Set, cơm thêm miễn phí","2,210",2,""],["CoCo Ichi (ít carb)","Tùy chỉnh","1,680",2,""],["Ikinari Steak","Thịt nạc, no nê","1,450",2,""]],
+          kr:[["Health-in Diner (Seoul)","Nhiều món ức gà","1,920",2,""],["Sallday","Salad & bowl","1,540",2,""],["BBQ Hàn (nạc)","Nướng nhiều đạm","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","Hiện PFC, gà","1,510",2,""],["MK Suki","Gà & rau","1,180",2,""],["Jones' Salad","Chuỗi salad","990",2,""]],
+          id:[["SaladStop! (Jakarta)","Bowl nhiều đạm","1,120",2,""],["Chuỗi ayam bakar","Gà nướng","940",2,""],["Warung protein","Địa phương, ức gà","760",2,""]],
+          us:[["Chipotle (NY & hơn)","Bowl chỉnh PFC","3,210",2,""],["Sweetgreen","Bowl salad","2,680",2,""],["CAVA","Bowl nhiều đạm","2,140",2,""],["Chick-fil-A (nướng)","Gà nướng","1,870",2,""]],
+          vn:[["Fit meal HCM (Hồ Chí Minh)","Gà, PFC","1,080",2,""],["Phở gà","Nhiều đạm, ít béo","920",2,""],["Chuỗi salad","Salad","680",2,""]]},
+        wear:{},
+        gear:[["Tạ tay chỉnh mức","Tiết kiệm chỗ ở nhà","1,760",3,""],["Thảm tập","Bảo vệ sàn & gối","1,290",2,""],["Bình lắc","Chống rò rỉ","1,140",1,""],["Giá để bình lắc","Mang tới phòng gym","760",2,""]],
+        meal:[["Suất đông lạnh nhiều đạm","Chuyên gia thiết kế, tính PFC","1,580",2,""],["Sữa lắc thay bữa","Dinh dưỡng một bữa","1,120",2,""],["Đăng ký ức gà salad","Giao hàng tuần","890",2,""]]},
+      "Bahasa Indonesia":{hdr:"Peringkat",cats:{protein:"Protein",store:"Produk lokal",resto:"Makan di luar",wear:"Pakaian",gear:"Alat",meal:"Pengiriman"},
+        regions:{jp:"Jepang",kr:"Korea",th:"Thailand",id:"Indonesia",us:"AS",vn:"Vietnam",fr:"Prancis",it:"Italia",es:"Spanyol",gb:"Inggris",mx:"Meksiko",au:"Australia"},
+        note:{protein:"Protein & suplemen favorit pengguna revo.",store:"Sekutu para pelatih, ada di minimarket lokal.",resto:"Tempat makan tinggi protein, ramah bagi yang latihan.",wear:"Pakaian yang nyaman bergerak dan menaikkan mood.",gear:"Alat dan gadget penunjang latihan di rumah.",meal:"Satu porsi dengan nutrisi terhitung, untuk hari sibuk."},
+        aff:"* Mungkin berisi tautan afiliasi. Peringkat ditentukan oleh jumlah postingan pengguna revo.",priceL:["Semua","Hemat","Menengah","Premium"],postLbl:"Posting rekomendasimu",countryLbl:"Negara",refUnit:"merujuk",axes:{"protein":["Larut", "Rasa", "Nilai"], "store":["Praktis", "Nilai", "Puas"], "resto":["Protein", "Akses", "Nilai"], "wear":["Sirkulasi", "Fashion", "Fungsi"], "gear":["Hemat", "Awet", "Nilai"], "meal":["Rasa", "Nutrisi", "Nilai"]},
+        proteinItems:[["Whey polos","23g protein/porsi, mudah larut","2,340",2,""],["Soya cokelat","Nabati, mengenyangkan","1,780",2,""],["EAA jeruk","Segelas saat latihan","1,510",2,""],["Kreatin","Klasik, 3-5g per hari","1,120",2,""]],
+        store:{jp:[["Salad ayam polos","protein 27g","3,120",2,"7-Eleven"],["Yogurt Yunani","Tinggi protein, rendah lemak","2,450",2,""],["Telur rebus (2)","Di mana saja, mudah","1,980",1,""],["Minuman protein","15g","1,540",2,"Lawson"]],
+          kr:[["Sosis dada ayam","mudah dibawa","2,010",2,"GS25"],["Susu protein","20g/botol","1,760",2,"CU"],["Telur rebus","Klasik","1,320",1,""],["Yogurt Yunani","Tinggi protein","1,090",2,""]],
+          th:[["Ayam siap makan","berbumbu","1,880",2,"7-Eleven"],["Telur rebus","Murah di mana saja","1,440",1,""],["Susu protein","","1,220",2,""],["Yogurt Yunani","Tinggi protein","980",2,""]],
+          id:[["Dada ayam siap makan","berbumbu","1,650",2,"Indomaret"],["Telur rebus","Klasik, murah","1,280",1,""],["Susu protein","Alfamart","1,040",2,"Alfamart"],["Yogurt Yunani","Tinggi protein","870",2,""]],
+          us:[["Ayam panggang","toko, ukuran besar","2,890",2,"Costco"],["Yogurt Yunani (Chobani)","Andalan tinggi protein","2,510",3,""],["Protein bar (Quest)","20g, praktis","2,120",2,""],["Shake Fairlife","30g, populer","1,940",3,""]],
+          vn:[["Ayam siap makan","berbumbu","1,420",2,"Circle K"],["Telur rebus","Di mana saja","1,180",1,""],["Susu protein","GS25","960",2,"GS25"],["Yogurt Yunani","Tinggi protein","780",2,""]]},
+        resto:{jp:[["Kinniku Shokudo (Tokyo)","Set tinggi protein, PFC tampil","2,760",2,""],["Yayoiken","Set, nasi bebas","2,210",2,""],["CoCo Ichi (rendah karbo)","Bisa disesuaikan","1,680",2,""],["Ikinari Steak","Daging tanpa lemak, mengenyangkan","1,450",2,""]],
+          kr:[["Health-in Diner (Seoul)","Banyak menu dada ayam","1,920",2,""],["Sallday","Salad & bowl","1,540",2,""],["BBQ Korea (tanpa lemak)","Panggangan tinggi protein","1,230",2,""]],
+          th:[["Fit Food BKK (Bangkok)","PFC tampil, ayam","1,510",2,""],["MK Suki","Ayam & sayur","1,180",2,""],["Jones' Salad","Jaringan salad","990",2,""]],
+          id:[["SaladStop! (Jakarta)","Bowl tinggi protein","1,120",2,""],["Jaringan ayam bakar","Ayam bakar","940",2,""],["Warung protein","Lokal, dada ayam","760",2,""]],
+          us:[["Chipotle (NY dll.)","Bowl PFC bisa diatur","3,210",2,""],["Sweetgreen","Bowl salad","2,680",2,""],["CAVA","Bowl tinggi protein","2,140",2,""],["Chick-fil-A (panggang)","Ayam panggang","1,870",2,""]],
+          vn:[["Fit meal HCM (Ho Chi Minh)","Ayam, PFC","1,080",2,""],["Pho ga (pho ayam)","Tinggi protein, rendah lemak","920",2,""],["Jaringan salad","Salad","680",2,""]]},
+        wear:{},
+        gear:[["Dumbbell atur beban","Hemat tempat di rumah","1,760",3,""],["Matras latihan","Lindungi lantai & lutut","1,290",1,""],["Shaker","Anti bocor","1,140",1,""],["Dudukan shaker","Bawa ke gym","760",1,""]],
+        meal:[["Bekal beku tinggi protein","Dirancang ahli gizi, PFC terhitung","1,580",2,""],["Shake pengganti makan","Nutrisi satu porsi","1,120",2,""],["Langganan salad ayam","Kirim mingguan","890",2,""]]}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function curCat(){ return CATS[activeCat]; }
+    function getItems(d){
+      var c=curCat();
+      var en=D["English"];
+      var reg=REGIONS[activeRegion];
+      if(c.k==="protein") return d.proteinItems;
+      if(c.k==="wear") return (d.wear&&d.wear[reg]) || (en.wear&&en.wear[reg]) || [];
+      if(c.k==="gear") return d.gear;
+      if(c.k==="meal") return d.meal;
+      if(c.k==="store") return (d.store&&d.store[reg]) || (en.store&&en.store[reg]) || [];
+      if(c.k==="resto") return (d.resto&&d.resto[reg]) || (en.resto&&en.resto[reg]) || [];
+      return [];
+    }
+    function renderCats(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var c=curCat();
+      // ボタン表示
+      $('catBtnIc').className="ti "+c.ic; $('catBtnIc').style.color=t.accent;
+      $('catBtnLbl').textContent=d.cats[c.k];
+      // メニュー
+      $('catMenu').innerHTML="";
+      CATS.forEach(function(cc,i){
+        var on=(activeCat===i);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:9px; padding:9px 11px; border-radius:9px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<i class="ti '+cc.ic+'" style="font-size:15px; color:'+(on?t.accent:t.sub)+';"></i><span style="flex:1; font-size:13px; color:'+(on?t.accent:t.title)+'; font-weight:'+(on?"600":"400")+';">'+d.cats[cc.k]+'</span>'+(on?'<i class="ti ti-check" style="font-size:15px; color:'+t.accent+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); activeCat=i; activeRegion=0; activePrice=0; $('catMenu').style.display="none"; renderAll(); };
+        $('catMenu').appendChild(row);
+      });
+    }
+    function renderRegions(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var c=curCat();
+      if(!c.region){ $('regionWrap').style.display="none"; return; }
+      $('regionWrap').style.display="block"; $('regionBtnLbl').textContent=d.countryLbl||"Country";
+      $('regionMenu').innerHTML="";
+      REGIONS.forEach(function(r,i){
+        var on=(activeRegion===i);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:9px; padding:9px 11px; border-radius:9px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<span style="flex:1; font-size:13px; color:'+(on?t.accent:t.title)+'; font-weight:'+(on?"600":"400")+';">'+d.regions[r]+'</span>'+(on?'<i class="ti ti-check" style="font-size:15px; color:'+t.accent+';"></i>':'');
+        row.onclick=function(e){ e.stopPropagation(); activeRegion=i; $('regionMenu').style.display="none"; renderRegions(); renderList(); };
+        $('regionMenu').appendChild(row);
+      });
+    }
+    function axesHtml(catKey, idx, d, t){
+      var ax=(d.axes&&d.axes[catKey]); if(!ax) return "";
+      var html='<div style="display:flex; gap:10px; margin:9px 0 0;">';
+      ax.forEach(function(label,ai){
+        // 商品ごと・軸ごとに決定的な評価値（3.6〜5.0）
+        var seed=(catKey.charCodeAt(0)+idx*13+ai*29)%15;
+        var val=3.6+seed*0.1; if(val>5) val=5.0;
+        var pct=Math.round(val/5*100);
+        html+='<div style="flex:1; min-width:0;">'+
+          '<div style="display:flex; justify-content:space-between; margin:0 0 3px;"><span style="font-size:9px; color:'+t.meta+'; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+label+'</span><span style="font-size:9px; color:'+t.sub+'; font-family:Jost; flex-shrink:0; margin-left:3px;">'+val.toFixed(1)+'</span></div>'+
+          '<div style="height:4px; background:'+t.cardBd+'; border-radius:3px; overflow:hidden;"><div style="width:'+pct+'%; height:4px; background:'+t.accent+'; border-radius:3px;"></div></div>'+
+        '</div>';
+      });
+      html+='</div>';
+      return html;
+    }
+    function priceMark(pr,t){
+      // 💰の数を金アイコンで（pr:1/2/3）
+      var s="";
+      for(var i=1;i<=3;i++){
+        s+='<i class="ti ti-coin" style="font-size:11px; color:'+(i<=pr?t.accent:t.cardBd)+';"></i>';
+      }
+      return '<span style="display:inline-flex; gap:1px; vertical-align:-1px;">'+s+'</span>';
+    }
+    function renderPriceChips(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var labels=d.priceL||["All","Budget","Mid","Premium"];
+      $('priceChips').innerHTML="";
+      labels.forEach(function(lb,i){
+        var on=(activePrice===i);
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:11px; padding:6px 12px; border-radius:999px; cursor:pointer; white-space:nowrap; "+(on?"background:"+t.accent+"; color:"+(dark?"#16140F":"#FFFFFF")+"; font-weight:600;":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        // 価格帯チップに💰を添える（1=安,2=中,3=高。0=全部はアイコンなし）
+        var mk = i>0 ? ' '+Array(i+1).join("$") : "";
+        chip.textContent=lb;
+        chip.onclick=function(){ activePrice=i; renderPriceChips(); renderList(); };
+        $('priceChips').appendChild(chip);
+      });
+    }
+    // 投稿者名プール（擬似生成用・地域は選択中の国名で表示）
+    var NAMES=["Kai","Mika","Ren","Sara","Yuki","Leo","Nina","Tom","Aya","Sam","Rio","Emma","Jun","Lia","Max","Noa"];
+    var AC=["#2A2418","#26221C","#222630","#2A2224","#1F2624","#241E28"];
+    var AT=["#E3C56A","#D8A24E","#8A9AE0","#E08AA8","#5DCAA5","#B99BDD"];
+    function poster(catKey, region, idx){
+      // カテゴリー+国+順位で決まる擬似投稿者（毎回同じ人になるようシード的に）
+      var seed=(catKey.charCodeAt(0)+region.charCodeAt(0)+idx*7);
+      var ni=seed%NAMES.length;
+      return {name:NAMES[ni], ini:NAMES[ni][0], ac:AC[seed%AC.length], at:AT[seed%AT.length]};
+    }
+    function renderList(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var c=curCat();
+      var reg=REGIONS[activeRegion];
+      $('catNote').textContent=d.note[c.k];
+      var items=(getItems(d)||[]).slice();
+      var filtered = activePrice===0 ? items : items.filter(function(it){ return (it[3]||2)===activePrice; });
+      $('list').innerHTML="";
+      if(filtered.length===0){
+        $('list').innerHTML='<p style="font-size:12px; color:'+t.meta+'; text-align:center; padding:24px 0;">—</p>';
+      }
+      filtered.forEach(function(it,i){
+        var medalArr=["#E3C56A","#B8B0A0","#C08A5A"];
+        var medal = (activePrice===0 && i<3) ? medalArr[i] : null;
+        var pr=it[3]||2;
+        var po=poster(c.k, reg, i);
+        var regName=d.regions[reg]||"";
+        var card=document.createElement('div');
+        card.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:15px; padding:13px 14px; cursor:pointer;";
+        var rankBadge = medal
+          ? '<span style="width:22px; height:22px; border-radius:50%; background:'+medal+'; color:'+(dark?"#16140F":"#FFFFFF")+'; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; font-family:Jost; flex-shrink:0;">'+(i+1)+'</span>'
+          : '<span style="width:22px; text-align:center; font-size:12px; color:'+t.meta+'; font-family:Jost; flex-shrink:0;">'+(activePrice===0?(i+1):"·")+'</span>';
+        var brandTag = (it[4]&&it[4].length)
+          ? '<span style="display:inline-flex; align-items:center; gap:3px; font-size:10px; color:'+t.accent+'; background:'+t.tagBg+'; border-radius:5px; padding:2px 7px;"><i class="ti ti-map-pin" style="font-size:11px;"></i>'+it[4]+'</span>'
+          : '';
+        card.innerHTML=
+          // 上段：順位＋商品名＋商品アイコン
+          '<div style="display:flex; align-items:center; gap:10px; margin:0 0 9px;">'+
+            rankBadge+
+            '<div style="width:40px; height:40px; border-radius:9px; background:'+t.imgBg+'; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:0.5px solid '+t.cardBd+';"><i class="ti '+c.ic+'" style="font-size:19px; color:'+t.imgIc+';"></i></div>'+
+            '<div style="flex:1; min-width:0;"><p style="font-size:13px; color:'+t.title+'; margin:0 0 4px; font-weight:600;">'+it[0]+'</p><div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">'+brandTag+priceMark(pr,t)+'</div></div>'+
+            '<i class="ti ti-chevron-right" style="font-size:16px; color:'+t.meta+'; flex-shrink:0;"></i>'+
+          '</div>'+
+          // 投稿者＋生の声
+          '<div style="display:flex; align-items:flex-start; gap:8px; padding:9px 10px; background:'+(dark?"#161410":"#F4EFE6")+'; border-radius:10px;">'+
+            '<div style="width:24px; height:24px; border-radius:50%; background:'+po.ac+'; display:flex; align-items:center; justify-content:center; color:'+po.at+'; font-size:10px; font-weight:500; font-family:Jost; flex-shrink:0;">'+po.ini+'</div>'+
+            '<div style="flex:1; min-width:0;"><p style="font-size:11px; color:'+t.title+'; margin:0 0 2px;"><span style="font-weight:500;">'+po.name+'</span><span style="color:'+t.meta+';"> · '+regName+'</span></p><p style="font-size:11px; color:'+t.sub+'; margin:0; line-height:1.45;">'+it[1]+'</p></div>'+
+          '</div>'+
+          // 評価軸ミニバー
+          axesHtml(c.k, i, d, t)+
+          // 参考数
+          '<p style="font-size:10px; color:'+t.meta+'; margin:9px 0 0; display:flex; align-items:center; gap:5px;"><i class="ti ti-users" style="font-size:12px;"></i>'+it[2]+' '+d.refUnit+'</p>';
+        $('list').appendChild(card);
+      });
+      $('affNote').textContent=d.aff; if(d.postLbl) $('postLbl').textContent=d.postLbl;
+    }
+    function renderAll(){ renderCats(); renderRegions(); renderPriceChips(); renderList(); }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.title;
+      $('catNote').style.color=t.sub; $('affNote').style.color=t.meta;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      [$('catBtn'),$('regionBtn')].forEach(function(b){ b.style.background=t.chip; b.style.borderColor=t.chipBd; });
+      $('catBtnLbl').style.color=t.title;
+      var rl=$('regionBtnLbl'); if(rl) rl.style.color=t.title;
+      var pb=$('postBtn'); if(pb){ pb.style.borderColor=t.chipBd; pb.style.color=t.accent; }
+      [$('catMenu'),$('regionMenu')].forEach(function(m){ m.style.background=dark?"#1F1C16":"#FFFFFF"; m.style.borderColor=t.chipBd; });
+      var d=D[cur]||D["English"]; $('hdrTtl').textContent=d.hdr;
+      renderAll();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    $('catBtn').onclick=function(e){ e.stopPropagation(); $('regionMenu').style.display="none"; $('langMenu').style.display="none"; var m=$('catMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('regionBtn').onclick=function(e){ e.stopPropagation(); $('catMenu').style.display="none"; $('langMenu').style.display="none"; var m=$('regionMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('catMenu').onclick=function(e){ e.stopPropagation(); };
+    $('regionMenu').onclick=function(e){ e.stopPropagation(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; $('catMenu').style.display="none"; $('regionMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  var p=document.getElementById('postBtn');
+  if(p){ p.onclick=function(){ REVO.go('ranking_post'); }; }
+})();
+</script>
+</body>
+</html>

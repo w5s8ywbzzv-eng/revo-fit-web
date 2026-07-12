@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>メダル — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">メダル。リボン付きの輝くメダルで、続けた日数・ウォーキング・停滞期を乗り越えた回数・レシピの貢献を称える。タップすると音が鳴り、いつ獲得したかが見える。途切れても大丈夫。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">メダル</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:18px 18px 0;">
+    <div id="streakCard" style="background:linear-gradient(140deg,#221E12,#1A1813); border:0.5px solid #3A3220; border-radius:18px; padding:18px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 14px 40px -16px rgba(227,197,106,0.25);">
+      <div>
+        <p id="streakLbl" style="font-size:11px; color:#8A7E68; margin:0 0 3px;">いまの連続記録</p>
+        <p style="margin:0;"><span id="streakNum" style="font-size:32px; font-weight:400; color:#E3C56A; font-family:Jost,sans-serif;">7</span><span id="streakUnit" style="font-size:14px; color:#C9C0AE;"> 日連続</span></p>
+        <p id="nextHint" style="font-size:11px; color:#8A7E68; margin:6px 0 0;">15日メダルまで、あと8日</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:58px; height:58px; border-radius:50%; background:#16140F; border:1.5px solid #E3C56A; display:flex; align-items:center; justify-content:center;"><i class="ti ti-flame" style="font-size:28px; color:#E3C56A;"></i></div>
+        <p id="totalLbl" style="font-size:10px; color:#8A7E68; margin:7px 0 0;">獲得 6 個</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="cats" style="padding:8px 18px 0;"></div>
+
+  <div style="padding:14px 18px 0;">
+    <div id="msgCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:14px 16px; display:flex; align-items:flex-start; gap:10px;">
+      <i class="ti ti-heart" style="font-size:17px; color:#5DCAA5; margin-top:1px;"></i>
+      <p id="msg" style="font-size:13px; color:#C9E3D8; margin:0; line-height:1.65;">途切れても大丈夫。また3日から、いつでも始められます。あなたの歩みは、消えません。</p>
+    </div>
+  </div>
+
+  <div style="height:22px;"></div>
+
+  <!-- 詳細シート -->
+  <div id="sheetWrap" style="display:none; position:absolute; inset:0; z-index:40;">
+    <div id="sheetBg" style="position:absolute; inset:0; background:rgba(0,0,0,0.55);"></div>
+    <div id="sheet" style="position:absolute; left:0; right:0; bottom:0; background:#1A1814; border-top-left-radius:22px; border-top-right-radius:22px; border-top:0.5px solid #3A352A; padding:10px 22px 26px; transform:translateY(100%); transition:transform 0.32s cubic-bezier(0.22,1,0.36,1);">
+      <div style="width:38px; height:4px; border-radius:2px; background:#3A352A; margin:0 auto 18px;"></div>
+      <div id="sheetBody" style="display:flex; flex-direction:column; align-items:center;"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    /* ===== 実データ（ローカル記録）から獲得判定。未獲得は条件ヒント＝ROADMAP 13章 ===== */
+    var ST=REVO.stats();
+    var _logs=REVO.allLogs(), _keys=Object.keys(_logs).sort();
+    // 連続N日を最初に達成した日付
+    function streakDate(n){
+      var run=0, prev=null;
+      for(var i=0;i<_keys.length;i++){
+        var k=_keys[i];
+        run = (prev!=null && (new Date(k+"T00:00:00")-new Date(prev+"T00:00:00"))/86400000===1) ? run+1 : 1;
+        prev=k;
+        if(run>=n) return k+" 00:00";
+      }
+      return null;
+    }
+    function firstAt(cond){
+      for(var i=0;i<_keys.length;i++){
+        var lg=_logs[_keys[i]];
+        if(lg && lg._savedAt && cond(new Date(lg._savedAt), lg, _keys[i])) return _keys[i]+" "+new Date(lg._savedAt).toTimeString().slice(0,5);
+      }
+      return null;
+    }
+    function medal(ic,key,n,prog,dt){
+      var got = prog>=n;
+      return got ? {ic:ic,got:true,key:key,date:dt||(_keys.length?_keys[_keys.length-1]+" 00:00":"")}
+                 : {ic:ic,got:false,prog:Math.min(prog,n),goal:n,key:key};
+    }
+    var MEDALS={
+      streak:[
+        medal("ti-flame","d3",3,ST.bestStreak,streakDate(3)),
+        medal("ti-flame","d7",7,ST.bestStreak,streakDate(7)),
+        medal("ti-trophy","d15",15,ST.bestStreak,streakDate(15)),
+        medal("ti-trophy","d30",30,ST.bestStreak,streakDate(30))
+      ],
+      walk:[
+        medal("ti-sun","wMorning",1,ST.morning,firstAt(function(t){return t.getHours()<9;})),
+        medal("ti-moon","wNight",7,ST.night,firstAt(function(t){return t.getHours()>=21;})),
+        medal("ti-calendar","wWeekend",4,ST.weekend,null),
+        {ic:"ti-users",got:false,prog:0,goal:1,key:"wTogether"}          // SNS接続後に判定
+      ],
+      overcome:[
+        {ic:"ti-flame",got:false,prog:0,goal:1,key:"plateau"}            // 停滞期突破：トレンド分析の運用後に判定
+      ],
+      share:[
+        {ic:"ti-heart",got:false,prog:0,goal:1,key:"rFirst"},            // SNS接続後に判定
+        {ic:"ti-star",got:false,prog:0,goal:5,key:"rFive"},
+        {ic:"ti-heart",got:false,prog:0,goal:50,key:"rMade"}
+      ]
+    };
+    var D={
+      "日本語":{hdr:"メダル",streakLbl:"いまの連続記録",unit:" 日連続",nextHint:"15日メダルまで、あと8日",total:"獲得 {n} 個",
+        catTtl:{streak:"続ける",walk:"歩く",overcome:"乗り越えた",share:"分け合う"},
+        names:{d3:"はじめの一歩",d7:"習慣の芽",d15:"確かな15日",d30:"揺るがぬ30日",wMorning:"朝の光と",wNight:"夜のクールダウン",wWeekend:"休日も歩く",wTogether:"誰かと一緒に",plateau:"あきらめなかった証",rFirst:"はじめての一皿",rFive:"5皿の贈りもの",rMade:"みんなの食卓へ"},
+        sub:{d3:"3日つづけた",d7:"7日つづけた",d15:"15日つづける",d30:"30日つづける",wMorning:"朝のウォーキング",wNight:"夜のウォーキング",wWeekend:"休日のウォーキング",wTogether:"誰かと歩く",plateau:"停滞期を乗り越えた",rFirst:"レシピを初投稿",rFive:"レシピ5品を投稿",rMade:"レシピが作られた"},
+        got:"獲得",gotOn:"{d} に獲得",remain:"あと{n}",times:"{n}回 突破",
+        praise:{d3:"よく踏み出しました。ここが、すべてのはじまりです。",d7:"7日。習慣の芽が出ました。あなたは続けられる人です。",wMorning:"朝の空気の中を歩いた。気持ちのいい習慣です。",plateau:"いちばん苦しい停滞期を、あなたは越えました。何度でも越えられます。",rFirst:"あなたのレシピが、誰かの「飽きた」を救います。"},
+        lockMsg:"あと{n}で、このメダルに手が届きます。焦らず、一歩ずつ。",
+        close:"閉じる",msg:"途切れても大丈夫。また3日から、いつでも始められます。あなたの歩みは、消えません。"},
+      "English":{hdr:"Medals",streakLbl:"Current streak",unit:" days",nextHint:"8 days to the 15-day medal",total:"{n} earned",
+        catTtl:{streak:"Keep going",walk:"Walk",overcome:"Overcame",share:"Share"},
+        names:{d3:"First step",d7:"Sprout of habit",d15:"Solid 15",d30:"Unshakable 30",wMorning:"With morning light",wNight:"Night cooldown",wWeekend:"Walk on days off",wTogether:"With someone",plateau:"Proof you didn't quit",rFirst:"Your first dish",rFive:"5 gifts of food",rMade:"To everyone's table"},
+        sub:{d3:"3 days kept",d7:"7 days kept",d15:"keep 15 days",d30:"keep 30 days",wMorning:"morning walk",wNight:"night walk",wWeekend:"weekend walk",wTogether:"walk with someone",plateau:"broke through a plateau",rFirst:"first recipe posted",rFive:"post 5 recipes",rMade:"recipes cooked by others"},
+        got:"Earned",gotOn:"Earned on {d}",remain:"{n} to go",times:"broke through x{n}",
+        praise:{d3:"You took the first step. This is where it all begins.",d7:"7 days. A habit is sprouting. You're someone who keeps going.",wMorning:"You walked in the morning air. A lovely habit.",plateau:"You broke through the hardest plateau. You can do it again, and again.",rFirst:"Your recipe saves someone from being bored of the same meal."},
+        lockMsg:"{n} more and this medal is within reach. No rush — one step at a time.",
+        close:"Close",msg:"It's okay if you break the chain. You can start again from 3 days, anytime. Your steps never vanish."},
+      "简体中文":{hdr:"奖章",streakLbl:"当前连续",unit:" 天连续",nextHint:"距15天奖章还有8天",total:"已获 {n} 个",
+        catTtl:{streak:"坚持",walk:"步行",overcome:"已跨越",share:"分享"},
+        names:{d3:"第一步",d7:"习惯的芽",d15:"扎实的15天",d30:"稳固的30天",wMorning:"迎着晨光",wNight:"夜的放松",wWeekend:"假日也走",wTogether:"与谁同行",plateau:"不放弃的证明",rFirst:"第一道菜",rFive:"5道的馈赠",rMade:"送上大家的餐桌"},
+        sub:{d3:"坚持3天",d7:"坚持7天",d15:"坚持15天",d30:"坚持30天",wMorning:"晨间步行",wNight:"夜间步行",wWeekend:"假日步行",wTogether:"与人同行",plateau:"跨越平台期",rFirst:"首发食谱",rFive:"投稿5道食谱",rMade:"食谱被做"},
+        got:"已获",gotOn:"{d} 获得",remain:"还差{n}",times:"突破{n}次",
+        praise:{d3:"你迈出了第一步。一切从这里开始。",d7:"7天。习惯发芽了。你是能坚持的人。",wMorning:"你在晨间空气中散步。真是好习惯。",plateau:"最艰难的平台期，你跨过去了。你能一次次跨越。",rFirst:"你的食谱，拯救了某人的「吃腻了」。"},
+        lockMsg:"再差{n}，就能拿到这枚奖章。不急，一步步来。",
+        close:"关闭",msg:"断了也没关系。随时可以从3天重新开始。你的脚步，不会消失。"},
+      "繁體中文":{hdr:"獎章",streakLbl:"目前連續",unit:" 天連續",nextHint:"距15天獎章還有8天",total:"已獲 {n} 個",
+        catTtl:{streak:"堅持",walk:"步行",overcome:"已跨越",share:"分享"},
+        names:{d3:"第一步",d7:"習慣的芽",d15:"扎實的15天",d30:"穩固的30天",wMorning:"迎著晨光",wNight:"夜的放鬆",wWeekend:"假日也走",wTogether:"與誰同行",plateau:"不放棄的證明",rFirst:"第一道菜",rFive:"5道的餽贈",rMade:"送上大家的餐桌"},
+        sub:{d3:"堅持3天",d7:"堅持7天",d15:"堅持15天",d30:"堅持30天",wMorning:"晨間步行",wNight:"夜間步行",wWeekend:"假日步行",wTogether:"與人同行",plateau:"跨越停滯期",rFirst:"首發食譜",rFive:"投稿5道食譜",rMade:"食譜被做"},
+        got:"已獲",gotOn:"{d} 獲得",remain:"還差{n}",times:"突破{n}次",
+        praise:{d3:"你邁出了第一步。一切從這裡開始。",d7:"7天。習慣發芽了。你是能堅持的人。",wMorning:"你在晨間空氣中散步。真是好習慣。",plateau:"最艱難的停滯期，你跨過去了。你能一次次跨越。",rFirst:"你的食譜，拯救了某人的「吃膩了」。"},
+        lockMsg:"再差{n}，就能拿到這枚獎章。不急，一步步來。",
+        close:"關閉",msg:"斷了也沒關係。隨時可以從3天重新開始。你的腳步，不會消失。"},
+      "한국어":{hdr:"메달",streakLbl:"현재 연속",unit:"일 연속",nextHint:"15일 메달까지 8일",total:"{n}개 획득",
+        catTtl:{streak:"계속하기",walk:"걷기",overcome:"극복",share:"나누기"},
+        names:{d3:"첫걸음",d7:"습관의 싹",d15:"확실한 15일",d30:"흔들림 없는 30일",wMorning:"아침 햇살과",wNight:"밤의 쿨다운",wWeekend:"휴일에도 걷다",wTogether:"누군가와 함께",plateau:"포기하지 않은 증거",rFirst:"첫 한 그릇",rFive:"5그릇의 선물",rMade:"모두의 식탁으로"},
+        sub:{d3:"3일 지속",d7:"7일 지속",d15:"15일 지속",d30:"30일 지속",wMorning:"아침 산책",wNight:"밤 산책",wWeekend:"휴일 산책",wTogether:"함께 걷기",plateau:"정체기 돌파",rFirst:"첫 레시피 투고",rFive:"레시피 5개 투고",rMade:"레시피가 만들어짐"},
+        got:"획득",gotOn:"{d} 획득",remain:"{n} 남음",times:"{n}회 돌파",
+        praise:{d3:"첫발을 내디뎠어요. 모든 것은 여기서 시작돼요.",d7:"7일. 습관의 싹이 났어요. 당신은 계속할 수 있는 사람이에요.",wMorning:"아침 공기 속을 걸었어요. 기분 좋은 습관이에요.",plateau:"가장 힘든 정체기를 넘었어요. 몇 번이고 넘을 수 있어요.",rFirst:"당신의 레시피가 누군가의 '질렸어'를 구해요."},
+        lockMsg:"{n} 남았어요. 이 메달에 손이 닿아요. 서두르지 말고 한 걸음씩.",
+        close:"닫기",msg:"끊겨도 괜찮아요. 언제든 3일부터 다시 시작할 수 있어요. 당신의 걸음은 사라지지 않아요."},
+      "ภาษาไทย":{hdr:"เหรียญ",streakLbl:"ต่อเนื่องตอนนี้",unit:" วันต่อเนื่อง",nextHint:"อีก 8 วันถึงเหรียญ 15 วัน",total:"ได้ {n} เหรียญ",
+        catTtl:{streak:"ทำต่อ",walk:"เดิน",overcome:"ก้าวข้าม",share:"แบ่งปัน"},
+        names:{d3:"ก้าวแรก",d7:"หน่อของนิสัย",d15:"15 วันมั่นคง",d30:"30 วันไม่หวั่นไหว",wMorning:"กับแสงเช้า",wNight:"ผ่อนคลายยามค่ำ",wWeekend:"วันหยุดก็เดิน",wTogether:"กับใครสักคน",plateau:"หลักฐานว่าไม่ยอมแพ้",rFirst:"จานแรก",rFive:"ของขวัญ 5 จาน",rMade:"สู่โต๊ะอาหารของทุกคน"},
+        sub:{d3:"ต่อเนื่อง 3 วัน",d7:"ต่อเนื่อง 7 วัน",d15:"ต่อเนื่อง 15 วัน",d30:"ต่อเนื่อง 30 วัน",wMorning:"เดินตอนเช้า",wNight:"เดินตอนค่ำ",wWeekend:"เดินวันหยุด",wTogether:"เดินกับใคร",plateau:"ผ่านจุดอิ่มตัว",rFirst:"โพสต์สูตรแรก",rFive:"โพสต์ 5 สูตร",rMade:"สูตรถูกทำ"},
+        got:"ได้แล้ว",gotOn:"ได้เมื่อ {d}",remain:"อีก {n}",times:"ผ่าน {n} ครั้ง",
+        praise:{d3:"คุณก้าวออกมาแล้ว ทุกอย่างเริ่มจากตรงนี้",d7:"7 วัน หน่อของนิสัยงอกแล้ว คุณเป็นคนที่ทำต่อได้",wMorning:"คุณเดินในอากาศยามเช้า เป็นนิสัยที่ดีมาก",plateau:"จุดอิ่มตัวที่ยากที่สุด คุณผ่านมันมาได้ และผ่านได้อีกหลายครั้ง",rFirst:"สูตรของคุณช่วยคนที่ 'เบื่อเมนูเดิม' ได้"},
+        lockMsg:"อีก {n} เหรียญนี้ก็เอื้อมถึง ไม่ต้องรีบ ทีละก้าว",
+        close:"ปิด",msg:"ขาดช่วงก็ไม่เป็นไร เริ่มใหม่จาก 3 วันได้เสมอ ก้าวของคุณไม่หายไปไหน"},
+      "Français":{hdr:"Médailles",streakLbl:"Série actuelle",unit:" jours",nextHint:"8 jours avant la médaille des 15 jours",total:"{n} obtenues",
+        catTtl:{streak:"Continuer",walk:"Marcher",overcome:"Surmonté",share:"Partager"},
+        names:{d3:"Premier pas",d7:"Pousse d'habitude",d15:"15 jours solides",d30:"30 jours inébranlables",wMorning:"Avec la lumière du matin",wNight:"Détente du soir",wWeekend:"Marcher les jours de repos",wTogether:"Avec quelqu'un",plateau:"Preuve que vous n'avez pas abandonné",rFirst:"Votre premier plat",rFive:"5 cadeaux gourmands",rMade:"Vers toutes les tables"},
+        sub:{d3:"3 jours tenus",d7:"7 jours tenus",d15:"tenir 15 jours",d30:"tenir 30 jours",wMorning:"marche du matin",wNight:"marche du soir",wWeekend:"marche du week-end",wTogether:"marcher accompagné",plateau:"palier franchi",rFirst:"première recette publiée",rFive:"publier 5 recettes",rMade:"recettes cuisinées"},
+        got:"Obtenue",gotOn:"Obtenue le {d}",remain:"plus que {n}",times:"franchi x{n}",
+        praise:{d3:"Vous avez fait le premier pas. Tout commence ici.",d7:"7 jours. Une habitude germe. Vous êtes de ceux qui persévèrent.",wMorning:"Vous avez marché dans l'air du matin. Une belle habitude.",plateau:"Vous avez franchi le palier le plus dur. Vous le referez, encore et encore.",rFirst:"Votre recette sauve quelqu'un de la lassitude des mêmes repas."},
+        lockMsg:"Plus que {n} et cette médaille est à portée. Pas de hâte, un pas à la fois.",
+        close:"Fermer",msg:"Ce n'est pas grave si la série s'arrête. Vous pouvez repartir de 3 jours, à tout moment. Vos pas ne disparaissent jamais."},
+      "Español":{hdr:"Medallas",streakLbl:"Racha actual",unit:" días",nextHint:"8 días para la medalla de 15 días",total:"{n} obtenidas",
+        catTtl:{streak:"Seguir",walk:"Caminar",overcome:"Superado",share:"Compartir"},
+        names:{d3:"Primer paso",d7:"Brote de hábito",d15:"15 días firmes",d30:"30 días inquebrantables",wMorning:"Con la luz del alba",wNight:"Calma nocturna",wWeekend:"Caminar en días libres",wTogether:"Con alguien",plateau:"Prueba de que no te rendiste",rFirst:"Tu primer plato",rFive:"5 regalos de comida",rMade:"A la mesa de todos"},
+        sub:{d3:"3 días logrados",d7:"7 días logrados",d15:"lograr 15 días",d30:"lograr 30 días",wMorning:"caminata matutina",wNight:"caminata nocturna",wWeekend:"caminata de finde",wTogether:"caminar acompañado",plateau:"superar estancamiento",rFirst:"primera receta publicada",rFive:"publicar 5 recetas",rMade:"recetas cocinadas"},
+        got:"Obtenida",gotOn:"Obtenida el {d}",remain:"faltan {n}",times:"superado x{n}",
+        praise:{d3:"Diste el primer paso. Aquí empieza todo.",d7:"7 días. Un hábito está brotando. Eres de los que siguen adelante.",wMorning:"Caminaste en el aire de la mañana. Un hábito precioso.",plateau:"Superaste el estancamiento más duro. Podrás hacerlo una y otra vez.",rFirst:"Tu receta salva a alguien del aburrimiento de la misma comida."},
+        lockMsg:"Faltan {n} y esta medalla estará a tu alcance. Sin prisa, paso a paso.",
+        close:"Cerrar",msg:"No pasa nada si se corta la racha. Puedes empezar de nuevo desde 3 días, cuando quieras. Tus pasos no desaparecen."},
+      "Deutsch":{hdr:"Medaillen",streakLbl:"Aktuelle Serie",unit:" Tage",nextHint:"8 Tage bis zur 15-Tage-Medaille",total:"{n} erhalten",
+        catTtl:{streak:"Dranbleiben",walk:"Gehen",overcome:"Überwunden",share:"Teilen"},
+        names:{d3:"Erster Schritt",d7:"Keim der Gewohnheit",d15:"Feste 15 Tage",d30:"Unerschütterliche 30",wMorning:"Mit dem Morgenlicht",wNight:"Abend-Cooldown",wWeekend:"Auch am freien Tag",wTogether:"Mit jemandem",plateau:"Beweis, dass du nicht aufgabst",rFirst:"Dein erstes Gericht",rFive:"5 Geschenke aus der Küche",rMade:"Auf alle Tische"},
+        sub:{d3:"3 Tage gehalten",d7:"7 Tage gehalten",d15:"15 Tage halten",d30:"30 Tage halten",wMorning:"Morgenspaziergang",wNight:"Abendspaziergang",wWeekend:"Wochenendspaziergang",wTogether:"zusammen gehen",plateau:"Plateau überwunden",rFirst:"erstes Rezept gepostet",rFive:"5 Rezepte posten",rMade:"Rezepte gekocht"},
+        got:"Erhalten",gotOn:"Erhalten am {d}",remain:"noch {n}",times:"x{n} überwunden",
+        praise:{d3:"Du hast den ersten Schritt gemacht. Hier beginnt alles.",d7:"7 Tage. Eine Gewohnheit keimt. Du bist jemand, der dranbleibt.",wMorning:"Du bist in der Morgenluft gegangen. Eine schöne Gewohnheit.",plateau:"Du hast das härteste Plateau überwunden. Du schaffst es wieder und wieder.",rFirst:"Dein Rezept rettet jemanden vor dem immer gleichen Essen."},
+        lockMsg:"Noch {n} und diese Medaille ist erreichbar. Keine Eile, Schritt für Schritt.",
+        close:"Schließen",msg:"Es ist okay, wenn die Serie reißt. Du kannst jederzeit wieder bei 3 Tagen anfangen. Deine Schritte verschwinden nie."},
+      "Italiano":{hdr:"Medaglie",streakLbl:"Serie attuale",unit:" giorni",nextHint:"8 giorni alla medaglia dei 15 giorni",total:"{n} ottenute",
+        catTtl:{streak:"Continuare",walk:"Camminare",overcome:"Superato",share:"Condividere"},
+        names:{d3:"Primo passo",d7:"Germoglio d'abitudine",d15:"15 giorni solidi",d30:"30 giorni incrollabili",wMorning:"Con la luce del mattino",wNight:"Defaticamento serale",wWeekend:"Camminare nei giorni liberi",wTogether:"Con qualcuno",plateau:"Prova che non hai mollato",rFirst:"Il tuo primo piatto",rFive:"5 doni di gusto",rMade:"Sulla tavola di tutti"},
+        sub:{d3:"3 giorni mantenuti",d7:"7 giorni mantenuti",d15:"mantieni 15 giorni",d30:"mantieni 30 giorni",wMorning:"camminata mattutina",wNight:"camminata serale",wWeekend:"camminata del weekend",wTogether:"camminare in compagnia",plateau:"stallo superato",rFirst:"prima ricetta pubblicata",rFive:"pubblica 5 ricette",rMade:"ricette cucinate"},
+        got:"Ottenuta",gotOn:"Ottenuta il {d}",remain:"ancora {n}",times:"superato x{n}",
+        praise:{d3:"Hai fatto il primo passo. Qui inizia tutto.",d7:"7 giorni. Un'abitudine germoglia. Sei uno che continua.",wMorning:"Hai camminato nell'aria del mattino. Una bella abitudine.",plateau:"Hai superato lo stallo più duro. Puoi farlo ancora e ancora.",rFirst:"La tua ricetta salva qualcuno dalla noia dello stesso pasto."},
+        lockMsg:"Ancora {n} e questa medaglia è a portata. Nessuna fretta, un passo alla volta.",
+        close:"Chiudi",msg:"Va bene se la serie si interrompe. Puoi ripartire da 3 giorni, quando vuoi. I tuoi passi non spariscono mai."},
+      "Português":{hdr:"Medalhas",streakLbl:"Sequência atual",unit:" dias",nextHint:"8 dias para a medalha de 15 dias",total:"{n} obtidas",
+        catTtl:{streak:"Continuar",walk:"Caminhar",overcome:"Superou",share:"Compartilhar"},
+        names:{d3:"Primeiro passo",d7:"Broto de hábito",d15:"15 dias firmes",d30:"30 dias inabaláveis",wMorning:"Com a luz da manhã",wNight:"Relaxamento noturno",wWeekend:"Caminhar nas folgas",wTogether:"Com alguém",plateau:"Prova de que não desistiu",rFirst:"Seu primeiro prato",rFive:"5 presentes da cozinha",rMade:"Para a mesa de todos"},
+        sub:{d3:"3 dias mantidos",d7:"7 dias mantidos",d15:"manter 15 dias",d30:"manter 30 dias",wMorning:"caminhada matinal",wNight:"caminhada noturna",wWeekend:"caminhada de fim de semana",wTogether:"caminhar acompanhado",plateau:"superar platô",rFirst:"primeira receita postada",rFive:"postar 5 receitas",rMade:"receitas cozinhadas"},
+        got:"Obtida",gotOn:"Obtida em {d}",remain:"faltam {n}",times:"superou x{n}",
+        praise:{d3:"Você deu o primeiro passo. Aqui começa tudo.",d7:"7 dias. Um hábito está brotando. Você é de quem continua.",wMorning:"Você caminhou no ar da manhã. Um hábito lindo.",plateau:"Você superou o platô mais difícil. Vai conseguir de novo e de novo.",rFirst:"Sua receita salva alguém do tédio da mesma refeição."},
+        lockMsg:"Faltam {n} e esta medalha estará ao alcance. Sem pressa, passo a passo.",
+        close:"Fechar",msg:"Tudo bem se a sequência quebrar. Você pode recomeçar dos 3 dias, quando quiser. Seus passos nunca somem."},
+      "हिन्दी":{hdr:"मेडल",streakLbl:"मौजूदा लगातार",unit:" दिन",nextHint:"15-दिन मेडल में 8 दिन बाकी",total:"{n} मिले",
+        catTtl:{streak:"जारी रखें",walk:"चलना",overcome:"पार किया",share:"बाँटना"},
+        names:{d3:"पहला कदम",d7:"आदत का अंकुर",d15:"मज़बूत 15 दिन",d30:"अटल 30 दिन",wMorning:"सुबह की रोशनी में",wNight:"रात की शांति",wWeekend:"छुट्टी में भी चलना",wTogether:"किसी के साथ",plateau:"हार न मानने का सबूत",rFirst:"आपकी पहली डिश",rFive:"5 पकवानों का तोहफ़ा",rMade:"सबकी थाली तक"},
+        sub:{d3:"3 दिन निभाए",d7:"7 दिन निभाए",d15:"15 दिन निभाएँ",d30:"30 दिन निभाएँ",wMorning:"सुबह की वॉक",wNight:"रात की वॉक",wWeekend:"छुट्टी की वॉक",wTogether:"साथ चलना",plateau:"ठहराव पार",rFirst:"पहली रेसिपी पोस्ट",rFive:"5 रेसिपी पोस्ट",rMade:"रेसिपी बनाई गई"},
+        got:"मिला",gotOn:"{d} को मिला",remain:"{n} बाकी",times:"{n} बार पार",
+        praise:{d3:"आपने पहला कदम उठाया। यहीं से सब शुरू होता है।",d7:"7 दिन। आदत का अंकुर फूटा। आप निभाने वाले हैं।",wMorning:"आप सुबह की हवा में चले। बहुत अच्छी आदत।",plateau:"सबसे कठिन ठहराव आपने पार किया। बार-बार पार कर सकते हैं।",rFirst:"आपकी रेसिपी किसी की 'ऊब' दूर करती है।"},
+        lockMsg:"{n} और, यह मेडल पहुँच में है। जल्दी नहीं, एक-एक कदम।",
+        close:"बंद करें",msg:"सिलसिला टूटे तो भी ठीक है। कभी भी 3 दिन से फिर शुरू कर सकते हैं। आपके कदम कभी नहीं मिटते।"},
+      "Tiếng Việt":{hdr:"Huy chương",streakLbl:"Chuỗi hiện tại",unit:" ngày",nextHint:"Còn 8 ngày đến huy chương 15 ngày",total:"Đạt {n}",
+        catTtl:{streak:"Tiếp tục",walk:"Đi bộ",overcome:"Đã vượt qua",share:"Chia sẻ"},
+        names:{d3:"Bước đầu tiên",d7:"Mầm thói quen",d15:"15 ngày vững",d30:"30 ngày không lay",wMorning:"Cùng ánh sáng ban mai",wNight:"Thư giãn buổi tối",wWeekend:"Ngày nghỉ vẫn đi",wTogether:"Cùng ai đó",plateau:"Bằng chứng không bỏ cuộc",rFirst:"Món đầu tiên của bạn",rFive:"5 món quà",rMade:"Đến bàn ăn mọi người"},
+        sub:{d3:"giữ 3 ngày",d7:"giữ 7 ngày",d15:"giữ 15 ngày",d30:"giữ 30 ngày",wMorning:"đi bộ sáng",wNight:"đi bộ tối",wWeekend:"đi bộ cuối tuần",wTogether:"đi bộ cùng nhau",plateau:"vượt chững",rFirst:"đăng công thức đầu",rFive:"đăng 5 công thức",rMade:"công thức được nấu"},
+        got:"Đã đạt",gotOn:"Đạt vào {d}",remain:"còn {n}",times:"vượt x{n}",
+        praise:{d3:"Bạn đã bước bước đầu tiên. Mọi thứ bắt đầu từ đây.",d7:"7 ngày. Một thói quen đang nảy mầm. Bạn là người kiên trì.",wMorning:"Bạn đã đi trong không khí ban mai. Một thói quen thật đẹp.",plateau:"Bạn đã vượt qua giai đoạn chững khó nhất. Bạn sẽ vượt được nữa, nhiều lần.",rFirst:"Công thức của bạn cứu ai đó khỏi chán bữa ăn lặp lại."},
+        lockMsg:"Còn {n} nữa là chạm tới huy chương này. Đừng vội, từng bước một.",
+        close:"Đóng",msg:"Đứt chuỗi cũng không sao. Bạn có thể bắt đầu lại từ 3 ngày, bất cứ lúc nào. Những bước chân của bạn không bao giờ mất đi."},
+      "Bahasa Indonesia":{hdr:"Medali",streakLbl:"Rentetan saat ini",unit:" hari",nextHint:"8 hari lagi ke medali 15 hari",total:"{n} diraih",
+        catTtl:{streak:"Lanjut",walk:"Jalan",overcome:"Melewati",share:"Berbagi"},
+        names:{d3:"Langkah pertama",d7:"Tunas kebiasaan",d15:"15 hari kokoh",d30:"30 hari tak tergoyahkan",wMorning:"Bersama cahaya pagi",wNight:"Pendinginan malam",wWeekend:"Jalan di hari libur",wTogether:"Bersama seseorang",plateau:"Bukti kamu tak menyerah",rFirst:"Hidangan pertamamu",rFive:"5 hadiah masakan",rMade:"Ke meja semua orang"},
+        sub:{d3:"3 hari terjaga",d7:"7 hari terjaga",d15:"jaga 15 hari",d30:"jaga 30 hari",wMorning:"jalan pagi",wNight:"jalan malam",wWeekend:"jalan akhir pekan",wTogether:"jalan bersama",plateau:"lewati stagnasi",rFirst:"resep pertama diposting",rFive:"posting 5 resep",rMade:"resep dimasak"},
+        got:"Diraih",gotOn:"Diraih pada {d}",remain:"{n} lagi",times:"lewati x{n}",
+        praise:{d3:"Kamu mengambil langkah pertama. Di sinilah semua bermula.",d7:"7 hari. Kebiasaan bertunas. Kamu orang yang terus melangkah.",wMorning:"Kamu berjalan di udara pagi. Kebiasaan yang indah.",plateau:"Kamu melewati stagnasi tersulit. Kamu bisa melakukannya lagi dan lagi.",rFirst:"Resepmu menyelamatkan seseorang dari bosan makanan yang itu-itu saja."},
+        lockMsg:"{n} lagi dan medali ini dalam jangkauan. Tak perlu buru-buru, selangkah demi selangkah.",
+        close:"Tutup",msg:"Tak apa kalau putus. Kamu bisa mulai lagi dari 3 hari, kapan saja. Langkahmu tak pernah hilang."}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var catColors={streak:"#E3C56A",walk:"#5DCAA5",overcome:"#E0846A",share:"#8A9AE0"};
+    var catMedalGrad={streak:["#F5DE93","#C9A24E"],walk:["#8FE3C4","#3E9E7E"],overcome:["#F0B48E","#C56A45"],share:["#AAB6EA","#5F6FC0"]};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",lockBg:"#1C1A15",lockRing:"#2E2A20",sheet:"#1A1814",sheetBd:"#3A352A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",lockBg:"#F2EDE3",lockRing:"#E4DBC9",sheet:"#FFFFFF",sheetBd:"#E8E0CE",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+
+    // ===== Web Audio：獲得メダルのきらめき音 =====
+    var actx=null;
+    function chime(){
+      try{
+        if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+        var now=actx.currentTime;
+        var notes=[659.25,783.99,1046.50]; // E5 G5 C6 明るい上昇
+        notes.forEach(function(f,i){
+          var o=actx.createOscillator(), g=actx.createGain();
+          o.type="sine"; o.frequency.value=f;
+          o.connect(g); g.connect(actx.destination);
+          var t0=now+i*0.09;
+          g.gain.setValueAtTime(0, t0);
+          g.gain.linearRampToValueAtTime(0.18, t0+0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, t0+0.5);
+          o.start(t0); o.stop(t0+0.55);
+        });
+      }catch(e){}
+    }
+    function lockThud(){
+      try{
+        if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+        var now=actx.currentTime;
+        var o=actx.createOscillator(), g=actx.createGain();
+        o.type="sine"; o.frequency.value=220;
+        o.connect(g); g.connect(actx.destination);
+        g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(0.12, now+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now+0.25);
+        o.start(now); o.stop(now+0.3);
+      }catch(e){}
+    }
+
+    // ===== メダルSVG（リボン＋円形メダル） =====
+    function medalSVG(m, cat, size){
+      var g=catMedalGrad[cat], col=catColors[cat];
+      var uid=cat+"_"+m.key;
+      if(m.got){
+        return '<svg viewBox="0 0 80 104" width="'+size+'" height="'+(size*1.3)+'" xmlns="http://www.w3.org/2000/svg">'+
+          '<defs><radialGradient id="mg'+uid+'" cx="38%" cy="32%" r="75%"><stop offset="0%" stop-color="'+g[0]+'"/><stop offset="70%" stop-color="'+col+'"/><stop offset="100%" stop-color="'+g[1]+'"/></radialGradient></defs>'+
+          // リボン
+          '<path d="M28 6 L40 44 L28 40 Z" fill="'+col+'" opacity="0.9"/>'+
+          '<path d="M52 6 L40 44 L52 40 Z" fill="'+g[1]+'" opacity="0.9"/>'+
+          // 外円
+          '<circle cx="40" cy="66" r="30" fill="url(#mg'+uid+')" stroke="'+g[0]+'" stroke-width="1.5"/>'+
+          // 内リング（彫刻風）
+          '<circle cx="40" cy="66" r="23" fill="none" stroke="'+g[1]+'" stroke-width="1.4" opacity="0.7"/>'+
+          '<circle cx="40" cy="66" r="24.5" fill="none" stroke="'+g[0]+'" stroke-width="0.6" opacity="0.6"/>'+
+          // ハイライト
+          '<ellipse cx="31" cy="55" rx="9" ry="6" fill="#FFFFFF" opacity="0.28"/>'+
+          '</svg>';
+      } else {
+        var t=dark?T.dark:T.light;
+        return '<svg viewBox="0 0 80 104" width="'+size+'" height="'+(size*1.3)+'" xmlns="http://www.w3.org/2000/svg">'+
+          '<path d="M28 6 L40 44 L28 40 Z" fill="'+t.lockRing+'"/>'+
+          '<path d="M52 6 L40 44 L52 40 Z" fill="'+t.lockRing+'"/>'+
+          '<circle cx="40" cy="66" r="30" fill="'+t.lockBg+'" stroke="'+t.lockRing+'" stroke-width="1.5" stroke-dasharray="3 3"/>'+
+          '<circle cx="40" cy="66" r="23" fill="none" stroke="'+t.lockRing+'" stroke-width="1"/>'+
+          '</svg>';
+      }
+    }
+    function iconOverlay(m,cat){
+      // メダル中央のアイコン（獲得は濃色、未獲得はmuted）
+      var col = m.got ? "#16140F" : (dark?T.dark.muted:T.light.muted);
+      return '<i class="ti '+m.ic+'" style="position:absolute; left:50%; top:63%; transform:translate(-50%,-50%); font-size:22px; color:'+col+';"></i>';
+    }
+
+    function fmtDate(iso){
+      // "2026-06-16 21:34" を言語に応じて
+      var parts=iso.split(" "); var d=parts[0].split("-"); var tm=parts[1];
+      var y=d[0],mo=d[1],da=d[2];
+      if(cur==="日本語") return y+"年"+parseInt(mo)+"月"+parseInt(da)+"日 "+tm;
+      if(cur==="简体中文"||cur==="繁體中文") return y+"年"+parseInt(mo)+"月"+parseInt(da)+"日 "+tm;
+      if(cur==="한국어") return y+"년 "+parseInt(mo)+"월 "+parseInt(da)+"일 "+tm;
+      return da+"/"+mo+"/"+y+" "+tm;
+    }
+
+    function openSheet(m, cat){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var nm=d.names[m.key]||m.key, sub=d.sub[m.key]||"";
+      var body="";
+      body+='<div style="position:relative; display:inline-block; margin:0 0 6px;">'+medalSVG(m,cat,120)+iconOverlayBig(m,cat)+'</div>';
+      body+='<p style="font-size:19px; font-weight:600; color:'+t.txt+'; margin:8px 0 3px; text-align:center;">'+nm+'</p>';
+      body+='<p style="font-size:12px; color:'+t.sub+'; margin:0 0 14px; text-align:center;">'+sub+(m.count?" ・ "+d.times.replace("{n}",m.count):"")+'</p>';
+      if(m.got){
+        body+='<div style="display:flex; align-items:center; gap:7px; background:'+(dark?"#221E12":"#FBF3E0")+'; border:0.5px solid '+(dark?"#3A3220":"#EADCBE")+'; border-radius:11px; padding:9px 14px; margin:0 0 14px;">'+
+          '<i class="ti ti-calendar" style="font-size:15px; color:'+t.accent+';"></i>'+
+          '<span style="font-size:12px; color:'+(dark?"#C9C0AE":"#7A6A3E")+';">'+d.gotOn.replace("{d}", fmtDate(m.date))+'</span></div>';
+        var pr=d.praise[m.key];
+        if(pr) body+='<p style="font-size:13px; color:'+(dark?"#C9E3D8":"#2E5D4E")+'; margin:0 0 4px; text-align:center; line-height:1.7; background:'+(dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)")+'; border-radius:12px; padding:13px 15px;">'+pr+'</p>';
+      } else {
+        var remain=(m.goal-m.prog);
+        body+='<p style="font-size:13px; color:'+t.sub+'; margin:0; text-align:center; line-height:1.7;">'+d.lockMsg.replace("{n}", remain)+'</p>';
+        // 進捗バー
+        var pct=Math.round(m.prog/m.goal*100);
+        body+='<div style="width:100%; height:6px; background:'+t.cardBd+'; border-radius:3px; margin:14px 0 0; overflow:hidden;"><div style="width:'+pct+'%; height:6px; background:'+catColors[cat]+';"></div></div>';
+        body+='<p style="font-size:11px; color:'+t.muted+'; margin:6px 0 0;">'+m.prog+' / '+m.goal+'</p>';
+      }
+      body+='<button id="sheetClose" style="margin:18px 0 0; background:transparent; border:0.5px solid '+t.cardBd+'; color:'+t.sub+'; font-size:13px; padding:11px 30px; border-radius:12px; cursor:pointer;">'+d.close+'</button>';
+      $('sheetBody').innerHTML=body;
+      $('sheetWrap').style.display="block";
+      requestAnimationFrame(function(){ $('sheet').style.transform="translateY(0)"; });
+      $('sheetClose').onclick=closeSheet;
+      if(m.got) chime(); else lockThud();
+    }
+    function iconOverlayBig(m,cat){
+      var col = m.got ? "#16140F" : (dark?T.dark.muted:T.light.muted);
+      return '<i class="ti '+m.ic+'" style="position:absolute; left:50%; top:63%; transform:translate(-50%,-50%); font-size:34px; color:'+col+';"></i>';
+    }
+    function closeSheet(){
+      $('sheet').style.transform="translateY(100%)";
+      setTimeout(function(){ $('sheetWrap').style.display="none"; },320);
+    }
+    $('sheetBg') && ($('sheetBg').onclick=closeSheet);
+
+    function renderCats(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('cats').innerHTML="";
+      ["streak","walk","overcome","share"].forEach(function(cat){
+        var sec=document.createElement('div');
+        sec.style.cssText="margin:20px 0 0;";
+        var head='<div style="display:flex; align-items:center; gap:8px; margin:0 0 14px;"><span style="width:8px; height:8px; border-radius:50%; background:'+catColors[cat]+';"></span><p style="font-size:13px; color:'+t.txt+'; margin:0; font-weight:600;">'+d.catTtl[cat]+'</p></div>';
+        var grid=document.createElement('div');
+        grid.style.cssText="display:flex; flex-wrap:wrap; gap:16px 10px;";
+        MEDALS[cat].forEach(function(m){
+          var nm=d.names[m.key]||m.key;
+          var tile=document.createElement('div');
+          tile.style.cssText="display:flex; flex-direction:column; align-items:center; gap:5px; width:78px; cursor:pointer;";
+          var badge = m.got ? (m.count? d.times.replace("{n}",m.count) : d.got) : d.remain.replace("{n}",(m.goal-m.prog));
+          tile.innerHTML='<div style="position:relative; display:inline-block;'+(m.got?"":" opacity:0.9;")+'">'+medalSVG(m,cat,58)+iconOverlay(m,cat)+'</div>'+
+            '<p style="font-size:10px; color:'+(m.got?t.txt:t.sub)+'; margin:0; text-align:center; line-height:1.25;">'+nm+'</p>'+
+            '<span style="font-size:9px; color:'+(m.got?t.accent:catColors[cat])+';">'+badge+'</span>';
+          tile.onclick=function(){ openSheet(m,cat); };
+          grid.appendChild(tile);
+        });
+        var wrap=document.createElement('div'); wrap.innerHTML=head; wrap.appendChild(grid);
+        $('cats').appendChild(wrap);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('streakLbl').textContent=d.streakLbl; $('streakUnit').textContent=d.unit;
+      $('nextHint').textContent=d.nextHint; $('totalLbl').textContent=d.total.replace("{n}","6"); $('msg').textContent=d.msg;
+      renderCats();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('streakCard').style.background= dark?"linear-gradient(140deg,#221E12,#1A1813)":"linear-gradient(140deg,#FBF3E0,#FBF7F1)"; $('streakCard').style.borderColor= dark?"#3A3220":"#EADCBE";
+      $('streakLbl').style.color=t.sub; $('streakUnit').style.color= dark?"#C9C0AE":"#5F5E5A"; $('nextHint').style.color=t.sub; $('totalLbl').style.color=t.sub;
+      $('msgCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('msgCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('msg').style.color= dark?"#C9E3D8":"#2E5D4E";
+      $('sheet').style.background=t.sheet; $('sheet').style.borderColor=t.sheetBd;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderCats();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+</body>
+</html>

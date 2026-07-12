@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>利用規約 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">利用規約。サービスの利用、アカウント、料金と解約、投稿とコンテンツ、禁止事項、健康に関する免責、責任の範囲、規約の変更、お問い合わせ。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">利用規約</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:16px 18px 24px; max-height:600px; overflow-y:auto;">
+    <p id="intro" style="font-size:12px; color:#8A7E68; margin:0 0 8px; line-height:1.7;"></p>
+    <p id="updated" style="font-size:10px; color:#6E6555; margin:0 0 20px;"></p>
+    <div id="sections" style="display:flex; flex-direction:column; gap:20px;"></div>
+    <div id="contactBox" style="margin:24px 0 0; padding:14px 15px; background:#1A1814; border-radius:12px; border:0.5px solid #2A2620;">
+      <p id="contactLbl" style="font-size:11px; color:#8A7E68; margin:0 0 5px;">お問い合わせ</p>
+      <a id="contactMail" href="mailto:support@revo-app.jp" style="font-size:13px; color:#E3C56A; text-decoration:none;">support@revo-app.jp</a>
+    </div>
+    <p id="note" style="font-size:10px; color:#6E6555; margin:16px 0 0; line-height:1.7;"></p>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var SEC=["agree","account","fee","content","support","prohibited","health","liability","changes"];
+    var D={
+      "日本語":{hdr:"利用規約",
+        intro:"本規約は、revo（以下「本サービス」）の利用条件を定めるものです。ご利用の前に、お読みください。",
+        updated:"最終更新：準備中",note:"※ 本文は要点をまとめたものです。正式な条文は正式リリースまでに掲載します。",
+        contactLbl:"お問い合わせ",
+        s:{agree:["規約への同意","本サービスを利用することで、あなたは本規約に同意したものとみなされます。同意いただけない場合は、ご利用をお控えください。"],
+          account:["アカウント","正確な情報での登録をお願いします。アカウントの管理はあなたの責任で行ってください。不正利用を見つけた場合は、ご連絡ください。"],
+          fee:["料金と解約","有料プランの料金は、各プランのご案内画面に表示します。サブスクリプションはいつでも解約でき、解約後も期間の終わりまでご利用いただけます。新規のご購入は、購入日から14日以内であれば全額返金いたします。14日経過後の解約分、および更新（2回目以降の請求）分については、返金を承っておりません。"],
+          content:["投稿とコンテンツ","あなたが投稿した記録・レシピ・コメントの権利は、あなたに帰属します。本サービスは、サービスの提供・改善のために必要な範囲でこれを利用することがあります。"],
+          support:["応援（投げ銭）","応援は、クリエイターを支えるための仕組みです。受け取った金額の一部を手数料として申し受けます。詳細は、お問い合わせやご案内画面でご確認いただけます。"],
+          prohibited:["禁止事項","法令に反する行為、他者を傷つける行為、虚偽の情報の投稿、サービスの運営を妨げる行為はお控えください。"],
+          health:["健康に関する免責","本サービスは、健康の維持・増進を目的としたものであり、医療行為・診断・治療を目的とするものではありません。本サービスが示す数値や提案は、あくまで目安であり、医学的な効果や正確性を保証するものではありません。健康に不安がある場合や持病・治療中の方は、必ず医師などの専門家にご相談ください。"],
+          liability:["責任の範囲","本サービスは、可能な限り安定した提供に努めますが、中断や不具合が生じる場合があります。法令で認められる範囲で、責任を限定させていただきます。"],
+          changes:["規約の変更","本規約を変更する場合は、アプリ内でお知らせします。変更後もご利用いただくことで、変更に同意したものとみなされます。"]}},
+      "English":{hdr:"Terms of Use",
+        intro:"These terms set out the conditions for using revo (the \"Service\"). Please read them before you begin.",
+        updated:"Last updated: In preparation",note:"* This is a summary of key points. The full text will be posted before official release.",
+        contactLbl:"Contact",
+        s:{agree:["Agreement","By using the Service, you are deemed to have agreed to these terms. If you do not agree, please refrain from using it."],
+          account:["Account","Please register with accurate information. You are responsible for managing your account. Contact us if you notice unauthorized use."],
+          fee:["Fees & cancellation","Paid plan prices are shown on each plan's page. You can cancel anytime and keep access until the period ends. New purchases are fully refundable within 14 days of purchase. Cancellations after 14 days, and renewals (second and later charges), are not refundable."],
+          content:["Posts & content","Rights to the records, recipes, and comments you post belong to you. The Service may use them within the scope needed to provide and improve the service."],
+          support:["Support (tips)","Support is a way to back creators. A portion of the amount received is charged as a fee. See the contact page or info screens for details."],
+          prohibited:["Prohibited acts","Please refrain from illegal acts, acts that harm others, posting false information, or acts that disrupt the operation of the service."],
+          health:["Health disclaimer","The Service is intended to support maintaining and improving health, and is not intended for medical practice, diagnosis, or treatment. The numbers and suggestions it shows are estimates only and do not guarantee any medical effect or accuracy. If you have health concerns, a medical condition, or are under treatment, always consult a physician or other professional."],
+          liability:["Limitation of liability","We strive to provide the Service as stably as possible, but interruptions or issues may occur. We limit our liability to the extent permitted by law."],
+          changes:["Changes to terms","If we change these terms, we will notify you within the app. Continued use after changes is deemed acceptance of the changes."]}},
+      "简体中文":{hdr:"使用条款",
+        intro:"本条款规定 revo（以下称『本服务』）的使用条件。使用前请阅读。",
+        updated:"最后更新：准备中",note:"※ 本文为要点概述。正式条文将在正式发布前刊登。",
+        contactLbl:"联系我们",
+        s:{agree:["同意条款","使用本服务即视为您同意本条款。若不同意，请勿使用。"],
+          account:["账户","请以准确信息注册。账户管理由您负责。发现不正当使用请联系我们。"],
+          fee:["费用与解约","付费套餐的费用在各套餐介绍页显示。订阅可随时解约，解约后到期前仍可使用。新购买自购买日起14天内可全额退款。超过14天的解约及续费（第二次及以后扣款）不予退款。"],
+          content:["投稿与内容","您投稿的记录、食谱、评论的权利归您所有。本服务可能在提供和改善服务所需范围内使用。"],
+          support:["应援（打赏）","应援是支持创作者的机制。收到金额的一部分作为手续费收取。详情可在联系页或介绍页查看。"],
+          prohibited:["禁止事项","请勿从事违法行为、伤害他人的行为、发布虚假信息、妨碍服务运营的行为。"],
+          health:["健康免责","本服务旨在维持和增进健康，并非以医疗行为、诊断或治疗为目的。所显示的数值和建议仅供参考，不保证任何医学效果或准确性。如有健康顾虑、患有疾病或正在治疗中，请务必咨询医生等专业人士。"],
+          liability:["责任范围","本服务尽力稳定提供，但可能出现中断或故障。在法律允许范围内，我们限定责任。"],
+          changes:["条款变更","如变更本条款，将在应用内通知。变更后继续使用即视为同意变更。"]}},
+      "繁體中文":{hdr:"使用條款",
+        intro:"本條款規定 revo（以下稱『本服務』）的使用條件。使用前請閱讀。",
+        updated:"最後更新：準備中",note:"※ 本文為要點概述。正式條文將在正式發布前刊登。",
+        contactLbl:"聯絡我們",
+        s:{agree:["同意條款","使用本服務即視為您同意本條款。若不同意，請勿使用。"],
+          account:["帳戶","請以準確資訊註冊。帳戶管理由您負責。發現不正當使用請聯絡我們。"],
+          fee:["費用與解約","付費方案的費用在各方案介紹頁顯示。訂閱可隨時解約，解約後到期前仍可使用。新購買自購買日起14天內可全額退款。超過14天的解約及續訂（第二次及以後扣款）不予退款。"],
+          content:["投稿與內容","您投稿的記錄、食譜、評論的權利歸您所有。本服務可能在提供和改善服務所需範圍內使用。"],
+          support:["應援（打賞）","應援是支持創作者的機制。收到金額的一部分作為手續費收取。詳情可在聯絡頁或介紹頁查看。"],
+          prohibited:["禁止事項","請勿從事違法行為、傷害他人的行為、發布虛假資訊、妨礙服務運營的行為。"],
+          health:["健康免責","本服務旨在維持和增進健康，並非以醫療行為、診斷或治療為目的。所顯示的數值和建議僅供參考，不保證任何醫學效果或準確性。如有健康顧慮、患有疾病或正在治療中，請務必諮詢醫生等專業人士。"],
+          liability:["責任範圍","本服務盡力穩定提供，但可能出現中斷或故障。在法律允許範圍內，我們限定責任。"],
+          changes:["條款變更","如變更本條款，將在應用內通知。變更後繼續使用即視為同意變更。"]}},
+      "한국어":{hdr:"이용약관",
+        intro:"본 약관은 revo(이하 '본 서비스')의 이용 조건을 정합니다. 이용 전에 읽어 주세요.",
+        updated:"최종 업데이트: 준비 중",note:"※ 본문은 요점을 정리한 것입니다. 정식 조문은 정식 출시 전까지 게재합니다.",
+        contactLbl:"문의",
+        s:{agree:["약관 동의","본 서비스를 이용하면 본 약관에 동의한 것으로 간주됩니다. 동의하지 않으시면 이용을 삼가 주세요."],
+          account:["계정","정확한 정보로 등록해 주세요. 계정 관리는 본인 책임입니다. 부정 이용을 발견하면 연락 주세요."],
+          fee:["요금과 해지","유료 플랜 요금은 각 플랜 안내 화면에 표시됩니다. 구독은 언제든 해지할 수 있고, 해지 후에도 기간 끝까지 이용할 수 있습니다. 신규 구매는 구매일로부터 14일 이내 전액 환불됩니다. 14일 경과 후 해지분 및 갱신(2회차 이후 결제)분은 환불되지 않습니다."],
+          content:["게시물과 콘텐츠","당신이 게시한 기록·레시피·댓글의 권리는 당신에게 있습니다. 본 서비스는 서비스 제공·개선에 필요한 범위에서 이를 이용할 수 있습니다."],
+          support:["응원(후원)","응원은 크리에이터를 지원하는 구조입니다. 받은 금액의 일부를 수수료로 받습니다. 자세한 내용은 문의나 안내 화면에서 확인할 수 있습니다."],
+          prohibited:["금지 사항","법령에 반하는 행위, 타인을 해치는 행위, 허위 정보 게시, 서비스 운영을 방해하는 행위는 삼가 주세요."],
+          health:["건강 관련 면책","본 서비스는 건강의 유지·증진을 목적으로 하며, 의료 행위·진단·치료를 목적으로 하지 않습니다. 보여주는 수치와 제안은 어디까지나 예상치이며, 의학적 효과나 정확성을 보장하지 않습니다. 건강이 걱정되거나 지병이 있거나 치료 중인 분은 반드시 의사 등 전문가와 상담하세요."],
+          liability:["책임 범위","본 서비스는 최대한 안정적으로 제공하려 노력하지만, 중단이나 오류가 생길 수 있습니다. 법령이 허용하는 범위에서 책임을 제한합니다."],
+          changes:["약관 변경","본 약관을 변경할 경우 앱 내에서 알려드립니다. 변경 후 계속 이용하면 변경에 동의한 것으로 간주됩니다."]}},
+      "ภาษาไทย":{hdr:"ข้อกำหนดการใช้",
+        intro:"ข้อกำหนดนี้กำหนดเงื่อนไขการใช้ revo (ต่อไปนี้เรียกว่า \"บริการ\") กรุณาอ่านก่อนเริ่มใช้",
+        updated:"อัปเดตล่าสุด: กำลังเตรียม",note:"※ นี่คือสรุปประเด็นสำคัญ ข้อความฉบับเต็มจะเผยแพร่ก่อนเปิดตัวอย่างเป็นทางการ",
+        contactLbl:"ติดต่อ",
+        s:{agree:["การยอมรับข้อกำหนด","การใช้บริการถือว่าคุณยอมรับข้อกำหนดนี้ หากไม่ยอมรับ โปรดงดใช้งาน"],
+          account:["บัญชี","กรุณาลงทะเบียนด้วยข้อมูลที่ถูกต้อง การจัดการบัญชีเป็นความรับผิดชอบของคุณ หากพบการใช้งานผิดปกติโปรดติดต่อเรา"],
+          fee:["ค่าบริการและการยกเลิก","ค่าแพ็กเกจแบบชำระเงินแสดงในหน้าแต่ละแพ็กเกจ ยกเลิกการสมัครได้ทุกเมื่อ หลังยกเลิกยังใช้ได้จนจบรอบ การซื้อใหม่คืนเงินเต็มภายใน 14 วัน หลัง 14 วันและการต่ออายุไม่คืนเงิน"],
+          content:["โพสต์และเนื้อหา","สิทธิ์ในบันทึก สูตร ความคิดเห็นที่คุณโพสต์เป็นของคุณ บริการอาจใช้ในขอบเขตที่จำเป็นเพื่อให้และปรับปรุงบริการ"],
+          support:["กำลังใจ (ทิป)","กำลังใจเป็นกลไกสนับสนุนครีเอเตอร์ ส่วนหนึ่งของยอดที่ได้รับจะถูกเก็บเป็นค่าธรรมเนียม ดูรายละเอียดได้ที่หน้าติดต่อหรือหน้าแนะนำ"],
+          prohibited:["ข้อห้าม","โปรดงดการกระทำผิดกฎหมาย การทำร้ายผู้อื่น การโพสต์ข้อมูลเท็จ หรือการขัดขวางการดำเนินงานของบริการ"],
+          health:["ข้อจำกัดความรับผิดด้านสุขภาพ","บริการนี้มีไว้เพื่อรักษาและส่งเสริมสุขภาพ ไม่ได้มีวัตถุประสงค์เพื่อการรักษาพยาบาล การวินิจฉัย หรือการรักษาโรค ตัวเลขและคำแนะนำที่แสดงเป็นเพียงค่าประมาณ ไม่รับประกันผลทางการแพทย์หรือความแม่นยำ หากกังวลเรื่องสุขภาพ มีโรคประจำตัว หรืออยู่ระหว่างการรักษา โปรดปรึกษาแพทย์หรือผู้เชี่ยวชาญเสมอ"],
+          liability:["ขอบเขตความรับผิด","บริการพยายามให้บริการอย่างเสถียรที่สุด แต่อาจมีการหยุดชะงักหรือข้อผิดพลาด เราจำกัดความรับผิดในขอบเขตที่กฎหมายอนุญาต"],
+          changes:["การเปลี่ยนแปลงข้อกำหนด","หากเปลี่ยนข้อกำหนดนี้ เราจะแจ้งในแอป การใช้ต่อหลังเปลี่ยนถือว่ายอมรับการเปลี่ยนแปลง"]}},
+      "Français":{hdr:"Conditions d'utilisation",
+        intro:"Ces conditions définissent les modalités d'utilisation de revo (le « Service »). Merci de les lire avant de commencer.",
+        updated:"Dernière mise à jour : En préparation",note:"* Ceci est un résumé des points clés. Le texte complet sera publié avant la sortie officielle.",
+        contactLbl:"Contact",
+        s:{agree:["Acceptation","En utilisant le Service, vous êtes réputé avoir accepté ces conditions. Si vous n'êtes pas d'accord, veuillez ne pas l'utiliser."],
+          account:["Compte","Merci de vous inscrire avec des informations exactes. La gestion de votre compte relève de votre responsabilité. Contactez-nous en cas d'usage non autorisé."],
+          fee:["Frais et résiliation","Les prix des offres payantes figurent sur la page de chaque offre. Vous pouvez résilier à tout moment et en profiter jusqu'à la fin de la période. Les nouveaux achats sont remboursables sous 14 jours ; ensuite et pour les renouvellements, aucun remboursement."],
+          content:["Publications et contenu","Les droits sur les données, recettes et commentaires que vous publiez vous appartiennent. Le Service peut les utiliser dans la mesure nécessaire pour fournir et améliorer le service."],
+          support:["Soutien (pourboires)","Le soutien est un moyen d'appuyer les créateurs. Une partie du montant reçu est prélevée comme frais. Voir la page contact ou d'information pour les détails."],
+          prohibited:["Actes interdits","Merci d'éviter les actes illégaux, ceux qui nuisent à autrui, la publication de fausses informations ou les actes perturbant le fonctionnement du service."],
+          health:["Avis de santé","Le Service vise à soutenir le maintien et l'amélioration de la santé, et n'est pas destiné à un acte médical, un diagnostic ou un traitement. Les chiffres et suggestions sont indicatifs et ne garantissent aucun effet médical ni exactitude. En cas de doute sur votre santé, de maladie ou de traitement en cours, consultez toujours un médecin ou un professionnel."],
+          liability:["Limitation de responsabilité","Nous nous efforçons d'assurer un service stable, mais des interruptions ou anomalies peuvent survenir. Nous limitons notre responsabilité dans la mesure permise par la loi."],
+          changes:["Modifications","Si nous modifions ces conditions, nous vous en informerons dans l'app. Poursuivre l'utilisation après modification vaut acceptation."]}},
+      "Español":{hdr:"Términos de uso",
+        intro:"Estos términos definen las condiciones de uso de revo (el \"Servicio\"). Léelos antes de empezar.",
+        updated:"Última actualización: En preparación",note:"* Este es un resumen de puntos clave. El texto completo se publicará antes del lanzamiento oficial.",
+        contactLbl:"Contacto",
+        s:{agree:["Aceptación","Al usar el Servicio, se considera que aceptas estos términos. Si no estás de acuerdo, abstente de usarlo."],
+          account:["Cuenta","Regístrate con información precisa. La gestión de tu cuenta es tu responsabilidad. Contáctanos si detectas un uso no autorizado."],
+          fee:["Tarifas y cancelación","Los precios de los planes de pago se muestran en la página de cada plan. Puedes cancelar cuando quieras y usarlo hasta que acabe el periodo. Las compras nuevas se reembolsan en 14 días; después y en renovaciones, sin reembolso."],
+          content:["Publicaciones y contenido","Los derechos de los registros, recetas y comentarios que publicas te pertenecen. El Servicio puede usarlos en la medida necesaria para prestar y mejorar el servicio."],
+          support:["Apoyo (propinas)","El apoyo es una forma de respaldar a los creadores. Una parte del monto recibido se cobra como comisión. Consulta la página de contacto o de información para más detalles."],
+          prohibited:["Actos prohibidos","Abstente de actos ilegales, actos que dañen a otros, publicar información falsa o actos que perturben el funcionamiento del servicio."],
+          health:["Aviso de salud","El Servicio busca apoyar el mantenimiento y la mejora de la salud, y no está destinado a actos médicos, diagnóstico ni tratamiento. Las cifras y sugerencias son estimaciones y no garantizan ningún efecto médico ni exactitud. Si tienes dudas de salud, una enfermedad o estás en tratamiento, consulta siempre a un médico o profesional."],
+          liability:["Límite de responsabilidad","Nos esforzamos por ofrecer un servicio estable, pero pueden ocurrir interrupciones o fallos. Limitamos nuestra responsabilidad hasta donde permite la ley."],
+          changes:["Cambios","Si cambiamos estos términos, te lo notificaremos en la app. Seguir usándolo tras los cambios se considera aceptación."]}},
+      "Deutsch":{hdr:"Nutzungsbedingungen",
+        intro:"Diese Bedingungen regeln die Nutzung von revo (dem „Dienst“). Bitte lies sie, bevor du beginnst.",
+        updated:"Zuletzt aktualisiert: In Vorbereitung",note:"* Dies ist eine Zusammenfassung. Der vollständige Text wird vor dem offiziellen Release veröffentlicht.",
+        contactLbl:"Kontakt",
+        s:{agree:["Zustimmung","Durch die Nutzung des Dienstes gilt deine Zustimmung zu diesen Bedingungen. Wenn du nicht zustimmst, nutze ihn bitte nicht."],
+          account:["Konto","Bitte registriere dich mit korrekten Angaben. Die Verwaltung deines Kontos liegt in deiner Verantwortung. Melde dich bei unbefugter Nutzung."],
+          fee:["Gebühren & Kündigung","Preise kostenpflichtiger Pläne werden auf der jeweiligen Plan-Seite angezeigt. Du kannst jederzeit kündigen und bis zum Periodenende nutzen. Neukäufe sind innerhalb von 14 Tagen erstattbar; danach und bei Verlängerungen keine Erstattung."],
+          content:["Beiträge & Inhalte","Die Rechte an von dir geposteten Daten, Rezepten und Kommentaren liegen bei dir. Der Dienst darf sie im nötigen Umfang zur Bereitstellung und Verbesserung nutzen."],
+          support:["Unterstützung (Trinkgeld)","Unterstützung ist eine Möglichkeit, Creator zu fördern. Ein Teil des erhaltenen Betrags wird als Gebühr einbehalten. Details auf der Kontakt- oder Infoseite."],
+          prohibited:["Verbotene Handlungen","Bitte unterlasse illegale Handlungen, Handlungen, die anderen schaden, das Posten falscher Informationen oder Handlungen, die den Betrieb stören."],
+          health:["Gesundheitshinweis","Der Dienst dient der Erhaltung und Förderung der Gesundheit und ist nicht für medizinische Behandlung, Diagnose oder Therapie bestimmt. Die gezeigten Zahlen und Vorschläge sind Schätzungen und garantieren keine medizinische Wirkung oder Genauigkeit. Bei gesundheitlichen Bedenken, Vorerkrankungen oder laufender Behandlung konsultiere immer einen Arzt oder eine Fachperson."],
+          liability:["Haftungsbeschränkung","Wir bemühen uns um einen möglichst stabilen Dienst, aber Unterbrechungen oder Fehler können auftreten. Wir beschränken unsere Haftung im gesetzlich zulässigen Rahmen."],
+          changes:["Änderungen","Falls wir diese Bedingungen ändern, informieren wir dich in der App. Weitere Nutzung nach Änderungen gilt als Zustimmung."]}},
+      "Italiano":{hdr:"Termini d'uso",
+        intro:"Questi termini definiscono le condizioni d'uso di revo (il \"Servizio\"). Leggili prima di iniziare.",
+        updated:"Ultimo aggiornamento: In preparazione",note:"* Questo è un riassunto dei punti chiave. Il testo completo sarà pubblicato prima del rilascio ufficiale.",
+        contactLbl:"Contatto",
+        s:{agree:["Accettazione","Usando il Servizio, si considera che tu abbia accettato questi termini. Se non sei d'accordo, astieniti dall'usarlo."],
+          account:["Account","Registrati con informazioni accurate. La gestione del tuo account è tua responsabilità. Contattaci se noti un uso non autorizzato."],
+          fee:["Costi e disdetta","I prezzi dei piani a pagamento sono mostrati sulla pagina di ciascun piano. Puoi disdire quando vuoi e usarlo fino a fine periodo. Data la natura del contenuto digitale, di norma nessun rimborso dopo l'acquisto."],
+          content:["Post e contenuti","I diritti sui dati, ricette e commenti che pubblichi appartengono a te. Il Servizio può usarli nella misura necessaria per fornire e migliorare il servizio."],
+          support:["Sostegno (mance)","Il sostegno è un modo per supportare i creator. Una parte dell'importo ricevuto è trattenuta come commissione. Vedi la pagina contatti o info per i dettagli."],
+          prohibited:["Atti vietati","Astieniti da atti illegali, atti che danneggiano altri, pubblicazione di informazioni false o atti che disturbano il funzionamento del servizio."],
+          health:["Avviso sulla salute","Il Servizio è pensato per sostenere il mantenimento e il miglioramento della salute e non è destinato ad atti medici, diagnosi o trattamenti. I numeri e i suggerimenti sono stime e non garantiscono alcun effetto medico o accuratezza. In caso di dubbi sulla salute, patologie o cure in corso, consulta sempre un medico o un professionista."],
+          liability:["Limitazione di responsabilità","Ci impegniamo a fornire un servizio il più stabile possibile, ma possono verificarsi interruzioni o problemi. Limitiamo la nostra responsabilità nella misura consentita dalla legge."],
+          changes:["Modifiche","Se modifichiamo questi termini, te lo comunicheremo nell'app. L'uso continuato dopo le modifiche è considerato accettazione."]}},
+      "Português":{hdr:"Termos de uso",
+        intro:"Estes termos definem as condições de uso do revo (o \"Serviço\"). Leia antes de começar.",
+        updated:"Última atualização: Em preparação",note:"* Este é um resumo dos pontos principais. O texto completo será publicado antes do lançamento oficial.",
+        contactLbl:"Contato",
+        s:{agree:["Aceitação","Ao usar o Serviço, considera-se que você aceitou estes termos. Se não concordar, abstenha-se de usá-lo."],
+          account:["Conta","Cadastre-se com informações precisas. A gestão da sua conta é sua responsabilidade. Contate-nos se notar uso não autorizado."],
+          fee:["Taxas e cancelamento","Os preços dos planos pagos são exibidos na página de cada plano. Você pode cancelar quando quiser e usar até o fim do período. Novas compras têm reembolso em 14 dias. Depois, e em renovações, sem reembolso."],
+          content:["Posts e conteúdo","Os direitos sobre os registros, receitas e comentários que você posta pertencem a você. O Serviço pode usá-los na medida necessária para fornecer e melhorar o serviço."],
+          support:["Apoio (gorjetas)","O apoio é uma forma de apoiar criadores. Uma parte do valor recebido é cobrada como taxa. Veja a página de contato ou de informações para detalhes."],
+          prohibited:["Atos proibidos","Abstenha-se de atos ilegais, atos que prejudiquem outros, publicar informações falsas ou atos que atrapalhem o funcionamento do serviço."],
+          health:["Aviso de saúde","O Serviço destina-se a apoiar a manutenção e melhoria da saúde e não tem finalidade de ato médico, diagnóstico ou tratamento. Os números e sugestões são estimativas e não garantem qualquer efeito médico ou exatidão. Em caso de dúvidas de saúde, doença ou tratamento em curso, consulte sempre um médico ou profissional."],
+          liability:["Limite de responsabilidade","Nos esforçamos para oferecer um serviço o mais estável possível, mas podem ocorrer interrupções ou falhas. Limitamos nossa responsabilidade na medida permitida por lei."],
+          changes:["Alterações","Se alterarmos estes termos, avisaremos no app. Continuar usando após as alterações é considerado aceitação."]}},
+      "हिन्दी":{hdr:"उपयोग की शर्तें",
+        intro:"ये शर्तें revo (आगे \"सेवा\") के उपयोग की शर्तें तय करती हैं। शुरू करने से पहले पढ़ें।",
+        updated:"अंतिम अपडेट: तैयारी में",note:"※ यह मुख्य बिंदुओं का सारांश है। पूर्ण पाठ आधिकारिक रिलीज़ से पहले प्रकाशित होगा।",
+        contactLbl:"संपर्क",
+        s:{agree:["शर्तों की स्वीकृति","सेवा का उपयोग करने पर माना जाएगा कि आपने इन शर्तों को स्वीकार किया। सहमत न हों तो उपयोग न करें।"],
+          account:["खाता","सटीक जानकारी से पंजीकरण करें। खाते का प्रबंधन आपकी ज़िम्मेदारी है। अनधिकृत उपयोग दिखे तो संपर्क करें।"],
+          fee:["शुल्क और रद्दीकरण","भुगतान प्लान के शुल्क प्रत्येक प्लान पृष्ठ पर दिखते हैं। सदस्यता कभी भी रद्द करें, रद्द के बाद अवधि के अंत तक उपयोग करें। नई खरीद 14 दिनों में रिफंड योग्य; उसके बाद और नवीनीकरण पर रिफंड नहीं।"],
+          content:["पोस्ट और सामग्री","आपके द्वारा पोस्ट किए रिकॉर्ड, रेसिपी, टिप्पणियों के अधिकार आपके हैं। सेवा इन्हें सेवा प्रदान और सुधार हेतु आवश्यक सीमा में उपयोग कर सकती है।"],
+          support:["सहयोग (टिप)","सहयोग क्रिएटर को सहारा देने का तरीका है। प्राप्त राशि का एक हिस्सा शुल्क के रूप में लिया जाता है। विवरण संपर्क या जानकारी पृष्ठ पर देखें।"],
+          prohibited:["निषिद्ध कार्य","अवैध कार्य, दूसरों को नुकसान पहुँचाने वाले कार्य, झूठी जानकारी पोस्ट करना, या सेवा संचालन में बाधा डालने वाले कार्य से बचें।"],
+          health:["स्वास्थ्य अस्वीकरण","यह सेवा स्वास्थ्य के रखरखाव और संवर्धन के लिए है, चिकित्सा कार्य, निदान या उपचार के लिए नहीं। दिखाई गई संख्याएँ और सुझाव केवल अनुमान हैं और किसी चिकित्सीय प्रभाव या सटीकता की गारंटी नहीं देते। स्वास्थ्य चिंता, किसी रोग या उपचाराधीन होने पर हमेशा डॉक्टर या विशेषज्ञ से सलाह लें।"],
+          liability:["ज़िम्मेदारी की सीमा","हम यथासंभव स्थिर सेवा देने का प्रयास करते हैं, पर रुकावट या खराबी हो सकती है। कानून द्वारा अनुमत सीमा में हम ज़िम्मेदारी सीमित करते हैं।"],
+          changes:["शर्तों में बदलाव","इन शर्तों में बदलाव पर ऐप में सूचित करेंगे। बदलाव के बाद उपयोग जारी रखना स्वीकृति माना जाएगा।"]}},
+      "Tiếng Việt":{hdr:"Điều khoản sử dụng",
+        intro:"Các điều khoản này quy định điều kiện sử dụng revo (\"Dịch vụ\"). Vui lòng đọc trước khi bắt đầu.",
+        updated:"Cập nhật lần cuối: Đang chuẩn bị",note:"※ Đây là bản tóm tắt các điểm chính. Toàn văn sẽ được đăng trước khi ra mắt chính thức.",
+        contactLbl:"Liên hệ",
+        s:{agree:["Chấp nhận điều khoản","Bằng việc sử dụng Dịch vụ, bạn được coi là đã đồng ý các điều khoản này. Nếu không đồng ý, vui lòng không sử dụng."],
+          account:["Tài khoản","Vui lòng đăng ký bằng thông tin chính xác. Quản lý tài khoản là trách nhiệm của bạn. Liên hệ nếu phát hiện sử dụng trái phép."],
+          fee:["Phí và hủy","Giá các gói trả phí hiển thị trên trang mỗi gói. Bạn có thể hủy bất cứ lúc nào và dùng đến hết kỳ. Mua mới được hoàn tiền trong 14 ngày. Sau đó và khi gia hạn, không hoàn tiền."],
+          content:["Bài đăng và nội dung","Quyền đối với bản ghi, công thức, bình luận bạn đăng thuộc về bạn. Dịch vụ có thể dùng trong phạm vi cần thiết để cung cấp và cải thiện dịch vụ."],
+          support:["Ủng hộ (tip)","Ủng hộ là cách hỗ trợ nhà sáng tạo. Một phần số tiền nhận được được thu làm phí. Xem trang liên hệ hoặc thông tin để biết chi tiết."],
+          prohibited:["Hành vi bị cấm","Vui lòng tránh hành vi vi phạm pháp luật, làm hại người khác, đăng thông tin sai lệch, hoặc cản trở hoạt động của dịch vụ."],
+          health:["Miễn trừ về sức khỏe","Dịch vụ nhằm hỗ trợ duy trì và cải thiện sức khỏe, không nhằm mục đích khám chữa bệnh, chẩn đoán hay điều trị. Các con số và gợi ý chỉ là ước tính và không đảm bảo bất kỳ hiệu quả y tế hay độ chính xác nào. Nếu lo lắng về sức khỏe, có bệnh nền hoặc đang điều trị, luôn tham khảo bác sĩ hoặc chuyên gia."],
+          liability:["Giới hạn trách nhiệm","Chúng tôi cố gắng cung cấp dịch vụ ổn định nhất có thể, nhưng có thể xảy ra gián đoạn hoặc lỗi. Chúng tôi giới hạn trách nhiệm trong phạm vi luật cho phép."],
+          changes:["Thay đổi điều khoản","Nếu thay đổi các điều khoản này, chúng tôi sẽ thông báo trong ứng dụng. Tiếp tục sử dụng sau khi thay đổi được coi là chấp nhận."]}},
+      "Bahasa Indonesia":{hdr:"Ketentuan Penggunaan",
+        intro:"Ketentuan ini mengatur syarat penggunaan revo (\"Layanan\"). Silakan baca sebelum memulai.",
+        updated:"Pembaruan terakhir: Sedang disiapkan",note:"※ Ini adalah ringkasan poin utama. Teks lengkap akan dimuat sebelum rilis resmi.",
+        contactLbl:"Kontak",
+        s:{agree:["Persetujuan","Dengan menggunakan Layanan, kamu dianggap menyetujui ketentuan ini. Jika tidak setuju, mohon tidak menggunakannya."],
+          account:["Akun","Daftar dengan informasi yang akurat. Pengelolaan akun adalah tanggung jawabmu. Hubungi kami jika menemukan penggunaan tidak sah."],
+          fee:["Biaya & pembatalan","Harga paket berbayar ditampilkan di halaman tiap paket. Kamu bisa membatalkan kapan saja dan memakainya sampai periode berakhir. Pembelian baru dapat refund dalam 14 hari; setelahnya dan saat perpanjangan tanpa refund."],
+          content:["Postingan & konten","Hak atas catatan, resep, dan komentar yang kamu posting menjadi milikmu. Layanan dapat menggunakannya sejauh diperlukan untuk menyediakan dan meningkatkan layanan."],
+          support:["Dukungan (tip)","Dukungan adalah cara mendukung kreator. Sebagian dari jumlah yang diterima dikenakan sebagai biaya. Lihat halaman kontak atau info untuk detail."],
+          prohibited:["Tindakan terlarang","Mohon hindari tindakan ilegal, tindakan yang merugikan orang lain, memposting informasi palsu, atau tindakan yang mengganggu operasi layanan."],
+          health:["Penafian kesehatan","Layanan ini bertujuan mendukung pemeliharaan dan peningkatan kesehatan, dan bukan untuk tindakan medis, diagnosis, atau pengobatan. Angka dan saran yang ditampilkan hanya perkiraan dan tidak menjamin efek medis atau keakuratan apa pun. Jika ada kekhawatiran kesehatan, penyakit, atau sedang dalam pengobatan, selalu konsultasikan ke dokter atau profesional."],
+          liability:["Batas tanggung jawab","Kami berupaya menyediakan layanan sestabil mungkin, tetapi gangguan atau masalah bisa terjadi. Kami membatasi tanggung jawab sejauh diizinkan hukum."],
+          changes:["Perubahan ketentuan","Jika kami mengubah ketentuan ini, kami akan memberi tahu di aplikasi. Melanjutkan penggunaan setelah perubahan dianggap sebagai persetujuan."]}}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    var T={
+      dark:{bg:"#16140F",txt:"#E8E2D6",sub:"#8A7E68",muted:"#6E6555",head:"#F0EBE2",card:"#1A1814",cardBd:"#2A2620",accent:"#E3C56A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488"},
+      light:{bg:"#FFFFFF",txt:"#4A453B",sub:"#8A7E68",muted:"#B7A98F",head:"#2E2A24",card:"#FBF7F1",cardBd:"#F0EAE0",accent:"#BA7517",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderSections(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('sections').innerHTML="";
+      SEC.forEach(function(k,i){
+        var sec=d.s[k];
+        var el=document.createElement('div');
+        el.innerHTML='<p style="font-size:14px; color:'+t.head+'; margin:0 0 6px; font-weight:600;">'+(i+1)+'. '+sec[0]+'</p>'+
+          '<p style="font-size:12px; color:'+t.txt+'; margin:0; line-height:1.75;">'+sec[1]+'</p>';
+        $('sections').appendChild(el);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('intro').textContent=d.intro; $('updated').textContent=d.updated;
+      $('contactLbl').textContent=d.contactLbl; $('note').textContent=d.note;
+      renderSections();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.head;
+      $('intro').style.color=t.sub; $('updated').style.color=t.muted; $('note').style.color=t.muted;
+      $('contactBox').style.background=t.card; $('contactBox').style.borderColor=t.cardBd; $('contactLbl').style.color=t.sub;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('settings'); } };
+})();
+</script>
+</body>
+</html>

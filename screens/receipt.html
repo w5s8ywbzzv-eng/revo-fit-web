@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>領収書 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">支払いの明細と領収書。個人向けの支払い明細と、事業者向けに宛名や登録番号入りの正式な領収書を発行できる。言語と明暗を切り替えられる。税額や登録番号はサンプルで、正確な内容は専門家の確認が必要</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">支払いの明細</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:18px 18px 24px; max-height:640px; overflow-y:auto;">
+
+    <!-- 明細カード（レシート風） -->
+    <div id="receiptCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:16px; padding:20px 18px; margin:0 0 16px;">
+      <!-- 発行者 -->
+      <div style="text-align:center; padding:0 0 16px; border-bottom:0.5px dashed #3A352A;">
+        <p style="margin:0; font-family:Jost; font-weight:200; font-size:20px; letter-spacing:1px; color:#F0EBE2;">revo <span style="color:#E3C56A;">fit</span></p>
+        <p id="issuer" style="font-size:10px; color:#6E6555; margin:5px 0 0; line-height:1.5;">revo 運営会社 ・ 東京都〇〇区〇〇 1-2-3</p>
+      </div>
+
+      <!-- 明細本体 -->
+      <div style="padding:16px 0 0;">
+        <div id="metaRows" style="display:flex; flex-direction:column; gap:9px; margin:0 0 14px;"></div>
+
+        <!-- 但し書き -->
+        <div style="padding:12px 0; border-top:0.5px dashed #3A352A; border-bottom:0.5px dashed #3A352A;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <span id="descLbl" style="font-size:12px; color:#8A7E68;">但し書き</span>
+            <span id="descVal" style="font-size:12px; color:#D8CFBB; text-align:right;">revo 横断プラン月額利用料</span>
+          </div>
+        </div>
+
+        <!-- 金額内訳 -->
+        <div style="padding:14px 0 0;">
+          <div id="taxRows" style="display:flex; flex-direction:column; gap:8px; margin:0 0 10px;"></div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline; padding:12px 0 0; border-top:0.5px solid #3A352A;">
+            <span id="totalLbl" style="font-size:14px; color:#F0EBE2; font-weight:600;">合計（税込）</span>
+            <span id="totalVal" style="font-size:22px; color:#F0EBE2; font-weight:600; font-family:Jost;">¥1,960</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 正式な領収書トグル -->
+    <div id="formalToggle" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:15px; margin:0 0 14px;">
+      <div style="display:flex; align-items:flex-start; gap:11px;">
+        <i class="ti ti-file-invoice" style="font-size:19px; color:#E3C56A; margin-top:1px;"></i>
+        <div style="flex:1;">
+          <p id="formalTtl" style="font-size:13px; color:#F0EBE2; margin:0 0 3px; font-weight:600;">正式な領収書が必要ですか？</p>
+          <p id="formalSub" style="font-size:11px; color:#8A7E68; margin:0 0 12px; line-height:1.6;">経費で使う方（個人事業主・法人）向けに、宛名と登録番号入りの領収書を発行できます。</p>
+          <button id="issueBtn" style="background:transparent; border:1px solid #E3C56A; color:#E3C56A; font-size:12px; font-weight:600; padding:10px 16px; border-radius:10px; cursor:pointer;">宛名を入れて発行</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 発行フォーム（初期は隠す） -->
+    <div id="formArea" style="display:none; background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:15px; margin:0 0 14px;">
+      <label id="nameLbl" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 6px;">宛名（会社名・氏名）</label>
+      <input id="nameInput" type="text" placeholder="revo 太郎" style="width:100%; box-sizing:border-box; background:#16140F; border:0.5px solid #2A2620; border-radius:10px; padding:11px 13px; font-size:13px; color:#F0EBE2; font-family:inherit; outline:none; margin:0 0 12px;">
+      <label id="regLbl" style="font-size:12px; color:#B0A488; font-weight:500; display:block; margin:0 0 6px;">あなたの登録番号（任意・事業者のみ）</label>
+      <input id="regInput" type="text" placeholder="T1234567890123" style="width:100%; box-sizing:border-box; background:#16140F; border:0.5px solid #2A2620; border-radius:10px; padding:11px 13px; font-size:13px; color:#F0EBE2; font-family:inherit; outline:none; margin:0 0 14px;">
+      <button id="genBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:14px; font-weight:600; padding:13px; border-radius:11px; cursor:pointer;">領収書を発行する</button>
+    </div>
+
+    <!-- revoの登録番号（適格請求書） -->
+    <div id="revoRegCard" style="display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:12px 14px; margin:0 0 14px;">
+      <i class="ti ti-certificate" style="font-size:16px; color:#8A7E68;"></i>
+      <span id="revoRegTxt" style="font-size:11px; color:#8A7E68; line-height:1.5;">revo 適格請求書発行事業者 登録番号：T0000000000000</span>
+    </div>
+
+    <p id="disclaimer" style="font-size:10px; color:#6E6555; margin:0; line-height:1.7; text-align:center;">※ 表示の税額・登録番号・発行者情報はサンプルです。正確な内容・各国の税制対応は、実際の運用時に税理士等の確認が必要です。</p>
+
+    <!-- 発行完了オーバーレイ -->
+    <div id="doneOverlay" style="display:none; position:absolute; inset:0; background:rgba(16,15,12,0.94); z-index:40; flex-direction:column; align-items:center; justify-content:center; padding:26px; text-align:center;">
+      <div style="width:60px; height:60px; border-radius:50%; background:#E3C56A; display:flex; align-items:center; justify-content:center; margin:0 0 16px;"><i class="ti ti-check" style="font-size:30px; color:#16140F;"></i></div>
+      <p id="doneTitle" style="font-size:18px; color:#F0EBE2; margin:0 0 6px; font-weight:500;">領収書を発行しました</p>
+      <p id="doneSub" style="font-size:12px; color:#A89C84; margin:0 0 8px; line-height:1.6;">宛名入りの領収書（PDF）をご用意しました。</p>
+      <p id="doneName" style="font-size:13px; color:#E3C56A; margin:0 0 20px; font-weight:500;"></p>
+      <button id="doneBtn" style="background:transparent; border:1px solid #E3C56A; color:#E3C56A; font-size:13px; font-weight:600; padding:11px 22px; border-radius:11px; cursor:pointer;">閉じる</button>
+    </div>
+
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur=REVO.lang(), dark=REVO.dark();
+    var T={
+      dark:{bg:"#16140F",title:"#F0EBE2",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",lbl:"#B0A488",card:"#1A1814",cardBd:"#2A2620",accent:"#E3C56A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",dash:"#3A352A",inbg:"#16140F",item:"#D8CFBB"},
+      light:{bg:"#FFFFFF",title:"#2E2A24",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",lbl:"#7A7060",card:"#FBF7F1",cardBd:"#F0EAE0",accent:"#BA7517",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",dash:"#E0D6C4",inbg:"#FFFFFF",item:"#4A4436"}
+    };
+    var D={
+      "日本語":{hdr:"支払いの明細",issuer:"revo 運営会社 ・ 東京都〇〇区〇〇 1-2-3",
+        meta:[["日付","2026年7月2日"],["プラン","横断プラン（月額）"],["支払い方法","カード •••• 4242"]],
+        descLbl:"但し書き",descVal:"revo 横断プラン月額利用料",
+        tax:[["小計（税抜）","¥1,782"],["消費税（10%）","¥178"]],totalLbl:"合計（税込）",totalVal:"¥1,960",
+        formalTtl:"正式な領収書が必要ですか？",formalSub:"経費で使う方（個人事業主・法人）向けに、宛名と登録番号入りの領収書を発行できます。",issueBtn:"宛名を入れて発行",
+        nameLbl:"宛名（会社名・氏名）",namePh:"revo 太郎",regLbl:"あなたの登録番号（任意・事業者のみ）",genBtn:"領収書を発行する",
+        revoReg:"revo 適格請求書発行事業者 登録番号：T0000000000000",
+        disclaimer:"※ 表示の税額・登録番号・発行者情報はサンプルです。正確な内容・各国の税制対応は、実際の運用時に税理士等の確認が必要です。",
+        doneTitle:"領収書を発行しました",doneSub:"宛名入りの領収書（PDF）をご用意しました。",doneBtn:"閉じる"},
+      "English":{hdr:"Payment detail",issuer:"revo Inc. · 1-2-3 ***, Tokyo, Japan",
+        meta:[["Date","Jul 2, 2026"],["Plan","Cross plan (monthly)"],["Payment","Card •••• 4242"]],
+        descLbl:"Description",descVal:"revo Cross plan monthly fee",
+        tax:[["Subtotal","$11.81"],["Tax (10%)","$1.18"]],totalLbl:"Total (incl. tax)",totalVal:"$12.99",
+        formalTtl:"Need a formal receipt?",formalSub:"For those expensing it (sole traders, companies), issue a receipt with a recipient name and registration number.",issueBtn:"Add name & issue",
+        nameLbl:"Recipient (company or name)",namePh:"Taro Revo",regLbl:"Your registration number (optional, businesses)",genBtn:"Issue receipt",
+        revoReg:"revo qualified invoice issuer reg. no.: T0000000000000",
+        disclaimer:"* Tax, registration number and issuer details shown are samples. Accurate content and per-country tax handling require a tax advisor at launch.",
+        doneTitle:"Receipt issued",doneSub:"Your named receipt (PDF) is ready.",doneBtn:"Close"},
+      "简体中文":{hdr:"支付明细",issuer:"revo 运营公司 · 东京都〇〇区〇〇 1-2-3",
+        meta:[["日期","2026年7月2日"],["套餐","横跨套餐（月度）"],["支付方式","卡 •••• 4242"]],
+        descLbl:"事由",descVal:"revo 横跨套餐月度使用费",
+        tax:[["小计（不含税）","¥89"],["消费税（10%）","¥9"]],totalLbl:"合计（含税）",totalVal:"¥98",
+        formalTtl:"需要正式收据吗？",formalSub:"面向报销的用户（个体户·公司），可开具含抬头与登记号的收据。",issueBtn:"填抬头并开具",
+        nameLbl:"抬头（公司名·姓名）",namePh:"revo 太郎",regLbl:"您的登记号（选填·仅限企业）",genBtn:"开具收据",
+        revoReg:"revo 合格发票开具方 登记号：T0000000000000",
+        disclaimer:"※ 所示税额、登记号、开具方信息为示例。准确内容与各国税制对应，实际运营时需税务师确认。",
+        doneTitle:"已开具收据",doneSub:"含抬头的收据（PDF）已准备好。",doneBtn:"关闭"},
+      "繁體中文":{hdr:"付款明細",issuer:"revo 營運公司 · 東京都〇〇區〇〇 1-2-3",
+        meta:[["日期","2026年7月2日"],["方案","橫跨方案（月費）"],["付款方式","卡 •••• 4242"]],
+        descLbl:"事由",descVal:"revo 橫跨方案月費",
+        tax:[["小計（未稅）","NT$355"],["營業稅（10%）","NT$35"]],totalLbl:"合計（含稅）",totalVal:"NT$390",
+        formalTtl:"需要正式收據嗎？",formalSub:"為報帳的使用者（個人事業·公司），可開立含抬頭與登記號的收據。",issueBtn:"填抬頭並開立",
+        nameLbl:"抬頭（公司名·姓名）",namePh:"revo 太郎",regLbl:"您的登記號（選填·僅限企業）",genBtn:"開立收據",
+        revoReg:"revo 合格發票開立方 登記號：T0000000000000",
+        disclaimer:"※ 所示稅額、登記號、開立方資訊為範例。準確內容與各國稅制對應，實際營運時需稅務師確認。",
+        doneTitle:"已開立收據",doneSub:"含抬頭的收據（PDF）已準備好。",doneBtn:"關閉"},
+      "한국어":{hdr:"결제 명세",issuer:"revo 운영사 · 도쿄도 〇〇구 〇〇 1-2-3",
+        meta:[["날짜","2026년 7월 2일"],["플랜","크로스 플랜(월간)"],["결제 수단","카드 •••• 4242"]],
+        descLbl:"적요",descVal:"revo 크로스 플랜 월 이용료",
+        tax:[["소계(세전)","₩15,909"],["부가세(10%)","₩1,591"]],totalLbl:"합계(세포함)",totalVal:"₩17,500",
+        formalTtl:"정식 영수증이 필요하세요?",formalSub:"경비 처리하는 분(개인사업자·법인)을 위해 수신인과 등록번호가 담긴 영수증을 발행할 수 있어요.",issueBtn:"수신인 넣고 발행",
+        nameLbl:"수신인(회사명·성명)",namePh:"revo 타로",regLbl:"귀하의 등록번호(선택·사업자만)",genBtn:"영수증 발행",
+        revoReg:"revo 적격청구서 발행사업자 등록번호: T0000000000000",
+        disclaimer:"※ 표시된 세액·등록번호·발행자 정보는 샘플입니다. 정확한 내용과 국가별 세제 대응은 실제 운영 시 세무사 확인이 필요합니다.",
+        doneTitle:"영수증을 발행했어요",doneSub:"수신인이 담긴 영수증(PDF)을 준비했어요.",doneBtn:"닫기"},
+      "Français":{hdr:"Détail du paiement",issuer:"revo Inc. · 1-2-3 ***, Tokyo, Japon",
+        meta:[["Date","2 juil. 2026"],["Forfait","Plan croisé (mensuel)"],["Paiement","Carte •••• 4242"]],
+        descLbl:"Objet",descVal:"Frais mensuels du plan croisé revo",
+        tax:[["Sous-total (HT)","11,81 €"],["TVA (10%)","1,18 €"]],totalLbl:"Total (TTC)",totalVal:"12,99 €",
+        formalTtl:"Besoin d'un reçu officiel ?",formalSub:"Pour ceux qui le déduisent (indépendants, sociétés) : reçu avec nom et numéro d'immatriculation.",issueBtn:"Ajouter le nom",
+        nameLbl:"Destinataire (société ou nom)",namePh:"Taro Revo",regLbl:"Votre numéro (facultatif, pros)",genBtn:"Émettre le reçu",
+        revoReg:"revo, émetteur de factures conformes, n° : T0000000000000",
+        disclaimer:"* La TVA, le numéro et les infos émetteur affichés sont des exemples. Le contenu exact et la fiscalité par pays nécessitent un conseiller fiscal au lancement.",
+        doneTitle:"Reçu émis",doneSub:"Votre reçu nominatif (PDF) est prêt.",doneBtn:"Fermer"},
+      "Español":{hdr:"Detalle de pago",issuer:"revo Inc. · 1-2-3 ***, Tokio, Japón",
+        meta:[["Fecha","2 jul 2026"],["Plan","Plan cruzado (mensual)"],["Pago","Tarjeta •••• 4242"]],
+        descLbl:"Concepto",descVal:"Cuota mensual del plan cruzado revo",
+        tax:[["Subtotal (sin imp.)","11,81 €"],["Impuesto (10%)","1,18 €"]],totalLbl:"Total (con imp.)",totalVal:"12,99 €",
+        formalTtl:"¿Necesitas un recibo formal?",formalSub:"Para quienes lo deducen (autónomos, empresas): recibo con nombre y número de registro.",issueBtn:"Añadir nombre",
+        nameLbl:"Destinatario (empresa o nombre)",namePh:"Taro Revo",regLbl:"Tu número de registro (opcional, empresas)",genBtn:"Emitir recibo",
+        revoReg:"revo, emisor de facturas cualificadas, n.º: T0000000000000",
+        disclaimer:"* El impuesto, número y datos del emisor son ejemplos. El contenido exacto y la fiscalidad por país requieren un asesor fiscal en el lanzamiento.",
+        doneTitle:"Recibo emitido",doneSub:"Tu recibo con nombre (PDF) está listo.",doneBtn:"Cerrar"},
+      "Deutsch":{hdr:"Zahlungsdetail",issuer:"revo Inc. · 1-2-3 ***, Tokio, Japan",
+        meta:[["Datum","2. Juli 2026"],["Tarif","Cross-Plan (monatlich)"],["Zahlung","Karte •••• 4242"]],
+        descLbl:"Verwendungszweck",descVal:"revo Cross-Plan Monatsgebühr",
+        tax:[["Zwischensumme (netto)","11,81 €"],["MwSt. (10%)","1,18 €"]],totalLbl:"Gesamt (brutto)",totalVal:"12,99 €",
+        formalTtl:"Brauchst du eine formelle Quittung?",formalSub:"Für alle, die sie absetzen (Selbstständige, Firmen): Quittung mit Name und Registriernummer.",issueBtn:"Namen hinzufügen",
+        nameLbl:"Empfänger (Firma oder Name)",namePh:"Taro Revo",regLbl:"Deine Registriernummer (optional, Firmen)",genBtn:"Quittung ausstellen",
+        revoReg:"revo, Aussteller qualifizierter Rechnungen, Nr.: T0000000000000",
+        disclaimer:"* Steuer, Nummer und Ausstellerangaben sind Beispiele. Genaue Inhalte und länderspezifische Steuern erfordern beim Start einen Steuerberater.",
+        doneTitle:"Quittung ausgestellt",doneSub:"Deine Quittung mit Namen (PDF) ist bereit.",doneBtn:"Schließen"},
+      "Italiano":{hdr:"Dettaglio pagamento",issuer:"revo Inc. · 1-2-3 ***, Tokyo, Giappone",
+        meta:[["Data","2 lug 2026"],["Piano","Piano incrociato (mensile)"],["Pagamento","Carta •••• 4242"]],
+        descLbl:"Causale",descVal:"Canone mensile piano incrociato revo",
+        tax:[["Subtotale (netto)","11,81 €"],["IVA (10%)","1,18 €"]],totalLbl:"Totale (IVA incl.)",totalVal:"12,99 €",
+        formalTtl:"Serve una ricevuta formale?",formalSub:"Per chi la detrae (autonomi, aziende): ricevuta con nome e numero di registrazione.",issueBtn:"Aggiungi il nome",
+        nameLbl:"Destinatario (azienda o nome)",namePh:"Taro Revo",regLbl:"Il tuo numero (facoltativo, aziende)",genBtn:"Emetti ricevuta",
+        revoReg:"revo, emittente di fatture qualificate, n.: T0000000000000",
+        disclaimer:"* Imposta, numero e dati emittente mostrati sono esempi. Contenuti esatti e fiscalità per paese richiedono un consulente fiscale al lancio.",
+        doneTitle:"Ricevuta emessa",doneSub:"La tua ricevuta nominativa (PDF) è pronta.",doneBtn:"Chiudi"},
+      "Português":{hdr:"Detalhe do pagamento",issuer:"revo Inc. · 1-2-3 ***, Tóquio, Japão",
+        meta:[["Data","2 ago 2026"],["Plano","Plano cruzado (mensal)"],["Pagamento","Cartão •••• 4242"]],
+        descLbl:"Descrição",descVal:"Mensalidade do plano cruzado revo",
+        tax:[["Subtotal (sem imposto)","R$59,00"],["Imposto (10%)","R$5,90"]],totalLbl:"Total (com imposto)",totalVal:"R$64,90",
+        formalTtl:"Precisa de um recibo formal?",formalSub:"Para quem lança como despesa (autônomos, empresas): recibo com nome e número de registro.",issueBtn:"Adicionar nome",
+        nameLbl:"Destinatário (empresa ou nome)",namePh:"Taro Revo",regLbl:"Seu número de registro (opcional, empresas)",genBtn:"Emitir recibo",
+        revoReg:"revo, emissor de notas qualificadas, nº: T0000000000000",
+        disclaimer:"* Imposto, número e dados do emissor mostrados são exemplos. Conteúdo exato e tributação por país exigem um contador no lançamento.",
+        doneTitle:"Recibo emitido",doneSub:"Seu recibo nominal (PDF) está pronto.",doneBtn:"Fechar"},
+      "ภาษาไทย":{hdr:"รายละเอียดการชำระ",issuer:"revo บริษัทผู้ให้บริการ · โตเกียว 〇〇 1-2-3",
+        meta:[["วันที่","2 ก.ค. 2026"],["แพ็กเกจ","แพ็กเกจข้ามแอป (รายเดือน)"],["ชำระโดย","บัตร •••• 4242"]],
+        descLbl:"รายการ",descVal:"ค่าบริการรายเดือนแพ็กเกจข้ามแอป revo",
+        tax:[["ยอดย่อย (ไม่รวมภาษี)","฿299"],["ภาษี (10%)","฿30"]],totalLbl:"รวม (รวมภาษี)",totalVal:"฿329",
+        formalTtl:"ต้องการใบเสร็จอย่างเป็นทางการไหม?",formalSub:"สำหรับผู้ที่ลงค่าใช้จ่าย (บุคคลธรรมดา·บริษัท) ออกใบเสร็จพร้อมชื่อและเลขทะเบียนได้",issueBtn:"ใส่ชื่อและออก",
+        nameLbl:"ผู้รับ (ชื่อบริษัท·ชื่อ)",namePh:"revo ทาโร่",regLbl:"เลขทะเบียนของคุณ (ไม่บังคับ·เฉพาะธุรกิจ)",genBtn:"ออกใบเสร็จ",
+        revoReg:"revo ผู้ออกใบกำกับที่ถูกต้อง เลขทะเบียน: T0000000000000",
+        disclaimer:"※ ภาษี เลขทะเบียน และข้อมูลผู้ออกที่แสดงเป็นตัวอย่าง เนื้อหาที่ถูกต้องและภาษีแต่ละประเทศต้องปรึกษาผู้เชี่ยวชาญเมื่อเปิดใช้จริง",
+        doneTitle:"ออกใบเสร็จแล้ว",doneSub:"ใบเสร็จที่มีชื่อ (PDF) พร้อมแล้ว",doneBtn:"ปิด"},
+      "हिन्दी":{hdr:"भुगतान विवरण",issuer:"revo संचालन कंपनी · टोक्यो 〇〇 1-2-3",
+        meta:[["तारीख","2 जुलाई 2026"],["प्लान","क्रॉस प्लान (मासिक)"],["भुगतान","कार्ड •••• 4242"]],
+        descLbl:"विवरण",descVal:"revo क्रॉस प्लान मासिक शुल्क",
+        tax:[["उप-योग (कर रहित)","₹890"],["कर (10%)","₹89"]],totalLbl:"कुल (कर सहित)",totalVal:"₹979",
+        formalTtl:"औपचारिक रसीद चाहिए?",formalSub:"खर्च में दिखाने वालों (स्वरोजगार·कंपनी) के लिए, नाम और पंजीकरण संख्या वाली रसीद जारी करें।",issueBtn:"नाम डालकर जारी करें",
+        nameLbl:"प्राप्तकर्ता (कंपनी·नाम)",namePh:"revo तारो",regLbl:"आपकी पंजीकरण संख्या (वैकल्पिक·व्यवसाय)",genBtn:"रसीद जारी करें",
+        revoReg:"revo योग्य चालान जारीकर्ता पंजीकरण संख्या: T0000000000000",
+        disclaimer:"※ दिखाया गया कर, पंजीकरण संख्या व जारीकर्ता जानकारी नमूना है। सटीक विषय व देशवार कर व्यवस्था के लिए संचालन के समय कर सलाहकार आवश्यक।",
+        doneTitle:"रसीद जारी की गई",doneSub:"नाम वाली रसीद (PDF) तैयार है।",doneBtn:"बंद करें"},
+      "Tiếng Việt":{hdr:"Chi tiết thanh toán",issuer:"revo Inc. · 1-2-3 ***, Tokyo, Nhật Bản",
+        meta:[["Ngày","2/7/2026"],["Gói","Gói kết hợp (hàng tháng)"],["Thanh toán","Thẻ •••• 4242"]],
+        descLbl:"Nội dung",descVal:"Phí hàng tháng gói kết hợp revo",
+        tax:[["Tạm tính (chưa thuế)","299.000₫"],["Thuế (10%)","30.000₫"]],totalLbl:"Tổng (gồm thuế)",totalVal:"329.000₫",
+        formalTtl:"Cần hóa đơn chính thức?",formalSub:"Cho người kê khai chi phí (hộ kinh doanh·công ty): xuất hóa đơn có tên và mã số đăng ký.",issueBtn:"Thêm tên & xuất",
+        nameLbl:"Người nhận (công ty·tên)",namePh:"revo Taro",regLbl:"Mã số đăng ký của bạn (tùy chọn·doanh nghiệp)",genBtn:"Xuất hóa đơn",
+        revoReg:"revo, đơn vị xuất hóa đơn hợp lệ, mã số: T0000000000000",
+        disclaimer:"* Thuế, mã số và thông tin đơn vị hiển thị là ví dụ. Nội dung chính xác và thuế từng nước cần chuyên gia thuế khi vận hành.",
+        doneTitle:"Đã xuất hóa đơn",doneSub:"Hóa đơn ghi tên (PDF) đã sẵn sàng.",doneBtn:"Đóng"},
+      "Bahasa Indonesia":{hdr:"Rincian pembayaran",issuer:"revo Inc. · 1-2-3 ***, Tokyo, Jepang",
+        meta:[["Tanggal","2 Agu 2026"],["Paket","Paket lintas (bulanan)"],["Pembayaran","Kartu •••• 4242"]],
+        descLbl:"Keterangan",descVal:"Biaya bulanan paket lintas revo",
+        tax:[["Subtotal (tanpa pajak)","Rp179.000"],["Pajak (10%)","Rp18.000"]],totalLbl:"Total (termasuk pajak)",totalVal:"Rp197.000",
+        formalTtl:"Perlu kuitansi resmi?",formalSub:"Untuk yang mengklaim biaya (usaha perseorangan·perusahaan): terbitkan kuitansi dengan nama dan nomor registrasi.",issueBtn:"Tambah nama & terbitkan",
+        nameLbl:"Penerima (perusahaan·nama)",namePh:"revo Taro",regLbl:"Nomor registrasi Anda (opsional·bisnis)",genBtn:"Terbitkan kuitansi",
+        revoReg:"revo penerbit faktur resmi, no. registrasi: T0000000000000",
+        disclaimer:"* Pajak, nomor registrasi, dan info penerbit yang ditampilkan adalah contoh. Konten akurat dan pajak tiap negara perlu konsultan pajak saat operasional.",
+        doneTitle:"Kuitansi diterbitkan",doneSub:"Kuitansi bernama (PDF) sudah siap.",doneBtn:"Tutup"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderRows(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('metaRows').innerHTML=d.meta.map(function(m){
+        return '<div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-size:12px; color:'+t.sub+';">'+m[0]+'</span><span style="font-size:12px; color:'+t.item+'; font-weight:500;">'+m[1]+'</span></div>';
+      }).join("");
+      $('taxRows').innerHTML=d.tax.map(function(x){
+        return '<div style="display:flex; justify-content:space-between; align-items:baseline;"><span style="font-size:12px; color:'+t.sub+';">'+x[0]+'</span><span style="font-size:12px; color:'+t.item+'; font-family:Jost;">'+x[1]+'</span></div>';
+      }).join("");
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('issuer').textContent=d.issuer;
+      $('descLbl').textContent=d.descLbl; $('descVal').textContent=d.descVal;
+      $('totalLbl').textContent=d.totalLbl; $('totalVal').textContent=d.totalVal;
+      $('formalTtl').textContent=d.formalTtl; $('formalSub').textContent=d.formalSub; $('issueBtn').textContent=d.issueBtn;
+      $('nameLbl').textContent=d.nameLbl; $('nameInput').placeholder=d.namePh; $('regLbl').textContent=d.regLbl; $('genBtn').textContent=d.genBtn;
+      $('revoRegTxt').textContent=d.revoReg; $('disclaimer').textContent=d.disclaimer;
+      $('doneTitle').textContent=d.doneTitle; $('doneSub').textContent=d.doneSub; $('doneBtn').textContent=d.doneBtn;
+      renderRows();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor=t.cardBd; $('hdrTtl').style.color=t.title;
+      ['receiptCard','formalToggle','formArea','revoRegCard'].forEach(function(id){ $(id).style.background=t.card; $(id).style.borderColor=t.cardBd; });
+      $('issuer').style.color=t.muted; $('descLbl').style.color=t.sub; $('descVal').style.color=t.item;
+      $('totalLbl').style.color=t.title; $('totalVal').style.color=t.title;
+      $('formalTtl').style.color=t.title; $('formalSub').style.color=t.sub;
+      $('issueBtn').style.color=t.accent; $('issueBtn').style.borderColor=t.accent;
+      $('formalToggle').querySelector('.ti-file-invoice').style.color=t.accent;
+      $('nameLbl').style.color=t.lbl; $('regLbl').style.color=t.lbl;
+      ['nameInput','regInput'].forEach(function(id){ $(id).style.background=t.inbg; $(id).style.borderColor=t.cardBd; $(id).style.color=t.title; });
+      $('genBtn').style.background=t.accent; $('genBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('revoRegCard').querySelector('.ti-certificate').style.color=t.sub; $('revoRegTxt').style.color=t.sub;
+      $('disclaimer').style.color=t.muted;
+      $('doneBtn').style.color=t.accent; $('doneBtn').style.borderColor=t.accent;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    $('issueBtn').onclick=function(){ var f=$('formArea'); f.style.display = f.style.display==="none"?"block":"none"; };
+    $('genBtn').onclick=function(){
+      var nm=$('nameInput').value.trim(); var d=D[cur]||D["English"];
+      $('doneName').textContent = nm ? nm : d.namePh;
+      $('doneOverlay').style.display="flex";
+    };
+    $('doneBtn').onclick=function(){ $('doneOverlay').style.display="none"; };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('billing'); } };
+})();
+</script>
+</body>
+</html>

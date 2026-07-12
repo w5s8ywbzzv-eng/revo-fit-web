@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>マイピロー — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">マイ枕。使っている枕を登録して棚に。寝方・肩幅・高さ・硬さまで記録でき、次に買うときの目印になり、同じ条件の人のランキングの素になる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">マイ枕</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <p id="lead" style="font-size:12px; color:#8A7E68; margin:0; padding:14px 18px 0; line-height:1.6;">使っている枕を棚に。寝方や肩幅まで記録すれば、同じ条件の人のランキングにつながります。</p>
+
+  <!-- 通常枕 / 抱き枕 切替 -->
+  <div style="padding:14px 18px 0;">
+    <div id="kindBar" style="display:flex; gap:8px;">
+      <button id="normalBtn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-radius:12px; border:none; background:#E3C56A; color:#16140F; font-size:13px; font-weight:600; cursor:pointer;"><i class="ti ti-bed" style="font-size:16px;"></i><span id="normalLbl">枕</span></button>
+      <button id="hugBtn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-radius:12px; border:0.5px solid #2A2620; background:transparent; color:#8A7E68; font-size:13px; font-weight:500; cursor:pointer;"><i class="ti ti-mood-kid" style="font-size:16px;"></i><span id="hugLbl">抱き枕</span></button>
+    </div>
+  </div>
+
+  <!-- タイプ別プルダウン群 -->
+  <div id="typeGroups" style="padding:14px 18px 0; display:flex; flex-direction:column; gap:9px;"></div>
+
+  <!-- 追加ボタン -->
+  <div style="padding:14px 18px 0;">
+    <button id="addBtn" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:transparent; border:1px dashed #3A352A; color:#B0A488; font-size:14px; font-weight:500; padding:14px; border-radius:13px; cursor:pointer; transition:all 0.3s;"><i class="ti ti-plus" style="font-size:18px;"></i><span id="addLbl">枕を追加</span></button>
+  </div>
+
+  <!-- 追加フォーム -->
+  <div id="addForm" style="display:none; padding:14px 18px 0;">
+    <div style="background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; padding:16px;">
+      <p id="formTtl" style="font-size:13px; color:#F0EBE2; margin:0 0 13px; font-weight:600;">枕を登録</p>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="type">タイプ</p>
+      <div id="typeChips" style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px;"></div>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="name">ブランド・商品名</p>
+      <div id="nameBox" style="background:#16140F; border:0.5px solid #2A2620; border-radius:10px; padding:11px 13px; margin:0 0 14px; color:#6E6555; font-size:13px;">例：テンピュール オリジナル</div>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="sleep">寝方</p>
+      <div id="sleepChips" style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px;"></div>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="shoulder">肩幅</p>
+      <div id="shoulderChips" style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px;"></div>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="height">高さ（任意）</p>
+      <div id="heightChips" style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px;"></div>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="firm">硬さ（任意）</p>
+      <div id="firmChips" style="display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px;"></div>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="rate">評価</p>
+      <div id="rateStars" style="display:flex; gap:5px; margin:0 0 16px;"></div>
+
+      <p class="fLbl" style="font-size:11px; color:#8A7E68; margin:0 0 7px;" data-k="note">使ってみてどうだった？（任意）</p>
+      <div id="noteBox" style="background:#16140F; border:0.5px solid #2A2620; border-radius:10px; padding:11px 13px; margin:0 0 14px; color:#6E6555; font-size:13px; line-height:1.5; min-height:42px;">例：肩こりが楽に。高さがちょうどいい。</div>
+
+      <div id="shareRow" style="display:flex; align-items:center; justify-content:space-between; background:#16140F; border:0.5px solid #2A2620; border-radius:11px; padding:12px 14px; margin:0 0 16px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:9px; flex:1; padding-right:10px;">
+          <i class="ti ti-users" style="font-size:17px; color:#8A7E68;"></i>
+          <span id="shareLbl" style="font-size:12px; color:#C9C0AE; line-height:1.4;">この感想をランキングに載せる</span>
+        </div>
+        <div id="shareToggle" style="width:42px; height:24px; border-radius:999px; background:#2A2620; position:relative; transition:background 0.25s; flex-shrink:0;">
+          <div id="shareKnob" style="width:18px; height:18px; border-radius:50%; background:#6E6555; position:absolute; top:3px; left:3px; transition:all 0.25s;"></div>
+        </div>
+      </div>
+
+      <button id="saveBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:14px; font-weight:600; padding:13px; border-radius:12px; cursor:pointer;">棚に追加する</button>
+    </div>
+  </div>
+
+  <div style="height:24px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var MYPILLOW=[
+      {kind:"normal",type:"memory",name:"テンピュール オリジナル",sleep:"back",shoulder:"std",height:"mid",firm:"mid",rate:5,note:"肩こりが楽に。高さがちょうどいい。",share:true},
+      {kind:"normal",type:"pipe",name:"ニトリ 高さ調整できる枕",sleep:"side",shoulder:"wide",height:"high",firm:"firm",rate:4,note:"中身を出して高さを調整できるのが良い。",share:true},
+      {kind:"normal",type:"feather",name:"無印良品 羽毛枕",sleep:"back",shoulder:"std",height:"low",firm:"soft",rate:3,note:"柔らかいがへたりやすい。",share:false},
+      {kind:"hug",type:"hugbody",name:"MOGU 気持ちいい抱き枕",sleep:"side",shoulder:"std",height:"",firm:"soft",rate:5,note:"横向きが安定する。手放せない。",share:true}
+    ];
+    var TYPES={
+      normal:["memory","highrebound","feather","buckwheat","pipe","latex","fiber"],
+      hug:["hugbody","hugmaternity","hugcooling"]
+    };
+    var typeColors={memory:"#3B6FE0",highrebound:"#14B8A6",feather:"#E89BB8",buckwheat:"#C9A24E",pipe:"#9B7BD4",latex:"#5DCAA5",fiber:"#E0A86A",hugbody:"#5D9CEA",hugmaternity:"#E89BB8",hugcooling:"#14B8A6"};
+    var D={
+      "日本語":{hdr:"マイ枕",lead:"使っている枕を棚に。寝方や肩幅まで記録すれば、同じ条件の人のランキングにつながります。",
+        normal:"枕",hug:"抱き枕",add:"枕を追加",formTtl:"枕を登録",save:"棚に追加する",
+        f:{type:"タイプ",name:"ブランド・商品名",sleep:"寝方",shoulder:"肩幅",height:"高さ（任意）",firm:"硬さ（任意）",rate:"評価",note:"使ってみてどうだった？（任意）"},
+        namePh:"例：テンピュール オリジナル",notePh:"例：肩こりが楽に。高さがちょうどいい。",
+        shareLbl:"この感想をランキングに載せる",sharedTag:"みんなに公開中",repeat:"また買う",empty:"まだ登録がありません",count:"件",
+        types:{memory:"低反発",highrebound:"高反発",feather:"羽毛",buckwheat:"そばがら",pipe:"パイプ",latex:"ラテックス",fiber:"ファイバー",hugbody:"抱き枕",hugmaternity:"妊婦用抱き枕",hugcooling:"接触冷感抱き枕"},
+        sleeps:{back:"仰向け",side:"横向き",prone:"うつ伏せ"},
+        shoulders:{wide:"広い",std:"標準",narrow:"狭い"},
+        heights:{low:"低め",mid:"普通",high:"高め"},
+        firms:{soft:"やわらかい",mid:"普通",firm:"かため"}},
+      "English":{hdr:"My pillows",lead:"Shelve the pillows you use. Log sleep position and shoulder width to connect with the ranking for people like you.",
+        normal:"Pillow",hug:"Body pillow",add:"Add a pillow",formTtl:"Register a pillow",save:"Add to shelf",
+        f:{type:"Type",name:"Brand / product",sleep:"Sleep position",shoulder:"Shoulder width",height:"Height (optional)",firm:"Firmness (optional)",rate:"Rating",note:"How was it? (optional)"},
+        namePh:"e.g. Tempur Original",notePh:"e.g. Eased my stiff shoulders. Height is just right.",
+        shareLbl:"Show this note on the ranking",sharedTag:"Shared publicly",repeat:"Buy again",empty:"Nothing registered yet",count:"",
+        types:{memory:"Memory foam",highrebound:"High-rebound",feather:"Feather",buckwheat:"Buckwheat",pipe:"Pipe",latex:"Latex",fiber:"Fiber",hugbody:"Body pillow",hugmaternity:"Maternity pillow",hugcooling:"Cooling body pillow"},
+        sleeps:{back:"Back",side:"Side",prone:"Stomach"},
+        shoulders:{wide:"Wide",std:"Standard",narrow:"Narrow"},
+        heights:{low:"Low",mid:"Medium",high:"High"},
+        firms:{soft:"Soft",mid:"Medium",firm:"Firm"}},
+      "简体中文":{hdr:"我的枕头",lead:"把在用的枕头放上架。记录睡姿和肩宽，就能连到同条件人的排行榜。",
+        normal:"枕头",hug:"抱枕",add:"添加枕头",formTtl:"登记枕头",save:"加入货架",
+        f:{type:"类型",name:"品牌·商品名",sleep:"睡姿",shoulder:"肩宽",height:"高度（可选）",firm:"硬度（可选）",rate:"评分",note:"用着怎么样？（可选）"},
+        namePh:"例：Tempur 原创",notePh:"例：肩颈轻松了，高度刚好。",
+        shareLbl:"把这条感想放到排行榜",sharedTag:"已公开",repeat:"再次购买",empty:"还没有登记",count:"个",
+        types:{memory:"记忆棉",highrebound:"高回弹",feather:"羽毛",buckwheat:"荞麦",pipe:"管棉",latex:"乳胶",fiber:"纤维",hugbody:"抱枕",hugmaternity:"孕妇抱枕",hugcooling:"凉感抱枕"},
+        sleeps:{back:"仰睡",side:"侧睡",prone:"趴睡"},
+        shoulders:{wide:"宽",std:"标准",narrow:"窄"},
+        heights:{low:"低",mid:"中",high:"高"},
+        firms:{soft:"软",mid:"中",firm:"硬"}},
+      "繁體中文":{hdr:"我的枕頭",lead:"把在用的枕頭放上架。記錄睡姿和肩寬，就能連到同條件人的排行榜。",
+        normal:"枕頭",hug:"抱枕",add:"新增枕頭",formTtl:"登記枕頭",save:"加入貨架",
+        f:{type:"類型",name:"品牌·商品名",sleep:"睡姿",shoulder:"肩寬",height:"高度（可選）",firm:"硬度（可選）",rate:"評分",note:"用起來如何？（可選）"},
+        namePh:"例：Tempur 原創",notePh:"例：肩頸輕鬆了，高度剛好。",
+        shareLbl:"把這則感想放到排行榜",sharedTag:"已公開",repeat:"再次購買",empty:"還沒有登記",count:"個",
+        types:{memory:"記憶棉",highrebound:"高回彈",feather:"羽毛",buckwheat:"蕎麥",pipe:"管棉",latex:"乳膠",fiber:"纖維",hugbody:"抱枕",hugmaternity:"孕婦抱枕",hugcooling:"涼感抱枕"},
+        sleeps:{back:"仰睡",side:"側睡",prone:"趴睡"},
+        shoulders:{wide:"寬",std:"標準",narrow:"窄"},
+        heights:{low:"低",mid:"中",high:"高"},
+        firms:{soft:"軟",mid:"中",firm:"硬"}},
+      "한국어":{hdr:"내 베개",lead:"쓰는 베개를 선반에. 수면 자세와 어깨너비까지 기록하면 같은 조건인 사람의 랭킹으로 이어져요.",
+        normal:"베개",hug:"바디필로우",add:"베개 추가",formTtl:"베개 등록",save:"선반에 추가",
+        f:{type:"종류",name:"브랜드·제품명",sleep:"수면 자세",shoulder:"어깨너비",height:"높이(선택)",firm:"단단함(선택)",rate:"평가",note:"써보니 어땠나요?(선택)"},
+        namePh:"예: 템퍼 오리지널",notePh:"예: 어깨 결림이 편해졌어요. 높이가 딱.",
+        shareLbl:"이 후기를 랭킹에 올리기",sharedTag:"공개 중",repeat:"다시 구매",empty:"아직 등록이 없어요",count:"개",
+        types:{memory:"메모리폼",highrebound:"고반발",feather:"깃털",buckwheat:"메밀",pipe:"파이프",latex:"라텍스",fiber:"파이버",hugbody:"바디필로우",hugmaternity:"임산부 베개",hugcooling:"쿨링 바디필로우"},
+        sleeps:{back:"천장 보기",side:"옆으로",prone:"엎드려"},
+        shoulders:{wide:"넓음",std:"표준",narrow:"좁음"},
+        heights:{low:"낮음",mid:"보통",high:"높음"},
+        firms:{soft:"부드러움",mid:"보통",firm:"단단함"}},
+      "ภาษาไทย":{hdr:"หมอนของฉัน",lead:"เก็บหมอนที่ใช้ไว้บนชั้น บันทึกท่านอนและช่วงไหล่ จะเชื่อมกับอันดับของคนแบบเดียวกัน",
+        normal:"หมอน",hug:"หมอนข้าง",add:"เพิ่มหมอน",formTtl:"ลงทะเบียนหมอน",save:"เพิ่มลงชั้น",
+        f:{type:"ชนิด",name:"แบรนด์·ชื่อสินค้า",sleep:"ท่านอน",shoulder:"ช่วงไหล่",height:"ความสูง (ถ้ามี)",firm:"ความแน่น (ถ้ามี)",rate:"คะแนน",note:"ใช้แล้วเป็นไง? (ถ้ามี)"},
+        namePh:"เช่น Tempur Original",notePh:"เช่น ไหล่สบายขึ้น ความสูงกำลังดี",
+        shareLbl:"แสดงความเห็นนี้บนอันดับ",sharedTag:"เปิดเผยแล้ว",repeat:"ซื้ออีก",empty:"ยังไม่มีรายการ",count:"",
+        types:{memory:"เมมโมรีโฟม",highrebound:"คืนตัวสูง",feather:"ขนนก",buckwheat:"บัควีท",pipe:"ไปป์",latex:"ลาเท็กซ์",fiber:"ไฟเบอร์",hugbody:"หมอนข้าง",hugmaternity:"หมอนคนท้อง",hugcooling:"หมอนข้างเย็นสบาย"},
+        sleeps:{back:"นอนหงาย",side:"นอนตะแคง",prone:"นอนคว่ำ"},
+        shoulders:{wide:"กว้าง",std:"มาตรฐาน",narrow:"แคบ"},
+        heights:{low:"ต่ำ",mid:"กลาง",high:"สูง"},
+        firms:{soft:"นุ่ม",mid:"กลาง",firm:"แน่น"}},
+      "Français":{hdr:"Mes oreillers",lead:"Rangez les oreillers que vous utilisez. Notez position de sommeil et largeur d'épaules pour rejoindre le classement des gens comme vous.",
+        normal:"Oreiller",hug:"Oreiller corporel",add:"Ajouter un oreiller",formTtl:"Enregistrer un oreiller",save:"Ajouter à l'étagère",
+        f:{type:"Type",name:"Marque / produit",sleep:"Position de sommeil",shoulder:"Largeur d'épaules",height:"Hauteur (facultatif)",firm:"Fermeté (facultatif)",rate:"Note",note:"Alors, cet oreiller ? (facultatif)"},
+        namePh:"ex. Tempur Original",notePh:"ex. Épaules soulagées. Hauteur parfaite.",
+        shareLbl:"Afficher cet avis dans le classement",sharedTag:"Partagé",repeat:"Racheter",empty:"Rien d'enregistré",count:"",
+        types:{memory:"Mémoire de forme",highrebound:"Haute résilience",feather:"Plume",buckwheat:"Sarrasin",pipe:"Tubes",latex:"Latex",fiber:"Fibre",hugbody:"Oreiller corporel",hugmaternity:"Oreiller de grossesse",hugcooling:"Oreiller rafraîchissant"},
+        sleeps:{back:"Sur le dos",side:"Sur le côté",prone:"Sur le ventre"},
+        shoulders:{wide:"Larges",std:"Standard",narrow:"Étroites"},
+        heights:{low:"Basse",mid:"Moyenne",high:"Haute"},
+        firms:{soft:"Souple",mid:"Moyenne",firm:"Ferme"}},
+      "Español":{hdr:"Mis almohadas",lead:"Guarda las almohadas que usas. Anota postura y ancho de hombros para conectar con el ranking de gente como tú.",
+        normal:"Almohada",hug:"Almohada de cuerpo",add:"Añadir almohada",formTtl:"Registrar almohada",save:"Añadir al estante",
+        f:{type:"Tipo",name:"Marca / producto",sleep:"Postura al dormir",shoulder:"Ancho de hombros",height:"Altura (opcional)",firm:"Firmeza (opcional)",rate:"Valoración",note:"¿Qué tal te fue? (opcional)"},
+        namePh:"ej. Tempur Original",notePh:"ej. Alivió mis hombros. Altura perfecta.",
+        shareLbl:"Mostrar esta opinión en el ranking",sharedTag:"Compartido",repeat:"Comprar otra vez",empty:"Nada registrado aún",count:"",
+        types:{memory:"Viscoelástica",highrebound:"Alta resiliencia",feather:"Plumas",buckwheat:"Trigo sarraceno",pipe:"Tubos",latex:"Látex",fiber:"Fibra",hugbody:"Almohada de cuerpo",hugmaternity:"Almohada de embarazo",hugcooling:"Almohada refrescante"},
+        sleeps:{back:"Boca arriba",side:"De lado",prone:"Boca abajo"},
+        shoulders:{wide:"Anchos",std:"Estándar",narrow:"Estrechos"},
+        heights:{low:"Baja",mid:"Media",high:"Alta"},
+        firms:{soft:"Blanda",mid:"Media",firm:"Firme"}},
+      "Deutsch":{hdr:"Meine Kissen",lead:"Stell die Kissen ins Regal, die du nutzt. Schlafposition und Schulterbreite notieren, um ans Ranking für Leute wie dich anzuknüpfen.",
+        normal:"Kissen",hug:"Körperkissen",add:"Kissen hinzufügen",formTtl:"Kissen erfassen",save:"Ins Regal",
+        f:{type:"Typ",name:"Marke / Produkt",sleep:"Schlafposition",shoulder:"Schulterbreite",height:"Höhe (optional)",firm:"Festigkeit (optional)",rate:"Bewertung",note:"Wie war es? (optional)"},
+        namePh:"z.B. Tempur Original",notePh:"z.B. Schultern entlastet. Höhe genau richtig.",
+        shareLbl:"Diese Notiz im Ranking zeigen",sharedTag:"Geteilt",repeat:"Erneut kaufen",empty:"Noch nichts erfasst",count:"",
+        types:{memory:"Memory-Schaum",highrebound:"Hochelastisch",feather:"Feder",buckwheat:"Buchweizen",pipe:"Röhrchen",latex:"Latex",fiber:"Faser",hugbody:"Körperkissen",hugmaternity:"Schwangerschaftskissen",hugcooling:"Kühlendes Körperkissen"},
+        sleeps:{back:"Rücken",side:"Seite",prone:"Bauch"},
+        shoulders:{wide:"Breit",std:"Standard",narrow:"Schmal"},
+        heights:{low:"Niedrig",mid:"Mittel",high:"Hoch"},
+        firms:{soft:"Weich",mid:"Mittel",firm:"Fest"}},
+      "Italiano":{hdr:"I miei cuscini",lead:"Metti sullo scaffale i cuscini che usi. Annota posizione e larghezza spalle per collegarti alla classifica di chi è come te.",
+        normal:"Cuscino",hug:"Cuscino per il corpo",add:"Aggiungi cuscino",formTtl:"Registra cuscino",save:"Aggiungi allo scaffale",
+        f:{type:"Tipo",name:"Marca / prodotto",sleep:"Posizione del sonno",shoulder:"Larghezza spalle",height:"Altezza (facoltativo)",firm:"Rigidità (facoltativo)",rate:"Valutazione",note:"Com'è andata? (facoltativo)"},
+        namePh:"es. Tempur Original",notePh:"es. Spalle sollevate. Altezza perfetta.",
+        shareLbl:"Mostra questo commento in classifica",sharedTag:"Condiviso",repeat:"Ricompra",empty:"Ancora niente",count:"",
+        types:{memory:"Memory foam",highrebound:"Alta resilienza",feather:"Piuma",buckwheat:"Grano saraceno",pipe:"Tubicini",latex:"Lattice",fiber:"Fibra",hugbody:"Cuscino per il corpo",hugmaternity:"Cuscino gravidanza",hugcooling:"Cuscino rinfrescante"},
+        sleeps:{back:"Supino",side:"Di lato",prone:"Prono"},
+        shoulders:{wide:"Larghe",std:"Standard",narrow:"Strette"},
+        heights:{low:"Bassa",mid:"Media",high:"Alta"},
+        firms:{soft:"Morbido",mid:"Medio",firm:"Rigido"}},
+      "Português":{hdr:"Meus travesseiros",lead:"Coloque na prateleira os travesseiros que usa. Registre posição e largura dos ombros para conectar ao ranking de gente como você.",
+        normal:"Travesseiro",hug:"Travesseiro de corpo",add:"Adicionar travesseiro",formTtl:"Registrar travesseiro",save:"Adicionar à prateleira",
+        f:{type:"Tipo",name:"Marca / produto",sleep:"Posição de dormir",shoulder:"Largura dos ombros",height:"Altura (opcional)",firm:"Firmeza (opcional)",rate:"Avaliação",note:"E aí, como foi? (opcional)"},
+        namePh:"ex. Tempur Original",notePh:"ex. Aliviou os ombros. Altura perfeita.",
+        shareLbl:"Mostrar este comentário no ranking",sharedTag:"Compartilhado",repeat:"Comprar de novo",empty:"Nada registrado ainda",count:"",
+        types:{memory:"Espuma viscoelástica",highrebound:"Alta resiliência",feather:"Pena",buckwheat:"Trigo-sarraceno",pipe:"Tubos",latex:"Látex",fiber:"Fibra",hugbody:"Travesseiro de corpo",hugmaternity:"Travesseiro de gravidez",hugcooling:"Travesseiro refrescante"},
+        sleeps:{back:"De costas",side:"De lado",prone:"De bruços"},
+        shoulders:{wide:"Largos",std:"Padrão",narrow:"Estreitos"},
+        heights:{low:"Baixa",mid:"Média",high:"Alta"},
+        firms:{soft:"Macio",mid:"Médio",firm:"Firme"}},
+      "हिन्दी":{hdr:"मेरे तकिए",lead:"जो तकिए इस्तेमाल करते हैं उन्हें शेल्फ पर। सोने की मुद्रा और कंधे की चौड़ाई दर्ज करें, तो आप जैसे लोगों की रैंकिंग से जुड़ेंगे।",
+        normal:"तकिया",hug:"बॉडी पिलो",add:"तकिया जोड़ें",formTtl:"तकिया दर्ज करें",save:"शेल्फ में जोड़ें",
+        f:{type:"प्रकार",name:"ब्रांड·उत्पाद",sleep:"सोने की मुद्रा",shoulder:"कंधे की चौड़ाई",height:"ऊँचाई (वैकल्पिक)",firm:"कठोरता (वैकल्पिक)",rate:"रेटिंग",note:"इस्तेमाल कैसा रहा? (वैकल्पिक)"},
+        namePh:"उदा. Tempur Original",notePh:"उदा. कंधे का दर्द कम। ऊँचाई एकदम सही।",
+        shareLbl:"यह राय रैंकिंग में दिखाएँ",sharedTag:"सार्वजनिक",repeat:"फिर से खरीदें",empty:"अभी कुछ दर्ज नहीं",count:"",
+        types:{memory:"मेमोरी फोम",highrebound:"हाई-रिबाउंड",feather:"पंख",buckwheat:"कुट्टू",pipe:"पाइप",latex:"लेटेक्स",fiber:"फाइबर",hugbody:"बॉडी पिलो",hugmaternity:"मैटरनिटी पिलो",hugcooling:"कूलिंग बॉडी पिलो"},
+        sleeps:{back:"पीठ के बल",side:"करवट",prone:"पेट के बल"},
+        shoulders:{wide:"चौड़े",std:"सामान्य",narrow:"सँकरे"},
+        heights:{low:"कम",mid:"मध्यम",high:"ज़्यादा"},
+        firms:{soft:"मुलायम",mid:"मध्यम",firm:"सख़्त"}},
+      "Tiếng Việt":{hdr:"Gối của tôi",lead:"Xếp lên kệ những chiếc gối bạn dùng. Ghi tư thế ngủ và bề ngang vai để kết nối với bảng xếp hạng của người giống bạn.",
+        normal:"Gối",hug:"Gối ôm",add:"Thêm gối",formTtl:"Đăng ký gối",save:"Thêm vào kệ",
+        f:{type:"Loại",name:"Thương hiệu / sản phẩm",sleep:"Tư thế ngủ",shoulder:"Bề ngang vai",height:"Độ cao (tùy chọn)",firm:"Độ cứng (tùy chọn)",rate:"Đánh giá",note:"Dùng thấy sao? (tùy chọn)"},
+        namePh:"vd. Tempur Original",notePh:"vd. Vai đỡ mỏi. Độ cao vừa vặn.",
+        shareLbl:"Hiện nhận xét này trên bảng xếp hạng",sharedTag:"Đã chia sẻ",repeat:"Mua lại",empty:"Chưa có mục nào",count:"",
+        types:{memory:"Memory foam",highrebound:"Đàn hồi cao",feather:"Lông vũ",buckwheat:"Kiều mạch",pipe:"Ống nhựa",latex:"Cao su",fiber:"Sợi",hugbody:"Gối ôm",hugmaternity:"Gối bà bầu",hugcooling:"Gối ôm mát"},
+        sleeps:{back:"Nằm ngửa",side:"Nằm nghiêng",prone:"Nằm sấp"},
+        shoulders:{wide:"Rộng",std:"Tiêu chuẩn",narrow:"Hẹp"},
+        heights:{low:"Thấp",mid:"Vừa",high:"Cao"},
+        firms:{soft:"Mềm",mid:"Vừa",firm:"Cứng"}},
+      "Bahasa Indonesia":{hdr:"Bantal saya",lead:"Taruh bantal yang kamu pakai di rak. Catat posisi tidur dan lebar bahu agar terhubung ke peringkat orang sepertimu.",
+        normal:"Bantal",hug:"Bantal guling",add:"Tambah bantal",formTtl:"Daftarkan bantal",save:"Tambah ke rak",
+        f:{type:"Tipe",name:"Merek / produk",sleep:"Posisi tidur",shoulder:"Lebar bahu",height:"Tinggi (opsional)",firm:"Kekerasan (opsional)",rate:"Penilaian",note:"Gimana rasanya? (opsional)"},
+        namePh:"mis. Tempur Original",notePh:"mis. Bahu lebih enteng. Tingginya pas.",
+        shareLbl:"Tampilkan ulasan ini di peringkat",sharedTag:"Dibagikan",repeat:"Beli lagi",empty:"Belum ada yang terdaftar",count:"",
+        types:{memory:"Memory foam",highrebound:"High-rebound",feather:"Bulu",buckwheat:"Soba",pipe:"Pipa",latex:"Lateks",fiber:"Serat",hugbody:"Bantal guling",hugmaternity:"Bantal hamil",hugcooling:"Bantal guling sejuk"},
+        sleeps:{back:"Telentang",side:"Miring",prone:"Tengkurap"},
+        shoulders:{wide:"Lebar",std:"Standar",narrow:"Sempit"},
+        heights:{low:"Rendah",mid:"Sedang",high:"Tinggi"},
+        firms:{soft:"Lembut",mid:"Sedang",firm:"Keras"}}
+    };
+    var cur=REVO.lang(), dark=REVO.dark(), curKind="normal", formOpen=false;
+    var openTypes={};
+    var sel={type:"memory", sleep:"back", shoulder:"std", height:"", firm:"", rate:0, share:false};
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",chip:"#1F1C16",chipBd:"#3A352A",chipTx:"#A89C84",inputBg:"#16140F",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",chip:"#FFFFFF",chipBd:"#E0DACE",chipTx:"#5F5E5A",inputBg:"#F4EFE6",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function pillowCardHtml(s, d, t){
+      var col=typeColors[s.type]||"#8A7E68";
+      var stars="";
+      for(var i=1;i<=5;i++){ stars+='<i class="ti ti-star'+(i<=s.rate?'-filled':'')+'" style="font-size:12px; color:'+(i<=s.rate?t.accent:t.muted)+';"></i>'; }
+      var meta=[d.sleeps[s.sleep], d.shoulders[s.shoulder], (s.height?d.heights[s.height]:""), (s.firm?d.firms[s.firm]:"")].filter(Boolean).join(" ・ ");
+      var noteHtml = s.note ? '<p style="font-size:12px; color:'+(dark?"#C9C0AE":"#5F5E5A")+'; margin:6px 0 0; line-height:1.5; padding:7px 10px; background:'+(dark?"#16140F":"#F4EFE6")+'; border-radius:8px;">「'+s.note+'」'+(s.share?' <span style="font-size:9px; color:'+t.accent+';">'+(d.sharedTag||"公開中")+'</span>':'')+'</p>' : '';
+      return '<div style="display:flex; align-items:flex-start; gap:11px; padding:11px 0; border-top:0.5px solid '+t.cardBd+';">'+
+          '<div style="width:3px; align-self:stretch; background:'+col+'; border-radius:2px;"></div>'+
+          '<div style="flex:1;">'+
+            '<p style="font-size:13px; color:'+t.txt+'; margin:0 0 3px; font-weight:500; line-height:1.4;">'+s.name+'</p>'+
+            (meta?'<p style="font-size:11px; color:'+t.sub+'; margin:0 0 5px;">'+meta+'</p>':'')+
+            '<div style="display:flex; align-items:center; gap:8px;"><div style="display:flex; gap:2px;">'+stars+'</div>'+
+            (s.rate>=4?'<span style="font-size:9px; color:'+t.accent+'; background:'+(dark?"#2A2418":"#FBF3E0")+'; padding:2px 8px; border-radius:999px;">'+d.repeat+'</span>':'')+'</div>'+
+            noteHtml+
+          '</div></div>';
+    }
+    function renderGroups(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('typeGroups').innerHTML="";
+      var types=TYPES[curKind];
+      types.forEach(function(tp){
+        var items=MYPILLOW.filter(function(s){ return s.kind===curKind && s.type===tp; });
+        var isOpen=!!openTypes[tp];
+        var col=typeColors[tp]||"#8A7E68";
+        var wrap=document.createElement('div');
+        wrap.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:13px; overflow:hidden;";
+        var head=document.createElement('button');
+        head.style.cssText="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:13px 15px; cursor:pointer;";
+        head.innerHTML='<div style="display:flex; align-items:center; gap:10px;">'+
+            '<span style="width:8px; height:8px; border-radius:50%; background:'+col+';"></span>'+
+            '<span style="font-size:13px; color:'+t.txt+'; font-weight:500;">'+(d.types[tp]||tp)+'</span>'+
+            '<span style="font-size:11px; color:'+t.muted+';">'+items.length+(d.count||"")+'</span>'+
+          '</div>'+
+          '<i class="ti ti-chevron-'+(isOpen?"up":"down")+'" style="font-size:17px; color:'+t.muted+';"></i>';
+        head.onclick=function(){ openTypes[tp]=!openTypes[tp]; renderGroups(); };
+        wrap.appendChild(head);
+        if(isOpen){
+          var body=document.createElement('div');
+          body.style.cssText="padding:0 15px 8px;";
+          if(items.length){ body.innerHTML=items.map(function(s){ return pillowCardHtml(s,d,t); }).join(""); }
+          else{ body.innerHTML='<p style="font-size:12px; color:'+t.muted+'; padding:10px 0 12px; border-top:0.5px solid '+t.cardBd+';">'+(d.empty||"")+'</p>'; }
+          wrap.appendChild(body);
+        }
+        $('typeGroups').appendChild(wrap);
+      });
+    }
+    function chipRow(containerId, dict, selKey){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      var box=$(containerId); box.innerHTML="";
+      Object.keys(dict).forEach(function(k){
+        var on=(sel[selKey]===k);
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; "+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+t.accent+"; border:1.5px solid "+t.accent+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        chip.textContent=dict[k];
+        chip.onclick=function(){ sel[selKey]=(sel[selKey]===k && (selKey==="height"||selKey==="firm"))?"":k; renderForm(); };
+        box.appendChild(chip);
+      });
+    }
+    function renderForm(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      // タイプ（現在のkindのタイプのみ）
+      $('typeChips').innerHTML="";
+      TYPES[curKind].forEach(function(k){
+        var on=(sel.type===k);
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; "+(on?"background:"+(dark?"#2A2418":"#FBF3E0")+"; color:"+t.accent+"; border:1.5px solid "+t.accent+";":"background:"+t.chip+"; color:"+t.chipTx+"; border:0.5px solid "+t.chipBd+";");
+        chip.textContent=d.types[k]||k;
+        chip.onclick=function(){ sel.type=k; renderForm(); };
+        $('typeChips').appendChild(chip);
+      });
+      chipRow('sleepChips', d.sleeps, 'sleep');
+      chipRow('shoulderChips', d.shoulders, 'shoulder');
+      chipRow('heightChips', d.heights, 'height');
+      chipRow('firmChips', d.firms, 'firm');
+      $('rateStars').innerHTML="";
+      for(var i=1;i<=5;i++){(function(i){
+        var st=document.createElement('i');
+        st.className="ti ti-star"+(i<=sel.rate?'-filled':'');
+        st.style.cssText="font-size:24px; color:"+(i<=sel.rate?t.accent:t.muted)+"; cursor:pointer;";
+        st.onclick=function(){ sel.rate=i; renderForm(); };
+        $('rateStars').appendChild(st);
+      })(i);}
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('lead').textContent=d.lead; $('addLbl').textContent=d.add;
+      $('normalLbl').textContent=d.normal; $('hugLbl').textContent=d.hug;
+      $('formTtl').textContent=d.formTtl; $('saveBtn').textContent=d.save;
+      document.querySelectorAll('.fLbl').forEach(function(el){ el.textContent=d.f[el.getAttribute('data-k')]; });
+      $('nameBox').textContent=d.namePh; $('noteBox').textContent=d.notePh||""; $('shareLbl').textContent=d.shareLbl||"";
+      renderGroups(); renderForm();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('lead').style.color=t.sub;
+      var nOn=(curKind==="normal");
+      $('normalBtn').style.background=nOn?t.accent:'transparent'; $('normalBtn').style.color=nOn?(dark?'#16140F':'#FFFFFF'):t.sub; $('normalBtn').style.border=nOn?'none':'0.5px solid '+t.cardBd;
+      $('hugBtn').style.background=!nOn?t.accent:'transparent'; $('hugBtn').style.color=!nOn?(dark?'#16140F':'#FFFFFF'):t.sub; $('hugBtn').style.border=!nOn?'none':'0.5px solid '+t.cardBd;
+      $('addBtn').style.borderColor= dark?"#3A352A":"#E0DACE"; $('addBtn').style.color=t.sub;
+      $('addForm').querySelector('div').style.background=t.card; $('addForm').querySelector('div').style.borderColor=t.cardBd;
+      $('formTtl').style.color=t.txt;
+      document.querySelectorAll('.fLbl').forEach(function(el){ el.style.color=t.sub; });
+      [$('nameBox'),$('noteBox')].forEach(function(b){ b.style.background=t.inputBg; b.style.borderColor=t.cardBd; b.style.color=t.muted; });
+      $('shareRow').style.background=t.inputBg; $('shareRow').style.borderColor=t.cardBd;
+      $('shareLbl').style.color= dark?"#C9C0AE":"#5F5E5A";
+      var on=sel.share;
+      $('shareToggle').style.background= on? t.accent : (dark?"#2A2620":"#E0DACE");
+      $('shareKnob').style.left= on? "21px":"3px"; $('shareKnob').style.background= on?(dark?"#16140F":"#FFFFFF"):(dark?"#6E6555":"#B7A98F");
+      $('saveBtn').style.background=t.accent; $('saveBtn').style.color= dark?"#16140F":"#FFFFFF";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      renderGroups(); renderForm();
+    }
+    $('normalBtn').onclick=function(){ curKind="normal"; sel.type=TYPES.normal[0]; openTypes={}; applyTheme(); };
+    $('hugBtn').onclick=function(){ curKind="hug"; sel.type=TYPES.hug[0]; openTypes={}; applyTheme(); };
+    $('addBtn').onclick=function(){ formOpen=!formOpen; $('addForm').style.display=formOpen?"block":"none"; };
+    $('shareRow').onclick=function(){ sel.share=!sel.share; applyTheme(); };
+    $('saveBtn').onclick=function(){ formOpen=false; $('addForm').style.display="none"; };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyUI(); applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyUI(); applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('home'); } };
+})();
+</script>
+</body>
+</html>

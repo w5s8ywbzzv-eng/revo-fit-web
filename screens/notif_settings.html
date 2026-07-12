@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>通知設定 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">通知設定。応援・フォロー・メダル・記録のリマインド・レシピ・励ましを種類ごとに選べる。それぞれ、どんな言葉で届くかも見られる。責めない、寄り添う言葉で。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">通知</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- マスタースイッチ -->
+  <div style="padding:16px 16px 0;">
+    <div id="masterRow" style="display:flex; align-items:center; justify-content:space-between; background:linear-gradient(140deg,#221E12,#1A1813); border:0.5px solid #3A3220; border-radius:15px; padding:15px 16px;">
+      <div style="display:flex; align-items:center; gap:11px;">
+        <i class="ti ti-bell" style="font-size:20px; color:#E3C56A;" aria-hidden="true"></i>
+        <div>
+          <p id="masterLbl" style="font-size:14px; color:#F0EBE2; margin:0 0 2px; font-weight:600;">すべての通知</p>
+          <p id="masterSub" style="font-size:11px; color:#8A7E68; margin:0;">大切なことだけ、そっとお届けします</p>
+        </div>
+      </div>
+      <div id="masterTgl" class="tgl" style="width:44px; height:25px; border-radius:13px; background:#E3C56A; position:relative; cursor:pointer; flex-shrink:0; transition:background 0.25s;"><div class="knob" style="width:21px; height:21px; border-radius:50%; background:#fff; position:absolute; top:2px; left:21px; transition:left 0.25s;"></div></div>
+    </div>
+  </div>
+
+  <p id="detailLbl" style="font-size:11px; color:#8A7E68; margin:0; padding:20px 20px 10px; font-weight:500;">種類ごとに選べます</p>
+
+  <!-- 種類別リスト -->
+  <div style="padding:0 16px 0;">
+    <div id="notifList" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+
+  <!-- 思想の一言 -->
+  <div style="padding:18px 16px 22px;">
+    <div id="noteCard" style="background:#16201C; border-radius:12px; padding:12px 14px; display:flex; align-items:flex-start; gap:9px;">
+      <i class="ti ti-heart" style="font-size:15px; color:#5DCAA5; margin-top:1px;" aria-hidden="true"></i>
+      <span id="noteTxt" style="font-size:11px; color:#7FB89E; line-height:1.6;">通知で急かすことはしません。あなたのペースを守るための、そっとした声かけだけをお届けします。</span>
+    </div>
+  </div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var TYPES=[
+      {key:"cheer", ic:"ti-heart", on:true},
+      {key:"follow", ic:"ti-user-plus", on:true},
+      {key:"medal", ic:"ti-trophy", on:true},
+      {key:"remind", ic:"ti-calendar", on:true},
+      {key:"recipe", ic:"ti-flame", on:true},
+      {key:"encourage", ic:"ti-bulb", on:false}
+    ];
+    var D={
+      "日本語":{hdr:"通知",masterLbl:"すべての通知",masterSub:"大切なことだけ、そっとお届けします",detailLbl:"種類ごとに選べます",
+        note:"通知で急かすことはしません。あなたのペースを守るための、そっとした声かけだけをお届けします。",
+        t:{
+          cheer:["応援が届いたとき","Kaiさんから、応援が届きました。"],
+          follow:["フォローされたとき","Kaiさんが、あなたをフォローしました。"],
+          medal:["メダルを獲得したとき","メダルを獲得しました。よく続けましたね。"],
+          remind:["記録のリマインド","今日はどうでしたか。ひとことだけでも、残しておきませんか。"],
+          recipe:["レシピが参考にされたとき","あなたのレシピが、また誰かの一皿になりました。"],
+          encourage:["停滞期の励まし","数字が動かない時期こそ、続けた人が前へ抜けていきます。"]
+        }},
+      "English":{hdr:"Notifications",masterLbl:"All notifications",masterSub:"Only what matters, gently delivered",detailLbl:"Choose by type",
+        note:"We won't rush you with notifications. Only gentle nudges that protect your own pace.",
+        t:{
+          cheer:["When support arrives","Kai sent you some support."],
+          follow:["When followed","Kai started following you."],
+          medal:["When you earn a medal","You earned a medal. You kept at it."],
+          remind:["Log reminder","How was today? Even just a word — want to note it down?"],
+          recipe:["When your recipe is used","Your recipe became someone's meal again."],
+          encourage:["Plateau encouragement","When the numbers stall is exactly when those who keep going pull ahead."]
+        }},
+      "简体中文":{hdr:"通知",masterLbl:"所有通知",masterSub:"只把重要的事，轻轻送达",detailLbl:"可按类型选择",
+        note:"我们不会用通知催促你。只送上守护你节奏的、轻轻的问候。",
+        t:{
+          cheer:["收到应援时","Kai给你送来了应援。"],
+          follow:["被关注时","Kai关注了你。"],
+          medal:["获得奖章时","你获得了奖章。坚持得真好。"],
+          remind:["记录提醒","今天怎么样？哪怕一句话，要不要留下来？"],
+          recipe:["食谱被参考时","你的食谱，又成了某人的一餐。"],
+          encourage:["瓶颈期的鼓励","数字不动的时期，正是坚持的人向前超越的时候。"]
+        }},
+      "繁體中文":{hdr:"通知",masterLbl:"所有通知",masterSub:"只把重要的事，輕輕送達",detailLbl:"可按類型選擇",
+        note:"我們不會用通知催促你。只送上守護你節奏的、輕輕的問候。",
+        t:{
+          cheer:["收到應援時","Kai給你送來了應援。"],
+          follow:["被關注時","Kai關注了你。"],
+          medal:["獲得獎章時","你獲得了獎章。堅持得真好。"],
+          remind:["記錄提醒","今天怎麼樣？哪怕一句話，要不要留下來？"],
+          recipe:["食譜被參考時","你的食譜，又成了某人的一餐。"],
+          encourage:["瓶頸期的鼓勵","數字不動的時期，正是堅持的人向前超越的時候。"]
+        }},
+      "한국어":{hdr:"알림",masterLbl:"모든 알림",masterSub:"소중한 것만, 살며시 전해요",detailLbl:"종류별로 고를 수 있어요",
+        note:"알림으로 재촉하지 않아요. 당신의 페이스를 지키기 위한, 살며시 건네는 말만 전해요.",
+        t:{
+          cheer:["응원이 도착했을 때","Kai님이 응원을 보냈어요."],
+          follow:["팔로우됐을 때","Kai님이 당신을 팔로우했어요."],
+          medal:["메달을 획득했을 때","메달을 획득했어요. 잘 이어왔어요."],
+          remind:["기록 리마인드","오늘은 어땠나요? 한마디만이라도 남겨볼까요?"],
+          recipe:["레시피가 참고됐을 때","당신의 레시피가 또 누군가의 한 끼가 되었어요."],
+          encourage:["정체기의 격려","숫자가 안 움직이는 시기야말로, 계속한 사람이 앞서 나가요."]
+        }},
+      "ภาษาไทย":{hdr:"การแจ้งเตือน",masterLbl:"การแจ้งเตือนทั้งหมด",masterSub:"ส่งเฉพาะสิ่งสำคัญ อย่างนุ่มนวล",detailLbl:"เลือกตามประเภทได้",
+        note:"เราจะไม่เร่งคุณด้วยการแจ้งเตือน ส่งเพียงคำทักทายเบาๆ ที่ปกป้องจังหวะของคุณ",
+        t:{
+          cheer:["เมื่อได้รับกำลังใจ","Kai ส่งกำลังใจมาให้คุณ"],
+          follow:["เมื่อถูกติดตาม","Kai เริ่มติดตามคุณแล้ว"],
+          medal:["เมื่อได้รับเหรียญ","คุณได้รับเหรียญแล้ว ทำต่อเนื่องได้ดีมาก"],
+          remind:["เตือนบันทึก","วันนี้เป็นยังไงบ้าง? แค่คำเดียวก็ได้ อยากบันทึกไว้ไหม?"],
+          recipe:["เมื่อสูตรถูกนำไปใช้","สูตรของคุณกลายเป็นมื้อของใครบางคนอีกแล้ว"],
+          encourage:["กำลังใจช่วงหยุดนิ่ง","ช่วงที่ตัวเลขไม่ขยับนี่แหละ คนที่ทำต่อจะแซงขึ้นนำ"]
+        }},
+      "Français":{hdr:"Notifications",masterLbl:"Toutes les notifications",masterSub:"Seulement l'essentiel, en douceur",detailLbl:"Choisir par type",
+        note:"Nous ne vous presserons pas avec des notifications. Seulement de doux rappels qui protègent votre rythme.",
+        t:{
+          cheer:["Quand un soutien arrive","Kai vous a envoyé un soutien."],
+          follow:["Quand on vous suit","Kai a commencé à vous suivre."],
+          medal:["Quand vous gagnez une médaille","Vous avez gagné une médaille. Vous avez persévéré."],
+          remind:["Rappel de journal","Comment était aujourd'hui ? Même un mot — envie de le noter ?"],
+          recipe:["Quand votre recette est utilisée","Votre recette est redevenue le repas de quelqu'un."],
+          encourage:["Encouragement de plateau","Quand les chiffres stagnent, ceux qui continuent prennent l'avance."]
+        }},
+      "Español":{hdr:"Notificaciones",masterLbl:"Todas las notificaciones",masterSub:"Solo lo importante, con suavidad",detailLbl:"Elegir por tipo",
+        note:"No te apuraremos con notificaciones. Solo suaves avisos que protegen tu ritmo.",
+        t:{
+          cheer:["Cuando llega apoyo","Kai te envió apoyo."],
+          follow:["Cuando te siguen","Kai empezó a seguirte."],
+          medal:["Cuando ganas una medalla","Ganaste una medalla. Perseveraste."],
+          remind:["Recordatorio de registro","¿Qué tal hoy? Aunque sea una palabra, ¿quieres anotarlo?"],
+          recipe:["Cuando usan tu receta","Tu receta volvió a ser la comida de alguien."],
+          encourage:["Ánimo en la meseta","Cuando los números se estancan es cuando quien sigue toma la delantera."]
+        }},
+      "Deutsch":{hdr:"Mitteilungen",masterLbl:"Alle Mitteilungen",masterSub:"Nur was zählt, sanft übermittelt",detailLbl:"Nach Art wählen",
+        note:"Wir drängen dich nicht mit Mitteilungen. Nur sanfte Anstöße, die dein Tempo schützen.",
+        t:{
+          cheer:["Wenn Unterstützung kommt","Kai hat dir Unterstützung geschickt."],
+          follow:["Wenn dir gefolgt wird","Kai folgt dir jetzt."],
+          medal:["Wenn du eine Medaille erhältst","Du hast eine Medaille erhalten. Du bist drangeblieben."],
+          remind:["Protokoll-Erinnerung","Wie war heute? Auch nur ein Wort — festhalten?"],
+          recipe:["Wenn dein Rezept genutzt wird","Dein Rezept wurde wieder jemandes Mahlzeit."],
+          encourage:["Ermutigung im Plateau","Gerade wenn die Zahlen stocken, ziehen die Dranbleiber vorbei."]
+        }},
+      "Italiano":{hdr:"Notifiche",masterLbl:"Tutte le notifiche",masterSub:"Solo ciò che conta, con delicatezza",detailLbl:"Scegli per tipo",
+        note:"Non ti metteremo fretta con le notifiche. Solo delicati spunti che proteggono il tuo ritmo.",
+        t:{
+          cheer:["Quando arriva un sostegno","Kai ti ha inviato un sostegno."],
+          follow:["Quando ti seguono","Kai ha iniziato a seguirti."],
+          medal:["Quando ottieni una medaglia","Hai ottenuto una medaglia. Hai perseverato."],
+          remind:["Promemoria diario","Com'è andata oggi? Anche una parola — vuoi annotarla?"],
+          recipe:["Quando usano la tua ricetta","La tua ricetta è tornata a essere il pasto di qualcuno."],
+          encourage:["Incoraggiamento nel plateau","Quando i numeri si fermano, chi continua va avanti."]
+        }},
+      "Português":{hdr:"Notificações",masterLbl:"Todas as notificações",masterSub:"Só o que importa, com suavidade",detailLbl:"Escolher por tipo",
+        note:"Não vamos te apressar com notificações. Só lembretes suaves que protegem seu ritmo.",
+        t:{
+          cheer:["Quando chega apoio","Kai te enviou um apoio."],
+          follow:["Quando te seguem","Kai começou a te seguir."],
+          medal:["Quando ganha uma medalha","Você ganhou uma medalha. Você persistiu."],
+          remind:["Lembrete de registro","Como foi hoje? Mesmo uma palavra — quer anotar?"],
+          recipe:["Quando usam sua receita","Sua receita virou a refeição de alguém de novo."],
+          encourage:["Incentivo no platô","Quando os números empacam é quando quem continua sai na frente."]
+        }},
+      "हिन्दी":{hdr:"सूचनाएँ",masterLbl:"सभी सूचनाएँ",masterSub:"सिर्फ ज़रूरी बातें, धीरे से",detailLbl:"प्रकार से चुनें",
+        note:"हम सूचनाओं से आपको जल्दी नहीं करेंगे। सिर्फ आपकी गति बचाने वाली, हल्की सी पुकार भेजेंगे।",
+        t:{
+          cheer:["जब सहयोग आए","Kai ने आपको सहयोग भेजा।"],
+          follow:["जब कोई फॉलो करे","Kai ने आपको फॉलो किया।"],
+          medal:["जब मेडल मिले","आपको मेडल मिला। आपने जारी रखा।"],
+          remind:["रिकॉर्ड रिमाइंडर","आज कैसा रहा? एक शब्द ही सही, लिख लें?"],
+          recipe:["जब आपकी रेसिपी काम आए","आपकी रेसिपी फिर किसी का खाना बनी।"],
+          encourage:["ठहराव में हौसला","जब आँकड़े रुकते हैं, तभी जो लगे रहते हैं वे आगे निकलते हैं।"]
+        }},
+      "Tiếng Việt":{hdr:"Thông báo",masterLbl:"Tất cả thông báo",masterSub:"Chỉ điều quan trọng, nhẹ nhàng",detailLbl:"Chọn theo loại",
+        note:"Chúng tôi không thúc giục bạn bằng thông báo. Chỉ những lời nhắn nhẹ nhàng bảo vệ nhịp độ của bạn.",
+        t:{
+          cheer:["Khi nhận được ủng hộ","Kai đã gửi ủng hộ cho bạn."],
+          follow:["Khi được theo dõi","Kai đã bắt đầu theo dõi bạn."],
+          medal:["Khi nhận huy chương","Bạn nhận được huy chương. Bạn đã kiên trì."],
+          remind:["Nhắc ghi nhật ký","Hôm nay thế nào? Chỉ một dòng thôi — ghi lại nhé?"],
+          recipe:["Khi công thức được dùng","Công thức của bạn lại thành bữa ăn của ai đó."],
+          encourage:["Động viên lúc chững","Khi các con số chững lại chính là lúc người kiên trì vượt lên."]
+        }},
+      "Bahasa Indonesia":{hdr:"Notifikasi",masterLbl:"Semua notifikasi",masterSub:"Hanya yang penting, dengan lembut",detailLbl:"Pilih per jenis",
+        note:"Kami tak akan mendesakmu dengan notifikasi. Hanya sapaan lembut yang menjaga ritmemu.",
+        t:{
+          cheer:["Saat dukungan tiba","Kai mengirimimu dukungan."],
+          follow:["Saat difollow","Kai mulai mengikutimu."],
+          medal:["Saat meraih medali","Kamu meraih medali. Kamu bertahan."],
+          remind:["Pengingat catatan","Hari ini bagaimana? Satu kata pun boleh — mau catat?"],
+          recipe:["Saat resepmu dipakai","Resepmu jadi santapan seseorang lagi."],
+          encourage:["Semangat saat stagnan","Saat angka mandek, justru yang bertahan yang melaju."]
+        }}
+    };
+    var cur=REVO.lang(), dark=REVO.dark(), masterOn=true;
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",preview:"#221E18",iconCol:"#B0A488",iconBg:"#1F1C16",iconBd:"#3A352A",accent:"#E3C56A",note:"#16201C",noteTx:"#7FB89E",off:"#2A2620"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",preview:"#F3EEE4",iconCol:"#9A8E78",iconBg:"#FFFFFF",iconBd:"#E8E0CE",accent:"#BA7517",note:"#EAF6F1",noteTx:"#3E8068",off:"#E0DACE"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function tgl(on){
+      var t=dark?T.dark:T.light;
+      return '<div class="tgl" style="width:44px; height:25px; border-radius:13px; background:'+(on?t.accent:t.off)+'; position:relative; cursor:pointer; flex-shrink:0; transition:background 0.25s;"><div style="width:21px; height:21px; border-radius:50%; background:#fff; position:absolute; top:2px; left:'+(on?"21px":"2px")+'; transition:left 0.25s;"></div></div>';
+    }
+    function renderList(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('notifList').innerHTML="";
+      TYPES.forEach(function(ty,i){
+        var eff = masterOn && ty.on;
+        var card=document.createElement('div');
+        card.style.cssText="background:"+t.card+"; border:0.5px solid "+t.cardBd+"; border-radius:14px; padding:14px 15px; opacity:"+(masterOn?"1":"0.5")+"; transition:opacity 0.3s;";
+        var head='<div style="display:flex; align-items:center; gap:11px;">'+
+          '<i class="ti '+ty.ic+'" style="font-size:19px; color:'+(eff?t.accent:t.iconCol)+';"></i>'+
+          '<span style="flex:1; font-size:14px; color:'+t.txt+'; font-weight:500;">'+d.t[ty.key][0]+'</span>'+
+          tgl(ty.on)+'</div>';
+        // 文言プレビュー（通知バブル風）
+        var preview='<div style="margin:11px 0 0; padding:10px 12px; background:'+t.preview+'; border-radius:10px; display:flex; align-items:flex-start; gap:8px;">'+
+          '<div style="width:20px; height:20px; border-radius:5px; background:'+t.accent+'; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span style="font-size:11px; color:'+(dark?"#16140F":"#FFFFFF")+'; font-weight:700; font-family:Jost;">R</span></div>'+
+          '<div style="flex:1;"><p style="font-size:10px; color:'+t.muted+'; margin:0 0 2px;">revo fit</p><p style="font-size:12px; color:'+t.txt+'; margin:0; line-height:1.5;">'+d.t[ty.key][1]+'</p></div></div>';
+        card.innerHTML=head+preview;
+        var tglEl=card.querySelector('.tgl');
+        tglEl.onclick=function(e){ e.stopPropagation(); ty.on=!ty.on; renderList(); };
+        $('notifList').appendChild(card);
+      });
+    }
+    function renderMaster(){
+      var t=dark?T.dark:T.light;
+      var m=$('masterTgl');
+      m.style.background= masterOn? t.accent : t.off;
+      m.querySelector('.knob').style.left= masterOn? "21px":"2px";
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('masterLbl').textContent=d.masterLbl; $('masterSub').textContent=d.masterSub;
+      $('detailLbl').textContent=d.detailLbl; $('noteTxt').textContent=d.note;
+      renderMaster(); renderList();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('masterRow').style.background= dark?"linear-gradient(140deg,#221E12,#1A1813)":"linear-gradient(140deg,#FBF3E0,#FBF7F1)"; $('masterRow').style.borderColor= dark?"#3A3220":"#EADCBE";
+      $('masterLbl').style.color=t.txt; $('detailLbl').style.color=t.sub;
+      $('noteCard').style.background=t.note; $('noteTxt').style.color=t.noteTx; $('noteCard').querySelector('i').style.color= dark?"#5DCAA5":"#3E8068";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    $('masterTgl').onclick=function(){ masterOn=!masterOn; renderMaster(); renderList(); };
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('settings'); } };
+})();
+</script>
+</body>
+</html>

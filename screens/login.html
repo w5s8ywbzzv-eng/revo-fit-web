@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ログイン — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.5s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">revo にログインする画面。Google や Apple、またはメールアドレスとパスワードでログインできる。パスワードを忘れた場合の導線と、まだアカウントがない人向けの新規登録への導線がある。言語と明暗を切り替えられる。</h2>
+
+  <!-- ヘッダー -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; position:relative;">
+    <button id="backBtn" aria-label="戻る" style="width:32px; height:32px; border-radius:50%; background:transparent; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;"><i class="ti ti-arrow-left" style="font-size:20px; color:#8A7E68;"></i></button>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button id="langBtn" aria-label="言語" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i class="ti ti-world" style="font-size:15px; color:#8A7E68;"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:30px; height:30px; border-radius:50%; background:transparent; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.4s;"><i id="themeIcon" class="ti ti-sun" style="font-size:15px; color:#8A7E68;"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:52px; right:18px; width:206px; max-height:290px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:12px 30px 40px;">
+
+    <!-- ワードマーク -->
+    <div style="display:flex; justify-content:center; margin:14px 0 24px;">
+      <span style="font-family:Jost; font-weight:100; font-size:30px; letter-spacing:0.02em; line-height:1;"><span id="wmRevo" style="color:#F0EBE2;">revo</span><span id="wmSuffix" style="color:#E3C56A; font-weight:200; margin-left:0.18em;">fit</span></span>
+    </div>
+
+    <p id="ttl" style="font-size:21px; color:#F0EBE2; margin:0 0 6px; font-weight:400; text-align:center; letter-spacing:0.01em;">おかえりなさい</p>
+    <p id="ttlSub" style="font-size:12px; color:#8A7E68; margin:0 0 28px; text-align:center; font-weight:300;">revo に、ログインしましょう。</p>
+
+    <!-- ソーシャルログイン -->
+    <button id="googleBtn" style="width:100%; background:#FFFFFF; border:none; color:#1A1A1A; font-size:14px; font-weight:500; padding:14px; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin:0 0 11px;">
+      <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5 16.3 4.5 9.7 8.8 6.3 14.7z"/><path fill="#4CAF50" d="M24 43.5c5.4 0 10.3-2 14-5.3l-6.5-5.5c-2 1.5-4.6 2.3-7.5 2.3-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.6 39.1 16.2 43.5 24 43.5z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3c-.8 2.2-2.2 4.1-4 5.5l6.5 5.5c-.5.4 7-5 7-15 0-1.2-.1-2.3-.4-3.5z"/></svg>
+      <span id="googleLbl">Google でログイン</span>
+    </button>
+    <button id="appleBtn" style="width:100%; background:#000000; border:0.5px solid #2A2620; color:#FFFFFF; font-size:14px; font-weight:500; padding:14px; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; margin:0 0 20px;">
+      <i class="ti ti-brand-apple-filled" style="font-size:17px;"></i>
+      <span id="appleLbl">Apple でログイン</span>
+    </button>
+
+    <!-- 区切り -->
+    <div style="display:flex; align-items:center; gap:12px; margin:0 0 20px;">
+      <div id="divL" style="flex:1; height:0.5px; background:#2A2620;"></div>
+      <span id="orLbl" style="font-size:11px; color:#6E6555;">または</span>
+      <div id="divR" style="flex:1; height:0.5px; background:#2A2620;"></div>
+    </div>
+
+    <!-- メール -->
+    <label id="emailLbl" style="display:block; font-size:11px; color:#8A7E68; margin:0 0 6px; font-weight:400;">メールアドレス</label>
+    <div id="emailWrap" style="display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:11px; padding:0 13px; margin:0 0 15px;">
+      <i class="ti ti-mail" style="font-size:16px; color:#6E6555;"></i>
+      <input id="emailInput" type="email" placeholder="you@example.com" style="flex:1; background:transparent; border:none; outline:none; color:#F0EBE2; font-size:14px; padding:13px 0; font-family:inherit;">
+    </div>
+
+    <!-- パスワード -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 6px;">
+      <label id="pwLbl" style="font-size:11px; color:#8A7E68; font-weight:400;">パスワード</label>
+      <span id="forgotLink" style="font-size:11px; color:#E3C56A; font-weight:500; cursor:pointer;">お忘れですか？</span>
+    </div>
+    <div id="pwWrap" style="display:flex; align-items:center; gap:9px; background:#1A1814; border:0.5px solid #2A2620; border-radius:11px; padding:0 13px; margin:0 0 24px;">
+      <i class="ti ti-lock" style="font-size:16px; color:#6E6555;"></i>
+      <input id="pwInput" type="password" placeholder="••••••••" style="flex:1; background:transparent; border:none; outline:none; color:#F0EBE2; font-size:14px; padding:13px 0; font-family:inherit;">
+      <button id="pwToggle" style="background:transparent; border:none; cursor:pointer; padding:4px;"><i id="pwEye" class="ti ti-eye" style="font-size:16px; color:#6E6555;"></i></button>
+    </div>
+
+    <!-- ログインボタン -->
+    <button id="submitBtn" style="width:100%; background:#E3C56A; border:none; color:#16140F; font-size:15px; font-weight:600; padding:15px; border-radius:13px; cursor:pointer; letter-spacing:0.02em; margin:0 0 22px;">ログイン</button>
+
+    <!-- 登録へ -->
+    <p id="toSignup" style="font-size:12px; color:#8A7E68; text-align:center; margin:0; font-weight:300;">アカウントをお持ちでないですか？ <span id="signupLink" style="color:#E3C56A; font-weight:500; cursor:pointer;">新規登録</span></p>
+
+  </div>
+
+  <div id="toast" style="position:absolute; left:50%; bottom:22px; transform:translateX(-50%); background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; padding:11px 20px; border-radius:11px; box-shadow:0 12px 30px -8px rgba(0,0,0,0.6); opacity:0; transition:opacity 0.3s; white-space:nowrap; pointer-events:none; z-index:40;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur=REVO.lang(), dark=REVO.dark(), showPw=false;
+    var T={dark:{bg:"#16140F",title:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",accent:"#E3C56A",field:"#1A1814",fieldBd:"#2A2620",input:"#F0EBE2",line:"#2A2620",divider:"#3A352A"},
+            light:{bg:"#FCFAF6",title:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",accent:"#BA7517",field:"#FBF7F1",fieldBd:"#EFE8DC",input:"#2E2A24",line:"#EFE8DC",divider:"#E0D6C4"}};
+    var D={
+      "日本語":{ttl:"おかえりなさい",ttlSub:"revo に、ログインしましょう。",google:"Google でログイン",apple:"Apple でログイン",or:"または",email:"メールアドレス",pw:"パスワード",forgot:"お忘れですか？",submit:"ログイン",toSignup:"アカウントをお持ちでないですか？ ",signup:"新規登録",toast:"ログインしました",forgotToast:"再設定メールを送信しました"},
+      "English":{ttl:"Welcome back",ttlSub:"Log in to revo.",google:"Log in with Google",apple:"Log in with Apple",or:"or",email:"Email",pw:"Password",forgot:"Forgot?",submit:"Log in",toSignup:"Don't have an account? ",signup:"Sign up",toast:"Logged in",forgotToast:"Reset email sent"},
+      "简体中文":{ttl:"欢迎回来",ttlSub:"登录 revo。",google:"使用 Google 登录",apple:"使用 Apple 登录",or:"或",email:"邮箱",pw:"密码",forgot:"忘记了？",submit:"登录",toSignup:"还没有账户？ ",signup:"注册",toast:"已登录",forgotToast:"重置邮件已发送"},
+      "繁體中文":{ttl:"歡迎回來",ttlSub:"登入 revo。",google:"使用 Google 登入",apple:"使用 Apple 登入",or:"或",email:"電子郵件",pw:"密碼",forgot:"忘記了？",submit:"登入",toSignup:"還沒有帳戶？ ",signup:"註冊",toast:"已登入",forgotToast:"重設郵件已發送"},
+      "한국어":{ttl:"다시 오셨네요",ttlSub:"revo에 로그인해요.",google:"Google로 로그인",apple:"Apple로 로그인",or:"또는",email:"이메일",pw:"비밀번호",forgot:"잊으셨나요?",submit:"로그인",toSignup:"계정이 없나요? ",signup:"가입하기",toast:"로그인했어요",forgotToast:"재설정 이메일을 보냈어요"},
+      "Français":{ttl:"Bon retour",ttlSub:"Connectez-vous à revo.",google:"Se connecter avec Google",apple:"Se connecter avec Apple",or:"ou",email:"E-mail",pw:"Mot de passe",forgot:"Oublié ?",submit:"Se connecter",toSignup:"Pas de compte ? ",signup:"S'inscrire",toast:"Connecté",forgotToast:"E-mail de réinitialisation envoyé"},
+      "Español":{ttl:"Bienvenido de nuevo",ttlSub:"Inicia sesión en revo.",google:"Iniciar con Google",apple:"Iniciar con Apple",or:"o",email:"Correo",pw:"Contraseña",forgot:"¿Olvidaste?",submit:"Iniciar sesión",toSignup:"¿No tienes cuenta? ",signup:"Registrarse",toast:"Sesión iniciada",forgotToast:"Correo de restablecimiento enviado"},
+      "Deutsch":{ttl:"Willkommen zurück",ttlSub:"Melde dich bei revo an.",google:"Mit Google anmelden",apple:"Mit Apple anmelden",or:"oder",email:"E-Mail",pw:"Passwort",forgot:"Vergessen?",submit:"Anmelden",toSignup:"Kein Konto? ",signup:"Registrieren",toast:"Angemeldet",forgotToast:"Zurücksetz-E-Mail gesendet"},
+      "Italiano":{ttl:"Bentornato",ttlSub:"Accedi a revo.",google:"Accedi con Google",apple:"Accedi con Apple",or:"o",email:"E-mail",pw:"Password",forgot:"Dimenticata?",submit:"Accedi",toSignup:"Non hai un account? ",signup:"Registrati",toast:"Accesso effettuato",forgotToast:"E-mail di reimpostazione inviata"},
+      "Português":{ttl:"Bem-vindo de volta",ttlSub:"Entre no revo.",google:"Entrar com Google",apple:"Entrar com Apple",or:"ou",email:"E-mail",pw:"Senha",forgot:"Esqueceu?",submit:"Entrar",toSignup:"Não tem uma conta? ",signup:"Cadastrar",toast:"Conectado",forgotToast:"E-mail de redefinição enviado"},
+      "ภาษาไทย":{ttl:"ยินดีต้อนรับกลับ",ttlSub:"เข้าสู่ระบบ revo",google:"เข้าสู่ระบบด้วย Google",apple:"เข้าสู่ระบบด้วย Apple",or:"หรือ",email:"อีเมล",pw:"รหัสผ่าน",forgot:"ลืม?",submit:"เข้าสู่ระบบ",toSignup:"ยังไม่มีบัญชี? ",signup:"สมัคร",toast:"เข้าสู่ระบบแล้ว",forgotToast:"ส่งอีเมลรีเซ็ตแล้ว"},
+      "हिन्दी":{ttl:"वापसी पर स्वागत है",ttlSub:"revo में लॉग इन करें।",google:"Google से लॉग इन",apple:"Apple से लॉग इन",or:"या",email:"ईमेल",pw:"पासवर्ड",forgot:"भूल गए?",submit:"लॉग इन",toSignup:"खाता नहीं है? ",signup:"साइन अप",toast:"लॉग इन हो गया",forgotToast:"रीसेट ईमेल भेजा गया"},
+      "Tiếng Việt":{ttl:"Chào mừng trở lại",ttlSub:"Đăng nhập vào revo.",google:"Đăng nhập với Google",apple:"Đăng nhập với Apple",or:"hoặc",email:"Email",pw:"Mật khẩu",forgot:"Quên?",submit:"Đăng nhập",toSignup:"Chưa có tài khoản? ",signup:"Đăng ký",toast:"Đã đăng nhập",forgotToast:"Đã gửi email đặt lại"},
+      "Bahasa Indonesia":{ttl:"Selamat datang kembali",ttlSub:"Masuk ke revo.",google:"Masuk dengan Google",apple:"Masuk dengan Apple",or:"atau",email:"Email",pw:"Kata sandi",forgot:"Lupa?",submit:"Masuk",toSignup:"Belum punya akun? ",signup:"Daftar",toast:"Berhasil masuk",forgotToast:"Email atur ulang terkirim"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function applyLang(){
+      var d=D[cur]||D["English"];
+      $('ttl').textContent=d.ttl; $('ttlSub').textContent=d.ttlSub;
+      $('googleLbl').textContent=d.google; $('appleLbl').textContent=d.apple;
+      $('orLbl').textContent=d.or; $('emailLbl').textContent=d.email; $('pwLbl').textContent=d.pw;
+      $('forgotLink').textContent=d.forgot; $('submitBtn').textContent=d.submit;
+      $('toSignup').innerHTML=d.toSignup+'<span id="signupLink" style="color:'+(dark?"#E3C56A":"#BA7517")+'; font-weight:500; cursor:pointer;">'+d.signup+'</span>';
+      bindSignupLink();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('ttl').style.color=t.title; $('ttlSub').style.color=t.sub;
+      $('wmSuffix').style.color=t.accent;
+      $('wmRevo').style.color= dark?t.title:"#5A5F66";
+      $('emailLbl').style.color=t.sub; $('pwLbl').style.color=t.sub;
+      $('forgotLink').style.color=t.accent;
+      [$('emailWrap'),$('pwWrap')].forEach(function(w){ w.style.background=t.field; w.style.borderColor=t.fieldBd; });
+      $('emailInput').style.color=t.input; $('pwInput').style.color=t.input;
+      $('orLbl').style.color=t.muted; $('divL').style.background=t.line; $('divR').style.background=t.line;
+      $('submitBtn').style.background=t.accent; $('submitBtn').style.color= dark?"#16140F":"#FFFFFF";
+      $('toSignup').style.color=t.sub;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.borderColor=t.divider; });
+      $('langBtn').querySelector('i').style.color=t.sub; $('backBtn').querySelector('i').style.color=t.sub;
+      $('themeIcon').className= dark?"ti ti-sun":"ti ti-moon"; $('themeIcon').style.color=t.sub;
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.divider;
+      applyLang();
+    }
+    function bindSignupLink(){ var l=$('signupLink'); if(l) l.onclick=function(){ REVO.go('signup'); }; }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    function toast(msg){ var t=$('toast'); t.textContent=msg; t.style.opacity="1"; setTimeout(function(){t.style.opacity="0";},2000); }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    $('pwToggle').onclick=function(){ showPw=!showPw; $('pwInput').type= showPw?"text":"password"; $('pwEye').className= showPw?"ti ti-eye-off":"ti ti-eye"; };
+    $('forgotLink').onclick=function(){ toast((D[cur]||D["English"]).forgotToast); };
+    $('googleBtn').onclick=function(){ REVO.setAuth({provider:'google', at:Date.now()}); REVO.go(REVO.onboarded()?'home':'onboarding'); };
+    $('appleBtn').onclick=function(){ REVO.setAuth({provider:'apple', at:Date.now()}); REVO.go(REVO.onboarded()?'home':'onboarding'); };
+    $('submitBtn').onclick=function(){
+      var em=($('emailInput').value||'').trim();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ $('emailInput').focus(); return; }
+      REVO.setAuth({provider:'email', email:em, at:Date.now()});
+      toast((D[cur]||D["English"]).toast);
+      setTimeout(function(){ REVO.go(REVO.onboarded()?'home':'onboarding'); }, 900);
+    };
+    $('backBtn').onclick=function(){ toast("←"); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+</body>
+</html>

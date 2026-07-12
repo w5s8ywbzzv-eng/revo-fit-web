@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BGM操作 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@keyframes revoWave { 0%,100%{ transform:scaleY(0.4);} 50%{ transform:scaleY(1);} }
+</style>
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:390px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.5s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">BGM のオン・オフを切り替える見本。右上の小さな音符アイコンをタップすると City Pulse が流れ、もう一度で止まる。全ページに常駐させる想定のコントロール。音量も調整できる。</h2>
+
+  <!-- 右上：BGMトグル（各ページに常駐する想定） -->
+  <div style="display:flex; align-items:center; justify-content:flex-end; padding:16px 18px; gap:10px; position:relative; z-index:5;">
+    <button id="bgmBtn" aria-label="BGM" style="width:38px; height:38px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.3s; position:relative;">
+      <i id="bgmIcon" class="ti ti-music-off" style="font-size:18px; color:#6E6555;"></i>
+    </button>
+  </div>
+
+  <div style="padding:10px 30px 44px; text-align:center;">
+
+    <!-- ワードマーク -->
+    <div style="display:flex; justify-content:center; margin:20px 0 30px;">
+      <span style="font-family:Jost; font-weight:100; font-size:40px; letter-spacing:0.02em; line-height:1;"><span id="wmRevo" style="color:#F0EBE2;">revo</span><span id="wmSuffix" style="color:#E3C56A; font-weight:200; margin-left:0.18em;">fit</span></span>
+    </div>
+
+    <!-- ビジュアライザー（再生中に動く波） -->
+    <div id="viz" style="display:flex; align-items:flex-end; justify-content:center; gap:5px; height:60px; margin:0 0 24px; opacity:0.35; transition:opacity 0.4s;">
+      <div class="bar" style="width:5px; height:40px; background:#E3C56A; border-radius:3px;"></div>
+      <div class="bar" style="width:5px; height:60px; background:#E3C56A; border-radius:3px;"></div>
+      <div class="bar" style="width:5px; height:30px; background:#E3C56A; border-radius:3px;"></div>
+      <div class="bar" style="width:5px; height:52px; background:#E3C56A; border-radius:3px;"></div>
+      <div class="bar" style="width:5px; height:44px; background:#E3C56A; border-radius:3px;"></div>
+      <div class="bar" style="width:5px; height:58px; background:#E3C56A; border-radius:3px;"></div>
+      <div class="bar" style="width:5px; height:34px; background:#E3C56A; border-radius:3px;"></div>
+    </div>
+
+    <p id="trackName" style="font-size:15px; color:#F0EBE2; margin:0 0 4px; font-weight:400;">City Pulse</p>
+    <p id="trackState" style="font-size:12px; color:#8A7E68; margin:0 0 30px; font-weight:300;">タップして再生</p>
+
+    <!-- 再生/停止ボタン（大） -->
+    <div style="display:flex; justify-content:center; margin:0 0 30px;">
+      <button id="playBtn" style="width:64px; height:64px; border-radius:50%; background:#E3C56A; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 10px 30px -8px rgba(227,197,106,0.5);">
+        <i id="playIcon" class="ti ti-player-play-filled" style="font-size:26px; color:#16140F;"></i>
+      </button>
+    </div>
+
+    <!-- 音量 -->
+    <div style="display:flex; align-items:center; gap:12px; margin:0 0 30px; padding:0 6px;">
+      <i class="ti ti-volume" style="font-size:17px; color:#6E6555;"></i>
+      <input id="vol" type="range" min="0" max="100" value="60" style="flex:1; accent-color:#E3C56A; cursor:pointer;">
+      <span id="volVal" style="font-size:11px; color:#8A7E68; width:30px; text-align:right;">60</span>
+    </div>
+
+    <div style="background:#1A1814; border:0.5px solid #2A2620; border-radius:12px; padding:14px 16px; text-align:left;">
+      <p style="font-size:11px; color:#8A7E68; margin:0; line-height:1.7;">この音符ボタンを全ページの隅に常駐させます。どの画面にいてもワンタップでBGMをオン/オフでき、ページを移動しても曲は途切れません。<span style="color:#6E6555;">（実装時はアプリ全体で1つの音源を鳴らし続けます）</span></p>
+    </div>
+
+  </div>
+
+  <!-- 音源（City Pulse） -->
+  <audio id="audio" loop>
+    <source src="../assets/audio/City_Pulse.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="toast" style="position:absolute; left:50%; bottom:20px; transform:translateX(-50%); background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; padding:10px 20px; border-radius:10px; box-shadow:0 12px 30px -8px rgba(0,0,0,0.6); opacity:0; transition:opacity 0.3s; white-space:nowrap; pointer-events:none; z-index:40;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    var audio=$('audio'), playing=false;
+    audio.volume=0.6;
+
+    function setPlaying(on){
+      playing=on;
+      if(on){
+        $('bgmIcon').className="ti ti-music"; $('bgmIcon').style.color="#E3C56A";
+        $('bgmBtn').style.background="#2A2416"; $('bgmBtn').style.borderColor="#E3C56A";
+        $('playIcon').className="ti ti-player-pause-filled";
+        $('trackState').textContent="再生中"; $('trackState').style.color="#E3C56A";
+        $('viz').style.opacity="1";
+        document.querySelectorAll('.bar').forEach(function(b,i){ b.style.animation="revoWave "+(0.7+i*0.12)+"s ease-in-out infinite"; b.style.transformOrigin="bottom"; });
+      }else{
+        $('bgmIcon').className="ti ti-music-off"; $('bgmIcon').style.color="#6E6555";
+        $('bgmBtn').style.background="#1F1C16"; $('bgmBtn').style.borderColor="#3A352A";
+        $('playIcon').className="ti ti-player-play-filled";
+        $('trackState').textContent="タップして再生"; $('trackState').style.color="#8A7E68";
+        $('viz').style.opacity="0.35";
+        document.querySelectorAll('.bar').forEach(function(b){ b.style.animation="none"; });
+      }
+    }
+    function toggle(){
+      if(playing){ audio.pause(); setPlaying(false); toast("BGM オフ"); }
+      else{ var p=audio.play(); if(p&&p.then){ p.then(function(){ setPlaying(true); toast("BGM オン"); }).catch(function(){ toast("タップで再生を許可してください"); }); } else { setPlaying(true); toast("BGM オン"); } }
+    }
+    function toast(msg){ var t=$('toast'); t.textContent=msg; t.style.opacity="1"; setTimeout(function(){t.style.opacity="0";},1600); }
+    $('bgmBtn').onclick=toggle;
+    $('playBtn').onclick=toggle;
+    $('vol').oninput=function(){ audio.volume=this.value/100; $('volVal').textContent=this.value; };
+    setPlaying(false);
+  })();
+</script>
+</div>
+<script>
+(function(){
+  /* BGM状態をアプリ全体と共有（再生位置・ON/OFF を localStorage revo.bgm に保存） */
+  function findAudio(){
+    var a=document.getElementById('audio');
+    if(a && a.tagName!=='AUDIO'){ a=a.querySelector && a.querySelector('audio'); }
+    return (a && a.tagName==='AUDIO') ? a : document.querySelector('audio');
+  }
+  var a=findAudio(); if(!a) return;
+  function save(playing){
+    try{ localStorage.setItem('revo.bgm', JSON.stringify({playing:playing, t:a.currentTime||0, vol:(a.volume!=null?a.volume:1), track:'City_Pulse', at:Date.now()})); }catch(e){}
+  }
+  try{
+    var st=JSON.parse(localStorage.getItem('revo.bgm')||'null');
+    if(st && st.playing){
+      try{ a.currentTime=st.t||0; }catch(e){}
+      if(st.vol!=null) a.volume=st.vol;
+      var kick=function(){ a.play().then(function(){ document.removeEventListener('pointerdown',kick); }).catch(function(){}); };
+      a.play().catch(function(){ document.addEventListener('pointerdown',kick); });
+    }
+  }catch(e){}
+  a.addEventListener('play', function(){ save(true); });
+  a.addEventListener('pause', function(){ save(false); });
+  setInterval(function(){ if(!a.paused) save(true); }, 2000);
+  window.addEventListener('pagehide', function(){ save(!a.paused); });
+})();
+</script>
+</body>
+</html>

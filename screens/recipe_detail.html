@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>レシピ詳細 — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">レシピ詳細。レンジ蒸し鶏のピリ辛だれ。PFCとカロリー、材料、作り方を工程ごとの時間つきで。レンジは何ワットで何分か、包丁やまな板が要るか、洗い物が少ないかが分かる。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">レシピ</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <!-- ヒーロー（料理写真の枠） -->
+  <div style="height:150px; background:linear-gradient(135deg,#2A2418,#16140F); display:flex; align-items:center; justify-content:center; position:relative;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:6px; opacity:0.5;">
+      <i class="ti ti-photo" style="font-size:30px; color:#8A7E68;"></i>
+      <span id="photoHint" style="font-size:10px; color:#8A7E68;">料理写真</span>
+    </div>
+    <span style="position:absolute; top:12px; left:14px; font-size:22px;">🇯🇵</span>
+    <div id="heroTime" style="position:absolute; bottom:12px; right:14px;"></div>
+  </div>
+
+  <div style="padding:16px 18px 0;">
+    <p id="title" style="font-size:19px; font-weight:600; color:#F0EBE2; margin:0 0 4px; line-height:1.4;">レンジ蒸し鶏のピリ辛だれ</p>
+    <p id="author" style="font-size:11px; color:#8A7E68; margin:0 0 14px;">@tanaka_bulk ・ 428人が参考に</p>
+
+    <!-- 手間バッジ -->
+    <div id="effortRow" style="display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px;"></div>
+
+    <!-- PFC＋カロリー -->
+    <div id="pfcCard" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:15px; padding:15px; margin:0 0 20px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 12px;">
+        <span id="nutriLbl" style="font-size:12px; color:#8A7E68;">栄養（1食あたり）</span>
+        <span id="kcalVal" style="font-size:15px; color:#E3C56A; font-weight:600; font-family:Jost;">280 kcal</span>
+      </div>
+      <div id="pfcBars" style="display:flex; flex-direction:column; gap:9px;"></div>
+    </div>
+
+    <!-- 材料 -->
+    <div style="display:flex; align-items:center; gap:7px; margin:0 0 12px;">
+      <i class="ti ti-shopping-cart" style="font-size:17px; color:#E3C56A;"></i>
+      <p id="ingLbl" style="font-size:14px; color:#F0EBE2; margin:0; font-weight:600;">材料（1人分）</p>
+    </div>
+    <div id="ingList" style="display:flex; flex-direction:column; gap:0; margin:0 0 22px;"></div>
+
+    <!-- 作り方 -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 12px;">
+      <div style="display:flex; align-items:center; gap:7px;">
+        <i class="ti ti-list" style="font-size:17px; color:#E3C56A;"></i>
+        <p id="stepLbl" style="font-size:14px; color:#F0EBE2; margin:0; font-weight:600;">作り方</p>
+      </div>
+    </div>
+    <!-- W数切替 -->
+    <div style="margin:0 0 16px;">
+      <p id="wattLbl" style="font-size:11px; color:#8A7E68; margin:0 0 8px;">お使いのレンジのワット数</p>
+      <div id="wattChips" style="display:flex; gap:7px;"></div>
+    </div>
+    <div id="stepList" style="display:flex; flex-direction:column; gap:14px;"></div>
+
+    <!-- ひとこと -->
+    <div id="tipCard" style="background:linear-gradient(135deg,#16241E,#13211C); border:0.5px solid #243A30; border-radius:15px; padding:14px 16px; margin:22px 0 0; display:flex; align-items:flex-start; gap:10px;">
+      <i class="ti ti-bulb" style="font-size:17px; color:#5DCAA5; margin-top:1px;"></i>
+      <p id="tip" style="font-size:13px; color:#C9E3D8; margin:0; line-height:1.65;">鶏むねはフォークで数か所刺しておくと、火の通りが均一に。ラップはふんわりが失敗しないコツです。</p>
+    </div>
+  </div>
+
+  <div style="height:22px;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var PFC={p:32,f:8,c:14,kcal:280}; // g, kcal
+    var D={
+      "日本語":{hdr:"レシピ",title:"レンジ蒸し鶏のピリ辛だれ",author:"@tanaka_bulk ・ 428人が参考に",
+        micro:"レンジ600W 5分",wattLbl:"お使いのレンジのワット数",photoHint:"料理写真",minU:"分",secU:"秒",microPre:"レンジ{w}W",noKnife:"包丁いらず",noBoard:"まな板いらず",lessWash:"洗い物少",
+        nutri:"栄養（1食あたり）",kcal:"{n} kcal",
+        pfc:{p:"たんぱく質",f:"脂質",c:"炭水化物"},unitG:"{n}g",
+        ingLbl:"材料（1人分）",
+        ings:[["鶏むね肉","1枚（250g）"],["酒","大さじ1"],["塩","少々"],["醤油","大さじ1"],["ラー油","小さじ1"],["おろしにんにく","少々"],["小ねぎ（お好みで）","適量"]],
+        stepLbl:"作り方",
+        steps:[
+          {t:"耐熱皿に鶏むねをのせ、酒と塩をふる",time:"1分"},
+          {t:"ふんわりラップをして、電子レンジ600Wで加熱",time:"レンジ600W 3分"},
+          {t:"一度取り出して裏返し、再びレンジで加熱。粗熱をとる",time:"レンジ600W 2分"},
+          {t:"醤油・ラー油・おろしにんにくを混ぜてたれを作る",time:"1分"},
+          {t:"鶏むねをキッチンばさみで食べやすく切り、たれをかける。小ねぎを散らす",time:"1分"}
+        ],
+        tip:"鶏むねはフォークで数か所刺しておくと、火の通りが均一に。ラップはふんわりが失敗しないコツです。"},
+      "English":{hdr:"Recipe",title:"Microwave steamed chicken, spicy sauce",author:"@tanaka_bulk ・ 428 found useful",
+        micro:"Microwave 5 min",wattLbl:"Your microwave wattage",photoHint:"Dish photo",minU:"min",secU:"sec",microPre:"{w}W",noKnife:"No knife",noBoard:"No board",lessWash:"Less washing",
+        nutri:"Nutrition (per serving)",kcal:"{n} kcal",
+        pfc:{p:"Protein",f:"Fat",c:"Carbs"},unitG:"{n}g",
+        ingLbl:"Ingredients (1 serving)",
+        ings:[["Chicken breast","1 (250g)"],["Cooking sake","1 tbsp"],["Salt","a pinch"],["Soy sauce","1 tbsp"],["Chili oil","1 tsp"],["Grated garlic","a little"],["Spring onion (optional)","to taste"]],
+        stepLbl:"Steps",
+        steps:[
+          {t:"Place chicken on a heatproof plate, sprinkle sake and salt",time:"1 min"},
+          {t:"Cover loosely with wrap, microwave",time:"Microwave 3 min"},
+          {t:"Flip once and microwave again. Let it rest",time:"Microwave 2 min"},
+          {t:"Mix soy sauce, chili oil and garlic into a sauce",time:"1 min"},
+          {t:"Cut chicken with kitchen scissors, pour sauce, top with onion",time:"1 min"}
+        ],
+        tip:"Poke the chicken a few times with a fork for even cooking. Loose wrapping is the key to no failure."},
+      "简体中文":{hdr:"食谱",title:"微波蒸鸡配香辣酱",author:"@tanaka_bulk ・ 428人参考",
+        micro:"微波600W 5分",wattLbl:"你的微波炉功率",photoHint:"料理照片",minU:"分",secU:"秒",microPre:"微波{w}W",noKnife:"免刀",noBoard:"免砧板",lessWash:"少洗碗",
+        nutri:"营养（每份）",kcal:"{n} 千卡",
+        pfc:{p:"蛋白质",f:"脂肪",c:"碳水"},unitG:"{n}g",
+        ingLbl:"材料（1人份）",
+        ings:[["鸡胸肉","1块（250g）"],["料酒","1大勺"],["盐","少许"],["酱油","1大勺"],["辣油","1小勺"],["蒜泥","少许"],["葱花（可选）","适量"]],
+        stepLbl:"做法",
+        steps:[
+          {t:"鸡胸放耐热盘，撒料酒和盐",time:"1分"},
+          {t:"松松盖保鲜膜，微波加热",time:"微波600W 3分"},
+          {t:"取出翻面再微波，放凉",time:"微波600W 2分"},
+          {t:"混合酱油·辣油·蒜泥做酱",time:"1分"},
+          {t:"用厨房剪剪成易食大小，浇酱，撒葱花",time:"1分"}
+        ],
+        tip:"用叉子在鸡胸上戳几下，受热更均匀。保鲜膜松松盖是不失败的诀窍。"},
+      "繁體中文":{hdr:"食譜",title:"微波蒸雞配香辣醬",author:"@tanaka_bulk ・ 428人參考",
+        micro:"微波600W 5分",wattLbl:"你的微波爐功率",photoHint:"料理照片",minU:"分",secU:"秒",microPre:"微波{w}W",noKnife:"免刀",noBoard:"免砧板",lessWash:"少洗碗",
+        nutri:"營養（每份）",kcal:"{n} 千卡",
+        pfc:{p:"蛋白質",f:"脂肪",c:"碳水"},unitG:"{n}g",
+        ingLbl:"材料（1人份）",
+        ings:[["雞胸肉","1塊（250g）"],["料酒","1大匙"],["鹽","少許"],["醬油","1大匙"],["辣油","1小匙"],["蒜泥","少許"],["蔥花（可選）","適量"]],
+        stepLbl:"做法",
+        steps:[
+          {t:"雞胸放耐熱盤，撒料酒和鹽",time:"1分"},
+          {t:"鬆鬆蓋保鮮膜，微波加熱",time:"微波600W 3分"},
+          {t:"取出翻面再微波，放涼",time:"微波600W 2分"},
+          {t:"混合醬油·辣油·蒜泥做醬",time:"1分"},
+          {t:"用廚房剪剪成易食大小，淋醬，撒蔥花",time:"1分"}
+        ],
+        tip:"用叉子在雞胸上戳幾下，受熱更均勻。保鮮膜鬆鬆蓋是不失敗的訣竅。"},
+      "한국어":{hdr:"레시피",title:"전자레인지 닭찜 매콤소스",author:"@tanaka_bulk ・ 428명이 참고",
+        micro:"레인지 600W 5분",wattLbl:"전자레인지 출력(W)",photoHint:"요리 사진",minU:"분",secU:"초",microPre:"레인지 {w}W",noKnife:"칼 없이",noBoard:"도마 없이",lessWash:"설거지 적게",
+        nutri:"영양(1인분)",kcal:"{n} kcal",
+        pfc:{p:"단백질",f:"지방",c:"탄수화물"},unitG:"{n}g",
+        ingLbl:"재료(1인분)",
+        ings:[["닭가슴살","1장(250g)"],["청주","1큰술"],["소금","약간"],["간장","1큰술"],["고추기름","1작은술"],["다진 마늘","약간"],["쪽파(선택)","적당량"]],
+        stepLbl:"만드는 법",
+        steps:[
+          {t:"내열 접시에 닭가슴살을 올리고 청주와 소금을 뿌린다",time:"1분"},
+          {t:"랩을 느슨히 덮고 전자레인지로 가열",time:"레인지 600W 3분"},
+          {t:"한 번 뒤집어 다시 가열하고 한 김 식힌다",time:"레인지 600W 2분"},
+          {t:"간장·고추기름·마늘을 섞어 소스를 만든다",time:"1분"},
+          {t:"주방가위로 먹기 좋게 자르고 소스를 붓는다. 쪽파를 뿌린다",time:"1분"}
+        ],
+        tip:"닭가슴살을 포크로 몇 군데 찔러두면 골고루 익어요. 랩은 느슨하게가 실패 없는 요령."},
+      "ภาษาไทย":{hdr:"สูตร",title:"ไก่นึ่งไมโครเวฟซอสเผ็ด",author:"@tanaka_bulk ・ 428 คนว่าดี",
+        micro:"ไมโครเวฟ 600W 5 นาที",wattLbl:"กำลังไมโครเวฟของคุณ",photoHint:"รูปอาหาร",minU:"นาที",secU:"วินาที",microPre:"ไมโครเวฟ {w}W",noKnife:"ไม่ใช้มีด",noBoard:"ไม่ใช้เขียง",lessWash:"ล้างน้อย",
+        nutri:"โภชนาการ (ต่อจาน)",kcal:"{n} แคล",
+        pfc:{p:"โปรตีน",f:"ไขมัน",c:"คาร์บ"},unitG:"{n}g",
+        ingLbl:"วัตถุดิบ (1 ที่)",
+        ings:[["อกไก่","1 ชิ้น (250g)"],["สาเก","1 ช้อนโต๊ะ"],["เกลือ","เล็กน้อย"],["ซีอิ๊ว","1 ช้อนโต๊ะ"],["น้ำมันพริก","1 ช้อนชา"],["กระเทียมบด","เล็กน้อย"],["ต้นหอม (ถ้ามี)","ตามชอบ"]],
+        stepLbl:"วิธีทำ",
+        steps:[
+          {t:"วางอกไก่บนจานทนความร้อน โรยสาเกและเกลือ",time:"1 นาที"},
+          {t:"คลุมแรปหลวมๆ เข้าไมโครเวฟ",time:"ไมโครเวฟ 600W 3 นาที"},
+          {t:"พลิกกลับแล้วเข้าไมโครเวฟอีกครั้ง พักให้คลายร้อน",time:"ไมโครเวฟ 600W 2 นาที"},
+          {t:"ผสมซีอิ๊ว น้ำมันพริก กระเทียม เป็นซอส",time:"1 นาที"},
+          {t:"ตัดไก่ด้วยกรรไกรครัว ราดซอส โรยต้นหอม",time:"1 นาที"}
+        ],
+        tip:"ใช้ส้อมจิ้มอกไก่ไม่กี่จุด ให้สุกทั่วถึง คลุมแรปหลวมๆ คือเคล็ดไม่พลาด"},
+      "Français":{hdr:"Recette",title:"Poulet vapeur micro-ondes, sauce épicée",author:"@tanaka_bulk ・ 428 l'ont trouvé utile",
+        micro:"Micro-ondes 5 min",wattLbl:"Puissance de votre micro-ondes",photoHint:"Photo du plat",minU:"min",secU:"s",microPre:"{w}W",noKnife:"Sans couteau",noBoard:"Sans planche",lessWash:"Peu de vaisselle",
+        nutri:"Nutrition (par portion)",kcal:"{n} kcal",
+        pfc:{p:"Protéines",f:"Lipides",c:"Glucides"},unitG:"{n}g",
+        ingLbl:"Ingrédients (1 portion)",
+        ings:[["Blanc de poulet","1 (250g)"],["Saké de cuisine","1 c. à s."],["Sel","une pincée"],["Sauce soja","1 c. à s."],["Huile pimentée","1 c. à c."],["Ail râpé","un peu"],["Ciboule (facultatif)","selon le goût"]],
+        stepLbl:"Étapes",
+        steps:[
+          {t:"Placer le poulet sur une assiette, saupoudrer de saké et sel",time:"1 min"},
+          {t:"Couvrir sans serrer d'un film, passer au micro-ondes",time:"Micro-ondes 3 min"},
+          {t:"Retourner et repasser au micro-ondes. Laisser reposer",time:"Micro-ondes 2 min"},
+          {t:"Mélanger sauce soja, huile pimentée et ail",time:"1 min"},
+          {t:"Couper le poulet aux ciseaux, verser la sauce, parsemer de ciboule",time:"1 min"}
+        ],
+        tip:"Piquez le poulet à la fourchette pour une cuisson uniforme. Un film non serré, c'est la clé du succès."},
+      "Español":{hdr:"Receta",title:"Pollo al microondas, salsa picante",author:"@tanaka_bulk ・ 428 lo vieron útil",
+        micro:"Microondas 5 min",wattLbl:"Potencia de tu microondas",photoHint:"Foto del plato",minU:"min",secU:"s",microPre:"{w}W",noKnife:"Sin cuchillo",noBoard:"Sin tabla",lessWash:"Menos platos",
+        nutri:"Nutrición (por ración)",kcal:"{n} kcal",
+        pfc:{p:"Proteína",f:"Grasa",c:"Carbohidratos"},unitG:"{n}g",
+        ingLbl:"Ingredientes (1 ración)",
+        ings:[["Pechuga de pollo","1 (250g)"],["Sake de cocina","1 cda"],["Sal","una pizca"],["Salsa de soja","1 cda"],["Aceite de chile","1 cdta"],["Ajo rallado","un poco"],["Cebollín (opcional)","al gusto"]],
+        stepLbl:"Pasos",
+        steps:[
+          {t:"Coloca el pollo en un plato apto, espolvorea sake y sal",time:"1 min"},
+          {t:"Cubre sin apretar con film, mete al microondas",time:"Microondas 3 min"},
+          {t:"Dale la vuelta y vuelve a calentar. Deja reposar",time:"Microondas 2 min"},
+          {t:"Mezcla soja, aceite de chile y ajo para la salsa",time:"1 min"},
+          {t:"Corta el pollo con tijeras, vierte la salsa, añade cebollín",time:"1 min"}
+        ],
+        tip:"Pincha el pollo con un tenedor para una cocción uniforme. Cubrir sin apretar es la clave del éxito."},
+      "Deutsch":{hdr:"Rezept",title:"Mikrowellen-Hähnchen, scharfe Sauce",author:"@tanaka_bulk ・ 428 fanden es nützlich",
+        micro:"Mikrowelle 5 Min",wattLbl:"Leistung deiner Mikrowelle",photoHint:"Gericht-Foto",minU:"Min",secU:"Sek",microPre:"{w}W",noKnife:"Ohne Messer",noBoard:"Ohne Brett",lessWash:"Weniger Abwasch",
+        nutri:"Nährwerte (pro Portion)",kcal:"{n} kcal",
+        pfc:{p:"Protein",f:"Fett",c:"Kohlenhydrate"},unitG:"{n}g",
+        ingLbl:"Zutaten (1 Portion)",
+        ings:[["Hähnchenbrust","1 (250g)"],["Kochsake","1 EL"],["Salz","eine Prise"],["Sojasauce","1 EL"],["Chiliöl","1 TL"],["Geriebener Knoblauch","etwas"],["Frühlingszwiebel (optional)","nach Geschmack"]],
+        stepLbl:"Schritte",
+        steps:[
+          {t:"Hähnchen auf hitzefesten Teller legen, mit Sake und Salz bestreuen",time:"1 Min"},
+          {t:"Locker mit Folie abdecken, in die Mikrowelle",time:"Mikrowelle 3 Min"},
+          {t:"Einmal wenden und erneut erhitzen. Ruhen lassen",time:"Mikrowelle 2 Min"},
+          {t:"Sojasauce, Chiliöl und Knoblauch zur Sauce mischen",time:"1 Min"},
+          {t:"Hähnchen mit der Küchenschere schneiden, Sauce darüber, Zwiebel dazu",time:"1 Min"}
+        ],
+        tip:"Stich das Hähnchen mit einer Gabel ein, damit es gleichmäßig gart. Lockeres Abdecken ist der Trick."},
+      "Italiano":{hdr:"Ricetta",title:"Pollo al microonde, salsa piccante",author:"@tanaka_bulk ・ 428 l'hanno trovato utile",
+        micro:"Microonde 5 min",wattLbl:"Potenza del microonde",photoHint:"Foto del piatto",minU:"min",secU:"sec",microPre:"{w}W",noKnife:"Senza coltello",noBoard:"Senza tagliere",lessWash:"Pochi piatti",
+        nutri:"Valori (a porzione)",kcal:"{n} kcal",
+        pfc:{p:"Proteine",f:"Grassi",c:"Carboidrati"},unitG:"{n}g",
+        ingLbl:"Ingredienti (1 porzione)",
+        ings:[["Petto di pollo","1 (250g)"],["Sake da cucina","1 cucchiaio"],["Sale","un pizzico"],["Salsa di soia","1 cucchiaio"],["Olio piccante","1 cucchiaino"],["Aglio grattugiato","un po'"],["Cipollotto (facoltativo)","a piacere"]],
+        stepLbl:"Preparazione",
+        steps:[
+          {t:"Metti il pollo su un piatto adatto, spolvera sake e sale",time:"1 min"},
+          {t:"Copri con pellicola non stretta, metti nel microonde",time:"Microonde 3 min"},
+          {t:"Gira una volta e riscalda ancora. Lascia riposare",time:"Microonde 2 min"},
+          {t:"Mescola soia, olio piccante e aglio per la salsa",time:"1 min"},
+          {t:"Taglia il pollo con le forbici, versa la salsa, aggiungi cipollotto",time:"1 min"}
+        ],
+        tip:"Buca il pollo con una forchetta per una cottura uniforme. Coprire senza stringere è il segreto."},
+      "Português":{hdr:"Receita",title:"Frango na micro-ondas, molho picante",author:"@tanaka_bulk ・ 428 acharam útil",
+        micro:"Micro-ondas 5 min",wattLbl:"Potência do seu micro-ondas",photoHint:"Foto do prato",minU:"min",secU:"s",microPre:"{w}W",noKnife:"Sem faca",noBoard:"Sem tábua",lessWash:"Menos louça",
+        nutri:"Nutrição (por porção)",kcal:"{n} kcal",
+        pfc:{p:"Proteína",f:"Gordura",c:"Carboidratos"},unitG:"{n}g",
+        ingLbl:"Ingredientes (1 porção)",
+        ings:[["Peito de frango","1 (250g)"],["Saquê de cozinha","1 c. sopa"],["Sal","uma pitada"],["Molho de soja","1 c. sopa"],["Óleo de pimenta","1 c. chá"],["Alho ralado","um pouco"],["Cebolinha (opcional)","a gosto"]],
+        stepLbl:"Modo de fazer",
+        steps:[
+          {t:"Coloque o frango num prato refratário, salpique saquê e sal",time:"1 min"},
+          {t:"Cubra frouxo com filme, leve ao micro-ondas",time:"Micro-ondas 3 min"},
+          {t:"Vire uma vez e aqueça de novo. Deixe descansar",time:"Micro-ondas 2 min"},
+          {t:"Misture soja, óleo de pimenta e alho no molho",time:"1 min"},
+          {t:"Corte o frango com tesoura, regue o molho, salpique cebolinha",time:"1 min"}
+        ],
+        tip:"Fure o frango com um garfo para cozinhar por igual. Cobrir frouxo é o segredo do sucesso."},
+      "हिन्दी":{hdr:"रेसिपी",title:"माइक्रोवेव चिकन, तीखी चटनी",author:"@tanaka_bulk ・ 428 को उपयोगी लगा",
+        micro:"माइक्रोवेव 5 मिनट",wattLbl:"आपके माइक्रोवेव की वाट",photoHint:"व्यंजन फोटो",minU:"मिनट",secU:"सेकंड",microPre:"माइक्रोवेव {w}W",noKnife:"बिना चाकू",noBoard:"बिना बोर्ड",lessWash:"कम बर्तन",
+        nutri:"पोषण (प्रति सर्विंग)",kcal:"{n} कैलोरी",
+        pfc:{p:"प्रोटीन",f:"वसा",c:"कार्ब्स"},unitG:"{n}g",
+        ingLbl:"सामग्री (1 सर्विंग)",
+        ings:[["चिकन ब्रेस्ट","1 (250g)"],["कुकिंग साके","1 बड़ा चम्मच"],["नमक","चुटकी भर"],["सोया सॉस","1 बड़ा चम्मच"],["चिली ऑयल","1 छोटा चम्मच"],["कसा लहसुन","थोड़ा"],["हरा प्याज़ (वैकल्पिक)","स्वादानुसार"]],
+        stepLbl:"विधि",
+        steps:[
+          {t:"चिकन को हीटप्रूफ प्लेट पर रखें, साके और नमक छिड़कें",time:"1 मिनट"},
+          {t:"ढीला रैप लगाकर माइक्रोवेव करें",time:"माइक्रोवेव 3 मिनट"},
+          {t:"एक बार पलटें और फिर माइक्रोवेव करें। ठंडा होने दें",time:"माइक्रोवेव 2 मिनट"},
+          {t:"सोया सॉस, चिली ऑयल, लहसुन मिलाकर चटनी बनाएं",time:"1 मिनट"},
+          {t:"किचन कैंची से चिकन काटें, चटनी डालें, प्याज़ छिड़कें",time:"1 मिनट"}
+        ],
+        tip:"चिकन को कांटे से कुछ जगह गोदें ताकि समान रूप से पके। ढीला रैप ही सफलता का राज़।"},
+      "Tiếng Việt":{hdr:"Công thức",title:"Gà hấp lò vi sóng, sốt cay",author:"@tanaka_bulk ・ 428 thấy hữu ích",
+        micro:"Lò vi sóng 5 phút",wattLbl:"Công suất lò vi sóng của bạn",photoHint:"Ảnh món ăn",minU:"phút",secU:"giây",microPre:"{w}W",noKnife:"Không dao",noBoard:"Không thớt",lessWash:"Ít rửa",
+        nutri:"Dinh dưỡng (mỗi phần)",kcal:"{n} kcal",
+        pfc:{p:"Đạm",f:"Béo",c:"Tinh bột"},unitG:"{n}g",
+        ingLbl:"Nguyên liệu (1 phần)",
+        ings:[["Ức gà","1 (250g)"],["Rượu nấu ăn","1 thìa canh"],["Muối","một nhúm"],["Nước tương","1 thìa canh"],["Dầu ớt","1 thìa cà phê"],["Tỏi băm","một chút"],["Hành lá (tùy chọn)","tùy khẩu vị"]],
+        stepLbl:"Cách làm",
+        steps:[
+          {t:"Đặt ức gà lên đĩa chịu nhiệt, rắc rượu và muối",time:"1 phút"},
+          {t:"Phủ màng bọc lỏng, cho vào lò vi sóng",time:"Lò vi sóng 3 phút"},
+          {t:"Lật một lần rồi quay tiếp. Để nguội bớt",time:"Lò vi sóng 2 phút"},
+          {t:"Trộn nước tương, dầu ớt, tỏi thành sốt",time:"1 phút"},
+          {t:"Cắt gà bằng kéo bếp, rưới sốt, rắc hành lá",time:"1 phút"}
+        ],
+        tip:"Xăm gà vài chỗ bằng nĩa để chín đều. Bọc màng lỏng là bí quyết không thất bại."},
+      "Bahasa Indonesia":{hdr:"Resep",title:"Ayam kukus microwave, saus pedas",author:"@tanaka_bulk ・ 428 merasa berguna",
+        micro:"Microwave 5 mnt",wattLbl:"Daya microwave kamu",photoHint:"Foto masakan",minU:"mnt",secU:"dtk",microPre:"{w}W",noKnife:"Tanpa pisau",noBoard:"Tanpa talenan",lessWash:"Sedikit cucian",
+        nutri:"Nutrisi (per porsi)",kcal:"{n} kkal",
+        pfc:{p:"Protein",f:"Lemak",c:"Karbo"},unitG:"{n}g",
+        ingLbl:"Bahan (1 porsi)",
+        ings:[["Dada ayam","1 (250g)"],["Sake masak","1 sdm"],["Garam","sejumput"],["Kecap asin","1 sdm"],["Minyak cabai","1 sdt"],["Bawang putih parut","sedikit"],["Daun bawang (opsional)","secukupnya"]],
+        stepLbl:"Cara membuat",
+        steps:[
+          {t:"Letakkan ayam di piring tahan panas, taburi sake dan garam",time:"1 mnt"},
+          {t:"Tutup longgar dengan plastik, microwave",time:"Microwave 3 mnt"},
+          {t:"Balik sekali lalu microwave lagi. Diamkan",time:"Microwave 2 mnt"},
+          {t:"Campur kecap, minyak cabai, bawang jadi saus",time:"1 mnt"},
+          {t:"Potong ayam pakai gunting dapur, siram saus, taburi daun bawang",time:"1 mnt"}
+        ],
+        tip:"Tusuk ayam beberapa kali dengan garpu agar matang merata. Tutup longgar kunci anti gagal."}
+    };
+    var cur=REVO.lang(), dark=REVO.dark();
+    // 各工程の時間メタ（言語共通）。type:micro=レンジ(換算対象,base=600W基準の分), plain=固定(分)
+    var STEP_META=[
+      {type:"plain",min:1},
+      {type:"micro",base:3},
+      {type:"micro",base:2},
+      {type:"plain",min:1},
+      {type:"plain",min:1}
+    ];
+    var WATTS=[500,600,700,1000];
+    var curWatt=600;
+    function fmtMin(mins){
+      // 分（小数可）→ "3分40秒" / "2分" 形式は言語で。ここでは分秒の数値を返す
+      var totalSec=Math.round(mins*60/10)*10; // 10秒単位に丸め
+      var m=Math.floor(totalSec/60), s=totalSec%60;
+      return {m:m,s:s};
+    }
+    var pfcColors={p:"#5DCAA5",f:"#E3C56A",c:"#8A9AE0"};
+    var pfcMax={p:40,f:30,c:60}; // バー基準
+    var T={
+      dark:{bg:"#16140F",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",card:"#1A1814",cardBd:"#2A2620",row:"#2A2620",track:"#2A2620",badgeBg:"#221E14",badgeTx:"#D8C79A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",accent:"#E3C56A"},
+      light:{bg:"#FFFFFF",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",card:"#FBF7F1",cardBd:"#F0EAE0",row:"#F0EAE0",track:"#EDE6D8",badgeBg:"#FBF3E0",badgeTx:"#7A6A3E",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",accent:"#BA7517"}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function badge(txt, ic, t, strong){
+      return '<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:5px 11px; border-radius:999px; background:'+(strong?t.accent:t.badgeBg)+'; color:'+(strong?(dark?"#16140F":"#FFFFFF"):t.badgeTx)+'; font-weight:'+(strong?"600":"400")+';">'+(ic?'<i class="ti '+ic+'" style="font-size:12px;"></i>':'')+txt+'</span>';
+    }
+    function renderHero(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      // レンジ工程の合計（600W基準）をW換算
+      var baseSum=0; STEP_META.forEach(function(m){ if(m.type==="micro") baseSum+=m.base; });
+      var mins=baseSum*600/curWatt;
+      var f=fmtMin(mins);
+      var human = f.s===0 ? (f.m+d.minU) : (f.m===0 ? f.s+d.secU : f.m+d.minU+f.s+d.secU);
+      var txt=d.microPre.replace("{w}",curWatt)+" "+human;
+      $('heroTime').innerHTML=badge(txt,"ti-flame",t,true);
+    }
+    function renderEffort(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('effortRow').innerHTML = badge(d.noKnife,"ti-check",t)+badge(d.noBoard,"ti-check",t)+badge(d.lessWash,"ti-droplet",t);
+    }
+    function renderPFC(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('nutriLbl').textContent=d.nutri; $('kcalVal').textContent=d.kcal.replace("{n}",PFC.kcal);
+      $('pfcBars').innerHTML="";
+      [["p",PFC.p],["f",PFC.f],["c",PFC.c]].forEach(function(x){
+        var k=x[0], v=x[1], pct=Math.min(100, v/pfcMax[k]*100);
+        var row=document.createElement('div');
+        row.innerHTML='<div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 4px;"><span style="font-size:11px; color:'+t.sub+';">'+d.pfc[k]+'</span><span style="font-size:12px; color:'+t.txt+'; font-weight:600;">'+d.unitG.replace("{n}",v)+'</span></div>'+
+          '<div style="width:100%; height:6px; background:'+t.track+'; border-radius:3px; overflow:hidden;"><div style="width:'+pct+'%; height:6px; background:'+pfcColors[k]+';"></div></div>';
+        $('pfcBars').appendChild(row);
+      });
+    }
+    function renderIngs(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('ingLbl').textContent=d.ingLbl; $('ingList').innerHTML="";
+      d.ings.forEach(function(ing,i){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:11px 2px; "+(i<d.ings.length-1?"border-bottom:0.5px solid "+t.row+";":"");
+        row.innerHTML='<span style="font-size:13px; color:'+t.txt+';">'+ing[0]+'</span><span style="font-size:13px; color:'+t.sub+';">'+ing[1]+'</span>';
+        $('ingList').appendChild(row);
+      });
+    }
+    function timeStr(meta){
+      var d=D[cur]||D["English"];
+      function human(mins){
+        var f=fmtMin(mins);
+        if(f.s===0) return f.m+d.minU;
+        if(f.m===0) return f.s+d.secU;
+        return f.m+d.minU+f.s+d.secU;
+      }
+      if(meta.type==="micro"){
+        var mins=meta.base*600/curWatt;
+        return { micro:true, txt: d.microPre.replace("{w}",curWatt)+" "+human(mins) };
+      } else {
+        return { micro:false, txt: human(meta.min) };
+      }
+    }
+    function renderSteps(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('stepLbl').textContent=d.stepLbl; $('stepList').innerHTML="";
+      d.steps.forEach(function(s,i){
+        var meta=STEP_META[i]||{type:"plain",min:1};
+        var ts=timeStr(meta);
+        var isMicro=ts.micro;
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; gap:12px;";
+        row.innerHTML='<div style="width:26px; height:26px; border-radius:50%; background:'+t.accent+'; color:'+(dark?"#16140F":"#FFFFFF")+'; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; flex-shrink:0; font-family:Jost;">'+(i+1)+'</div>'+
+          '<div style="flex:1;"><p style="font-size:13px; color:'+t.txt+'; margin:0 0 6px; line-height:1.6;">'+s.t+'</p>'+
+          '<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:4px 10px; border-radius:999px; background:'+(isMicro?t.accent:t.badgeBg)+'; color:'+(isMicro?(dark?"#16140F":"#FFFFFF"):t.badgeTx)+'; font-weight:'+(isMicro?"600":"400")+';"><i class="ti '+(isMicro?"ti-flame":"ti-clock")+'" style="font-size:12px;"></i>'+ts.txt+'</span></div>';
+        $('stepList').appendChild(row);
+      });
+    }
+    function renderWatts(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('wattLbl').textContent=d.wattLbl;
+      $('wattChips').innerHTML="";
+      WATTS.forEach(function(w){
+        var on=(curWatt===w);
+        var chip=document.createElement('span');
+        chip.style.cssText="font-size:12px; padding:7px 15px; border-radius:999px; cursor:pointer; font-family:Jost; "+(on?"background:"+t.accent+"; color:"+(dark?"#16140F":"#FFFFFF")+"; font-weight:600;":"background:"+t.card+"; color:"+t.sub+"; border:0.5px solid "+t.cardBd+";");
+        chip.textContent=w+"W";
+        chip.onclick=function(){ curWatt=w; renderWatts(); renderSteps(); };
+        $('wattChips').appendChild(chip);
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('title').textContent=d.title; $('author').textContent=d.author; $('tip').textContent=d.tip;
+      if($('photoHint')) $('photoHint').textContent=d.photoHint||"";
+      renderHero(); renderEffort(); renderPFC(); renderIngs(); renderWatts(); renderSteps();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor= dark?"#2A2620":"#F0EAE0"; $('hdrTtl').style.color=t.txt;
+      $('title').style.color=t.txt; $('author').style.color=t.sub;
+      $('pfcCard').style.background=t.card; $('pfcCard').style.borderColor=t.cardBd;
+      $('ingLbl').style.color=t.txt; $('stepLbl').style.color=t.txt;
+      $('tipCard').style.background= dark?"linear-gradient(135deg,#16241E,#13211C)":"linear-gradient(135deg,#EAF6F1,#E0F0E6)"; $('tipCard').style.borderColor= dark?"#243A30":"#D6EAE0"; $('tip').style.color= dark?"#C9E3D8":"#2E5D4E";
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('recipes'); } };
+})();
+</script>
+</body>
+</html>

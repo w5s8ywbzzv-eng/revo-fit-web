@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>revo fit</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style>html,body{margin:0;padding:0;background:#16140F;}</style>
+<script src="js/config.js"></script>
+<script src="js/revo.js"></script>
+<script src="js/revo-cloud.js"></script>
+</head>
+<body>
+<script>
+  // 起動分岐（docs/01）：既存ユーザー(onboarded)は home 直行、新規は splash から
+  (function(){
+    function go(){ window.location.replace(REVO.onboarded() ? "screens/home.html" : "screens/splash.html"); }
+    // Supabase マジックリンクで戻ってきた場合は、セッション確立（URLトークン処理）を待つ
+    var hasAuth = /access_token|refresh_token|type=magiclink|code=/.test(location.hash + location.search);
+    if(window.REVO_CLOUD && hasAuth){ setTimeout(go, 2500); } else { go(); }
+  })();
+</script>
+</body>
+</html>

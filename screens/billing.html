@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>契約・お支払い — revo fit</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#16140F">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="revo fit">
+<style id="revoShell">
+html,body{margin:0;padding:0;}
+body{background:#F1EFEA;}
+@media (max-width:440px){
+  body>.frame{padding:0!important;border-radius:0!important;background:transparent!important;min-height:100vh;min-height:100dvh;}
+  body>.frame>#screen{border-radius:0!important;max-width:none!important;min-height:100vh;min-height:100dvh;}
+}
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/revo.js"></script>
+<script src="../js/revo-cloud.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<div class="frame" style="background:#F1EFEA; border-radius:14px; padding:12px; display:flex; justify-content:center;">
+<div id="screen" style="background:#16140F; border-radius:20px; font-family:var(--font-sans); max-width:380px; width:100%; margin:0 auto; overflow:hidden; position:relative; transition:background 0.35s;">
+
+  <h2 style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;">支払いとサブスクの管理。今のプラン、次回の更新日と金額、支払い方法、支払い履歴、プランの変更、そしていつでもできる解約。言語と明暗を切り替えられる</h2>
+
+  <div id="hdr" style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:0.5px solid #2A2620; transition:border-color 0.35s;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <i class="ti ti-arrow-left" style="font-size:21px; color:#8A7E68;" aria-hidden="true"></i>
+      <p id="hdrTtl" style="font-size:16px; font-weight:500; color:#F0EBE2; margin:0; transition:color 0.35s;">支払いとプラン</p>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <button id="langBtn" aria-label="言語" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i class="ti ti-world" style="font-size:16px; color:#B0A488;" aria-hidden="true"></i></button>
+      <button id="themeBtn" aria-label="明るさ" style="width:32px; height:32px; border-radius:50%; background:#1F1C16; border:0.5px solid #3A352A; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.35s;"><i id="themeIcon" class="ti ti-sun" style="font-size:16px; color:#E3C56A;" aria-hidden="true"></i></button>
+    </div>
+    <div id="langMenu" style="display:none; position:absolute; top:54px; right:18px; width:206px; max-height:300px; overflow-y:auto; background:#1F1C16; border:0.5px solid #3A352A; border-radius:14px; padding:6px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); z-index:30;"></div>
+  </div>
+
+  <div style="padding:18px 18px 26px; max-height:620px; overflow-y:auto;">
+
+    <!-- 現在のプラン -->
+    <p id="secPlan" style="font-size:12px; color:#B0A488; font-weight:500; margin:0 0 9px;">現在のプラン</p>
+    <div id="planCard" style="background:linear-gradient(140deg,#221E14,#1A1814); border:0.5px solid #3A352A; border-radius:16px; padding:17px; margin:0 0 10px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:0 0 12px;">
+        <div style="display:flex; align-items:center; gap:9px;">
+          <i class="ti ti-star" style="font-size:19px; color:#E3C56A;"></i>
+          <span id="planName" style="font-size:17px; color:#F0EBE2; font-weight:600;">スタンダード</span>
+        </div>
+        <span id="planBadge" style="font-size:10px; color:#16140F; background:#E3C56A; padding:3px 9px; border-radius:6px; font-weight:600;">利用中</span>
+      </div>
+      <div style="display:flex; align-items:baseline; gap:4px; margin:0 0 4px;">
+        <span id="planPrice" style="font-size:24px; color:#F0EBE2; font-weight:600; font-family:Jost;">¥1,200</span>
+        <span id="planCycle" style="font-size:13px; color:#8A7E68;">/ 月</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; margin:10px 0 0; padding:10px 12px; background:#16140F; border-radius:10px;">
+        <i class="ti ti-calendar" style="font-size:15px; color:#8A7E68;"></i>
+        <span id="nextBill" style="font-size:12px; color:#B0A488;">次回更新：2026年8月2日 に ¥1,200</span>
+      </div>
+    </div>
+    <p id="autoNote" style="font-size:10px; color:#6E6555; margin:0 0 22px; line-height:1.6;">更新日に自動で更新されます。金額と日付は、更新前にいつでもここで確認できます。</p>
+
+    <!-- 支払い方法 -->
+    <p id="secPay" style="font-size:12px; color:#B0A488; font-weight:500; margin:0 0 9px;">支払い方法</p>
+    <div id="payCard" style="display:flex; align-items:center; gap:12px; background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:14px; margin:0 0 22px; cursor:pointer;">
+      <div style="width:40px; height:28px; border-radius:6px; background:linear-gradient(135deg,#3A352A,#2A2620); display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="ti ti-credit-card" style="font-size:17px; color:#E3C56A;"></i></div>
+      <div style="flex:1;">
+        <p style="font-size:13px; color:#F0EBE2; margin:0; font-weight:500;">•••• •••• •••• 4242</p>
+        <p id="payExp" style="font-size:11px; color:#8A7E68; margin:1px 0 0;">有効期限 09 / 28</p>
+      </div>
+      <span id="payChange" style="font-size:12px; color:#E3C56A; font-weight:500;">変更</span>
+    </div>
+
+    <!-- プラン変更 -->
+    <p id="secChange" style="font-size:12px; color:#B0A488; font-weight:500; margin:0 0 9px;">プランの変更</p>
+    <div style="display:flex; flex-direction:column; gap:8px; margin:0 0 22px;">
+      <div id="rowYear" style="display:flex; align-items:center; gap:11px; background:#221E14; border:1px solid #E3C56A; border-radius:13px; padding:13px 14px; cursor:pointer;">
+        <i class="ti ti-calendar-star" style="font-size:19px; color:#E3C56A;"></i>
+        <div style="flex:1;"><p id="yearTtl" style="font-size:13px; color:#F0EBE2; margin:0; font-weight:600;">年払いに切り替える</p><p id="yearSub" style="font-size:11px; color:#B0A488; margin:1px 0 0;">¥12,000 / 年 ・ 2ヶ月分お得</p></div>
+        <span id="yearBadge" style="font-size:10px; color:#16140F; background:#E3C56A; padding:3px 8px; border-radius:6px; font-weight:600; flex-shrink:0;">-17%</span>
+      </div>
+      <div id="rowUp" style="display:flex; align-items:center; gap:11px; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:13px 14px; cursor:pointer;">
+        <i class="ti ti-arrow-up" style="font-size:19px; color:#E3C56A;"></i>
+        <div style="flex:1;"><p id="upTtl" style="font-size:13px; color:#F0EBE2; margin:0; font-weight:500;">横断プランにアップグレード</p><p id="upSub" style="font-size:11px; color:#8A7E68; margin:1px 0 0;">fit・life を横断・¥1,960 / 月</p></div>
+        <i class="ti ti-chevron-right" style="font-size:16px; color:#6E6555;"></i>
+      </div>
+      <div id="rowDown" style="display:flex; align-items:center; gap:11px; background:#1A1814; border:0.5px solid #2A2620; border-radius:13px; padding:13px 14px; cursor:pointer;">
+        <i class="ti ti-arrow-down" style="font-size:19px; color:#8A7E68;"></i>
+        <div style="flex:1;"><p id="downTtl" style="font-size:13px; color:#F0EBE2; margin:0; font-weight:500;">ベーシックにダウングレード</p><p id="downSub" style="font-size:11px; color:#8A7E68; margin:1px 0 0;">記録と基本機能・¥580 / 月</p></div>
+        <i class="ti ti-chevron-right" style="font-size:16px; color:#6E6555;"></i>
+      </div>
+    </div>
+
+    <!-- 支払い履歴 -->
+    <p id="secHist" style="font-size:12px; color:#B0A488; font-weight:500; margin:0 0 9px;">支払い履歴</p>
+    <div id="histList" style="background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; overflow:hidden; margin:0 0 22px;"></div>
+
+    <!-- 解約 -->
+    <p id="secCancel" style="font-size:12px; color:#B0A488; font-weight:500; margin:0 0 9px;">解約</p>
+    <div style="background:#1A1814; border:0.5px solid #2A2620; border-radius:14px; padding:15px;">
+      <p id="cancelLead" style="font-size:12px; color:#B0A488; margin:0 0 12px; line-height:1.65;">いつでも解約できます。解約しても、更新日（2026年8月2日）まではスタンダードの機能をそのまま使えます。日割りの返金はありませんが、期間内は全機能をお使いいただけます。</p>
+      <button id="cancelBtn" style="width:100%; background:transparent; border:0.5px solid #3A352A; color:#B08A8A; font-size:13px; font-weight:500; padding:13px; border-radius:12px; cursor:pointer;">解約手続きへ</button>
+    </div>
+
+    <p id="foot" style="font-size:10px; color:#6E6555; margin:18px 0 0; line-height:1.65; text-align:center;">請求に関するご質問は、サポートからお問い合わせください。領収書は各履歴からダウンロードできます。</p>
+  </div>
+  <div id="billToast" style="position:absolute; left:50%; bottom:24px; transform:translateX(-50%) translateY(8px); background:#E3C56A; color:#16140F; font-size:12px; font-weight:600; padding:11px 18px; border-radius:11px; box-shadow:0 10px 30px -8px rgba(0,0,0,0.6); z-index:50; opacity:0; transition:all 0.3s; white-space:nowrap; pointer-events:none;"></div>
+
+</div>
+</div>
+<script>
+  (function(){
+    var langs=["日本語","English","简体中文","繁體中文","한국어","Français","Español","Deutsch","Italiano","Português","ภาษาไทย","हिन्दी","Tiếng Việt","Bahasa Indonesia"];
+    var langSub={"English":"英語","简体中文":"中国語（簡体）","繁體中文":"中国語（繁体）","한국어":"韓国語","Français":"フランス語","Español":"スペイン語","Deutsch":"ドイツ語","Italiano":"イタリア語","Português":"ポルトガル語","ภาษาไทย":"タイ語","हिन्दी":"ヒンディー語","Tiếng Việt":"ベトナム語","Bahasa Indonesia":"インドネシア語"};
+    var cur=REVO.lang(), dark=REVO.dark();
+    var T={
+      dark:{bg:"#16140F",title:"#F0EBE2",txt:"#F0EBE2",sub:"#8A7E68",muted:"#6E6555",lbl:"#B0A488",card:"#1A1814",cardBd:"#2A2620",planbg:"linear-gradient(140deg,#221E14,#1A1814)",inner:"#16140F",accent:"#E3C56A",danger:"#C88A8A",iconBg:"#1F1C16",iconBd:"#3A352A",iconCol:"#B0A488",divider:"#2A2620"},
+      light:{bg:"#FFFFFF",title:"#2E2A24",txt:"#2E2A24",sub:"#8A7E68",muted:"#B7A98F",lbl:"#7A7060",card:"#FBF7F1",cardBd:"#F0EAE0",planbg:"linear-gradient(140deg,#FBF3E0,#FBF7F1)",inner:"#FFFFFF",accent:"#BA7517",danger:"#C0392B",iconBg:"#FFFFFF",iconBd:"#E8E0CE",iconCol:"#9A8E78",divider:"#F0EAE0"}
+    };
+    var D={
+      "日本語":{hdr:"支払いとプラン",secPlan:"現在のプラン",planName:"スタンダード",badge:"利用中",price:"¥1,200",cycle:"/ 月",
+        next:"次回更新：2026年8月2日 に ¥1,200",autoNote:"更新日に自動で更新されます。金額と日付は、更新前にいつでもここで確認できます。",
+        secPay:"支払い方法",exp:"有効期限 09 / 28",change:"変更",
+        secChange:"プランの変更",upTtl:"横断プランにアップグレード",upSub:"fit・life を横断・¥1,960 / 月",downTtl:"ベーシックにダウングレード",downSub:"記録と基本機能・¥580 / 月",yearTtl:"年払いに切り替える",yearSub:"¥12,000 / 年 ・ 2ヶ月分お得",toCross:"横断プランの確認画面へ進みます",toYear:"年払いの確認画面へ進みます",toReceipt:"領収書を開きます",toDown:"ベーシックへの変更を確認します",toCancel:"解約手続きへ進みます",
+        secHist:"支払い履歴",secCancel:"解約",
+        cancelLead:"いつでも解約できます。解約しても、更新日（2026年8月2日）まではスタンダードの機能をそのまま使えます。日割りの返金はありませんが、期間内は全機能をお使いいただけます。",
+        cancelBtn:"解約手続きへ",foot:"請求に関するご質問は、サポートからお問い合わせください。領収書は各履歴からダウンロードできます。",
+        receipt:"領収書",hist:[["2026年7月2日","¥1,200","スタンダード"],["2026年6月2日","¥1,200","スタンダード"],["2026年5月2日","¥1,200","スタンダード"],["2026年4月2日","¥580","ベーシック"]]},
+      "English":{hdr:"Billing & plan",secPlan:"Current plan",planName:"Standard",badge:"Active",price:"$8.99",cycle:"/ mo",
+        next:"Renews Aug 2, 2026 for $8.99",autoNote:"Renews automatically on the renewal date. You can always check the amount and date here before it renews.",
+        secPay:"Payment method",exp:"Expires 09 / 28",change:"Change",
+        secChange:"Change plan",upTtl:"Upgrade to All-Access",upSub:"fit & life together, $12.99 / mo",downTtl:"Downgrade to Basic",downSub:"Tracking and basics, $3.99 / mo",yearTtl:"Switch to yearly",yearSub:"$79.90 / yr · 2 months free",toCross:"Going to the Cross plan confirmation",toYear:"Going to yearly billing confirmation",toReceipt:"Opening the receipt",toDown:"Confirming the change to Basic",toCancel:"Continuing to cancellation",
+        secHist:"Payment history",secCancel:"Cancel",
+        cancelLead:"You can cancel anytime. Even after canceling, you keep Standard features until the renewal date (Aug 2, 2026). No prorated refund, but you keep full access through the period.",
+        cancelBtn:"Continue to cancel",foot:"For billing questions, contact support. Receipts can be downloaded from each entry.",
+        receipt:"Receipt",hist:[["Jul 2, 2026","$8.99","Standard"],["Jun 2, 2026","$8.99","Standard"],["May 2, 2026","$8.99","Standard"],["Apr 2, 2026","$3.99","Basic"]]},
+      "简体中文":{hdr:"支付与套餐",secPlan:"当前套餐",planName:"标准",badge:"使用中",price:"¥63",cycle:"/ 月",
+        next:"下次续费：2026年8月2日 扣 ¥63",autoNote:"将在续费日自动续费。续费前你随时可在此查看金额与日期。",
+        secPay:"支付方式",exp:"有效期 09 / 28",change:"更改",
+        secChange:"更改套餐",upTtl:"升级到横跨套餐",upSub:"横跨 fit·life・¥98 / 月",downTtl:"降级到基础",downSub:"记录与基本功能・¥30 / 月",yearTtl:"切换到按年付费",yearSub:"¥580 / 年 · 省2个月",toCross:"前往横跨套餐确认页",toYear:"前往按年付费确认页",toReceipt:"正在打开收据",toDown:"确认降级到基础",toCancel:"前往取消流程",
+        secHist:"支付历史",secCancel:"取消订阅",
+        cancelLead:"可随时取消。即使取消，在续费日（2026年8月2日）前仍可继续使用标准功能。不按日退款，但期限内保留全部功能。",
+        cancelBtn:"前往取消",foot:"账单相关问题请联系客服。收据可从每条记录下载。",
+        receipt:"收据",hist:[["2026年7月2日","¥63","标准"],["2026年6月2日","¥63","标准"],["2026年5月2日","¥63","标准"],["2026年4月2日","¥30","基础"]]},
+      "繁體中文":{hdr:"付款與方案",secPlan:"目前方案",planName:"標準",badge:"使用中",price:"NT$280",cycle:"/ 月",
+        next:"下次續訂：2026年8月2日 扣 NT$280",autoNote:"將在續訂日自動續訂。續訂前你隨時可在此查看金額與日期。",
+        secPay:"付款方式",exp:"有效期 09 / 28",change:"變更",
+        secChange:"變更方案",upTtl:"升級到橫跨方案",upSub:"橫跨 fit·life・NT$390 / 月",downTtl:"降級到基礎",downSub:"記錄與基本功能・NT$135 / 月",yearTtl:"切換到按年付費",yearSub:"NT$2,500 / 年 · 省2個月",toCross:"前往橫跨方案確認頁",toYear:"前往按年付費確認頁",toReceipt:"正在開啟收據",toDown:"確認降級到基礎",toCancel:"前往取消流程",
+        secHist:"付款紀錄",secCancel:"取消訂閱",
+        cancelLead:"可隨時取消。即使取消，在續訂日（2026年8月2日）前仍可繼續使用標準功能。不按日退款，但期限內保留全部功能。",
+        cancelBtn:"前往取消",foot:"帳單相關問題請聯絡客服。收據可從每筆紀錄下載。",
+        receipt:"收據",hist:[["2026年7月2日","NT$280","標準"],["2026年6月2日","NT$280","標準"],["2026年5月2日","NT$280","標準"],["2026年4月2日","NT$135","基礎"]]},
+      "한국어":{hdr:"결제와 플랜",secPlan:"현재 플랜",planName:"스탠다드",badge:"이용 중",price:"₩11,900",cycle:"/ 월",
+        next:"다음 갱신: 2026년 8월 2일에 ₩11,900",autoNote:"갱신일에 자동으로 갱신됩니다. 갱신 전 언제든 금액과 날짜를 여기서 확인할 수 있어요.",
+        secPay:"결제 수단",exp:"유효기간 09 / 28",change:"변경",
+        secChange:"플랜 변경",upTtl:"통합 플랜으로 업그레이드",upSub:"fit·life 함께・₩17,500 / 월",downTtl:"베이직으로 다운그레이드",downSub:"기록과 기본 기능・₩5,900 / 월",yearTtl:"연간 결제로 전환",yearSub:"₩109,000 / 년 · 2개월 무료",toCross:"크로스 플랜 확인 화면으로",toYear:"연간 결제 확인 화면으로",toReceipt:"영수증을 엽니다",toDown:"베이직으로 변경을 확인해요",toCancel:"해지 절차로 이동해요",
+        secHist:"결제 내역",secCancel:"해지",
+        cancelLead:"언제든 해지할 수 있어요. 해지해도 갱신일(2026년 8월 2일)까지 스탠다드 기능을 그대로 사용할 수 있습니다. 일할 환불은 없지만 기간 내 모든 기능을 사용할 수 있어요.",
+        cancelBtn:"해지 진행",foot:"결제 관련 문의는 고객지원으로. 영수증은 각 내역에서 다운로드할 수 있어요.",
+        receipt:"영수증",hist:[["2026년 7월 2일","₩11,900","스탠다드"],["2026년 6월 2일","₩11,900","스탠다드"],["2026년 5월 2일","₩11,900","스탠다드"],["2026년 4월 2일","₩5,900","베이직"]]},
+      "ภาษาไทย":{hdr:"การชำระเงินและแพ็กเกจ",secPlan:"แพ็กเกจปัจจุบัน",planName:"สแตนดาร์ด",badge:"กำลังใช้",price:"฿279",cycle:"/ เดือน",
+        next:"ต่ออายุครั้งถัดไป: 2 ส.ค. 2026 เป็นเงิน ฿279",autoNote:"ต่ออายุอัตโนมัติในวันต่ออายุ คุณตรวจสอบยอดและวันที่ได้ที่นี่ก่อนต่ออายุเสมอ",
+        secPay:"วิธีชำระเงิน",exp:"หมดอายุ 09 / 28",change:"เปลี่ยน",
+        secChange:"เปลี่ยนแพ็กเกจ",upTtl:"อัปเกรดเป็นแพ็กเกจข้ามแอป",upSub:"fit·life รวมกัน・฿329 / เดือน",downTtl:"ดาวน์เกรดเป็นเบสิก",downSub:"บันทึกและฟังก์ชันพื้นฐาน・฿139 / เดือน",yearTtl:"เปลี่ยนเป็นรายปี",yearSub:"฿1,990 / ปี · ฟรี 2 เดือน",toCross:"ไปหน้ายืนยันแพ็กเกจข้ามแอป",toYear:"ไปหน้ายืนยันการชำระรายปี",toReceipt:"กำลังเปิดใบเสร็จ",toDown:"ยืนยันเปลี่ยนเป็นเบสิก",toCancel:"ไปยังขั้นตอนยกเลิก",
+        secHist:"ประวัติการชำระเงิน",secCancel:"ยกเลิก",
+        cancelLead:"ยกเลิกได้ทุกเมื่อ แม้ยกเลิกแล้วก็ยังใช้ฟังก์ชันสแตนดาร์ดได้จนถึงวันต่ออายุ (2 ส.ค. 2026) ไม่มีการคืนเงินตามสัดส่วน แต่ใช้ได้เต็มที่ภายในระยะเวลา",
+        cancelBtn:"ดำเนินการยกเลิก",foot:"หากมีคำถามเรื่องการเรียกเก็บเงิน ติดต่อฝ่ายสนับสนุน ใบเสร็จดาวน์โหลดได้จากแต่ละรายการ",
+        receipt:"ใบเสร็จ",hist:[["2 ก.ค. 2026","฿279","สแตนดาร์ด"],["2 มิ.ย. 2026","฿279","สแตนดาร์ด"],["2 พ.ค. 2026","฿279","สแตนดาร์ด"],["2 เม.ย. 2026","฿139","เบสิก"]]},
+      "Français":{hdr:"Paiement et forfait",secPlan:"Forfait actuel",planName:"Standard",badge:"Actif",price:"7,99 €",cycle:"/ mois",
+        next:"Renouvellement le 2 août 2026 pour 7,99 €",autoNote:"Renouvellement automatique à la date de renouvellement. Vous pouvez toujours vérifier le montant et la date ici avant.",
+        secPay:"Moyen de paiement",exp:"Expire 09 / 28",change:"Modifier",
+        secChange:"Changer de forfait",upTtl:"Passer à l'offre Tout-accès",upSub:"fit et life, 12,99 € / mois",downTtl:"Passer à Basique",downSub:"Suivi et essentiel, 3,99 € / mois",yearTtl:"Passer à l'annuel",yearSub:"79,90 € / an · 2 mois offerts",toCross:"Vers la confirmation du plan Croisé",toYear:"Vers la confirmation annuelle",toReceipt:"Ouverture du reçu",toDown:"Confirmation du passage à Basic",toCancel:"Vers la résiliation",
+        secHist:"Historique de paiement",secCancel:"Résilier",
+        cancelLead:"Vous pouvez résilier à tout moment. Même après résiliation, vous gardez les fonctions Standard jusqu'à la date de renouvellement (2 août 2026). Pas de remboursement au prorata, mais accès complet sur la période.",
+        cancelBtn:"Continuer la résiliation",foot:"Pour toute question de facturation, contactez le support. Les reçus se téléchargent depuis chaque ligne.",
+        receipt:"Reçu",hist:[["2 août 2026","7,99 €","Standard"],["2 juil. 2026","7,99 €","Standard"],["2 juin 2026","7,99 €","Standard"],["2 mai 2026","3,99 €","Basique"]]},
+      "Español":{hdr:"Pago y plan",secPlan:"Plan actual",planName:"Estándar",badge:"Activo",price:"7,99 €",cycle:"/ mes",
+        next:"Se renueva el 2 ago 2026 por 7,99 €",autoNote:"Se renueva automáticamente en la fecha de renovación. Siempre puedes ver el importe y la fecha aquí antes.",
+        secPay:"Método de pago",exp:"Caduca 09 / 28",change:"Cambiar",
+        secChange:"Cambiar de plan",upTtl:"Mejorar a Acceso total",upSub:"fit y life, 12,99 € / mes",downTtl:"Bajar a Básico",downSub:"Registro y lo básico, 3,99 € / mes",yearTtl:"Cambiar a anual",yearSub:"79,90 € / año · 2 meses gratis",toCross:"A la confirmación del plan Cruzado",toYear:"A la confirmación anual",toReceipt:"Abriendo el recibo",toDown:"Confirmando el cambio a Básico",toCancel:"Continuando a la cancelación",
+        secHist:"Historial de pagos",secCancel:"Cancelar",
+        cancelLead:"Puedes cancelar cuando quieras. Aun tras cancelar, conservas las funciones Estándar hasta la fecha de renovación (2 ago 2026). Sin reembolso prorrateado, pero con acceso completo durante el periodo.",
+        cancelBtn:"Continuar con la cancelación",foot:"Para dudas de facturación, contacta con soporte. Los recibos se descargan desde cada entrada.",
+        receipt:"Recibo",hist:[["2 ago 2026","7,99 €","Estándar"],["2 jul 2026","7,99 €","Estándar"],["2 jun 2026","7,99 €","Estándar"],["2 may 2026","3,99 €","Básico"]]},
+      "Deutsch":{hdr:"Zahlung & Tarif",secPlan:"Aktueller Tarif",planName:"Standard",badge:"Aktiv",price:"7,99 €",cycle:"/ Mon.",
+        next:"Verlängerung am 2. Aug. 2026 für 7,99 €",autoNote:"Verlängert sich am Verlängerungsdatum automatisch. Betrag und Datum kannst du hier jederzeit vorher prüfen.",
+        secPay:"Zahlungsmethode",exp:"Gültig bis 09 / 28",change:"Ändern",
+        secChange:"Tarif ändern",upTtl:"Auf All-Access upgraden",upSub:"fit und life, 12,99 € / Mon.",downTtl:"Auf Basis herabstufen",downSub:"Tracking und Basis, 3,99 € / Mon.",yearTtl:"Auf jährlich wechseln",yearSub:"79,90 € / Jahr · 2 Monate gratis",toCross:"Zur Bestätigung des Cross-Plans",toYear:"Zur jährlichen Bestätigung",toReceipt:"Quittung wird geöffnet",toDown:"Wechsel zu Basic bestätigen",toCancel:"Weiter zur Kündigung",
+        secHist:"Zahlungsverlauf",secCancel:"Kündigen",
+        cancelLead:"Du kannst jederzeit kündigen. Auch nach der Kündigung behältst du die Standard-Funktionen bis zum Verlängerungsdatum (2. Aug. 2026). Keine anteilige Erstattung, aber voller Zugriff im Zeitraum.",
+        cancelBtn:"Weiter zur Kündigung",foot:"Bei Fragen zur Abrechnung wende dich an den Support. Belege lädst du aus jedem Eintrag herunter.",
+        receipt:"Beleg",hist:[["2. Aug. 2026","7,99 €","Standard"],["2. Juli 2026","7,99 €","Standard"],["2. Juni 2026","7,99 €","Standard"],["2. Mai 2026","3,99 €","Basis"]]},
+      "Italiano":{hdr:"Pagamento e piano",secPlan:"Piano attuale",planName:"Standard",badge:"Attivo",price:"7,99 €",cycle:"/ mese",
+        next:"Si rinnova il 2 ago 2026 per 7,99 €",autoNote:"Si rinnova automaticamente alla data di rinnovo. Puoi sempre controllare importo e data qui prima del rinnovo.",
+        secPay:"Metodo di pagamento",exp:"Scade 09 / 28",change:"Modifica",
+        secChange:"Cambia piano",upTtl:"Passa ad Accesso totale",upSub:"fit e life, 12,99 € / mese",downTtl:"Passa a Base",downSub:"Registro ed essenziale, 3,99 € / mese",yearTtl:"Passa all'annuale",yearSub:"79,90 € / anno · 2 mesi gratis",toCross:"Alla conferma del piano Incrociato",toYear:"Alla conferma annuale",toReceipt:"Apertura della ricevuta",toDown:"Conferma del passaggio a Basic",toCancel:"Verso la disdetta",
+        secHist:"Cronologia pagamenti",secCancel:"Annulla",
+        cancelLead:"Puoi annullare quando vuoi. Anche dopo l'annullamento mantieni le funzioni Standard fino alla data di rinnovo (2 ago 2026). Nessun rimborso proporzionale, ma accesso completo nel periodo.",
+        cancelBtn:"Continua con l'annullamento",foot:"Per domande sulla fatturazione contatta il supporto. Le ricevute si scaricano da ogni voce.",
+        receipt:"Ricevuta",hist:[["2 ago 2026","7,99 €","Standard"],["2 lug 2026","7,99 €","Standard"],["2 giu 2026","7,99 €","Standard"],["2 mag 2026","3,99 €","Base"]]},
+      "Português":{hdr:"Pagamento e plano",secPlan:"Plano atual",planName:"Padrão",badge:"Ativo",price:"R$29",cycle:"/ mês",
+        next:"Renova em 2 ago 2026 por R$29",autoNote:"Renova automaticamente na data de renovação. Você pode sempre ver o valor e a data aqui antes.",
+        secPay:"Forma de pagamento",exp:"Vence 09 / 28",change:"Alterar",
+        secChange:"Mudar de plano",upTtl:"Fazer upgrade para Acesso total",upSub:"fit e life, R$64,90 / mês",downTtl:"Fazer downgrade para Básico",downSub:"Registro e básico, R$15 / mês",yearTtl:"Mudar para anual",yearSub:"R$399 / ano · 2 meses grátis",toCross:"Para a confirmação do plano Cruzado",toYear:"Para a confirmação anual",toReceipt:"Abrindo o recibo",toDown:"Confirmando a mudança para Básico",toCancel:"Continuando para o cancelamento",
+        secHist:"Histórico de pagamentos",secCancel:"Cancelar",
+        cancelLead:"Você pode cancelar quando quiser. Mesmo após cancelar, mantém os recursos Padrão até a data de renovação (2 ago 2026). Sem reembolso proporcional, mas com acesso total no período.",
+        cancelBtn:"Continuar para cancelar",foot:"Para dúvidas de cobrança, fale com o suporte. Os recibos podem ser baixados de cada item.",
+        receipt:"Recibo",hist:[["2 ago 2026","R$29","Padrão"],["2 jul 2026","R$29","Padrão"],["2 jun 2026","R$29","Padrão"],["2 mai 2026","R$15","Básico"]]},
+      "हिन्दी":{hdr:"भुगतान और प्लान",secPlan:"मौजूदा प्लान",planName:"स्टैंडर्ड",badge:"सक्रिय",price:"₹499",cycle:"/ माह",
+        next:"अगला नवीनीकरण: 2 अगस्त 2026 को ₹499",autoNote:"नवीनीकरण की तारीख पर अपने आप रिन्यू होगा। रिन्यू से पहले राशि और तारीख आप यहाँ कभी भी देख सकते हैं।",
+        secPay:"भुगतान का तरीका",exp:"समाप्ति 09 / 28",change:"बदलें",
+        secChange:"प्लान बदलें",upTtl:"ऑल-एक्सेस में अपग्रेड करें",upSub:"fit·life साथ・₹979 / माह",downTtl:"बेसिक में डाउनग्रेड करें",downSub:"रिकॉर्ड और बुनियादी・₹249 / माह",yearTtl:"वार्षिक पर स्विच करें",yearSub:"₹5,990 / वर्ष · 2 महीने मुफ्त",toCross:"क्रॉस प्लान की पुष्टि पर जाएँ",toYear:"वार्षिक भुगतान की पुष्टि पर जाएँ",toReceipt:"रसीद खुल रही है",toDown:"बेसिक में बदलाव की पुष्टि",toCancel:"रद्दीकरण की ओर",
+        secHist:"भुगतान इतिहास",secCancel:"रद्द करें",
+        cancelLead:"आप कभी भी रद्द कर सकते हैं। रद्द करने पर भी नवीनीकरण तारीख (2 अगस्त 2026) तक स्टैंडर्ड सुविधाएँ मिलती रहेंगी। दैनिक आधार पर रिफंड नहीं, पर अवधि में पूरी सुविधा।",
+        cancelBtn:"रद्द करना जारी रखें",foot:"बिलिंग से जुड़े सवालों के लिए सपोर्ट से संपर्क करें। रसीदें हर प्रविष्टि से डाउनलोड की जा सकती हैं।",
+        receipt:"रसीद",hist:[["2 अगस्त 2026","₹499","स्टैंडर्ड"],["2 जुलाई 2026","₹499","स्टैंडर्ड"],["2 जून 2026","₹499","स्टैंडर्ड"],["2 मई 2026","₹249","बेसिक"]]},
+      "Tiếng Việt":{hdr:"Thanh toán & gói",secPlan:"Gói hiện tại",planName:"Tiêu chuẩn",badge:"Đang dùng",price:"199.000₫",cycle:"/ tháng",
+        next:"Gia hạn ngày 2/8/2026 với 199.000₫",autoNote:"Tự động gia hạn vào ngày gia hạn. Bạn luôn có thể xem số tiền và ngày tại đây trước khi gia hạn.",
+        secPay:"Phương thức thanh toán",exp:"Hết hạn 09 / 28",change:"Đổi",
+        secChange:"Đổi gói",upTtl:"Nâng lên gói Toàn quyền",upSub:"fit & life, 329.000₫ / tháng",downTtl:"Hạ xuống Cơ bản",downSub:"Ghi chép và cơ bản, 99.000₫ / tháng",yearTtl:"Chuyển sang hàng năm",yearSub:"1.990.000₫ / năm · Miễn phí 2 tháng",toCross:"Đến xác nhận gói Kết hợp",toYear:"Đến xác nhận thanh toán năm",toReceipt:"Đang mở hóa đơn",toDown:"Xác nhận đổi sang Cơ bản",toCancel:"Tiếp tục hủy",
+        secHist:"Lịch sử thanh toán",secCancel:"Hủy",
+        cancelLead:"Bạn có thể hủy bất cứ lúc nào. Ngay cả khi hủy, bạn vẫn dùng các tính năng Tiêu chuẩn đến ngày gia hạn (2/8/2026). Không hoàn tiền theo ngày, nhưng dùng đầy đủ trong kỳ.",
+        cancelBtn:"Tiếp tục hủy",foot:"Thắc mắc về thanh toán, hãy liên hệ hỗ trợ. Biên lai tải được từ từng mục.",
+        receipt:"Biên lai",hist:[["2/7/2026","199.000₫","Tiêu chuẩn"],["2/6/2026","199.000₫","Tiêu chuẩn"],["2/5/2026","199.000₫","Tiêu chuẩn"],["2/4/2026","99.000₫","Cơ bản"]]},
+      "Bahasa Indonesia":{hdr:"Pembayaran & paket",secPlan:"Paket saat ini",planName:"Standar",badge:"Aktif",price:"Rp59.000",cycle:"/ bln",
+        next:"Perpanjang 2 Agu 2026 sebesar Rp59.000",autoNote:"Diperpanjang otomatis pada tanggal perpanjangan. Kamu selalu bisa cek jumlah dan tanggal di sini sebelum diperpanjang.",
+        secPay:"Metode pembayaran",exp:"Kedaluwarsa 09 / 28",change:"Ubah",
+        secChange:"Ubah paket",upTtl:"Tingkatkan ke Akses penuh",upSub:"fit & life, Rp197.000 / bln",downTtl:"Turunkan ke Basic",downSub:"Pencatatan dan dasar, Rp30.000 / bln",yearTtl:"Beralih ke tahunan",yearSub:"Rp1.190.000 / thn · Gratis 2 bulan",toCross:"Ke konfirmasi paket Lintas",toYear:"Ke konfirmasi bayar tahunan",toReceipt:"Membuka kuitansi",toDown:"Konfirmasi ubah ke Basic",toCancel:"Lanjut ke pembatalan",
+        secHist:"Riwayat pembayaran",secCancel:"Batalkan",
+        cancelLead:"Kamu bisa batalkan kapan saja. Meski dibatalkan, kamu tetap memakai fitur Standar hingga tanggal perpanjangan (2 Agu 2026). Tanpa pengembalian dana prorata, tapi akses penuh selama periode.",
+        cancelBtn:"Lanjut membatalkan",foot:"Untuk pertanyaan tagihan, hubungi dukungan. Kuitansi dapat diunduh dari tiap entri.",
+        receipt:"Kuitansi",hist:[["2 Agu 2026","Rp59.000","Standar"],["2 Jul 2026","Rp59.000","Standar"],["2 Jun 2026","Rp59.000","Standar"],["2 Apr 2026","Rp30.000","Basic"]]}
+    };
+    var $=function(id){return document.getElementById(id);}; try{REVO.tint(T);}catch(_e){}
+    function renderHist(){
+      var d=D[cur]||D["English"], t=dark?T.dark:T.light;
+      $('histList').innerHTML="";
+      d.hist.forEach(function(h,i){
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; gap:12px; padding:13px 14px; "+(i<d.hist.length-1?"border-bottom:0.5px solid "+t.divider+";":"");
+        row.innerHTML='<div style="flex:1;"><p style="font-size:13px; color:'+t.txt+'; margin:0; font-weight:500;">'+h[1]+'</p><p style="font-size:11px; color:'+t.sub+'; margin:1px 0 0;">'+h[0]+' · '+h[2]+'</p></div>'+
+          '<span class="receiptBtn" style="font-size:11px; color:'+t.accent+'; font-weight:500; display:inline-flex; align-items:center; gap:4px; cursor:pointer;"><i class="ti ti-file" style="font-size:14px;"></i>'+d.receipt+'</span>';
+        $('histList').appendChild(row);
+        var rb=row.querySelector('.receiptBtn');
+        if(rb){ rb.onclick=function(){ REVO.go('receipt'); }; }
+      });
+    }
+    function applyUI(){
+      var d=D[cur]||D["English"];
+      $('hdrTtl').textContent=d.hdr; $('secPlan').textContent=d.secPlan;
+      $('planName').textContent=d.planName; $('planBadge').textContent=d.badge;
+      $('planPrice').textContent=d.price; $('planCycle').textContent=d.cycle;
+      $('nextBill').textContent=d.next; $('autoNote').textContent=d.autoNote;
+      $('secPay').textContent=d.secPay; $('payExp').textContent=d.exp; $('payChange').textContent=d.change;
+      $('secChange').textContent=d.secChange; $('upTtl').textContent=d.upTtl; $('upSub').textContent=d.upSub;
+      if(d.yearTtl){ $('yearTtl').textContent=d.yearTtl; $('yearSub').textContent=d.yearSub; }
+      $('downTtl').textContent=d.downTtl; $('downSub').textContent=d.downSub;
+      $('secHist').textContent=d.secHist; $('secCancel').textContent=d.secCancel;
+      $('cancelLead').textContent=d.cancelLead; $('cancelBtn').textContent=d.cancelBtn; $('foot').textContent=d.foot;
+      renderHist();
+    }
+    function applyTheme(){
+      var t=dark?T.dark:T.light;
+      $('screen').style.background=t.bg;
+      $('hdr').style.borderColor=t.cardBd; $('hdrTtl').style.color=t.title;
+      ['secPlan','secPay','secChange','secHist','secCancel'].forEach(function(id){ $(id).style.color=t.lbl; });
+      $('planCard').style.background=t.planbg; $('planCard').style.borderColor=t.cardBd;
+      $('planName').style.color=t.title; $('planPrice').style.color=t.title; $('planCycle').style.color=t.sub;
+      $('planBadge').style.background=t.accent; $('planBadge').style.color= dark?"#16140F":"#FFFFFF";
+      $('planCard').querySelector('.ti-star').style.color=t.accent;
+      $('nextBill').parentElement.style.background=t.inner; $('nextBill').style.color=t.lbl;
+      $('nextBill').previousElementSibling.style.color=t.sub;
+      $('autoNote').style.color=t.muted;
+      ['payCard','rowUp','rowDown'].forEach(function(id){ $(id).style.background=t.card; $(id).style.borderColor=t.cardBd; });
+      $('payCard').querySelector('p').style.color=t.txt; $('payExp').style.color=t.sub; $('payChange').style.color=t.accent;
+      $('upTtl').style.color=t.txt; $('upSub').style.color=t.sub; $('downTtl').style.color=t.txt; $('downSub').style.color=t.sub;
+      $('rowUp').querySelector('.ti-arrow-up').style.color=t.accent;
+      // 年払い行（強調）
+      $('rowYear').style.background= dark?"#221E14":"#FBF3E0"; $('rowYear').style.borderColor=t.accent;
+      $('yearTtl').style.color=t.txt; $('yearSub').style.color=t.lbl;
+      $('rowYear').querySelector('.ti-calendar-star').style.color=t.accent;
+      $('yearBadge').style.background=t.accent; $('yearBadge').style.color= dark?"#16140F":"#FFFFFF";
+      $('histList').style.background=t.card; $('histList').style.borderColor=t.cardBd;
+      $('cancelLead').parentElement.style.background=t.card; $('cancelLead').parentElement.style.borderColor=t.cardBd;
+      $('cancelLead').style.color=t.lbl;
+      $('cancelBtn').style.borderColor=t.cardBd; $('cancelBtn').style.color=t.danger;
+      $('foot').style.color=t.muted;
+      [$('langBtn'),$('themeBtn')].forEach(function(b){ b.style.background=t.iconBg; b.style.borderColor=t.iconBd; });
+      $('langBtn').querySelector('i').style.color=t.iconCol;
+      $('themeIcon').className= dark? "ti ti-sun":"ti ti-moon"; $('themeIcon').style.color= dark? "#E3C56A":"#9A7B16";
+      $('langMenu').style.background= dark?"#1F1C16":"#FFFFFF"; $('langMenu').style.borderColor=t.iconBd;
+      applyUI();
+    }
+    function renderMenu(){
+      var titleCol= dark?"#F0EBE2":"#2E2A24", subCol="#8A7E68", acc= dark?"#E3C56A":"#BA7517";
+      $('langMenu').innerHTML="";
+      langs.forEach(function(l){
+        var on=(l===cur);
+        var row=document.createElement('div');
+        row.style.cssText="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; cursor:pointer;";
+        row.onmouseenter=function(){ row.style.background=dark?"#26231C":"#F4EFE6"; };
+        row.onmouseleave=function(){ row.style.background="transparent"; };
+        row.innerHTML='<div><p style="font-size:13px; color:'+(on?acc:titleCol)+'; margin:0; font-weight:'+(on?"500":"400")+';">'+l+'</p>'+(langSub[l]?'<p style="font-size:10px; color:'+subCol+'; margin:1px 0 0;">'+langSub[l]+'</p>':'')+'</div>'+(on?'<i class="ti ti-check" style="font-size:16px; color:'+acc+';"></i>':'');
+        row.onclick=function(){ cur=l; REVO.setLang(l); $('langMenu').style.display="none"; applyTheme(); };
+        $('langMenu').appendChild(row);
+      });
+    }
+    $('langBtn').onclick=function(e){ e.stopPropagation(); renderMenu(); var m=$('langMenu'); m.style.display=(m.style.display==="none"||!m.style.display)?"block":"none"; };
+    $('themeBtn').onclick=function(){ dark=!dark; REVO.setDark(dark); applyTheme(); };
+    document.addEventListener('click', function(){ $('langMenu').style.display="none"; });
+    $('langMenu').onclick=function(e){ e.stopPropagation(); };
+    function billToast(msg){
+      var tp=$('billToast'); tp.textContent=msg; tp.style.opacity="1"; tp.style.transform="translateX(-50%) translateY(0)";
+      clearTimeout(tp._h); tp._h=setTimeout(function(){ tp.style.opacity="0"; tp.style.transform="translateX(-50%) translateY(8px)"; }, 2400);
+    }
+    $('rowUp').onclick=function(){ REVO.go('cross_confirm'); };
+    $('rowYear').onclick=function(){ var d=D[cur]||D["English"]; billToast(d.toYear); };
+    $('rowDown').onclick=function(){ var d=D[cur]||D["English"]; billToast(d.toDown); };
+    $('cancelBtn').onclick=function(){
+      if(window.REVO_CLOUD && REVO_CLOUD.signedIn() && REVO_CLOUD.portal){
+        REVO_CLOUD.portal().catch(function(){ var d=D[cur]||D["English"]; billToast(d.toCancel); });
+      } else { var d=D[cur]||D["English"]; billToast(d.toCancel); }
+    };
+    applyTheme();
+  })();
+</script>
+</div>
+
+<script>
+(function(){
+  /* 戻る矢印（モックの見た目のまま遷移だけ実装） */
+  var bk=document.querySelector('i.ti-arrow-left');
+  if(!bk) return;
+  bk.style.cursor='pointer';
+  bk.onclick=function(){ if(document.referrer && history.length>1){ history.back(); } else { REVO.go('settings'); } };
+})();
+</script>
+</body>
+</html>
