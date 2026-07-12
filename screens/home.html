@@ -244,6 +244,8 @@ body{background:#F1EFEA;}
         $('scoreState').textContent=E.lowTtl.replace('{f}',fname);
         $('nextTtl').textContent=E.lowTtl.replace('{f}',fname);
         $('nextSub').textContent=E.lowSub.split('{f}').join(fname);
+        /* 実データから具体的なアドバイスに差し替え（例：たんぱく質があと28g） */
+        try{ var _adv=REVO.advice(cur); if(_adv && _adv.text){ $('nextSub').textContent=_adv.text; } }catch(_e2){}
       } else {
         $('scoreState').textContent=E.good;
         $('nextTtl').textContent=E.good;
@@ -309,6 +311,58 @@ body{background:#F1EFEA;}
   })();
 </script>
 </div>
+
+
+<script>
+(function(){
+  /* rf score 説明シート（オーナー指示 2026-07-12：スコアの意味・基準を明示） */
+  var SCEXP={"日本語": {"ttl": "rf score のしくみ", "body": "睡眠25%・食事30%・運動25%・回復20%の加重平均です。記録した項目だけで計算するので、まずはひとつ記録すればOK。", "bands": [["75以上", "いい調子"], ["60〜74", "まずまず"], ["60未満", "整えどき"]], "now": "きょうのスコア", "close": "とじる"}, "English": {"ttl": "How rf score works", "body": "A weighted average: Sleep 25%, Food 30%, Exercise 25%, Recovery 20%. Only what you log counts — one entry is enough to start.", "bands": [["75+", "Doing well"], ["60–74", "Okay"], ["Under 60", "Needs care"]], "now": "Today's score", "close": "Close"}, "简体中文": {"ttl": "rf score 的计算方式", "body": "由睡眠25%・饮食30%・运动25%・恢复20%加权平均而来。只计算已记录的项目，先记一条就行。", "bands": [["75以上", "状态很好"], ["60〜74", "还不错"], ["60以下", "需要调整"]], "now": "今天的分数", "close": "关闭"}, "繁體中文": {"ttl": "rf score 的計算方式", "body": "由睡眠25%・飲食30%・運動25%・恢復20%加權平均而來。只計算已記錄的項目，先記一條就行。", "bands": [["75以上", "狀態很好"], ["60〜74", "還不錯"], ["60以下", "需要調整"]], "now": "今天的分數", "close": "關閉"}, "한국어": {"ttl": "rf score란?", "body": "수면25%·식사30%·운동25%·회복20%의 가중 평균이에요. 기록한 항목만 계산하니, 하나만 기록해도 시작돼요.", "bands": [["75 이상", "좋아요"], ["60〜74", "무난해요"], ["60 미만", "다듬을 때"]], "now": "오늘 점수", "close": "닫기"}, "Français": {"ttl": "Comment marche le rf score", "body": "Moyenne pondérée : Sommeil 25 %, Repas 30 %, Sport 25 %, Récup 20 %. Seul ce qui est enregistré compte — une entrée suffit.", "bands": [["75+", "En forme"], ["60–74", "Correct"], ["<60", "À soigner"]], "now": "Score du jour", "close": "Fermer"}, "Español": {"ttl": "Cómo funciona el rf score", "body": "Media ponderada: Sueño 25%, Comida 30%, Ejercicio 25%, Recuperación 20%. Solo cuenta lo registrado; con uno basta.", "bands": [["75+", "Muy bien"], ["60–74", "Aceptable"], ["<60", "A cuidar"]], "now": "Puntuación de hoy", "close": "Cerrar"}, "Deutsch": {"ttl": "So funktioniert der rf score", "body": "Gewichteter Schnitt: Schlaf 25 %, Essen 30 %, Sport 25 %, Erholung 20 %. Nur Erfasstes zählt — ein Eintrag reicht.", "bands": [["75+", "Läuft gut"], ["60–74", "Okay"], ["<60", "Braucht Pflege"]], "now": "Heutiger Score", "close": "Schließen"}, "Italiano": {"ttl": "Come funziona l'rf score", "body": "Media ponderata: Sonno 25%, Cibo 30%, Sport 25%, Recupero 20%. Conta solo ciò che registri: una voce basta.", "bands": [["75+", "Va bene"], ["60–74", "Discreto"], ["<60", "Da curare"]], "now": "Punteggio di oggi", "close": "Chiudi"}, "Português": {"ttl": "Como funciona o rf score", "body": "Média ponderada: Sono 25%, Comida 30%, Exercício 25%, Recuperação 20%. Só conta o que você registra — um já basta.", "bands": [["75+", "Muito bem"], ["60–74", "Razoável"], ["<60", "Precisa de cuidado"]], "now": "Pontuação de hoje", "close": "Fechar"}, "ภาษาไทย": {"ttl": "rf score คำนวณอย่างไร", "body": "ค่าเฉลี่ยถ่วงน้ำหนัก: นอน25% อาหาร30% ออกกำลัง25% ฟื้นตัว20% นับเฉพาะที่บันทึก เริ่มจากหนึ่งรายการก็พอ", "bands": [["75+", "ดีมาก"], ["60–74", "พอใช้"], ["ต่ำกว่า 60", "ควรปรับ"]], "now": "คะแนนวันนี้", "close": "ปิด"}, "हिन्दी": {"ttl": "rf score कैसे बनता है", "body": "भारित औसत: नींद 25%, खाना 30%, कसरत 25%, रिकवरी 20%। सिर्फ़ दर्ज चीज़ें गिनती हैं — एक से शुरुआत काफ़ी।", "bands": [["75+", "बढ़िया"], ["60–74", "ठीक"], ["60 से कम", "ध्यान दें"]], "now": "आज का स्कोर", "close": "बंद करें"}, "Tiếng Việt": {"ttl": "rf score hoạt động thế nào", "body": "Trung bình có trọng số: Ngủ 25%, Ăn 30%, Vận động 25%, Phục hồi 20%. Chỉ tính những gì đã ghi — một mục là đủ.", "bands": [["75+", "Tốt"], ["60–74", "Ổn"], ["Dưới 60", "Cần chăm"]], "now": "Điểm hôm nay", "close": "Đóng"}, "Bahasa Indonesia": {"ttl": "Cara kerja rf score", "body": "Rata-rata tertimbang: Tidur 25%, Makan 30%, Olahraga 25%, Pemulihan 20%. Hanya yang dicatat yang dihitung — satu catatan cukup.", "bands": [["75+", "Bagus"], ["60–74", "Lumayan"], ["<60", "Perlu perhatian"]], "now": "Skor hari ini", "close": "Tutup"}};
+  var ring=document.querySelector('svg[aria-label^="rf score"]');
+  if(!ring) return;
+  ring.style.cursor='pointer';
+  var wrap=null;
+  function close(){ if(wrap){ wrap.remove(); wrap=null; } }
+  function bandOf(total, ex){
+    if(total==null) return null;
+    if(total>=75) return 0; if(total>=60) return 1; return 2;
+  }
+  function open(){
+    close();
+    var dark=REVO.dark(), lang=REVO.lang();
+    var ex=SCEXP[lang]||SCEXP["English"];
+    var sc=REVO.todayScore();
+    var acc=REVO.colorObj(); var accHex=dark?acc.hex:acc.light;
+    var panelBg=dark?"#1A1814":"#FFFFFF", txt=dark?"#F0EBE2":"#2E2A24", sub="#8A7E68";
+    var bandCols=["#5DCAA5","#E3C56A","#E0936A"];
+    var bi=bandOf(sc?sc.total:null);
+    wrap=document.createElement('div');
+    wrap.style.cssText="position:fixed; inset:0; z-index:70;";
+    var bd=document.createElement('div');
+    bd.style.cssText="position:absolute; inset:0; background:rgba(0,0,0,0.55);";
+    bd.onclick=close;
+    var pn=document.createElement('div');
+    pn.style.cssText="position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:380px; background:"+panelBg+"; border-radius:22px 22px 0 0; padding:18px 20px calc(24px + env(safe-area-inset-bottom,0px)); box-shadow:0 -18px 50px -12px rgba(0,0,0,0.6);";
+    var rows=ex.bands.map(function(b,i2){
+      var on=(bi===i2);
+      return '<div style="display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:11px; margin:0 0 7px;'+(on?' background:'+bandCols[i2]+'1A; border:0.5px solid '+bandCols[i2]+'66;':' border:0.5px solid transparent;')+'">'+
+        '<span style="width:10px; height:10px; border-radius:50%; background:'+bandCols[i2]+'; flex-shrink:0;"></span>'+
+        '<span style="font-size:13px; font-weight:600; color:'+txt+'; min-width:74px;">'+b[0]+'</span>'+
+        '<span style="font-size:12px; color:'+sub+';">'+b[1]+'</span>'+
+        (on&&sc?'<span style="margin-left:auto; font-size:12px; font-weight:600; color:'+bandCols[i2]+';">'+ex.now+' '+sc.total+'</span>':'')+
+      '</div>';
+    }).join("");
+    pn.innerHTML='<div style="width:44px; height:4px; border-radius:2px; background:'+(dark?"#3A352A":"#E8E0CE")+'; margin:0 auto 16px;"></div>'+
+      '<p style="font-size:16px; font-weight:600; color:'+txt+'; margin:0 0 8px;">'+ex.ttl+'</p>'+
+      '<p style="font-size:12px; color:'+sub+'; margin:0 0 16px; line-height:1.7;">'+ex.body+'</p>'+
+      rows+
+      '<button id="scexpClose" style="width:100%; margin:14px 0 0; background:'+accHex+'; border:none; color:'+(dark?"#16140F":"#FFFFFF")+'; font-size:14px; font-weight:600; padding:13px; border-radius:13px; cursor:pointer;">'+ex.close+'</button>';
+    wrap.appendChild(bd); wrap.appendChild(pn);
+    document.body.appendChild(wrap);
+    document.getElementById('scexpClose').onclick=close;
+  }
+  ring.parentNode.addEventListener('click', open);
+})();
+</script>
 
 </body>
 </html>

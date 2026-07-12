@@ -417,6 +417,49 @@
     "Bahasa Indonesia":{feed:"Ikuti yang lain, catatan mereka muncul di sini",grow:"Saat catatan bertambah, tren muncul di sini",forecast:"Terus catat, prakiraan akan muncul",medal:"Kejar medali pertamamu"}
   };
 
+
+  /* ---------- 具体アドバイス生成（オーナー指示 2026-07-12：抽象的→実数値つきに） ---------- */
+  var ADVICE = {"日本語": {"foodProt": "たんぱく質があと{n}g。鶏むね肉{m}gか、卵{e}個ぶんです", "foodKcalUnder": "きょうはあと{n}kcal食べてOK。抜きすぎは逆効果です", "foodKcalOver": "目標より約{n}kcalオーバー。夜は軽めがおすすめです", "foodMeals": "きょうの記録は{n}食ぶん。あと1食記録すると精度が上がります", "sleepShort": "睡眠は{h}時間{m}分。今夜は{d}分早くお布団へ", "sleepLong": "睡眠は{h}時間{m}分。寝すぎも疲れのもと。7時間半が目安です", "moveNone": "運動の記録がまだ。15分の早歩きだけでもスコアが上がります", "recoverLow": "回復が低め。寝る30分前にスマホを置いてみましょう"}, "English": {"foodProt": "About {n}g more protein — {m}g of chicken breast or {e} eggs", "foodKcalUnder": "You can still eat about {n} kcal today. Undereating backfires", "foodKcalOver": "About {n} kcal over target. Go light tonight", "foodMeals": "{n} meal(s) logged today. One more makes this more accurate", "sleepShort": "You slept {h}h {m}m. Head to bed {d} min earlier tonight", "sleepLong": "You slept {h}h {m}m. Oversleeping tires you too — aim for 7.5h", "moveNone": "No exercise logged yet. Even a 15-min brisk walk lifts your score", "recoverLow": "Recovery is low. Put the phone down 30 min before bed"}, "简体中文": {"foodProt": "蛋白质还差约{n}g——约鸡胸肉{m}g或{e}个鸡蛋", "foodKcalUnder": "今天还可以吃约{n}kcal。吃太少反而不利", "foodKcalOver": "比目标多了约{n}kcal。晚上清淡一点", "foodMeals": "今天记录了{n}餐。再记一餐会更准确", "sleepShort": "睡了{h}小时{m}分。今晚早{d}分钟上床吧", "sleepLong": "睡了{h}小时{m}分。睡太多也会累，以7.5小时为宜", "moveNone": "还没有运动记录。快走15分钟也能提分", "recoverLow": "恢复偏低。睡前30分钟放下手机试试"}, "繁體中文": {"foodProt": "蛋白質還差約{n}g——約雞胸肉{m}g或{e}顆蛋", "foodKcalUnder": "今天還可以吃約{n}kcal。吃太少反而不利", "foodKcalOver": "比目標多了約{n}kcal。晚上清淡一點", "foodMeals": "今天記錄了{n}餐。再記一餐會更準確", "sleepShort": "睡了{h}小時{m}分。今晚早{d}分鐘上床吧", "sleepLong": "睡了{h}小時{m}分。睡太多也會累，以7.5小時為宜", "moveNone": "還沒有運動記錄。快走15分鐘也能提升分數", "recoverLow": "恢復偏低。睡前30分鐘放下手機試試"}, "한국어": {"foodProt": "단백질이 약 {n}g 부족해요 — 닭가슴살 {m}g 또는 달걀 {e}개예요", "foodKcalUnder": "오늘 약 {n}kcal 더 먹어도 괜찮아요. 너무 굶으면 역효과예요", "foodKcalOver": "목표보다 약 {n}kcal 초과예요. 저녁은 가볍게", "foodMeals": "오늘 기록은 {n}끼예요. 한 끼 더 기록하면 더 정확해져요", "sleepShort": "수면 {h}시간 {m}분. 오늘 밤은 {d}분 일찍 잠자리에", "sleepLong": "수면 {h}시간 {m}분. 너무 자도 피곤해요. 7시간 반이 기준", "moveNone": "아직 운동 기록이 없어요. 15분 빠른 걷기로도 점수가 올라요", "recoverLow": "회복이 낮아요. 자기 30분 전 휴대폰을 내려놓아 보세요"}, "Français": {"foodProt": "Encore ~{n}g de protéines — {m}g de blanc de poulet ou {e} œufs", "foodKcalUnder": "Vous pouvez encore manger ~{n} kcal aujourd'hui. Trop restreindre est contre-productif", "foodKcalOver": "~{n} kcal au-dessus de l'objectif. Dîner léger ce soir", "foodMeals": "{n} repas enregistré(s) aujourd'hui. Un de plus affine le calcul", "sleepShort": "Sommeil : {h}h{m}. Couchez-vous {d} min plus tôt ce soir", "sleepLong": "Sommeil : {h}h{m}. Trop dormir fatigue aussi — visez 7h30", "moveNone": "Pas encore de sport enregistré. 15 min de marche rapide suffisent", "recoverLow": "Récupération basse. Posez le téléphone 30 min avant le coucher"}, "Español": {"foodProt": "Faltan ~{n}g de proteína: {m}g de pechuga de pollo o {e} huevos", "foodKcalUnder": "Aún puedes comer ~{n} kcal hoy. Comer de menos es contraproducente", "foodKcalOver": "~{n} kcal por encima del objetivo. Cena ligera esta noche", "foodMeals": "{n} comida(s) registrada(s) hoy. Una más mejora la precisión", "sleepShort": "Dormiste {h}h {m}m. Acuéstate {d} min antes esta noche", "sleepLong": "Dormiste {h}h {m}m. Dormir de más también cansa: apunta a 7,5h", "moveNone": "Sin ejercicio registrado aún. 15 min de caminata rápida suben tu puntuación", "recoverLow": "Recuperación baja. Deja el móvil 30 min antes de dormir"}, "Deutsch": {"foodProt": "Noch ~{n}g Protein — {m}g Hähnchenbrust oder {e} Eier", "foodKcalUnder": "Heute sind noch ~{n} kcal drin. Zu wenig essen wirkt kontraproduktiv", "foodKcalOver": "~{n} kcal über dem Ziel. Heute Abend leicht essen", "foodMeals": "Heute {n} Mahlzeit(en) erfasst. Eine mehr macht es genauer", "sleepShort": "Schlaf: {h}h {m}m. Geh heute {d} Min früher ins Bett", "sleepLong": "Schlaf: {h}h {m}m. Zu viel Schlaf ermüdet auch — 7,5h sind ideal", "moveNone": "Noch kein Training erfasst. Schon 15 Min zügiges Gehen hebt den Score", "recoverLow": "Erholung niedrig. Leg das Handy 30 Min vor dem Schlafen weg"}, "Italiano": {"foodProt": "Mancano ~{n}g di proteine: {m}g di petto di pollo o {e} uova", "foodKcalUnder": "Puoi mangiare ancora ~{n} kcal oggi. Mangiare troppo poco è controproducente", "foodKcalOver": "~{n} kcal oltre l'obiettivo. Stasera vai leggero", "foodMeals": "{n} pasto/i registrati oggi. Uno in più aumenta la precisione", "sleepShort": "Hai dormito {h}h {m}m. Vai a letto {d} min prima stasera", "sleepLong": "Hai dormito {h}h {m}m. Dormire troppo stanca: punta a 7,5h", "moveNone": "Nessun allenamento registrato. Bastano 15 min di camminata veloce", "recoverLow": "Recupero basso. Posa il telefono 30 min prima di dormire"}, "Português": {"foodProt": "Faltam ~{n}g de proteína: {m}g de peito de frango ou {e} ovos", "foodKcalUnder": "Ainda dá para comer ~{n} kcal hoje. Comer de menos atrapalha", "foodKcalOver": "~{n} kcal acima da meta. Jante leve hoje", "foodMeals": "{n} refeição(ões) registrada(s) hoje. Mais uma melhora a precisão", "sleepShort": "Você dormiu {h}h {m}m. Vá para a cama {d} min mais cedo hoje", "sleepLong": "Você dormiu {h}h {m}m. Dormir demais também cansa: mire 7,5h", "moveNone": "Nenhum exercício registrado. 15 min de caminhada rápida já ajudam", "recoverLow": "Recuperação baixa. Largue o celular 30 min antes de dormir"}, "ภาษาไทย": {"foodProt": "โปรตีนยังขาดอีก ~{n} ก. — อกไก่ {m} ก. หรือไข่ {e} ฟอง", "foodKcalUnder": "วันนี้ยังกินได้อีก ~{n} kcal กินน้อยเกินไปจะย้อนแย่", "foodKcalOver": "เกินเป้าราว {n} kcal มื้อเย็นเบาๆ นะ", "foodMeals": "วันนี้บันทึก {n} มื้อ เพิ่มอีกมื้อจะแม่นยำขึ้น", "sleepShort": "นอน {h} ชม. {m} นาที คืนนี้เข้านอนเร็วขึ้น {d} นาที", "sleepLong": "นอน {h} ชม. {m} นาที นอนมากไปก็เพลีย เป้าคือ 7.5 ชม.", "moveNone": "ยังไม่มีบันทึกออกกำลัง เดินเร็ว 15 นาทีก็เพิ่มคะแนนได้", "recoverLow": "การฟื้นตัวต่ำ ลองวางมือถือ 30 นาทีก่อนนอน"}, "हिन्दी": {"foodProt": "अभी ~{n}g प्रोटीन कम है — {m}g चिकन ब्रेस्ट या {e} अंडे", "foodKcalUnder": "आज ~{n} kcal और खा सकते हैं। बहुत कम खाना उल्टा पड़ता है", "foodKcalOver": "लक्ष्य से ~{n} kcal ज़्यादा। रात का खाना हल्का रखें", "foodMeals": "आज {n} भोजन दर्ज हुए। एक और दर्ज करें तो सटीकता बढ़ेगी", "sleepShort": "नींद {h} घं {m} मि। आज {d} मिनट पहले सो जाएँ", "sleepLong": "नींद {h} घं {m} मि। ज़्यादा सोना भी थकाता है — 7.5 घंटे लक्ष्य रखें", "moveNone": "अभी कसरत दर्ज नहीं। 15 मिनट तेज़ चाल से भी स्कोर बढ़ेगा", "recoverLow": "रिकवरी कम है। सोने से 30 मिनट पहले फोन रख दें"}, "Tiếng Việt": {"foodProt": "Còn thiếu ~{n}g đạm — {m}g ức gà hoặc {e} quả trứng", "foodKcalUnder": "Hôm nay còn ăn được ~{n} kcal. Ăn quá ít sẽ phản tác dụng", "foodKcalOver": "Vượt mục tiêu ~{n} kcal. Tối nay ăn nhẹ nhé", "foodMeals": "Hôm nay đã ghi {n} bữa. Thêm một bữa sẽ chính xác hơn", "sleepShort": "Ngủ {h}g {m}p. Tối nay đi ngủ sớm hơn {d} phút", "sleepLong": "Ngủ {h}g {m}p. Ngủ nhiều quá cũng mệt — 7,5 giờ là chuẩn", "moveNone": "Chưa ghi vận động. Đi bộ nhanh 15 phút cũng nâng điểm", "recoverLow": "Phục hồi thấp. Đặt điện thoại xuống 30 phút trước khi ngủ"}, "Bahasa Indonesia": {"foodProt": "Kurang ~{n}g protein — {m}g dada ayam atau {e} telur", "foodKcalUnder": "Hari ini masih bisa makan ~{n} kcal. Terlalu sedikit justru buruk", "foodKcalOver": "Sekitar {n} kcal di atas target. Makan malam ringan saja", "foodMeals": "{n} makan tercatat hari ini. Satu lagi membuat lebih akurat", "sleepShort": "Tidur {h}j {m}m. Malam ini tidur {d} menit lebih awal", "sleepLong": "Tidur {h}j {m}m. Kebanyakan tidur juga melelahkan — target 7,5 jam", "moveNone": "Belum ada catatan olahraga. Jalan cepat 15 menit pun menaikkan skor", "recoverLow": "Pemulihan rendah. Letakkan ponsel 30 menit sebelum tidur"}};
+  function fmtAdvice(tpl, vars){
+    return String(tpl).replace(/\{(\w+)\}/g, function(_,k2){ return vars[k2]!=null ? vars[k2] : ""; });
+  }
+  function advice(lang){
+    var sc = todayScore(); if(!sc) return null;
+    var lg = getLog(todayKey()); if(!lg) return null;
+    var A = ADVICE[lang] || ADVICE["English"];
+    var keys = ["sleep","food","move","recover"], low=null, lv=101;
+    keys.forEach(function(k2){ if(sc[k2]!=null && sc[k2]<lv){ lv=sc[k2]; low=k2; } });
+    if(low==null || lv>=75) return { factor:null, score:sc.total, text:null };
+    var out = { factor:low, score:lv, text:"" };
+    var prof = profile()||{};
+    if(low==="food"){
+      var pfc = lg.food.pfc||{}, eaten = foodEaten(lg.food);
+      var w = +prof.weight_kg || 60;
+      var targetP = Math.round(w*1.5/5)*5;
+      if(pfc.p!=null && pfc.p < targetP){
+        var gap = targetP - pfc.p;
+        out.text = fmtAdvice(A.foodProt, { n:gap, m:Math.max(30, Math.round(gap/22*100/10)*10), e:Math.min(6, Math.max(1, Math.round(gap/6.2))) });
+        return out;
+      }
+      var bmr = bmrOf(prof), goal = bmr ? bmr + moveKcal(lg) : null;
+      if(goal && eaten > 0){
+        var diff = goal - eaten;
+        if(diff > 150){ out.text = fmtAdvice(A.foodKcalUnder, { n:Math.round(diff/10)*10 }); return out; }
+        if(diff < -150){ out.text = fmtAdvice(A.foodKcalOver, { n:Math.round(-diff/10)*10 }); return out; }
+      }
+      out.text = fmtAdvice(A.foodMeals, { n:mealsLogged(lg.food) });
+      return out;
+    }
+    if(low==="sleep"){
+      var min = lg.sleep.minutes||0, h = Math.floor(min/60), m2 = min%60;
+      if(min > 560){ out.text = fmtAdvice(A.sleepLong, { h:h, m:m2 }); }
+      else { var d2 = Math.max(10, Math.min(90, Math.round((450-min)/10)*10)); out.text = fmtAdvice(A.sleepShort, { h:h, m:m2, d:d2 }); }
+      return out;
+    }
+    if(low==="move"){ out.text = A.moveNone; return out; }
+    out.text = A.recoverLow; return out;
+  }
+
   /* ---------- SNS投稿（training/recipe） ---------- */
   function posts(){ return get(K.posts, []); }
   function addPost(p){
@@ -734,6 +777,7 @@
     EMPTY2: EMPTY2,
     allLogs: allLogs,
     stats: stats,
+    advice: advice,
     lang: function(){ return get(K.lang, "日本語"); },
     setLang: function(l){ set(K.lang, l); },
     dark: function(){ return get(K.dark, true); },

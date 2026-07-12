@@ -146,155 +146,158 @@ body{background:#F1EFEA;}
     /* ===== 当日レコード（docs/03）：daily_log を読み込み・S に集約 ===== */
     var S = REVO.getLog(REVO.todayKey()) || REVO.emptyLog();
     /* ===== 食品名からのカロリー推定（表記ゆれ対応。値は目安＝文部科学省食品成分表ベースの概算） ===== */
+    /* 部位別トレーニング種目メニュー（オーナー指示 2026-07-12）。日/簡/繁/韓は現地語、他言語は国際標準名 */
+    var EX_DB={"日本語": [["ベンチプレス", "ダンベルプレス", "インクラインプレス", "ダンベルフライ", "チェストプレス", "ケーブルクロスオーバー", "ディップス", "腕立て伏せ"], ["デッドリフト", "懸垂", "ラットプルダウン", "ベントオーバーロウ", "シーテッドロウ", "ダンベルロウ", "Tバーロウ", "バックエクステンション"], ["スクワット", "レッグプレス", "ランジ", "ブルガリアンスクワット", "レッグエクステンション", "レッグカール", "ヒップスラスト", "カーフレイズ"], ["ショルダープレス", "サイドレイズ", "フロントレイズ", "リアレイズ", "アップライトロウ", "アーノルドプレス", "フェイスプル", "シュラッグ"], ["バーベルカール", "ダンベルカール", "ハンマーカール", "プリーチャーカール", "ナローベンチプレス", "トライセプスエクステンション", "プレスダウン", "キックバック"], ["プランク", "クランチ", "シットアップ", "レッグレイズ", "アブローラー", "ロシアンツイスト", "マウンテンクライマー", "バイシクルクランチ"]], "简体中文": [["卧推", "哑铃卧推", "上斜卧推", "哑铃飞鸟", "坐姿推胸", "绳索夹胸", "双杠臂屈伸", "俯卧撑"], ["硬拉", "引体向上", "高位下拉", "俯身划船", "坐姿划船", "哑铃划船", "T杠划船", "山羊挺身"], ["深蹲", "腿举", "弓步蹲", "保加利亚深蹲", "腿屈伸", "腿弯举", "臀推", "提踵"], ["肩上推举", "侧平举", "前平举", "反向飞鸟", "直立划船", "阿诺德推举", "面拉", "耸肩"], ["杠铃弯举", "哑铃弯举", "锤式弯举", "牧师凳弯举", "窄距卧推", "三头臂屈伸", "绳索下压", "俯身臂屈伸"], ["平板支撑", "卷腹", "仰卧起坐", "举腿", "健腹轮", "俄罗斯转体", "登山跑", "自行车卷腹"]], "繁體中文": [["臥推", "啞鈴臥推", "上斜臥推", "啞鈴飛鳥", "坐姿推胸", "繩索夾胸", "雙槓臂屈伸", "伏地挺身"], ["硬舉", "引體向上", "高位下拉", "俯身划船", "坐姿划船", "啞鈴划船", "T槓划船", "背部伸展"], ["深蹲", "腿舉", "弓步蹲", "保加利亞深蹲", "腿伸展", "腿彎舉", "臀推", "提踵"], ["肩上推舉", "側平舉", "前平舉", "反向飛鳥", "直立划船", "阿諾推舉", "面拉", "聳肩"], ["槓鈴彎舉", "啞鈴彎舉", "錘式彎舉", "牧師椅彎舉", "窄握臥推", "三頭伸展", "繩索下壓", "俯身臂屈伸"], ["平板支撐", "捲腹", "仰臥起坐", "舉腿", "健腹輪", "俄羅斯轉體", "登山者", "單車捲腹"]], "한국어": [["벤치프레스", "덤벨 프레스", "인클라인 프레스", "덤벨 플라이", "체스트 프레스", "케이블 크로스오버", "딥스", "푸시업"], ["데드리프트", "턱걸이", "랫풀다운", "벤트오버 로우", "시티드 로우", "덤벨 로우", "T바 로우", "백 익스텐션"], ["스쿼트", "레그 프레스", "런지", "불가리안 스쿼트", "레그 익스텐션", "레그 컬", "힙 스러스트", "카프 레이즈"], ["숄더 프레스", "사이드 레이즈", "프론트 레이즈", "리어 레이즈", "업라이트 로우", "아놀드 프레스", "페이스 풀", "슈러그"], ["바벨 컬", "덤벨 컬", "해머 컬", "프리처 컬", "클로즈그립 벤치", "트라이셉 익스텐션", "푸시다운", "킥백"], ["플랭크", "크런치", "싯업", "레그 레이즈", "애브 롤아웃", "러시안 트위스트", "마운틴 클라이머", "바이시클 크런치"]], "_": [["Bench Press", "Dumbbell Press", "Incline Press", "Dumbbell Fly", "Chest Press", "Cable Crossover", "Dips", "Push-up"], ["Deadlift", "Pull-up", "Lat Pulldown", "Bent-over Row", "Seated Row", "Dumbbell Row", "T-bar Row", "Back Extension"], ["Squat", "Leg Press", "Lunge", "Bulgarian Split Squat", "Leg Extension", "Leg Curl", "Hip Thrust", "Calf Raise"], ["Shoulder Press", "Lateral Raise", "Front Raise", "Rear Delt Raise", "Upright Row", "Arnold Press", "Face Pull", "Shrug"], ["Barbell Curl", "Dumbbell Curl", "Hammer Curl", "Preacher Curl", "Close-grip Bench", "Triceps Extension", "Pushdown", "Kickback"], ["Plank", "Crunch", "Sit-up", "Leg Raise", "Ab Rollout", "Russian Twist", "Mountain Climber", "Bicycle Crunch"]]};
+    function exMenu(lang, part){ var t=EX_DB[lang]||EX_DB["_"]; return t[Math.min(part||0, t.length-1)]||[]; }
     var FOOD_DB=[
       /* ご飯もの */
-      {a:["ご飯","ごはん","白米","米","ライス","rice"], p:[["茶碗 小 (100g)",156],["茶碗 1杯 (150g)",234],["大盛 (200g)",312],["1合 (炊上り330g)",515]]},
-      {a:["玄米"], p:[["茶碗 1杯 (150g)",228]]},
-      {a:["おにぎり","おむすび"], p:[["1個",180],["2個",360]]},
-      {a:["チャーハン","炒飯","fried rice"], p:[["1皿",700]]},
-      {a:["牛丼"], p:[["並",700],["大盛",900]]},
-      {a:["親子丼"], p:[["1杯",680]]},
-      {a:["カツ丼","かつ丼"], p:[["1杯",900]]},
-      {a:["天丼"], p:[["1杯",800]]},
-      {a:["海鮮丼"], p:[["1杯",650]]},
-      {a:["オムライス"], p:[["1皿",750]]},
-      {a:["カレー","カレーライス","curry"], p:[["1皿",750],["大盛",950]]},
-      {a:["ハヤシライス"], p:[["1皿",750]]},
-      {a:["炊き込みご飯"], p:[["茶碗 1杯",240]]},
-      {a:["お粥","おかゆ","粥"], p:[["1杯",140]]},
-      {a:["雑炊"], p:[["1杯",250]]},
-      {a:["卵かけご飯","TKG"], p:[["1杯",330]]},
+      {a:["ご飯","ごはん","白米","米","ライス","rice"], p:[["茶碗 小 (100g)",156],["茶碗 1杯 (150g)",234],["大盛 (200g)",312],["1合 (炊上り330g)",515]], m:[2.5,0.3,37,0.5,0]},
+      {a:["玄米"], p:[["茶碗 1杯 (150g)",228]], m:[4.2,1.5,51,2.1,0]},
+      {a:["おにぎり","おむすび"], p:[["1個",180],["2個",360]], m:[3,0.5,39,0.6,0.5]},
+      {a:["チャーハン","炒飯","fried rice"], p:[["1皿",700]], m:[18,25,95,2,2.5]},
+      {a:["牛丼"], p:[["並",700],["大盛",900]], m:[20,25,95,1.5,2.5]},
+      {a:["親子丼"], p:[["1杯",680]], m:[30,18,95,1.5,3]},
+      {a:["カツ丼","かつ丼"], p:[["1杯",900]], m:[30,35,110,2,3.5]},
+      {a:["天丼"], p:[["1杯",800]], m:[20,25,115,2,3]},
+      {a:["海鮮丼"], p:[["1杯",650]], m:[30,8,100,1.5,2]},
+      {a:["オムライス"], p:[["1皿",750]], m:[22,30,90,2,3]},
+      {a:["カレー","カレーライス","curry"], p:[["1皿",750],["大盛",950]], m:[15,25,110,3,3]},
+      {a:["ハヤシライス"], p:[["1皿",750]], m:[18,25,105,2.5,3]},
+      {a:["炊き込みご飯"], p:[["茶碗 1杯",240]], m:[6,2,48,1.5,1]},
+      {a:["お粥","おかゆ","粥"], p:[["1杯",140]], m:[2,0.3,31,0.3,0]},
+      {a:["雑炊"], p:[["1杯",250]], m:[10,3,42,0.8,1.5]},
+      {a:["卵かけご飯","TKG"], p:[["1杯",330]], m:[10,6,55,0.5,0.8]},
       /* 汁物・スープ */
-      {a:["豚汁","とん汁","ぶた汁"], p:[["1杯",150]]},
-      {a:["味噌汁","みそ汁","みそしる"], p:[["1杯",40],["具だくさん",70]]},
-      {a:["けんちん汁"], p:[["1杯",120]]},
-      {a:["コーンスープ"], p:[["1杯",130]]},
-      {a:["スープ","soup"], p:[["1杯",80]]},
-      {a:["シチュー","stew"], p:[["1皿",400]]},
-      {a:["鍋","なべ"], p:[["1人前",450]]},
+      {a:["豚汁","とん汁","ぶた汁"], p:[["1杯",150]], m:[8,7,12,2.5,1.8]},
+      {a:["味噌汁","みそ汁","みそしる"], p:[["1杯",40],["具だくさん",70]], m:[3,1,5,1,1.5]},
+      {a:["けんちん汁"], p:[["1杯",120]], m:[5,5,12,2.5,1.5]},
+      {a:["コーンスープ"], p:[["1杯",130]], m:[3,5,18,1,1.2]},
+      {a:["スープ","soup"], p:[["1杯",80]], m:[3,3,9,1,1.2]},
+      {a:["シチュー","stew"], p:[["1皿",400]], m:[15,20,38,3,2]},
+      {a:["鍋","なべ"], p:[["1人前",450]], m:[30,15,30,5,3]},
       /* 麺類 */
-      {a:["ラーメン","ramen"], p:[["1杯 (醤油/塩)",500],["1杯 (とんこつ)",600]]},
-      {a:["つけ麺"], p:[["1人前",700]]},
-      {a:["ちゃんぽん"], p:[["1杯",650]]},
-      {a:["冷やし中華"], p:[["1皿",550]]},
-      {a:["うどん","udon"], p:[["1杯",320]]},
-      {a:["そば","蕎麦","soba"], p:[["1杯",300]]},
-      {a:["そうめん","素麺"], p:[["1人前",340]]},
-      {a:["パスタ","スパゲッティ","pasta","spaghetti"], p:[["1皿",550]]},
-      {a:["焼きそば","焼そば"], p:[["1皿",570]]},
-      {a:["フォー","pho"], p:[["1杯",400]]},
-      {a:["パッタイ","pad thai"], p:[["1皿",600]]},
+      {a:["ラーメン","ramen"], p:[["1杯 (醤油/塩)",500],["1杯 (とんこつ)",600]], m:[20,15,70,3,6]},
+      {a:["つけ麺"], p:[["1人前",700]], m:[25,18,100,4,6]},
+      {a:["ちゃんぽん"], p:[["1杯",650]], m:[25,20,85,5,6]},
+      {a:["冷やし中華"], p:[["1皿",550]], m:[20,12,85,3,4]},
+      {a:["うどん","udon"], p:[["1杯",320]], m:[8,1,65,2,3]},
+      {a:["そば","蕎麦","soba"], p:[["1杯",300]], m:[12,2,57,3,3]},
+      {a:["そうめん","素麺"], p:[["1人前",340]], m:[9,1,70,1.5,3]},
+      {a:["パスタ","スパゲッティ","pasta","spaghetti"], p:[["1皿",550]], m:[18,18,75,4,2.5]},
+      {a:["焼きそば","焼そば"], p:[["1皿",570]], m:[15,18,82,4,3]},
+      {a:["フォー","pho"], p:[["1杯",400]], m:[20,5,65,1.5,3]},
+      {a:["パッタイ","pad thai"], p:[["1皿",600]], m:[20,22,75,3,3]},
       /* パン・粉もの */
-      {a:["パン","食パン","トースト","bread","toast"], p:[["6枚切 1枚",156],["4枚切 1枚",238]]},
-      {a:["クロワッサン","croissant"], p:[["1個",200]]},
-      {a:["菓子パン"], p:[["1個",350]]},
-      {a:["サンドイッチ","sandwich"], p:[["1個",300]]},
-      {a:["ハンバーガー","バーガー","burger"], p:[["1個",500],["セット",1100]]},
-      {a:["ホットドッグ","hot dog"], p:[["1個",400]]},
-      {a:["ピザ","pizza"], p:[["1切",200],["1枚 (M)",800]]},
-      {a:["ベーグル","bagel"], p:[["1個",250]]},
-      {a:["パンケーキ","ホットケーキ","pancake"], p:[["2枚",350]]},
-      {a:["ワッフル","waffle"], p:[["1枚",250]]},
-      {a:["お好み焼き"], p:[["1枚",550]]},
-      {a:["たこ焼き"], p:[["6個",330]]},
+      {a:["パン","食パン","トースト","bread","toast"], p:[["6枚切 1枚",156],["4枚切 1枚",238]], m:[5.5,2.5,28,1.4,0.8]},
+      {a:["クロワッサン","croissant"], p:[["1個",200]], m:[4,11,20,1,0.5]},
+      {a:["菓子パン"], p:[["1個",350]], m:[7,12,52,1.5,0.5]},
+      {a:["サンドイッチ","sandwich"], p:[["1個",300]], m:[11,13,33,2,1.5]},
+      {a:["ハンバーガー","バーガー","burger"], p:[["1個",500],["セット",1100]], m:[25,25,45,2.5,2.5]},
+      {a:["ホットドッグ","hot dog"], p:[["1個",400]], m:[14,22,36,1.5,2]},
+      {a:["ピザ","pizza"], p:[["1切",200],["1枚 (M)",800]], m:[9,8,23,1.5,1]},
+      {a:["ベーグル","bagel"], p:[["1個",250]], m:[9,1.5,48,2,1]},
+      {a:["パンケーキ","ホットケーキ","pancake"], p:[["2枚",350]], m:[8,10,55,1.5,1]},
+      {a:["ワッフル","waffle"], p:[["1枚",250]], m:[5,11,33,1,0.5]},
+      {a:["お好み焼き"], p:[["1枚",550]], m:[22,25,55,4,3]},
+      {a:["たこ焼き"], p:[["6個",330]], m:[12,12,42,1.5,2]},
       /* 肉料理 */
-      {a:["鶏むね","鶏胸","むね肉","サラダチキン","chicken breast","chicken"], p:[["100g",108],["1枚 (250g)",270]]},
-      {a:["鶏もも","もも肉"], p:[["100g",190]]},
-      {a:["唐揚げ","からあげ","竜田揚げ"], p:[["1個",70],["5個",350]]},
-      {a:["焼き鳥","やきとり"], p:[["1本",80],["5本",400]]},
-      {a:["とんかつ","トンカツ","豚カツ"], p:[["1枚",450]]},
-      {a:["生姜焼き","しょうが焼き"], p:[["1人前",350]]},
-      {a:["ハンバーグ"], p:[["1個",400]]},
-      {a:["餃子","ぎょうざ","gyoza"], p:[["1個",40],["6個",240]]},
-      {a:["焼肉","焼き肉"], p:[["1人前",600]]},
-      {a:["ステーキ","牛肉","steak","beef"], p:[["150g",400],["250g",670]]},
-      {a:["豚バラ","豚ばら"], p:[["100g",395]]},
-      {a:["ソーセージ","ウインナー","sausage"], p:[["1本",80],["3本",240]]},
-      {a:["ベーコン","bacon"], p:[["1枚",40]]},
-      {a:["ハム","ham"], p:[["1枚",20]]},
-      {a:["ケバブ","kebab"], p:[["1個",550]]},
-      {a:["タコス","taco"], p:[["1個",170]]},
-      {a:["ブリトー","burrito"], p:[["1個",600]]},
+      {a:["鶏むね","鶏胸","むね肉","サラダチキン","chicken breast","chicken"], p:[["100g",108],["1枚 (250g)",270]], m:[22,1.5,0,0,0.1]},
+      {a:["鶏もも","もも肉"], p:[["100g",190]], m:[17,13,0,0,0.1]},
+      {a:["唐揚げ","からあげ","竜田揚げ"], p:[["1個",70],["5個",350]], m:[4.5,4.5,3,0.1,0.3]},
+      {a:["焼き鳥","やきとり"], p:[["1本",80],["5本",400]], m:[8,4.5,1,0,0.4]},
+      {a:["とんかつ","トンカツ","豚カツ"], p:[["1枚",450]], m:[22,30,22,1,1]},
+      {a:["生姜焼き","しょうが焼き"], p:[["1人前",350]], m:[20,24,10,0.5,1.8]},
+      {a:["ハンバーグ"], p:[["1個",400]], m:[22,26,18,1,1.8]},
+      {a:["餃子","ぎょうざ","gyoza"], p:[["1個",40],["6個",240]], m:[1.8,2,3.5,0.3,0.2]},
+      {a:["焼肉","焼き肉"], p:[["1人前",600]], m:[35,45,10,1,2]},
+      {a:["ステーキ","牛肉","steak","beef"], p:[["150g",400],["250g",670]], m:[32,28,1,0,0.5]},
+      {a:["豚バラ","豚ばら"], p:[["100g",395]], m:[14,35,0,0,0.1]},
+      {a:["ソーセージ","ウインナー","sausage"], p:[["1本",80],["3本",240]], m:[3.5,7,1,0,0.5]},
+      {a:["ベーコン","bacon"], p:[["1枚",40]], m:[2.5,3.5,0.2,0,0.4]},
+      {a:["ハム","ham"], p:[["1枚",20]], m:[3,0.8,0.3,0,0.5]},
+      {a:["ケバブ","kebab"], p:[["1個",550]], m:[28,25,50,3,2.5]},
+      {a:["タコス","taco"], p:[["1個",170]], m:[8,9,15,2,0.8]},
+      {a:["ブリトー","burrito"], p:[["1個",600]], m:[25,25,65,4,2.5]},
       /* 魚介 */
-      {a:["サーモン","鮭","しゃけ","salmon"], p:[["1切れ",180]]},
-      {a:["さば","サバ","鯖"], p:[["1切れ",200]]},
-      {a:["さんま","サンマ","秋刀魚"], p:[["1尾",300]]},
-      {a:["刺身","さしみ","sashimi"], p:[["1人前",150]]},
-      {a:["寿司","すし","sushi"], p:[["1貫",40],["10貫",400]]},
-      {a:["まぐろ","マグロ","鮪","tuna"], p:[["100g",108]]},
-      {a:["うなぎ","鰻"], p:[["蒲焼 1串",350]]},
-      {a:["えび","エビ","海老","shrimp"], p:[["5尾",60]]},
+      {a:["サーモン","鮭","しゃけ","salmon"], p:[["1切れ",180]], m:[18,12,0,0,0.2]},
+      {a:["さば","サバ","鯖"], p:[["1切れ",200]], m:[16,15,0,0,0.3]},
+      {a:["さんま","サンマ","秋刀魚"], p:[["1尾",300]], m:[18,24,0,0,0.3]},
+      {a:["刺身","さしみ","sashimi"], p:[["1人前",150]], m:[28,3.5,1,0,0.3]},
+      {a:["寿司","すし","sushi"], p:[["1貫",40],["10貫",400]], m:[2.5,0.3,7,0.1,0.3]},
+      {a:["まぐろ","マグロ","鮪","tuna"], p:[["100g",108]], m:[24,1,0,0,0.1]},
+      {a:["うなぎ","鰻"], p:[["蒲焼 1串",350]], m:[23,21,15,0,1.8]},
+      {a:["えび","エビ","海老","shrimp"], p:[["5尾",60]], m:[12,0.5,0.5,0,0.3]},
       /* 卵・大豆 */
-      {a:["卵","たまご","玉子","ゆで卵","egg"], p:[["1個",76],["2個",152]]},
-      {a:["目玉焼き"], p:[["1個",90]]},
-      {a:["卵焼き","だし巻き"], p:[["1切",50],["3切",150]]},
-      {a:["豆腐","tofu"], p:[["半丁 (150g)",84]]},
-      {a:["冷奴"], p:[["1皿",80]]},
-      {a:["納豆"], p:[["1パック",95]]},
-      {a:["厚揚げ"], p:[["1枚",150]]},
-      {a:["豆乳"], p:[["コップ1杯 (200ml)",100]]},
+      {a:["卵","たまご","玉子","ゆで卵","egg"], p:[["1個",76],["2個",152]], m:[6.2,5.2,0.2,0,0.2]},
+      {a:["目玉焼き"], p:[["1個",90]], m:[6.5,6.5,0.3,0,0.3]},
+      {a:["卵焼き","だし巻き"], p:[["1切",50],["3切",150]], m:[3.5,3,1.5,0,0.3]},
+      {a:["豆腐","tofu"], p:[["半丁 (150g)",84]], m:[7.4,4.5,2.4,0.6,0]},
+      {a:["冷奴"], p:[["1皿",80]], m:[7,4.2,3,0.6,0.5]},
+      {a:["納豆"], p:[["1パック",95]], m:[8,5,6,3.4,0]},
+      {a:["厚揚げ"], p:[["1枚",150]], m:[11,11,1.5,0.7,0]},
+      {a:["豆乳"], p:[["コップ1杯 (200ml)",100]], m:[7,4,6,0.4,0]},
       /* 副菜・野菜 */
-      {a:["サラダ","salad"], p:[["1皿",50],["チキンサラダ",180]]},
-      {a:["お浸し","おひたし","ほうれん草"], p:[["小鉢",25]]},
-      {a:["きんぴら"], p:[["小鉢",70]]},
-      {a:["ひじき"], p:[["小鉢",60]]},
-      {a:["ポテトサラダ"], p:[["小鉢",120]]},
-      {a:["枝豆"], p:[["1皿",120]]},
-      {a:["キムチ"], p:[["小鉢",20]]},
-      {a:["もずく"], p:[["1パック",10]]},
-      {a:["漬物","つけもの"], p:[["小鉢",10]]},
-      {a:["アボカド","avocado"], p:[["1個",230]]},
-      {a:["ブロッコリー","broccoli"], p:[["1/2株",50]]},
+      {a:["サラダ","salad"], p:[["1皿",50],["チキンサラダ",180]], m:[1.5,2.5,6,2.5,0.3]},
+      {a:["お浸し","おひたし","ほうれん草"], p:[["小鉢",25]], m:[2,0.2,4,2,0.5]},
+      {a:["きんぴら"], p:[["小鉢",70]], m:[1.5,3,10,2.5,0.8]},
+      {a:["ひじき"], p:[["小鉢",60]], m:[2,2.5,8,3,1]},
+      {a:["ポテトサラダ"], p:[["小鉢",120]], m:[2,8,11,1.2,0.6]},
+      {a:["枝豆"], p:[["1皿",120]], m:[10,5,9,4.5,0.5]},
+      {a:["キムチ"], p:[["小鉢",20]], m:[1,0.2,4,1.5,1]},
+      {a:["もずく"], p:[["1パック",10]], m:[0.3,0.1,2,0.7,0.6]},
+      {a:["漬物","つけもの"], p:[["小鉢",10]], m:[0.5,0.1,2,0.8,1]},
+      {a:["アボカド","avocado"], p:[["1個",230]], m:[2.5,22,9,7,0]},
+      {a:["ブロッコリー","broccoli"], p:[["1/2株",50]], m:[5,0.5,8,5,0]},
       /* 乳製品・果物 */
-      {a:["牛乳","ミルク","milk"], p:[["コップ1杯 (200ml)",126]]},
-      {a:["ヨーグルト","yogurt"], p:[["1個 (100g)",61],["ギリシャ",90]]},
-      {a:["チーズ","cheese"], p:[["1個",60]]},
-      {a:["バナナ","banana"], p:[["1本",86]]},
-      {a:["りんご","リンゴ","林檎","apple"], p:[["1個",140]]},
-      {a:["みかん","ミカン"], p:[["1個",45]]},
-      {a:["いちご","イチゴ","苺"], p:[["5粒",30]]},
-      {a:["ぶどう","ブドウ","葡萄"], p:[["1房",160]]},
-      {a:["キウイ","kiwi"], p:[["1個",45]]},
-      {a:["オレンジ","orange"], p:[["1個",70]]},
+      {a:["牛乳","ミルク","milk"], p:[["コップ1杯 (200ml)",126]], m:[6.6,7.6,9.6,0,0.2]},
+      {a:["ヨーグルト","yogurt"], p:[["1個 (100g)",61],["ギリシャ",90]], m:[3.6,3,4.9,0,0.1]},
+      {a:["チーズ","cheese"], p:[["1個",60]], m:[4,4.7,0.3,0,0.5]},
+      {a:["バナナ","banana"], p:[["1本",86]], m:[1.1,0.2,22.5,1.1,0]},
+      {a:["りんご","リンゴ","林檎","apple"], p:[["1個",140]], m:[0.5,0.5,36,3.5,0]},
+      {a:["みかん","ミカン"], p:[["1個",45]], m:[0.7,0.1,11,1,0]},
+      {a:["いちご","イチゴ","苺"], p:[["5粒",30]], m:[0.7,0.1,7,1.1,0]},
+      {a:["ぶどう","ブドウ","葡萄"], p:[["1房",160]], m:[0.8,0.2,40,1,0]},
+      {a:["キウイ","kiwi"], p:[["1個",45]], m:[0.8,0.1,11,2.1,0]},
+      {a:["オレンジ","orange"], p:[["1個",70]], m:[1,0.1,17,1.5,0]},
       /* 中華・洋食 */
-      {a:["麻婆豆腐","マーボー"], p:[["1人前",400]]},
-      {a:["回鍋肉","ホイコーロー"], p:[["1人前",450]]},
-      {a:["青椒肉絲","チンジャオ"], p:[["1人前",350]]},
-      {a:["エビチリ","海老チリ"], p:[["1人前",300]]},
-      {a:["春巻き","春巻"], p:[["1本",120]]},
-      {a:["シュウマイ","焼売"], p:[["1個",50],["4個",200]]},
-      {a:["天ぷら","天麩羅","tempura"], p:[["えび1本",60],["盛合せ",400]]},
-      {a:["グラタン"], p:[["1皿",600]]},
-      {a:["ドリア"], p:[["1皿",700]]},
-      {a:["リゾット","risotto"], p:[["1皿",500]]},
-      {a:["ビビンバ","bibimbap"], p:[["1皿",650]]},
+      {a:["麻婆豆腐","マーボー"], p:[["1人前",400]], m:[22,28,15,1.5,3]},
+      {a:["回鍋肉","ホイコーロー"], p:[["1人前",450]], m:[18,32,20,3,2.5]},
+      {a:["青椒肉絲","チンジャオ"], p:[["1人前",350]], m:[18,22,18,2,2.2]},
+      {a:["エビチリ","海老チリ"], p:[["1人前",300]], m:[18,14,22,1,2.2]},
+      {a:["春巻き","春巻"], p:[["1本",120]], m:[3,7,11,0.8,0.5]},
+      {a:["シュウマイ","焼売"], p:[["1個",50],["4個",200]], m:[2.5,2.5,4,0.2,0.3]},
+      {a:["天ぷら","天麩羅","tempura"], p:[["えび1本",60],["盛合せ",400]], m:[3,3.5,4,0.1,0.2]},
+      {a:["グラタン"], p:[["1皿",600]], m:[25,32,52,2.5,2.5]},
+      {a:["ドリア"], p:[["1皿",700]], m:[22,32,80,2,2.8]},
+      {a:["リゾット","risotto"], p:[["1皿",500]], m:[15,18,68,1.5,2.2]},
+      {a:["ビビンバ","bibimbap"], p:[["1皿",650]], m:[25,20,88,5,3]},
       /* 間食・スイーツ */
-      {a:["プロテイン","protein"], p:[["1杯",120]]},
-      {a:["プロテインバー","protein bar"], p:[["1本",180]]},
-      {a:["チョコ","チョコレート","chocolate"], p:[["1かけ",30],["1枚",280]]},
-      {a:["クッキー","ビスケット","cookie"], p:[["1枚",50],["3枚",150]]},
-      {a:["ポテチ","ポテトチップス","chips"], p:[["1袋 (60g)",330]]},
-      {a:["アイス","アイスクリーム","ice cream"], p:[["1個",200]]},
-      {a:["ケーキ","cake"], p:[["1切",350]]},
-      {a:["シュークリーム"], p:[["1個",230]]},
-      {a:["プリン","pudding"], p:[["1個",130]]},
-      {a:["大福"], p:[["1個",160]]},
-      {a:["団子","だんご"], p:[["1本",120]]},
-      {a:["せんべい","煎餅"], p:[["1枚",60]]},
-      {a:["ナッツ","アーモンド","nuts"], p:[["ひとつかみ (25g)",150]]},
-      {a:["グラノーラ","granola"], p:[["1食 (50g)",220]]},
-      {a:["オートミール","oatmeal"], p:[["1食 (30g)",114]]},
-      {a:["スムージー","smoothie"], p:[["1杯",180]]},
+      {a:["プロテイン","protein"], p:[["1杯",120]], m:[22,1.5,4,0.5,0.3]},
+      {a:["プロテインバー","protein bar"], p:[["1本",180]], m:[15,8,13,1.5,0.3]},
+      {a:["チョコ","チョコレート","chocolate"], p:[["1かけ",30],["1枚",280]], m:[0.4,1.9,2.8,0.2,0]},
+      {a:["クッキー","ビスケット","cookie"], p:[["1枚",50],["3枚",150]], m:[0.6,2.5,6.5,0.2,0.1]},
+      {a:["ポテチ","ポテトチップス","chips"], p:[["1袋 (60g)",330]], m:[3,21,32,2.5,0.6]},
+      {a:["アイス","アイスクリーム","ice cream"], p:[["1個",200]], m:[4,12,20,0.3,0.2]},
+      {a:["ケーキ","cake"], p:[["1切",350]], m:[5,22,33,0.8,0.2]},
+      {a:["シュークリーム"], p:[["1個",230]], m:[5.5,14,20,0.3,0.2]},
+      {a:["プリン","pudding"], p:[["1個",130]], m:[4.5,5,17,0,0.2]},
+      {a:["大福"], p:[["1個",160]], m:[3,0.5,36,1.5,0]},
+      {a:["団子","だんご"], p:[["1本",120]], m:[2,0.4,27,0.4,0.2]},
+      {a:["せんべい","煎餅"], p:[["1枚",60]], m:[1,0.3,13,0.2,0.3]},
+      {a:["ナッツ","アーモンド","nuts"], p:[["ひとつかみ (25g)",150]], m:[5,13,5,2.5,0.1]},
+      {a:["グラノーラ","granola"], p:[["1食 (50g)",220]], m:[4,7.5,36,3,0.1]},
+      {a:["オートミール","oatmeal"], p:[["1食 (30g)",114]], m:[4.1,1.7,21,2.8,0]},
+      {a:["スムージー","smoothie"], p:[["1杯",180]], m:[3,1,40,4,0]},
       /* 飲料・アルコール */
-      {a:["ビール","beer"], p:[["350ml",140],["500ml",200]]},
-      {a:["ハイボール","highball"], p:[["1杯",70]]},
-      {a:["ワイン","wine"], p:[["グラス1杯",90]]},
-      {a:["日本酒","酒"], p:[["1合",200]]},
-      {a:["酎ハイ","チューハイ","サワー"], p:[["350ml",150]]},
-      {a:["コーラ","cola"], p:[["500ml",225]]},
-      {a:["ジュース","juice"], p:[["コップ1杯",90]]},
-      {a:["カフェラテ","ラテ","latte"], p:[["1杯",120]]},
-      {a:["エナジードリンク","モンスター","レッドブル"], p:[["1本",110]]}
+      {a:["ビール","beer"], p:[["350ml",140],["500ml",200]], m:[1.5,0,11,0,0]},
+      {a:["ハイボール","highball"], p:[["1杯",70]], m:[0,0,0,0,0]},
+      {a:["ワイン","wine"], p:[["グラス1杯",90]], m:[0.1,0,2,0,0]},
+      {a:["日本酒","酒"], p:[["1合",200]], m:[0.7,0,8,0,0]},
+      {a:["酎ハイ","チューハイ","サワー"], p:[["350ml",150]], m:[0,0,10,0,0]},
+      {a:["コーラ","cola"], p:[["500ml",225]], m:[0,0,57,0,0]},
+      {a:["ジュース","juice"], p:[["コップ1杯",90]], m:[0.5,0,22,0.3,0]},
+      {a:["カフェラテ","ラテ","latte"], p:[["1杯",120]], m:[6,6,10,0,0.2]},
+      {a:["エナジードリンク","モンスター","レッドブル"], p:[["1本",110]], m:[0,0,27,0,0.2]}
     ];
     function aiEntitled(){
       try{ var sb2=JSON.parse(localStorage.getItem('revo.sub')||'null');
@@ -547,6 +550,12 @@ body{background:#F1EFEA;}
             '<span style="font-size:13px; color:'+t.accent+'; font-weight:600;"><input class="exIn" data-i="'+idx+'" data-f="kg" inputmode="decimal" value="'+(ex.kg==null?"":ex.kg)+'" placeholder="0" style="'+inSty+'"><span style="font-size:9px; color:'+t.sub+'; font-weight:400;"> kg</span></span>'+
             '<span style="font-size:11px; color:'+t.sub+';"><input class="exIn" data-i="'+idx+'" data-f="sets" inputmode="numeric" value="'+(ex.sets==null?"":ex.sets)+'" placeholder="0" style="'+inSty+'width:22px; font-size:11px; color:'+t.sub+';"> '+d.moveSet+' × <input class="exIn" data-i="'+idx+'" data-f="reps" inputmode="numeric" value="'+(ex.reps==null?"":ex.reps)+'" placeholder="0" style="'+inSty+'width:22px; font-size:11px; color:'+t.sub+';"> '+d.moveRep+'</span>'+
           '</div>'+
+          '<div style="display:flex; flex-wrap:wrap; gap:6px; margin:9px 0 0;">'+
+            exMenu(cur, ex.part||0).map(function(nm){
+              var on=((ex.name||'').trim()===nm);
+              return '<span class="exSugChip" data-i="'+idx+'" data-n="'+esc(nm)+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; '+(on?'background:'+t.accent+'; color:'+(dark?'#16140F':'#FFFFFF')+'; border:0.5px solid '+t.accent+';':'background:'+t.chip+'; color:'+t.accent+'; border:0.5px solid '+t.chipBd+';')+'">'+nm+'</span>';
+            }).join('')+
+          '</div>'+
         '</div>';
       }
       var exRows='';
@@ -579,7 +588,7 @@ body{background:#F1EFEA;}
         '<div style="display:flex; gap:9px; margin:0 0 14px;">'+
           '<button class="foodPhotoBtn" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; padding:12px 8px; border-radius:13px; cursor:pointer;">'+
             '<i class="ti ti-camera" style="font-size:20px; color:'+t.accent+';" aria-hidden="true"></i>'+
-            '<span style="font-size:12px; color:'+t.cardName+'; font-weight:500;">'+d.foodPhoto+'</span>'+
+            '<span style="font-size:12px; color:'+t.cardName+'; font-weight:500;">'+d.foodPhoto+((window.REVO_CLOUD&&REVO_CLOUD.signedIn&&REVO_CLOUD.signedIn()&&!aiEntitled())?' <i class="ti ti-lock" style="font-size:11px; color:'+t.muted+';"></i>':'')+'</span>'+
             '<span style="font-size:9px; color:'+t.muted+'; background:'+(dark?"#211D16":"#F0EAE0")+'; padding:2px 8px; border-radius:999px;">'+d.foodPhotoSub+'</span>'+
           '</button>'+
           '<button class="foodWriteBtn" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; background:'+t.chip+'; border:0.5px solid '+t.chipBd+'; padding:12px 8px; border-radius:13px; cursor:pointer;">'+
@@ -789,6 +798,16 @@ body{background:#F1EFEA;}
         if(!(ex.name||'').trim()){ S.move.exercises.splice(i,1); } else { ex._edit=false; }
         renderGroups();
       }; });
+      document.querySelectorAll('.exSugChip').forEach(function(ch){
+        ch.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault();
+          var i=+ch.getAttribute('data-i'); var ex=S.move.exercises[i]; if(!ex) return;
+          var box=document.querySelector('.exEdit[data-i="'+i+'"]');
+          if(box){ box.querySelectorAll('.exIn').forEach(function(inp){ var f=inp.getAttribute('data-f');
+            if(f!=='name'){ var v=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,'')); ex[f]=isNaN(v)?null:v; } }); }
+          ex.name=ch.getAttribute('data-n')||'';
+          renderGroups();
+        };
+      });
       document.querySelectorAll('.exIn').forEach(function(inp){
         inp.onclick=function(e){ e.stopPropagation(); };
         inp.onblur=function(){ var ex=S.move.exercises[+inp.getAttribute('data-i')]; if(!ex) return; var f=inp.getAttribute('data-f');
@@ -810,35 +829,103 @@ body{background:#F1EFEA;}
         if(!(m.name||'').trim() && !(+m.kcal)){ S.food.meals[i]=null; } else { m._edit=false; }
         renderGroups();
       }; });
-      function renderSug(i){
+      /* 複数料理の合算対応（オーナー報告バグ修正 2026-07-12）
+         「ごはん、みそ汁」のように区切って書くと、各料理の標準1人前を自動合算。
+         候補チップで料理ごとの量を変えると、その料理のぶんだけ差し替わる（他は保持）。 */
+      function tokensOf(name){
+        return (name||"").split(/[、，,・＋+\/\n]+/).map(function(x){return x.trim();}).filter(function(x){return x;});
+      }
+      function kcalOfTok(tk, chosen){
+        if(chosen!=null) return (typeof chosen==="object") ? (+chosen.kc||0) : (+chosen||0);
+        var hit=foodMatch(tk);
+        return (hit && hit.p && hit.p.length) ? (+hit.p[0][1]||0) : null;
+      }
+      function macroOfTok(tk, chosen){
+        if(chosen && typeof chosen==="object" && chosen.m && chosen.m.length===5) return chosen.m;
+        var hit=foodMatch(tk);
+        if(!hit || !hit.m) return null;
+        var base=(+hit.p[0][1])||1;
+        var kc=kcalOfTok(tk, chosen); if(kc==null) kc=base;
+        var r=kc/base;
+        return hit.m.map(function(v){ return v*r; });
+      }
+      /* 日次の栄養合算：全ミールの料理からPFC・糖質・食物繊維・塩分を自動計上（オーナー指示 2026-07-12） */
+      function applyNutriDay(){
+        var P=0,F=0,C=0,FB=0,SA=0,any=false;
+        for(var mi=0; mi<4; mi++){
+          var mm=S.food.meals[mi]; if(!mm) continue;
+          var sel=mm._sel||{};
+          tokensOf(mm.name).forEach(function(tk){
+            var mac=macroOfTok(tk, sel[tk]);
+            if(mac){ P+=mac[0]; F+=mac[1]; C+=mac[2]; FB+=mac[3]; SA+=mac[4]; any=true; }
+          });
+        }
+        if(!any) return;   /* 1品も判定できない時は手入力値を尊重 */
+        function r1(v){ return Math.round(v*10)/10; }
+        S.food.pfc={p:Math.round(P), f:Math.round(F), c:Math.round(C)};
+        S.food.nut={sugar:r1(Math.max(0,C-FB)), fiber:r1(FB), salt:r1(SA)};
+        [["pfcP",S.food.pfc.p],["pfcF",S.food.pfc.f],["pfcC",S.food.pfc.c],
+         ["nutSugar",S.food.nut.sugar],["nutFiber",S.food.nut.fiber],["nutSalt",S.food.nut.salt]].forEach(function(kv){
+          var el=document.getElementById(kv[0]); if(el) el.value=String(kv[1]);
+        });
+      }
+      function applyKcal(i){
+        var m=S.food.meals[i]; if(!m) return;
+        var toks=tokensOf(m.name), sel=m._sel||{};
+        var sum=0, any=false;
+        toks.forEach(function(tk){
+          var kc=kcalOfTok(tk, sel[tk]);
+          if(kc!=null){ sum+=kc; any=true; }
+        });
+        if(!any) return;   /* 1品も判定できない時は手入力値を尊重 */
+        m.kcal=Math.round(sum);
+        var kIn=document.getElementById('mealK'+i); if(kIn) kIn.value=String(m.kcal);
+        var tot=document.querySelector('.foodTotalNum');
+        if(tot){ var sp=tot.querySelector('span'); tot.textContent=REVO.foodEaten(S.food).toLocaleString()+' '; if(sp) tot.appendChild(sp); }
+        applyNutriDay();
+      }
+      function renderSug(i, auto){
         var box=document.querySelector('.mealSug[data-i="'+i+'"]');
         if(!box) return;
         var m=S.food.meals[i];
-        var hit=m ? foodMatch(m.name) : null;
         var t2=dark?T.dark:T.light;
-        if(!hit){
+        var toks=m?tokensOf(m.name):[];
+        var frags=[], anyHit=false;
+        toks.forEach(function(tk){
+          var hit=foodMatch(tk);
+          if(!hit || !hit.p || !hit.p.length) return;
+          anyHit=true;
+          var selKc=(m._sel||{})[tk];
+          hit.p.forEach(function(pp,pi){
+            var on = (selKc!=null) ? (+selKc===+pp[1]) : (pi===0);
+            frags.push({tk:tk, kc:pp[1], lbl:(toks.length>1? tk+" ":"")+pp[0], on:on});
+          });
+        });
+        if(!anyHit){
           /* 辞書に無い料理：AI推定（サーバ接続時のみ。結果は全ユーザー共有キャッシュ） */
           var nm=(m && m.name || "").trim();
           if(nm.length>=2 && window.REVO_CLOUD && REVO_CLOUD.signedIn && REVO_CLOUD.signedIn() && REVO_CLOUD.foodEstimate){
             box.style.display="flex";
-            box.innerHTML='<span class="mealAiChip" data-i="'+i+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';"><i class="ti ti-sparkles" style="font-size:12px; vertical-align:-2px;"></i> AI</span>';
+            box.innerHTML='<span class="mealAiChip" data-i="'+i+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';"><i class="ti ti-sparkles" style="font-size:12px; vertical-align:-2px;"></i> AI'+(aiEntitled()?'':' <i class="ti ti-lock" style="font-size:11px; vertical-align:-1px;"></i>')+'</span>';
             var ai=box.querySelector('.mealAiChip');
             ai.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault();
               if(!aiEntitled()){ REVO.go('plans'); return; }   /* スタンダード以上の特典（README価格設計） */
               ai.style.opacity="0.5";
               REVO_CLOUD.foodEstimate(nm).then(function(r){
                 if(r && r.portions && r.portions.length){
-                  box.innerHTML=r.portions.map(function(pp){
-                    return '<span class="mealSugChip" data-i="'+i+'" data-kcal="'+pp.kcal+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';">'+pp.label+' <span style="font-weight:600;">'+pp.kcal+'</span></span>';
+                  box.innerHTML=r.portions.map(function(pp,pi2){
+                    return '<span class="mealSugChip" data-i="'+i+'" data-pi="'+pi2+'" data-kcal="'+pp.kcal+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';">'+pp.label+' <span style="font-weight:600;">'+pp.kcal+'</span></span>';
                   }).join("");
                   box.querySelectorAll('.mealSugChip').forEach(function(ch){
                     ch.onpointerdown=function(e2){ e2.stopPropagation(); e2.preventDefault();
                       var ii=+ch.getAttribute('data-i'), kc=+ch.getAttribute('data-kcal');
+                      var pp=r.portions[+ch.getAttribute('data-pi')]||{};
                       if(!S.food.meals[ii]) S.food.meals[ii]={name:"",kcal:0};
-                      S.food.meals[ii].kcal=kc;
-                      var kIn=document.getElementById('mealK'+ii); if(kIn) kIn.value=String(kc);
-                      var tot=document.querySelector('.foodTotalNum');
-                      if(tot){ var sp=tot.querySelector('span'); tot.textContent=REVO.foodEaten(S.food).toLocaleString()+' '; if(sp) tot.appendChild(sp); }
+                      var mm2=S.food.meals[ii]; mm2._sel=mm2._sel||{};
+                      var mac=(pp.p!=null)?[+pp.p||0,+pp.f||0,+pp.c||0,+pp.fib||0,+pp.salt||0]:null;
+                      tokensOf(mm2.name).forEach(function(tk2){ if(!foodMatch(tk2)) mm2._sel[tk2]={kc:kc, m:mac}; });
+                      if(!tokensOf(mm2.name).length) mm2.kcal=kc;
+                      applyKcal(ii);
                     };
                   });
                 } else { box.style.display="none"; }
@@ -851,19 +938,20 @@ body{background:#F1EFEA;}
           return;
         }
         box.style.display="flex";
-        box.innerHTML=hit.p.map(function(pp){
-          return '<span class="mealSugChip" data-i="'+i+'" data-kcal="'+pp[1]+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+t2.chip+'; color:'+t2.accent+'; border:0.5px solid '+t2.chipBd+';">'+pp[0]+' <span style="font-weight:600;">'+pp[1]+'</span></span>';
+        box.style.flexWrap="wrap";
+        box.innerHTML=frags.map(function(f){
+          var bg=f.on?t2.accent:t2.chip, col=f.on?(dark?"#16140F":"#FFFFFF"):t2.accent;
+          return '<span class="mealSugChip" data-i="'+i+'" data-tok="'+encodeURIComponent(f.tk)+'" data-kcal="'+f.kc+'" style="font-size:11px; padding:5px 11px; border-radius:999px; cursor:pointer; background:'+bg+'; color:'+col+'; border:0.5px solid '+t2.chipBd+';">'+f.lbl+' <span style="font-weight:600;">'+f.kc+'</span></span>';
         }).join("");
         box.querySelectorAll('.mealSugChip').forEach(function(ch){
           ch.onpointerdown=function(e){ e.stopPropagation(); e.preventDefault();
-            var ii=+ch.getAttribute('data-i'), kc=+ch.getAttribute('data-kcal');
+            var ii=+ch.getAttribute('data-i'), kc=+ch.getAttribute('data-kcal'), tk=decodeURIComponent(ch.getAttribute('data-tok')||"");
             if(!S.food.meals[ii]) S.food.meals[ii]={name:"",kcal:0};
-            S.food.meals[ii].kcal=kc;
-            var kIn=document.getElementById('mealK'+ii); if(kIn) kIn.value=String(kc);
-            var tot=document.querySelector('.foodTotalNum');
-            if(tot){ var sp=tot.querySelector('span'); tot.textContent=REVO.foodEaten(S.food).toLocaleString()+' '; if(sp) tot.appendChild(sp); }
+            var mm=S.food.meals[ii]; mm._sel=mm._sel||{}; mm._sel[tk]=kc;
+            applyKcal(ii); renderSug(ii);
           };
         });
+        if(auto) applyKcal(i);   /* 入力に合わせて標準1人前で即合算（チップで調整可） */
       }
       document.querySelectorAll('.mealIn').forEach(function(inp){
         inp.onclick=function(e){ e.stopPropagation(); };
@@ -871,7 +959,7 @@ body{background:#F1EFEA;}
           var i=+inp.getAttribute('data-i');
           if(!S.food.meals[i]) S.food.meals[i]={name:"",kcal:0,_edit:true};
           S.food.meals[i].name=(inp.value||'').trim();   /* 1文字ごとに即保存 */
-          renderSug(i);
+          renderSug(i, true);
         };
         inp.onblur=function(){ var m=S.food.meals[+inp.getAttribute('data-i')]; if(m) m.name=(inp.value||'').trim(); };
         inp.onkeydown=function(e){ if(e.key==='Enter'){ inp.blur(); } };

@@ -49,11 +49,11 @@ function createHandler(deps){
         },
         body: JSON.stringify({
           model: "claude-haiku-4-5-20251001",
-          max_tokens: 300,
+          max_tokens: 450,
           messages: [{ role:"user", content:
             'You are a nutrition estimator. For the dish "'+name+'" (any language), return ONLY JSON: '+
-            '{"portions":[{"label":"<portion in same language as dish, include grams/size>","kcal":<integer>}]} '+
-            'with 1-3 realistic portion options. If it is not food, return {"portions":[]}.' }]
+            '{"portions":[{"label":"<portion in same language as dish, include grams/size>","kcal":<integer>,"p":<protein g>,"f":<fat g>,"c":<carbs g>,"fib":<fiber g>,"salt":<salt g>}]} '+
+            'with 1-3 realistic portion options. Numbers may have 1 decimal. If it is not food, return {"portions":[]}.' }]
         })
       });
       if(!ar.ok){ return json(res, 502, {error:"estimation failed"}); }
@@ -62,8 +62,10 @@ function createHandler(deps){
       try{
         const txt = (aj.content && aj.content[0] && aj.content[0].text || "").replace(/```json|```/g,"").trim();
         const parsed = JSON.parse(txt);
+        const g1 = v => Math.max(0, Math.min(500, Math.round((+v||0)*10)/10));
         portions = (parsed.portions||[]).slice(0,3)
-          .map(p => ({ label: String(p.label||"").slice(0,40), kcal: Math.max(0, Math.min(5000, Math.round(+p.kcal||0))) }))
+          .map(p => ({ label: String(p.label||"").slice(0,40), kcal: Math.max(0, Math.min(5000, Math.round(+p.kcal||0))),
+                       p: g1(p.p), f: g1(p.f), c: g1(p.c), fib: g1(p.fib), salt: Math.max(0, Math.min(30, Math.round((+p.salt||0)*10)/10)) }))
           .filter(p => p.label && p.kcal > 0);
       }catch(e){ portions = []; }
 
